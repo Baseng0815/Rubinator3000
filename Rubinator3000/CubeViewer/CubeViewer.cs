@@ -9,6 +9,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK;
 using OpenTK.Input;
 using System.Drawing;
+using Rubinator3000.Properties;
 
 namespace Rubinator3000
 {

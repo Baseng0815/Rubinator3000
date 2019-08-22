@@ -5,8 +5,46 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rubinator3000"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Rubinator 3000" Height="450" Width="800">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <!-- Menu -->
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0">
+            <MenuItem Header="_Datei">
+                <MenuItem Header="_Neu" InputGestureText="Ctrl+N" />
+                <MenuItem Header="_Öffnen" InputGestureText="Ctrl+O"/>
+                <Separator/>
+                <MenuItem Header="_Würfel">
+                    <MenuItem Header="_Zurücksetzen"/>
+                    <MenuItem Header="_Verdrehen"/>
+                </MenuItem>
+                <MenuItem Header="_Züge">
+                    
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="_Beenden" Click="MenuItemClose_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Bearbeiten">
+                <MenuItem Header="_Rückgängig"/>
+            </MenuItem>
+            <MenuItem Header="_Ansicht">
+                <MenuItem Header="_2D Ansicht" Click="MenuItemChangeView_Click" Tag="2D"/>
+                <MenuItem Header="_3D Ansicht" Click="MenuItemChangeView_Click" Tag="3D"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- GLControl -->
+        <WindowsFormsHost Initialized="WindowsFormsHost_Initialized" Grid.Row="1" Grid.Column="0" Margin="5" />
+
+        <!-- Log -->
+        <TextBox x:Name="textBoxLog" Grid.Row="2" Grid.Column="0" Margin="5"/>
     </Grid>
 </Window>

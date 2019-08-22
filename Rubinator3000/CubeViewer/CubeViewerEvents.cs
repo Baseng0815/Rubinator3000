@@ -4,9 +4,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using Rubinator3000.Properties;
 
 namespace Rubinator3000
 {
@@ -87,7 +89,7 @@ namespace Rubinator3000
                         prevState.X = window.X;
                         prevState.Y = window.Y;
 
-                        window.Size = new Size(DisplayDevice.Default.Width, DisplayDevice.Default.Height);
+                        window.Size = new System.Drawing.Size(DisplayDevice.Default.Width, DisplayDevice.Default.Height);
                         window.X = 0;
                         window.Y = 0;
 
@@ -95,7 +97,7 @@ namespace Rubinator3000
                     }
                     else
                     {
-                        window.Size = new Size(prevState.Width, prevState.Height);
+                        window.Size = new System.Drawing.Size(prevState.Width, prevState.Height);
                         window.X = prevState.X;
                         window.Y = prevState.Y;
 
@@ -108,7 +110,7 @@ namespace Rubinator3000
             bool isPrime = Keyboard.GetState().IsKeyDown(Key.LShift);
             if (keyFaceMappings.ContainsKey(args.Key))
             {
-                Program.cube.DoMove(new Move(keyFaceMappings[args.Key], isPrime));
+                ((MainWindow)Application.Current.MainWindow).Cube.DoMove(new Move(keyFaceMappings[args.Key], isPrime));
 
             }
         }
