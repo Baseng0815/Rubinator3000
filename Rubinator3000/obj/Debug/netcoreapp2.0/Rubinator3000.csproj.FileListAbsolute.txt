@@ -1,0 +1,6 @@
+C:\Users\Phili\Source\Repos\Rubinator3000\Rubinator3000\obj\Debug\netcoreapp2.0\Rubinator3000.csprojAssemblyReference.cache
+C:\Users\Phili\Source\Repos\Rubinator3000\Rubinator3000\obj\Debug\netcoreapp2.0\Rubinator3000.Properties.Resources.resources
+C:\Users\Phili\Source\Repos\Rubinator3000\Rubinator3000\obj\Debug\netcoreapp2.0\Rubinator3000.csproj.GenerateResource.cache
+C:\Users\Phili\Source\Repos\Rubinator3000\Rubinator3000\obj\Debug\netcoreapp2.0\Rubinator3000.csproj.CoreCompileInputs.cache
+C:\Users\Phili\Source\Repos\Rubinator3000\Rubinator3000\obj\Debug\netcoreapp2.0\Rubinator3000.AssemblyInfoInputs.cache
+C:\Users\Phili\Source\Repos\Rubinator3000\Rubinator3000\obj\Debug\netcoreapp2.0\Rubinator3000.AssemblyInfo.cs
