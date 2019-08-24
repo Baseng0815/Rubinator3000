@@ -23,20 +23,14 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "netcoreapp3.0"
+          "net472"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "https://api.nuget.org/v3/index.json": {},
-          "https://dotnetfeed.blob.core.windows.net/aspnet-aspnetcore-tooling/index.json": {},
-          "https://dotnetfeed.blob.core.windows.net/aspnet-aspnetcore/index.json": {},
-          "https://dotnetfeed.blob.core.windows.net/aspnet-entityframeworkcore/index.json": {},
-          "https://dotnetfeed.blob.core.windows.net/aspnet-extensions/index.json": {},
-          "https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json": {},
-          "https://dotnetfeed.blob.core.windows.net/dotnet-windowsdesktop/index.json": {}
+          "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "netcoreapp3.0": {
+          "net472": {
             "projectReferences": {}
           }
         },
@@ -47,21 +41,8 @@
         }
       },
       "frameworks": {
-        "netcoreapp3.0": {
+        "net472": {
           "dependencies": {
-            "Microsoft.NETCore.Platforms": {
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[3.0.0-preview3.19128.7, )",
-              "autoReferenced": true
-            },
-            "Microsoft.WindowsDesktop.App": {
-              "include": "None",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[3.0.0-preview3-27504-2, )",
-              "autoReferenced": true
-            },
             "OpenTK": {
               "target": "Package",
               "version": "[3.1.0, )"
@@ -69,28 +50,14 @@
             "OpenTK.GLControl": {
               "target": "Package",
               "version": "[3.1.0, )"
-            },
-            "runtime.win-x64.Microsoft.NETCore.DotNetAppHost": {
-              "include": "None",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[3.0.0-preview3-27503-5, )",
-              "autoReferenced": true
             }
           },
-          "imports": [
-            "net461"
-          ],
-          "assetTargetFallback": true,
-          "warn": true,
-          "frameworkReferences": {
-            "Microsoft.NETCore.App": {
-              "privateAssets": "none"
-            },
-            "Microsoft.WindowsDesktop.App": {
-              "privateAssets": "none"
-            }
-          }
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100-preview8-013656\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win7-x86": {
+          "#import": []
         }
       }
     }
