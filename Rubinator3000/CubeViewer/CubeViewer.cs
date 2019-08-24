@@ -7,49 +7,52 @@ using System.Configuration;
 
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
-using OpenTK.Input;
 using System.Drawing;
 using Rubinator3000.Properties;
 
 namespace Rubinator3000
 {
-    public partial class CubeViewer
+    public static partial class CubeViewer
     {
-        // window and fullscreen
-        private GameWindow window;
-        private bool isFullscreen = false;
-        private Rectangle prevState;
+        // (Window) GLControl and fullscreen
+        public static readonly GLControl Window;
 
-        private View view;
+        private static View view;
+
+        // mouse delta
+        private static bool firstMouse = true;
+        private static int prevMouseX, prevMouseY;
 
         /// <summary>
         /// Initialize CubeViewer
         /// </summary>
-        public CubeViewer()
+        static CubeViewer()
         {
-            window = new GameWindow(Settings.WindowWidth,Settings.WindowHeight);
-            window.VSync = VSyncMode.Off;
+            OpenTK.Toolkit.Init();
 
-            view = new View(Settings.WindowWidth, Settings.WindowHeight, 
+            DrawCube.Init(new Vector3[]
+            {
+                new Vector3(255, 165, 0),
+                new Vector3(255, 255, 255),
+                new Vector3(0, 255, 0),
+                new Vector3(255, 255, 0),
+                new Vector3(255, 0, 0),
+                new Vector3(0, 0, 255)
+            });
+
+            Window = new GLControl();
+            Window.VSync = false;
+
+            view = new View(Window.Width, Window.Height,
                 Settings.CameraFov, Settings.CameraDistance);
 
             // add events to window
-            window.Resize += this.WindowResizeEvent;
-            window.MouseMove += this.MouseMoveEvent;
-            window.KeyDown += this.KeyDownEvent;
-            window.RenderFrame += this.RenderFrameEvent;
-            window.MouseWheel += this.MouseWheelEvent;
+            Window.Resize += WindowResizeEvent;
+            Window.MouseMove += MouseMoveEvent;
+            Window.MouseUp += MouseButtonUpEvent;
+            Window.KeyDown += KeyDownEvent;
+            Window.Paint += RenderFrameEvent;
+            Window.MouseWheel += MouseWheelEvent;
         }
-
-        /// <summary>
-        /// Enters the event and drawing loop
-        /// </summary>
-        public void Run()
-        {
-            window.Run(30, 120);
-            while (!window.IsExiting)
-                window.ProcessEvents();
-        }
-
     }
 }

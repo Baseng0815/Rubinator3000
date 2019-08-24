@@ -86,25 +86,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Phili\\.nuget\\packages\\": {},
+    "C:\\Users\\1shed\\.nuget\\packages\\": {},
     "C:\\Microsoft\\Xamarin\\NuGet\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Phili\\Source\\Repos\\Rubinator3000\\Rubinator3000\\Rubinator3000.csproj",
+      "projectUniqueName": "D:\\Development\\Projects\\Rubinator3000\\Rubinator3000\\Rubinator3000.csproj",
       "projectName": "Rubinator3000",
-      "projectPath": "C:\\Users\\Phili\\Source\\Repos\\Rubinator3000\\Rubinator3000\\Rubinator3000.csproj",
-      "packagesPath": "C:\\Users\\Phili\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Phili\\Source\\Repos\\Rubinator3000\\Rubinator3000\\obj\\",
+      "projectPath": "D:\\Development\\Projects\\Rubinator3000\\Rubinator3000\\Rubinator3000.csproj",
+      "packagesPath": "C:\\Users\\1shed\\.nuget\\packages\\",
+      "outputPath": "D:\\Development\\Projects\\Rubinator3000\\Rubinator3000\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Phili\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\1shed\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],

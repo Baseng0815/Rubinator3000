@@ -28,8 +28,6 @@ namespace Rubinator3000
         /// </summary>
         static CuboidTransformations()
         {
-            float tileSize = float.Parse(ConfigurationManager.AppSettings["tileSize"]);
-
             // order from top to bottom
             // start on white 0 going to white[-1]
 

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
 using Rubinator3000.Properties;
 
 namespace Rubinator3000
@@ -15,123 +15,117 @@ namespace Rubinator3000
     /// <summary>
     /// This class contains event handling
     /// </summary>
-    public partial class CubeViewer
+    public static partial class CubeViewer
     {
         /// <summary>
         /// This function is called whenever the window size changes.
         /// It will be used to recalculate the projection matrix and to resize the viewport
         /// </summary>
-        private void WindowResizeEvent(object sender, EventArgs e)
+        private static void WindowResizeEvent(object sender, EventArgs e)
         {
-            GL.Viewport(0, 0, window.Width, window.Height);
-            view.SetSize(window.Size.Width, window.Size.Height);
+            GL.Viewport(0, 0, Window.Width, Window.Height);
+            view.SetSize(Window.Size.Width, Window.Size.Height);
         }
 
         /// <summary>
         /// This function is called whenever the mouse is moved.
         /// It will be used to handle mouse motion, e.g. to rotate the cube view
         /// </summary>
-        private void MouseMoveEvent(object sender, MouseMoveEventArgs e)
+        private static void MouseMoveEvent(object sender, MouseEventArgs e)
         {
-            if (Mouse.GetState().IsButtonDown(MouseButton.Left))
+            if (OpenTK.Input.Mouse.GetState().LeftButton == OpenTK.Input.ButtonState.Pressed)
             {
-                var cubeRot = DrawCube.Transformation.Rotation;
-
-                // X ^= pitch
-                // Y ^= yaw
-                if (cubeRot.X % 360 < 90 || cubeRot.X % 360 < -90)
-                    cubeRot.Y += e.XDelta * Settings.MouseSensitivity;
+                if (firstMouse)
+                {
+                    prevMouseX = e.X;
+                    prevMouseY = e.Y;
+                    firstMouse = false;
+                }
                 else
-                    cubeRot.Y -= e.XDelta * Settings.MouseSensitivity;
+                {
+                    int dx = e.X - prevMouseX;
+                    int dy = e.Y - prevMouseY;
+                    prevMouseX = e.X;
+                    prevMouseY = e.Y;
 
-                cubeRot.X += e.YDelta * Settings.MouseSensitivity;
+                    var cubeRot = DrawCube.Transformation.Rotation;
 
-                DrawCube.Transformation.Rotation = cubeRot;
+                    // X ^= pitch
+                    // Y ^= yaw
+                    if (cubeRot.X % 360 < 90 || cubeRot.X % 360 < -90)
+                        cubeRot.Y += dx * Settings.MouseSensitivity;
+                    else
+                        cubeRot.Y -= dx * Settings.MouseSensitivity;
+
+                    cubeRot.X += dy * Settings.MouseSensitivity;
+
+                    DrawCube.Transformation.Rotation = cubeRot;
+                    Window.Invalidate();
+                }
             }
+        }
+
+        private static void MouseButtonUpEvent(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                firstMouse = true;
         }
 
         /// <summary>
         /// Mouse wheel event, used for zooming
         /// </summary>
-        private void MouseWheelEvent(object sender, MouseWheelEventArgs args)
+        private static void MouseWheelEvent(object sender, MouseEventArgs args)
         {
-            view.ChangeFov(-args.DeltaPrecise);
+            view.ChangeFov(-args.Delta * Settings.ScrollSensitivity);
+            Window.Invalidate();
         }
 
         // map keyboard to face moves
-        private static Dictionary<Key, CubeFace> keyFaceMappings = new Dictionary<Key, CubeFace>()
+        private static Dictionary<Keys, CubeFace> keyFaceMappings = new Dictionary<Keys, CubeFace>()
         {
-            { Key.F, CubeFace.FRONT },
-            { Key.U, CubeFace.UP },
-            { Key.B, CubeFace.BACK },
-            { Key.R, CubeFace.RIGHT },
-            { Key.L, CubeFace.LEFT },
-            { Key.D, CubeFace.DOWN }
+            { Keys.F, CubeFace.FRONT },
+            { Keys.U, CubeFace.UP },
+            { Keys.B, CubeFace.BACK },
+            { Keys.R, CubeFace.RIGHT },
+            { Keys.L, CubeFace.LEFT },
+            { Keys.D, CubeFace.DOWN }
         };
 
         /// <summary>
         /// This function is called whenever a key is pressed.
         /// It will be used to handle input, e.g. to toggle the fullscreen
         /// </summary>
-        private void KeyDownEvent(object sender, KeyboardKeyEventArgs args)
+        private static void KeyDownEvent(object sender, KeyEventArgs args)
         {
-            switch (args.Key)
+            switch (args.KeyCode)
             {
-                case Key.Escape:
-                    window.Close();
+                case Keys.Escape:
+                    // @TODO
+                    // EXIT PROGRAM
                     break;
-                case Key.V:
-                {
-                    if (!isFullscreen)
-                    {
-                        prevState.Width = window.Size.Width;
-                        prevState.Height = window.Size.Height;
-                        prevState.X = window.X;
-                        prevState.Y = window.Y;
-
-                        window.Size = new System.Drawing.Size(DisplayDevice.Default.Width, DisplayDevice.Default.Height);
-                        window.X = 0;
-                        window.Y = 0;
-
-                        isFullscreen = true;
-                    }
-                    else
-                    {
-                        window.Size = new System.Drawing.Size(prevState.Width, prevState.Height);
-                        window.X = prevState.X;
-                        window.Y = prevState.Y;
-
-                        isFullscreen = false;
-                    }
-                    break;
-                }
             }
 
-            bool isPrime = Keyboard.GetState().IsKeyDown(Key.LShift);
-            if (keyFaceMappings.ContainsKey(args.Key))
+            bool isPrime = args.Shift;
+            if (keyFaceMappings.ContainsKey(args.KeyCode))
             {
-                ((MainWindow)Application.Current.MainWindow).Cube.DoMove(new Move(keyFaceMappings[args.Key], isPrime));
-
+                // @TODO
+                // Implement manual move
+                //((MainWindow)Application.Current.MainWindow).Cube.DoMove(new Move(keyFaceMappings[args.KeyCode], isPrime));
             }
         }
 
         /// <summary>
         /// This function is called whenever a frame render is due
         /// </summary>
-        private void RenderFrameEvent(object sender, EventArgs args)
+        private static void RenderFrameEvent(object sender, EventArgs args)
         {
-            FrameEventArgs e = (FrameEventArgs)args;
-
             // clear the window
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             Renderer.Render(view);
 
             // swap back and front buffers
-            window.SwapBuffers();
+            Window.SwapBuffers();
         }
-
-        
-
     }
 }

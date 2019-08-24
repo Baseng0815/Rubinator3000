@@ -21,7 +21,6 @@ namespace Rubinator3000 {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        private GLControl glView;
         private bool _3dView;
 
         public Cube Cube { get; set; }
@@ -32,25 +31,7 @@ namespace Rubinator3000 {
         }
 
         private void WindowsFormsHost_Initialized(object sender, EventArgs e) {
-            glView = new GLControl();
-            OpenTK.Toolkit.Init();
-            glView.CreateControl();
-
-            // init glView
-            glView.Dock = DockStyle.Fill;
-            glView.Paint += GlView_Paint;
-            glView.Resize += GlView_Resize;
-            
-
-            (sender as WindowsFormsHost).Child = glView;
-        }
-
-        private void GlView_Resize(object sender, EventArgs e) {
-            throw new NotImplementedException();
-        }
-
-        private void GlView_Paint(object sender, PaintEventArgs e) {
-            throw new NotImplementedException();
+            (sender as WindowsFormsHost).Child = CubeViewer.Window;
         }
     }
 }

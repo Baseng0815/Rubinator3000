@@ -104,6 +104,7 @@ namespace Rubinator3000
             }
         }
 
+        // static constructor because it takes parameters
         /// <summary>
         /// Load resources, set render colors and default state
         /// </summary>
