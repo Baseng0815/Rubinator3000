@@ -103,10 +103,10 @@ namespace Rubinator3000
 
         public static void Init(Vector3[] _renderColors, Cube cube = null)
         {
-            currentState = new Cube();
-
             if (cube != null)
                 SetState(cube);
+            else
+                currentState = new Cube();
 
             renderColors = _renderColors;
 

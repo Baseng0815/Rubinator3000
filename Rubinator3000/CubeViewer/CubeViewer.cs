@@ -24,8 +24,6 @@ namespace Rubinator3000
         private static bool firstMouse = true;
         private static int prevMouseX, prevMouseY;
 
-        public static CubeDisplayMode DisplayMode;
-
         /// <summary>
         /// Initialize CubeViewer
         /// </summary>
@@ -33,7 +31,7 @@ namespace Rubinator3000
         {
             OpenTK.Toolkit.Init();
 
-            DrawCube.Init(new Vector3[]
+            Vector3[] renderColors = new Vector3[]
             {
                 new Vector3(255, 165, 0),
                 new Vector3(255, 255, 255),
@@ -41,7 +39,10 @@ namespace Rubinator3000
                 new Vector3(255, 255, 0),
                 new Vector3(255, 0, 0),
                 new Vector3(0, 0, 255)
-            });
+            };
+
+            DrawCube.Init(renderColors);
+            DrawFlat.Init(renderColors);
 
             Window = new GLControl();
             Window.VSync = false;
@@ -51,11 +52,8 @@ namespace Rubinator3000
 
             // add events to window
             Window.Resize += WindowResizeEvent;
-            Window.MouseMove += MouseMoveEvent;
-            Window.MouseUp += MouseButtonUpEvent;
-            Window.KeyDown += KeyDownEvent;
             Window.Paint += RenderFrameEvent;
-            Window.MouseWheel += MouseWheelEvent;
+            AttachInputEvents();
         }
     }
 }

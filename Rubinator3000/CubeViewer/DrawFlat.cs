@@ -18,10 +18,10 @@ namespace Rubinator3000
 
         public static void Init(Vector3[] _renderColors, Cube cube = null)
         {
-            currentState = new Cube();
-
             if (cube != null)
                 SetState(cube);
+            else 
+                currentState = new Cube();
 
             renderColors = _renderColors;
 
@@ -39,19 +39,21 @@ namespace Rubinator3000
             var data = currentState.GetData();
 
             for (CubeFace face = 0; face < CubeFace.NUMBER_FACES; face++)
+            {
                 for (int tile = 0; tile < 9; tile++)
                 {
                     int ind = (int)face * 9 + tile;
-                    shader.Upload(string.Format("modelMatrix[{0}]", ind), FlatTransformations.Transformations[(int)face, tile].GetMatrix()
-                        * Transformation.GetMatrix());
+                    shader.Upload(string.Format("modelMatrix[{0}]", ind), FlatTransformations.Transformations[(int)face, tile].GetMatrix());
 
                     CubeColor color = data[(int)face][tile];
                     shader.Upload(string.Format("color[{0}]", ind), renderColors[(int)color]);
                 }
+            }
 
             ResourceManager.LoadedModels["flatPlane"].BindVao();
+            ResourceManager.LoadedTextures["flatBlendFrame"].Bind(0);
 
-            GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 4, 54);
+            GL.DrawElementsInstanced(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, (IntPtr)0, 54);
         }
     }
 }

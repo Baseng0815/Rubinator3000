@@ -58,3 +58,4 @@ D:\Development\Projects\Rubinator3000\Rubinator3000\bin\Debug\OpenTK.GLControl.p
 D:\Development\Projects\Rubinator3000\Rubinator3000\obj\Debug\Rubinator3000_Content.g.cs
 D:\Development\Projects\Rubinator3000\Rubinator3000\bin\Debug\Resources\FlatShader.frag
 D:\Development\Projects\Rubinator3000\Rubinator3000\bin\Debug\Resources\FlatShader.vert
+D:\Development\Projects\Rubinator3000\Rubinator3000\bin\Debug\Resources\BlendFrameThick.png

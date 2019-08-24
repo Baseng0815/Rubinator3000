@@ -8,6 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/blendframethick.png")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/flatshader.frag")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/flatshader.vert")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/cubeshader.frag")]

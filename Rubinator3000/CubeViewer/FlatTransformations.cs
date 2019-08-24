@@ -20,18 +20,23 @@ namespace Rubinator3000
             // 1 ^= a whole face (3 tiles)
             Vector3[] faceOffsets = new Vector3[6]
             {
-                new Vector3(4, 1, 0),
-                new Vector3(3, 0, 0),
-                new Vector3(3, 1, 0),
-                new Vector3(3, 2, 0),
-                new Vector3(2, 1, 0),
-                new Vector3(1, 1, 0)
+                new Vector3(-1, 1 / 3f, 0),
+                new Vector3(-0.5f, 1, 0),
+                new Vector3(-0.5f, 1 / 3f, 0),
+                new Vector3(-0.5f, - 1 / 3f, 0),
+                new Vector3(0, 1 / 3f, 0),
+                new Vector3(0.5f, 1 / 3f, 0)
             };
 
             Transformations = new TRSTransformation[6, 9];
             for (CubeFace face = 0; face < CubeFace.NUMBER_FACES; face++)
                 for (int tile = 0; tile < 9; tile++)
-                    Transformations[(int)face, tile].Position = faceOffsets[(int)face] + new Vector3(tile / 3, tile % 3, 0);
+                {
+                    TRSTransformation transform = new TRSTransformation(faceOffsets[(int)face], new Vector3(0));
+                    transform.Position += new Vector3(1 / 6f * (tile % 3), -1 / 4.5f * (tile / 3), 0);
+                    transform.Scale = new Vector3(1 / 6f, 1 / 4.5f, 1);
+                    Transformations[(int)face, tile] = transform;
+                }
         }
     }
 }

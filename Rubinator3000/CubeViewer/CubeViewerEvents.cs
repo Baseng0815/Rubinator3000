@@ -17,20 +17,31 @@ namespace Rubinator3000
     /// </summary>
     public static partial class CubeViewer
     {
-        /// <summary>
-        /// This function is called whenever the window size changes.
-        /// It will be used to recalculate the projection matrix and to resize the viewport
-        /// </summary>
+        // event handling is not needed when in 2d drawing mode
+        public static void DetachInputEvents()
+        {
+            Window.MouseMove -= MouseMoveEvent;
+            Window.MouseUp -= MouseButtonUpEvent;
+            Window.KeyDown -= KeyDownEvent;
+            Window.MouseWheel -= MouseWheelEvent;
+        }
+
+        // event handling is needed when in 3d drawing mode
+        public static void AttachInputEvents()
+        {
+            Window.MouseMove += MouseMoveEvent;
+            Window.MouseUp += MouseButtonUpEvent;
+            Window.KeyDown += KeyDownEvent;
+            Window.MouseWheel += MouseWheelEvent;
+
+        }
+
         private static void WindowResizeEvent(object sender, EventArgs e)
         {
             GL.Viewport(0, 0, Window.Width, Window.Height);
             view.SetSize(Window.Size.Width, Window.Size.Height);
         }
 
-        /// <summary>
-        /// This function is called whenever the mouse is moved.
-        /// It will be used to handle mouse motion, e.g. to rotate the cube view
-        /// </summary>
         private static void MouseMoveEvent(object sender, MouseEventArgs e)
         {
             if (OpenTK.Input.Mouse.GetState().LeftButton == OpenTK.Input.ButtonState.Pressed)
@@ -71,9 +82,6 @@ namespace Rubinator3000
                 firstMouse = true;
         }
 
-        /// <summary>
-        /// Mouse wheel event, used for zooming
-        /// </summary>
         private static void MouseWheelEvent(object sender, MouseEventArgs args)
         {
             view.ChangeFov(-args.Delta * Settings.ScrollSensitivity);
@@ -91,10 +99,6 @@ namespace Rubinator3000
             { Keys.D, CubeFace.DOWN }
         };
 
-        /// <summary>
-        /// This function is called whenever a key is pressed.
-        /// It will be used to handle input, e.g. to toggle the fullscreen
-        /// </summary>
         private static void KeyDownEvent(object sender, KeyEventArgs args)
         {
             switch (args.KeyCode)
@@ -114,9 +118,6 @@ namespace Rubinator3000
             }
         }
 
-        /// <summary>
-        /// This function is called whenever a frame render is due
-        /// </summary>
         private static void RenderFrameEvent(object sender, EventArgs args)
         {
             // clear the window

@@ -12,9 +12,9 @@ namespace Rubinator3000
         public static Dictionary<string, Texture> LoadedTextures;
         public static Dictionary<string, Model> LoadedModels;
 
-        private static void InitPlaneData()
+        private static void InitCubeData()
         {
-            LoadedTextures.Add("cubeBlendFrame", new Texture("Resources/BlendFrame.bmp"));
+            LoadedTextures.Add("cubeBlendFrame", new Texture("Resources/BlendFrame.png"));
             LoadedTextures.Add("cubeBumpMap", new Texture("Resources/NormalMap.png"));
 
             // geometry
@@ -97,12 +97,32 @@ namespace Rubinator3000
             LoadedModels.Add("cubePlane", new Model(vertices, true));
         }
 
+        private static void InitFlatData()
+        {
+            uint[] indices = new uint[]
+            {
+                0, 1, 3, 1, 2, 3
+            };
+
+            Vertex[] vertices = new Vertex[]
+            {
+                new Vertex { Position = new Vector3(0, 0, 0), TexCoord = new Vector2(0, 1) },
+                new Vertex { Position = new Vector3(1, 0, 0), TexCoord = new Vector2(1, 1) },
+                new Vertex { Position = new Vector3(1, -1, 0), TexCoord = new Vector2(1, 0) },
+                new Vertex { Position = new Vector3(0, -1, 0), TexCoord = new Vector2(0, 0) }
+            };
+
+            LoadedModels.Add("flatPlane", new Model(vertices, false, indices));
+            LoadedTextures.Add("flatBlendFrame", new Texture("Resources/BlendFrameThick.png"));
+        }
+
         static ResourceManager()
         {
             LoadedTextures = new Dictionary<string, Texture>();
             LoadedModels = new Dictionary<string, Model>();
 
-            InitPlaneData();
+            InitCubeData();
+            InitFlatData();
         }
     }
 }
