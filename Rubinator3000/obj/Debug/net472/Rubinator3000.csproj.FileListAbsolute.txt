@@ -1,5 +1,0 @@
-C:\Users\Phili\Source\Repos\Rubinator3000\Rubinator3000\obj\Debug\net472\Rubinator3000.csprojAssemblyReference.cache
-C:\Users\Phili\Source\Repos\Rubinator3000\Rubinator3000\obj\Debug\net472\App.g.cs
-C:\Users\Phili\Source\Repos\Rubinator3000\Rubinator3000\obj\Debug\net472\Rubinator3000_MarkupCompile.cache
-C:\Users\Phili\Source\Repos\Rubinator3000\Rubinator3000\obj\Debug\net472\MainWindow.g.cs
-C:\Users\Phili\Source\Repos\Rubinator3000\Rubinator3000\obj\Debug\net472\Rubinator3000_MarkupCompile.lref
