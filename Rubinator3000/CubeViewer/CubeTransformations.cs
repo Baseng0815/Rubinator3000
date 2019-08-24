@@ -9,15 +9,15 @@ using System.Configuration;
 
 namespace Rubinator3000
 {
-    class PlaneTransformations
+    /// <summary>
+    /// Transformations used for cubedrawing
+    /// </summary>
+    public static class CubeTransformations
     {
         // a transformation matrix for each face
-        private readonly TRSTransformation[] Transformations;
+        public static readonly TRSTransformation[] Transformations;
 
-        /// <summary>
-        /// Properly construct transformations for faces of a cuboid
-        /// </summary>
-        public PlaneTransformations()
+        static CubeTransformations()
         {
             // rotations for faces
             Vector3[] faceRotations =
@@ -40,12 +40,6 @@ namespace Rubinator3000
             for (CubeFace face = 0; face < CubeFace.NUMBER_FACES; face++)
                 Transformations[(int)face] = new TRSTransformation(position,
                     faceRotations[(int)face]);
-        }
-
-        public TRSTransformation this[int i]
-        {
-            get { return this.Transformations[i]; }
-
         }
     }
 }

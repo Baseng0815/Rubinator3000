@@ -10,15 +10,14 @@ using System.Drawing;
 
 namespace Rubinator3000
 {
+    public enum CubeDisplayMode { NONE = 0, FLAT = 1, CUBE = 2 };
+
     public static class Renderer
     {
         private static readonly Shader cubeShader;
+        private static readonly Shader flatShader;
 
-        // textured quad
-        private static readonly Shader tqShader;
-
-        // colored quad
-        private static readonly Shader cqShader;
+        public static CubeDisplayMode DisplayMode = CubeDisplayMode.CUBE;
 
         /// <summary>
         /// Static constructors are called on first access
@@ -27,7 +26,7 @@ namespace Rubinator3000
         {
             
             cubeShader = new Shader("Resources/CubeShader");
-            tqShader = new Shader("Resources/TQShader");
+            flatShader = new Shader("Resources/FlatShader");
 
             cubeShader.Bind();
 
@@ -45,13 +44,21 @@ namespace Rubinator3000
         /// </summary>
         public static void Render(View view)
         {
-            cubeShader.Bind();
+            if (DisplayMode == CubeDisplayMode.CUBE)
+            {
+                cubeShader.Bind();
 
-            // view and projection matrices
-            cubeShader.Upload("viewMatrix", view.ViewMatrix);
-            cubeShader.Upload("projectionMatrix", view.ProjectionMatrix);
+                // view and projection matrices
+                cubeShader.Upload("viewMatrix", view.ViewMatrix);
+                cubeShader.Upload("projectionMatrix", view.ProjectionMatrix);
 
-            DrawCube.Draw(cubeShader);
+                DrawCube.Draw(cubeShader);
+            } else if (DisplayMode == CubeDisplayMode.FLAT)
+            {
+                flatShader.Bind();
+
+                DrawFlat.Draw(flatShader);
+            }
         }
     }
 }

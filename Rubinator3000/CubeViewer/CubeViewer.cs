@@ -12,6 +12,7 @@ using Rubinator3000.Properties;
 
 namespace Rubinator3000
 {
+
     public static partial class CubeViewer
     {
         // (Window) GLControl and fullscreen
@@ -22,6 +23,8 @@ namespace Rubinator3000
         // mouse delta
         private static bool firstMouse = true;
         private static int prevMouseX, prevMouseY;
+
+        public static CubeDisplayMode DisplayMode;
 
         /// <summary>
         /// Initialize CubeViewer

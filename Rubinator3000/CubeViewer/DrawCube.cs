@@ -22,9 +22,6 @@ namespace Rubinator3000
 
     public static class DrawCube
     {
-        // plane stuff
-        private static PlaneTransformations planeTransformations;
-
         // colors[CuboidIndex, FaceIndex]
         private static Cube currentState;
 
@@ -104,14 +101,8 @@ namespace Rubinator3000
             }
         }
 
-        // static constructor because it takes parameters
-        /// <summary>
-        /// Load resources, set render colors and default state
-        /// </summary>
         public static void Init(Vector3[] _renderColors, Cube cube = null)
         {
-            planeTransformations = new PlaneTransformations();
-
             currentState = new Cube();
 
             if (cube != null)
@@ -137,7 +128,7 @@ namespace Rubinator3000
         public static void SetState(Cube cube)
         {
             // deep copy because otherwise, the arrays would refer to the same memory
-            currentState = Utility.DeepClone<Cube>(cube);
+            currentState = Utility.DeepClone(cube);
         }
 
         /// <summary>
@@ -166,8 +157,11 @@ namespace Rubinator3000
 
                 // reset render colors
                 for (int i = 0; i < 6; i++)
-                    shader.Upload("color[" + i.ToString() + "]",
+                    shader.Upload(string.Format("color[{0}]", i.ToString()),
                         new Vector3(.1f));
+
+                // cube color data (matrix array)
+                var data = currentState.GetData();
 
                 // each tile
                 for (CubeFace face = 0; face < CubeFace.NUMBER_FACES; face++)
@@ -175,16 +169,16 @@ namespace Rubinator3000
                     // select positions relevant for current tile face
                     foreach (Position pos in CuboidTransformations.CuboidMappings[transform.Position].Where(x => x.Face == face))
                     {
-                        CubeColor color = currentState.GetData()[(int)pos.Face][pos.Tile];
-                        shader.Upload("color[" + ((int)pos.Face).ToString() + "]",
+                        CubeColor color = data[(int)pos.Face][pos.Tile];
+                        shader.Upload(string.Format("color[{0}]", ((int)pos.Face).ToString()),
                             renderColors[(int)color]);
                     }
 
                     var rotMat = cuboidFace != null ? faceRotationMatrices[(int)cuboidFace] : Matrix4.Identity;
-                    var model = planeTransformations[(int)face].GetMatrix() * cuboidMat * rotMat;
+                    var model = CubeTransformations.Transformations[(int)face].GetMatrix() * cuboidMat * rotMat;
 
-                    shader.Upload("modelMatrix[" + ((int)face).ToString() + "]", model);
-                    shader.Upload("cubeModelMatrix[" + ((int)face).ToString() + "]", Transformation.GetMatrix());
+                    shader.Upload(string.Format("modelMatrix[{0}]", ((int)face).ToString()), model);
+                    shader.Upload(string.Format("cubeModelMatrix[{0}]", ((int)face).ToString()), Transformation.GetMatrix());
                 }
 
                 // access time for a dict is close to O(1), so no significant performance loss

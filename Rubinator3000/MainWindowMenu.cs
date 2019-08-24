@@ -8,10 +8,10 @@ namespace Rubinator3000 {
             if(sender is MenuItem menuItem){
                 switch (menuItem.Tag as string) {
                     case "2D":
-                        _3dView = false;
+                        CubeViewer.DisplayMode = CubeDisplayMode.FLAT;
                         break;
                     case "3D":
-                        _3dView = true;
+                        CubeViewer.DisplayMode = CubeDisplayMode.CUBE;
                         break;
                     default:
                         break;

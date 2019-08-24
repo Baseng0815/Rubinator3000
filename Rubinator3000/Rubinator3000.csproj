@@ -67,6 +67,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CubeViewer\DrawFlat.cs" />
+    <Compile Include="CubeViewer\FlatTransformations.cs" />
     <Compile Include="MainWindowMenu.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Solving\CubeSolver.cs" />
@@ -83,7 +85,7 @@
     <Compile Include="CubeViewer\CuboidTransformations.cs" />
     <Compile Include="CubeViewer\DrawCube.cs" />
     <Compile Include="CubeViewer\Model.cs" />
-    <Compile Include="CubeViewer\PlaneTransformations.cs" />
+    <Compile Include="CubeViewer\CubeTransformations.cs" />
     <Compile Include="CubeViewer\Renderer.cs" />
     <Compile Include="CubeViewer\ResourceManager.cs" />
     <Compile Include="CubeViewer\Shader.cs" />
@@ -127,29 +129,61 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="Resources\FlatShader.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\FlatShader.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Resources\arial.ttf" />
     <Resource Include="Resources\arialbd.ttf" />
     <Resource Include="Resources\arialbi.ttf" />
     <Resource Include="Resources\ariali.ttf" />
     <Resource Include="Resources\ariblk.ttf" />
-    <None Include="Resources\CubeShader.frag" />
-    <None Include="Resources\CubeShader.vert" />
-    <None Include="Resources\DebugShader.frag" />
-    <None Include="Resources\DebugShader.vert" />
-    <None Include="Resources\TQShader.frag" />
-    <None Include="Resources\TQShader.vert" />
+    <Content Include="Resources\CubeShader.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\CubeShader.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DebugShader.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\DebugShader.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TQShader.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TQShader.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\BlendFrame.bmp" />
-    <Resource Include="Resources\BlendFrame.png" />
-    <Resource Include="Resources\CuboidTileMappings.txt" />
-    <Resource Include="Resources\NormalMap.png" />
-    <Resource Include="Resources\NormalMap1.png" />
-    <Resource Include="Resources\NormalMap2.png" />
-    <Resource Include="Resources\ollSolving.xml" />
+    <Content Include="Resources\BlendFrame.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\BlendFrame.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\CuboidTileMappings.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\NormalMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\NormalMap1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\NormalMap2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\ollSolving.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
