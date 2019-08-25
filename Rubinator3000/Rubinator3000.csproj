@@ -69,6 +69,7 @@
     </ApplicationDefinition>
     <Compile Include="CubeViewer\DrawFlat.cs" />
     <Compile Include="CubeViewer\FlatTransformations.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="MainWindowMenu.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Solving\CubeSolver.cs" />

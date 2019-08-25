@@ -41,5 +41,9 @@ namespace Rubinator3000 {
         private void WindowsFormsHost_Initialized(object sender, EventArgs e) {
             (sender as WindowsFormsHost).Child = CubeViewer.Window;
         }
+
+        internal void LogStuff(string message) {
+            textBoxLog.Text += $"{message}\r\n";
+        }
     }
 }

@@ -113,6 +113,8 @@ namespace Rubinator3000 {
 
             animatedMoveThread = new Thread(new ThreadStart(AnimatedMoveThread));
             animatedMoveThread.Start();
+
+            Log.LogStuff("Animation Thread Start");
         }
 
         public static void StopDrawing() {
@@ -122,6 +124,8 @@ namespace Rubinator3000 {
                 animatedMoveThread.Join();
             }
             catch { }
+
+            Log.LogStuff("Animation Thread Stop");
         }
 
         public static void SetState(Cube cube) {
@@ -134,6 +138,8 @@ namespace Rubinator3000 {
         /// </summary>
         public static void AddAnimatedMove(AnimatedMove move) {
             moveQueue.Enqueue(move);
+
+            Log.LogStuff($"Animate Move: {move.ToString()}");
         }
 
         public static void Draw(Shader shader) {
