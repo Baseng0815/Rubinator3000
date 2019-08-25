@@ -7,12 +7,10 @@ using System.Threading;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace Rubinator3000
-{
+namespace Rubinator3000 {
     // State change between the internal cube representation and the draw cube
     // will take place through animated moves containing the move, endstate and animated time
-    public struct AnimatedMove
-    {
+    public struct AnimatedMove {
         public Move Move;
         public Cube EndState;
 
@@ -20,8 +18,7 @@ namespace Rubinator3000
         public float TurnDuration;
     }
 
-    public static class DrawCube
-    {
+    public static class DrawCube {
         // colors[CuboidIndex, FaceIndex]
         private static Cube currentState;
 
@@ -34,12 +31,13 @@ namespace Rubinator3000
 
         private static Vector3[] renderColors;
 
+        private static Thread animatedMoveThread;
+
         public static TRSTransformation Transformation;
         public static bool AnimateMoves = true;
 
         // set absolute face rotation
-        private static void SetFaceRotation(CubeFace face, float amount)
-        {
+        private static void SetFaceRotation(CubeFace face, float amount) {
             faceRotations[(int)face] = amount;
             faceRotationMatrices[(int)face] = RotationMatrixForFace(face);
         }
@@ -47,10 +45,8 @@ namespace Rubinator3000
         /// <summary>
         /// Returns the rotation matrix for a given face
         /// </summary>
-        private static Matrix4 RotationMatrixForFace(CubeFace face)
-        {
-            switch (face)
-            {
+        private static Matrix4 RotationMatrixForFace(CubeFace face) {
+            switch (face) {
                 case CubeFace.LEFT:
                     return Matrix4.CreateRotationX(Utility.ToRad(faceRotations[(int)face]));
                 case CubeFace.RIGHT:
@@ -70,16 +66,12 @@ namespace Rubinator3000
         }
 
         // do animated moves
-        private static void AnimatedMoveThread()
-        {
-            while (true)
-            {
-                if (moveQueue.Count > 0)
-                {
+        private static void AnimatedMoveThread() {
+            while (true) {
+                if (moveQueue.Count > 0) {
                     AnimatedMove move = moveQueue.Dequeue();
 
-                    if (move.TurnDuration > 0)
-                    {
+                    if (move.TurnDuration > 0) {
                         Stopwatch watch = new Stopwatch();
 
                         double anglePerMillisecond = 90 / move.TurnDuration;
@@ -89,8 +81,7 @@ namespace Rubinator3000
                         watch.Start();
 
                         // rotate until 90 degrees is hit, then reset rotation and copy cube
-                        while (Math.Abs(faceRotations[(int)move.Move.Face]) < 90)
-                        {
+                        while (Math.Abs(faceRotations[(int)move.Move.Face]) < 90) {
                             SetFaceRotation(move.Move.Face, (float)(watch.ElapsedMilliseconds * anglePerMillisecond));
                         }
                     }
@@ -101,8 +92,7 @@ namespace Rubinator3000
             }
         }
 
-        public static void Init(Vector3[] _renderColors, Cube cube = null)
-        {
+        public static void Init(Vector3[] _renderColors, Cube cube = null) {
             if (cube != null)
                 SetState(cube);
             else
@@ -121,12 +111,20 @@ namespace Rubinator3000
 
             moveQueue = new Queue<AnimatedMove>();
 
-            Thread animatedMoveThread = new Thread(new ThreadStart(AnimatedMoveThread));
+            animatedMoveThread = new Thread(new ThreadStart(AnimatedMoveThread));
             animatedMoveThread.Start();
         }
 
-        public static void SetState(Cube cube)
-        {
+        public static void StopDrawing() {
+            animatedMoveThread.Abort();
+
+            try {
+                animatedMoveThread.Join();
+            }
+            catch { }
+        }
+
+        public static void SetState(Cube cube) {
             // deep copy because otherwise, the arrays would refer to the same memory
             currentState = Utility.DeepClone(cube);
         }
@@ -134,13 +132,11 @@ namespace Rubinator3000
         /// <summary>
         /// Adds the animated move to the queue
         /// </summary>
-        public static void AddAnimatedMove(AnimatedMove move)
-        {
+        public static void AddAnimatedMove(AnimatedMove move) {
             moveQueue.Enqueue(move);
         }
 
-        public static void Draw(Shader shader)
-        {
+        public static void Draw(Shader shader) {
             // each cuboid
             for (int cuboid = 0; cuboid < CuboidTransformations.Transformations.Length; cuboid++) {
                 if (cuboid == 13) continue;
@@ -149,8 +145,7 @@ namespace Rubinator3000
 
                 // apply face rotations by looking up key by value
                 CubeFace? cuboidFace = null;
-                foreach (var mapping in CuboidTransformations.FaceMappings)
-                {
+                foreach (var mapping in CuboidTransformations.FaceMappings) {
                     if (mapping.Value.Contains(cuboid) && faceRotations[(int)mapping.Key] != 0)
                         cuboidFace = mapping.Key;
                 }
@@ -164,11 +159,9 @@ namespace Rubinator3000
                 var data = currentState.GetData();
 
                 // each tile
-                for (CubeFace face = 0; face < CubeFace.NUMBER_FACES; face++)
-                {
+                for (CubeFace face = 0; face < CubeFace.NUMBER_FACES; face++) {
                     // select positions relevant for current tile face
-                    foreach (Position pos in CuboidTransformations.CuboidMappings[transform.Position].Where(x => x.Face == face))
-                    {
+                    foreach (Position pos in CuboidTransformations.CuboidMappings[transform.Position].Where(x => x.Face == face)) {
                         CubeColor color = data[(int)pos.Face][pos.Tile];
                         shader.Upload(string.Format("color[{0}]", ((int)pos.Face).ToString()),
                             renderColors[(int)color]);

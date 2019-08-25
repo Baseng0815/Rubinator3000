@@ -24,7 +24,7 @@ namespace Rubinator3000 {
         }
 
         private void MenuItemClose_Click(object sender, RoutedEventArgs e) {
-            Application.Current.Shutdown();
+            Close();
         }
     }
 }
