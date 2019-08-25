@@ -45,6 +45,6 @@
         <WindowsFormsHost Initialized="WindowsFormsHost_Initialized" Grid.Row="1" Grid.Column="0" Margin="5" />
 
         <!-- Log -->
-        <TextBox x:Name="textBoxLog" Grid.Row="2" Grid.Column="0" Margin="5"/>
+        <TextBox x:Name="textBoxLog" Initialized="TextBoxLog_Initialized" Grid.Row="2" Grid.Column="0" Margin="5"/>
     </Grid>
 </Window>

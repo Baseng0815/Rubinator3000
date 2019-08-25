@@ -22,12 +22,13 @@ namespace Rubinator3000 {
     /// </summary>
     public partial class MainWindow : Window {
         private bool _3dView;
+        private Queue<string> messages = new Queue<string>();
 
         public Cube Cube { get; set; }
         public bool View3D { get => _3dView; }
 
         public MainWindow() {
-            InitializeComponent();
+            InitializeComponent();            
 
             Closed += MainWindow_Closed;
         }
@@ -43,7 +44,17 @@ namespace Rubinator3000 {
         }
 
         internal void LogStuff(string message) {
-            textBoxLog.Text += $"{message}\r\n";
+            if (textBoxLog != null)
+                textBoxLog.Text += $"{message}\r\n";
+            else
+                messages.Enqueue(message);
+        }
+
+        private void TextBoxLog_Initialized(object sender, EventArgs e) {
+            if(sender is System.Windows.Controls.TextBox textBox) {
+                while (messages.Count > 0)
+                    textBox.Text += $"{messages.Dequeue()}\r\n";
+            }
         }
     }
 }
