@@ -15,7 +15,7 @@ namespace Rubinator3000
         private static void InitCubeData()
         {
             LoadedTextures.Add("cubeBlendFrame", new Texture("Resources/BlendFrame.png"));
-            LoadedTextures.Add("cubeBumpMap", new Texture("Resources/NormalMap.png"));
+            LoadedTextures.Add("cubeBumpMap", new Texture("Resources/NormalMap1.png"));
 
             // geometry
             Vector3[] positions = new Vector3[]

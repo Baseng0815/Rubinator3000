@@ -30,6 +30,8 @@ namespace Rubinator3000
 
         public Shader(string file)
         {
+            Log.LogStuff(string.Format("Loading shader {0}.", file));
+
             ShaderProgram = GL.CreateProgram();
 
             vs = CompileShader(file + ".vert", ShaderType.VertexShader);
@@ -39,9 +41,11 @@ namespace Rubinator3000
             GL.AttachShader(ShaderProgram, fs);
             GL.LinkProgram(ShaderProgram);
 
+            Log.LogStuff("Shaders attached and program linked.");
+
             var info = GL.GetProgramInfoLog(ShaderProgram);
             if (!string.IsNullOrWhiteSpace(info))
-                Console.WriteLine(info);
+                Log.LogStuff(info);
 
             GL.DetachShader(ShaderProgram, vs);
             GL.DetachShader(ShaderProgram, fs);

@@ -16,6 +16,8 @@ namespace Rubinator3000
 
         public Texture(string filePath)
         {
+            Log.LogStuff(string.Format("Loading texture {0}.", filePath));
+
             Bitmap bitmap = new Bitmap(filePath);
 
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);

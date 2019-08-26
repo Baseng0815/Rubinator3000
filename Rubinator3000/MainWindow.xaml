@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rubinator3000"
         mc:Ignorable="d"
-        Title="Rubinator 3000" Height="450" Width="800">
+        Title="Rubinator 3000" WindowStartupLocation="CenterScreen" WindowState="Maximized" WindowStyle="ToolWindow"
+        Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>

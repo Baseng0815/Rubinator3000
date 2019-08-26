@@ -18,10 +18,10 @@ uniform mat4 projectionMatrix;
 uniform mat4 modelMatrix[6];
 
 // models for whole cube transformation
-uniform mat4 cubeModelMatrix[6];
+uniform mat4 cubeModelMatrix;
 
 void main() {
-	vec4 worldPosition = cubeModelMatrix[gl_InstanceID] * modelMatrix[gl_InstanceID] * vec4(position, 1);
+	vec4 worldPosition = cubeModelMatrix * modelMatrix[gl_InstanceID] * vec4(position, 1);
 
 	pass_fragPos = worldPosition.xyz;
 

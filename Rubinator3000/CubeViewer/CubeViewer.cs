@@ -41,6 +41,9 @@ namespace Rubinator3000
                 new Vector3(0, 0, 255)
             };
 
+            for (int i = 0; i < renderColors.Length; i++)
+                renderColors[i] /= 255f;
+
             DrawCube.Init(renderColors);
             DrawFlat.Init(renderColors);
 

@@ -29,14 +29,6 @@ namespace Rubinator3000 {
 
         public MainWindow() {
             InitializeComponent();            
-
-            Closed += MainWindow_Closed;
-        }
-
-        private void MainWindow_Closed(object sender, EventArgs e) {
-            DrawCube.StopDrawing();
-
-            System.Windows.Application.Current.Shutdown();
         }
 
         private void WindowsFormsHost_Initialized(object sender, EventArgs e) {
@@ -55,6 +47,12 @@ namespace Rubinator3000 {
                 while (messages.Count > 0)
                     textBox.Text += $"{messages.Dequeue()}\r\n";
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+            DrawCube.StopDrawing();
+
+            System.Windows.Application.Current.Shutdown();
         }
     }
 }

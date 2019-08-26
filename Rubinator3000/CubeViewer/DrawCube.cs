@@ -177,7 +177,7 @@ namespace Rubinator3000 {
                     var model = CubeTransformations.Transformations[(int)face].GetMatrix() * cuboidMat * rotMat;
 
                     shader.Upload(string.Format("modelMatrix[{0}]", ((int)face).ToString()), model);
-                    shader.Upload(string.Format("cubeModelMatrix[{0}]", ((int)face).ToString()), Transformation.GetMatrix());
+                    shader.Upload("cubeModelMatrix", Transformation.GetMatrix());
                 }
 
                 // access time for a dict is close to O(1), so no significant performance loss

@@ -15,6 +15,8 @@ namespace Rubinator3000
 
         public Model(Vertex[] vertices, bool useTangentSpace = false, uint[] indices = null)
         {
+            Log.LogStuff(string.Format("Loading model. Number vertices: {0}", vertices.Length));
+
             GL.GenVertexArrays(1, out vao);
 
             // bind vao so all subsequent operations take place on it

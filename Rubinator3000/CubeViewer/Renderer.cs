@@ -32,7 +32,7 @@ namespace Rubinator3000
 
             // texture units to sampler
             for (int i = 0; i < 2; i++)
-                cubeShader.Upload("texture" + i.ToString(), i);
+                cubeShader.Upload(string.Format("texture{0}", i.ToString()), i);
 
             GL.Enable(EnableCap.DepthTest);
             GL.ClearColor(Color.Black);
