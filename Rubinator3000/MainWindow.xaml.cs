@@ -23,12 +23,22 @@ namespace Rubinator3000 {
     public partial class MainWindow : Window {
         private bool _3dView;
         private Queue<string> messages = new Queue<string>();
+        private Cube cube;
 
-        public Cube Cube { get; set; }
+        public Cube Cube {
+            get => cube;
+            set {
+                cube = value;
+                DrawCube.SetState(value);
+                DrawCube.SetState(value);
+            }
+        }
         public bool View3D { get => _3dView; }
 
         public MainWindow() {
-            InitializeComponent();            
+            InitializeComponent();
+
+            Cube = new Cube();            
         }
 
         private void WindowsFormsHost_Initialized(object sender, EventArgs e) {

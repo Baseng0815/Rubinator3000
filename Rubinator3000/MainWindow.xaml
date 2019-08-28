@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rubinator3000"
         mc:Ignorable="d"
-        Title="Rubinator 3000" WindowStartupLocation="CenterScreen" WindowState="Maximized" WindowStyle="ToolWindow"
+        Title="Rubinator 3000" WindowStartupLocation="CenterScreen"
         Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
@@ -24,8 +24,8 @@
                 <MenuItem Header="_Öffnen" InputGestureText="Ctrl+O"/>
                 <Separator/>
                 <MenuItem Header="_Würfel">
-                    <MenuItem Header="_Zurücksetzen"/>
-                    <MenuItem Header="_Verdrehen"/>
+                    <MenuItem Header="_Zurücksetzen" Click="MenuItemResetCube_Click"/>
+                    <MenuItem Header="_Verdrehen" Click="MenuItemSuffle_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Züge">
                     
