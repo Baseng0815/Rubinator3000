@@ -81,8 +81,10 @@ namespace Rubinator3000 {
                         watch.Start();
 
                         // rotate until 90 degrees is hit, then reset rotation and copy cube
-                        while (Math.Abs(faceRotations[(int)move.Move.Face]) < 90) {
+                        // also, issue a redraw
+                        while (Math.Abs(faceRotations[(int)move.Move.Face]) < 90) { 
                             SetFaceRotation(move.Move.Face, (float)(watch.ElapsedMilliseconds * anglePerMillisecond));
+                            CubeViewer.Window.Invalidate();
                         }
                     }
 

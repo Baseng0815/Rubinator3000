@@ -35,6 +35,7 @@ namespace Rubinator3000 {
 
         private void MenuItemResetCube_Click(object sender, RoutedEventArgs e) {
             Cube = new Cube();
+            CubeViewer.Window.Invalidate();
         }
     }
 }

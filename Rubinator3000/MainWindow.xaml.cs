@@ -21,7 +21,6 @@ namespace Rubinator3000 {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        private bool _3dView;
         private Queue<string> messages = new Queue<string>();
         private Cube cube;
 
@@ -30,10 +29,8 @@ namespace Rubinator3000 {
             set {
                 cube = value;
                 DrawCube.SetState(value);
-                DrawCube.SetState(value);
             }
         }
-        public bool View3D { get => _3dView; }
 
         public MainWindow() {
             InitializeComponent();

@@ -25,7 +25,6 @@ D:\Development\Projects\Rubinator3000\Rubinator3000\bin\Debug\Rubinator3000.exe
 D:\Development\Projects\Rubinator3000\Rubinator3000\bin\Debug\Rubinator3000.pdb
 D:\Development\Projects\Rubinator3000\Rubinator3000\bin\Debug\OpenTK.xml
 D:\Development\Projects\Rubinator3000\Rubinator3000\bin\Debug\OpenTK.GLControl.xml
-D:\Development\Projects\Rubinator3000\Rubinator3000\obj\Debug\Rubinator3000.csprojAssemblyReference.cache
 D:\Development\Projects\Rubinator3000\Rubinator3000\obj\Debug\MainWindow.g.cs
 D:\Development\Projects\Rubinator3000\Rubinator3000\obj\Debug\App.g.cs
 D:\Development\Projects\Rubinator3000\Rubinator3000\obj\Debug\Rubinator3000_MarkupCompile.cache
