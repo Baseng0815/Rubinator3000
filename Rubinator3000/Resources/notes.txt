@@ -1,0 +1,9 @@
+﻿Wann window invalidaten? (redrawing):
+2D/3D:
+- on SetState
+- on Assignment of Main Cube
+- on Mouse Drag Input
+- on Mouse Scroll Input
+- on DisplayMode change
+3D:
+- on AnimationThread rotationStep
