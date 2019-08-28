@@ -31,20 +31,30 @@ namespace Rubinator3000
         }
 
         /// <summary>
-        /// Deep copy an object
+        /// Deep copy an cube
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static T DeepClone<T>(T obj)
+        public static Cube DeepClone(Cube obj)
         {
-            using (var ms = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, obj);
-                ms.Position = 0;
-                return (T)formatter.Deserialize(ms);
+            CubeMatrix[] oldData = obj.GetData();
+            CubeMatrix[] newData = new CubeMatrix[6];
+
+            int size = oldData[0].Size;
+
+            for (int i = 0; i < 6; i++) {
+                newData[i] = new CubeMatrix(size);
+                for (int x = 0; x < size; x++) {
+                    for (int y = 0; y < size; y++) {
+                        int tile = size * x + y;
+
+                        newData[i][tile] = oldData[i][tile];
+                    }
+                }
             }
+
+            return new Cube(newData);
         }
 
         /// <summary>

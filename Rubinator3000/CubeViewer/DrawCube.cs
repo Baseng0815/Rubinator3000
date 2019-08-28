@@ -16,6 +16,10 @@ namespace Rubinator3000 {
 
         // in milliseconds
         public float TurnDuration;
+
+        public override string ToString() {
+            return Move.ToString();
+        }
     }
 
     public static class DrawCube {

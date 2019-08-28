@@ -48,7 +48,7 @@ namespace Rubinator3000
         public override string ToString()
         {
             string str = mappings[(int)Face];
-            if (IsPrime) str.Append('i');
+            if (IsPrime) str += "i";
 
             return str;
         }

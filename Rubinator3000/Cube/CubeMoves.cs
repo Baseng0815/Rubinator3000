@@ -19,6 +19,9 @@ namespace Rubinator3000 {
             new CubeSide(CubeFace.BACK, (0, 0, true, 1), (3, 2, false, 1), (4, 2, true, -1), (1, 0, false, -1))
         };
 
+        public delegate void MoveEventHandler(object sender, MoveEventArgs e);        
+        public event MoveEventHandler OnMoveDone;
+
         private void RotateSide(CubeSide side, bool isPrime) {
             CubeMatrix matrix = data[(int)side.Face];
             matrix.Rotate(isPrime);
@@ -101,9 +104,20 @@ namespace Rubinator3000 {
 
             for (int c = 0; c < count; c++) {
                 RotateSide(side, move.IsPrime);
-                DrawCube.AddAnimatedMove(new AnimatedMove { EndState = Utility.DeepClone<Cube>(this), Move = move, TurnDuration = 1000 });
+                DrawCube.AddAnimatedMove(new AnimatedMove { EndState = Utility.DeepClone(this), Move = move, TurnDuration = 1000 });
+                
+                OnMoveDone?.Invoke(this, new MoveEventArgs(move));
             }
 
+            Log.LogStuff("Move done: " + move.ToString());            
+        }
+    }
+
+    public class MoveEventArgs : EventArgs {
+        public Move Move { get; }        
+
+        public MoveEventArgs(Move move) {
+            Move = move ?? throw new ArgumentNullException(nameof(move));            
         }
     }
 }

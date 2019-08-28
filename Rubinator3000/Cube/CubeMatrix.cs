@@ -8,26 +8,26 @@ namespace Rubinator3000 {
     [Serializable]
     public class CubeMatrix {
         private int[,] arr;
-        private int size;
 
+        public readonly int Size;        
         public CubeColor this[int tile] {
             get {
                 if (tile < 0 || tile >= arr.Length)
                     throw new IndexOutOfRangeException();
 
-                return (CubeColor)arr[tile / size, tile % size];
+                return (CubeColor)arr[tile / Size, tile % Size];
             }
             set {
                 if (tile < 0 || tile >= arr.Length)
                     throw new IndexOutOfRangeException();
 
-                arr[tile / size, tile % size] = (int)value;
+                arr[tile / Size, tile % Size] = (int)value;
             }
         }
 
         public CubeMatrix(int size = 3) {
             arr = new int[size, size];
-            this.size = size;
+            this.Size = size;
 
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {
@@ -56,11 +56,11 @@ namespace Rubinator3000 {
         }
 
         public RowMatrix GetRow(int index) {
-            if (index < 0 || index >= size)
+            if (index < 0 || index >= Size)
                 throw new IndexOutOfRangeException();
 
-            int[] row = new int[size];
-            for (int i = 0; i < size; i++) {
+            int[] row = new int[Size];
+            for (int i = 0; i < Size; i++) {
                 row[i] = arr[index, i];
             }
 
@@ -68,17 +68,17 @@ namespace Rubinator3000 {
         }
 
         public IEnumerable<RowMatrix> GetRows() {
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < Size; i++) {
                 yield return GetRow(i);
             }
         }
 
         public ColumnMatrix GetColumn(int index) {
-            if (index < 0 || index >= size)
+            if (index < 0 || index >= Size)
                 throw new IndexOutOfRangeException();
 
-            int[] column = new int[size];
-            for (int i = 0; i < size; i++) {
+            int[] column = new int[Size];
+            for (int i = 0; i < Size; i++) {
                 column[i] = arr[i, index];
             }
 
@@ -86,49 +86,49 @@ namespace Rubinator3000 {
         }
 
         public IEnumerable<ColumnMatrix> GetColumns() {
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < Size; i++) {
                 yield return GetColumn(i);
             }
         }
 
         public void SetRow(int index, RowMatrix rowMatrix) {
-            if (index < 0 || index >= size)
+            if (index < 0 || index >= Size)
                 throw new IndexOutOfRangeException();
 
-            if (rowMatrix.Size != size)
+            if (rowMatrix.Size != Size)
                 throw new ArgumentOutOfRangeException(nameof(rowMatrix));
 
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < Size; i++) {
                 arr[index, i] = rowMatrix[i];
             }
         }
 
         private void SetRows(IEnumerable<RowMatrix> rows) {
-            if (rows.Count() != size)
+            if (rows.Count() != Size)
                 throw new ArgumentOutOfRangeException(nameof(rows));
 
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < Size; i++) {
                 SetRow(i, rows.ElementAt(i));
             }
         }
 
         public void SetColumn(int index, ColumnMatrix columnMatrix) {
-            if (index < 0 || index >= size)
+            if (index < 0 || index >= Size)
                 throw new IndexOutOfRangeException();
 
-            if (columnMatrix.Size != size)
+            if (columnMatrix.Size != Size)
                 throw new ArgumentOutOfRangeException(nameof(columnMatrix));
 
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < Size; i++) {
                 arr[i, index] = columnMatrix[i];
             }
         }
 
         private void SetColumns(IEnumerable<ColumnMatrix> columns) {
-            if (columns.Count() != size)
+            if (columns.Count() != Size)
                 throw new ArgumentOutOfRangeException(nameof(columns));
 
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < Size; i++) {
                 SetColumn(i, columns.ElementAt(i));
             }
         }

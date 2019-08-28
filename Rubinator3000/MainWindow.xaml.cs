@@ -23,19 +23,47 @@ namespace Rubinator3000 {
     public partial class MainWindow : Window {
         private Queue<string> messages = new Queue<string>();
         private Cube cube;
+        bool undoMode, redoMode;
+        private Stack<Move> undoneMoves = new Stack<Move>();
+
+        public Stack<Move> MoveHistory;
 
         public Cube Cube {
             get => cube;
             set {
+                if (cube != null)
+                    cube.OnMoveDone -= Cube_OnMoveDone;
+
+                MoveHistory.Clear();
                 cube = value;
+                value.OnMoveDone += Cube_OnMoveDone;
                 DrawCube.SetState(value);
             }
         }
 
         public MainWindow() {
             InitializeComponent();
+            MoveHistory = new Stack<Move>();
 
-            Cube = new Cube();            
+            Cube = new Cube();
+        }
+
+        private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
+            if (sender is Cube c && c.Equals(cube)) {
+                if (undoMode) {
+                    undoneMoves.Push(e.Move);
+                }
+                else {
+                    if (!redoMode)
+                        undoneMoves.Clear();
+
+                    MoveHistory.Push(e.Move);
+                }
+
+                textBoxMoves.Clear();
+
+                textBoxMoves.Text = string.Join("\r\n", MoveHistory.Reverse().Select(m => m.ToString()));
+            }
         }
 
         private void WindowsFormsHost_Initialized(object sender, EventArgs e) {
@@ -50,7 +78,7 @@ namespace Rubinator3000 {
         }
 
         private void TextBoxLog_Initialized(object sender, EventArgs e) {
-            if(sender is System.Windows.Controls.TextBox textBox) {
+            if (sender is System.Windows.Controls.TextBox textBox) {
                 while (messages.Count > 0)
                     textBox.Text += $"{messages.Dequeue()}\r\n";
             }

@@ -65,5 +65,11 @@ namespace Rubinator3000 {
                 Add(move);
             }
         }
+
+        public override string ToString() {
+            IEnumerable<string> moveStrings = moves.Select(m => m.ToString());
+
+            return string.Join(", ", moveStrings);
+        }
     }
 }

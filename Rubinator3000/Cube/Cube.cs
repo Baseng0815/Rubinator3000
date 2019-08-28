@@ -44,7 +44,7 @@ namespace Rubinator3000 {
 
     [Serializable]
     public partial class Cube {
-        private CubeMatrix[] data = new CubeMatrix[6];
+        private CubeMatrix[] data = new CubeMatrix[6];        
 
         public Cube() {
             for (int face = 0; face < (int)CubeFace.NUMBER_FACES; face++) {
@@ -52,7 +52,14 @@ namespace Rubinator3000 {
 
                 for (int tile = 0; tile < 9; tile++)
                     data[face][tile] = (CubeColor)face;
-            }
+            }            
+        }
+
+        internal Cube(CubeMatrix[] matrices) {
+            if (matrices.Length != 6)
+                throw new ArgumentOutOfRangeException(nameof(matrices));
+
+            data = matrices;
         }
 
         /// <summary>
@@ -80,12 +87,13 @@ namespace Rubinator3000 {
             while (moves.Count() < numberOfMoves)
                 moves.Add(new Move((CubeFace)rand.Next(5), rand.Next(2) == 1));
 
+            Log.LogStuff(string.Format("Shuffle Cube {0} Times: {1}", numberOfMoves, moves.ToString()));
 #if DEBUG
             foreach (var move in moves)
                 move.Print();
 #endif
             DoMoves(moves);
-        }        
+        }
 
         public CubeColor At(CubeFace face, int tile) {
             return data[(int)face][tile];
@@ -99,8 +107,7 @@ namespace Rubinator3000 {
         /// Returns 
         /// </summary>
         /// <returns></returns>
-        public CubeMatrix[] GetData()
-        {
+        public CubeMatrix[] GetData() {
             return data;
         }
 

@@ -20,8 +20,8 @@
         <!-- Menu -->
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0">
             <MenuItem Header="_Datei">
-                <MenuItem Header="_Neu" InputGestureText="Ctrl+N" />
-                <MenuItem Header="_Öffnen" InputGestureText="Ctrl+O"/>
+                <MenuItem Header="_Neu" InputGestureText="Strg+N" />
+                <MenuItem Header="_Öffnen" InputGestureText="Strg+O"/>
                 <Separator/>
                 <MenuItem Header="_Würfel">
                     <MenuItem Header="_Zurücksetzen" Click="MenuItemResetCube_Click"/>
@@ -34,7 +34,8 @@
                 <MenuItem Header="_Beenden" Click="MenuItemClose_Click"/>
             </MenuItem>
             <MenuItem Header="_Bearbeiten">
-                <MenuItem Header="_Rückgängig"/>
+                <MenuItem Header="_Rückgängig" Click="MenuItemUndo_Click" InputGestureText="Strg+Z"/>
+                <MenuItem Header="_Wiederholen" Click="MenuItemRedo_Click" InputGestureText="Strg+Y"/>
             </MenuItem>
             <MenuItem Header="_Ansicht">
                 <MenuItem Header="_2D Ansicht" Click="MenuItemChangeView_Click" Tag="2D"/>
@@ -46,6 +47,12 @@
         <WindowsFormsHost Initialized="WindowsFormsHost_Initialized" Grid.Row="1" Grid.Column="0" Margin="5" />
 
         <!-- Log -->
-        <TextBox x:Name="textBoxLog" Initialized="TextBoxLog_Initialized" Grid.Row="2" Grid.Column="0" Margin="5"/>
+        <TextBox x:Name="textBoxLog" Initialized="TextBoxLog_Initialized" Grid.Row="2" Grid.Column="0" Margin="5" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+        
+        <!-- Move History -->
+        <Label Content="Zugverlauf" Grid.Row="1" Grid.Column="1" Margin="5" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBoxMoves" Grid.Row="1" Grid.Column="1" 
+                 Margin="5,35,5,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                 VerticalScrollBarVisibility="Auto"/>
     </Grid>
 </Window>
