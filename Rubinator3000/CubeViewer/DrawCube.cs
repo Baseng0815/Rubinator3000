@@ -137,6 +137,7 @@ namespace Rubinator3000 {
         public static void SetState(Cube cube) {
             // deep copy because otherwise, the arrays would refer to the same memory
             currentState = Utility.DeepClone(cube);
+            CubeViewer.Window.Invalidate();
         }
 
         /// <summary>

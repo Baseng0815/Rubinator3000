@@ -38,6 +38,7 @@ namespace Rubinator3000 {
                 cube = value;
                 value.OnMoveDone += Cube_OnMoveDone;
                 DrawCube.SetState(value);
+                DrawFlat.SetState(value);
             }
         }
 

@@ -104,8 +104,15 @@ namespace Rubinator3000 {
 
             for (int c = 0; c < count; c++) {
                 RotateSide(side, move.IsPrime);
-                DrawCube.AddAnimatedMove(new AnimatedMove { EndState = Utility.DeepClone(this), Move = move, TurnDuration = 1000 });
-                
+
+                // animate move only if 3d is displayed, otherwise just set the state
+                if (Renderer.DisplayMode == CubeDisplayMode.CUBE)
+                    DrawCube.AddAnimatedMove(new AnimatedMove { EndState = Utility.DeepClone(this), Move = move, TurnDuration = 1000 });
+                else
+                    DrawCube.SetState(this);
+
+                DrawFlat.SetState(this);
+
                 OnMoveDone?.Invoke(this, new MoveEventArgs(move));
             }
 

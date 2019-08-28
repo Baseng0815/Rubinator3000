@@ -32,6 +32,7 @@ namespace Rubinator3000
         {
             // deep copy because otherwise, the arrays would refer to the same memory
             currentState = Utility.DeepClone(cube);
+            CubeViewer.Window.Invalidate();
         }
 
         public static void Draw(Shader shader)
