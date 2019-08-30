@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Rubinator3000.CubeFace;
 
 namespace Rubinator3000 {
     public enum CubeColor : int {
@@ -39,6 +40,10 @@ namespace Rubinator3000 {
         public Position(CubeFace face, int tile) {
             Face = face;
             Tile = tile;
+        }
+
+        public static implicit operator Position((CubeFace, int) tuple) {
+            return new Position(tuple.Item1, tuple.Item2);
         }
     }
 
@@ -137,5 +142,13 @@ namespace Rubinator3000 {
                     throw new ArgumentException();
             }
         }
+
+        public static readonly Tuple<Position, Position>[] EdgeStonePositions = new Tuple<Position, Position>[] {
+            new Tuple<Position, Position>((UP, 1), (BACK, 1)), new Tuple<Position, Position>((UP, 3), (LEFT, 1)), new Tuple<Position, Position>((UP, 5), (RIGHT, 1)), new Tuple<Position, Position>((UP, 7), (FRONT, 1)),
+
+            new Tuple<Position, Position>((LEFT, 3), (BACK, 5)), new Tuple<Position, Position>((FRONT, 3), (LEFT, 5)), new Tuple<Position, Position>((RIGHT, 3), (FRONT, 5)), new Tuple<Position, Position>((BACK, 3), (RIGHT, 5)),
+
+            new Tuple<Position, Position>((DOWN, 1), (FRONT, 7)), new Tuple<Position, Position>((DOWN, 3), (LEFT, 7)), new Tuple<Position, Position>((DOWN, 5), (RIGHT, 7)), new Tuple<Position, Position>((DOWN, 7), (BACK, 7)),
+        };
     }
 }
