@@ -73,6 +73,8 @@
     <Compile Include="MainWindowMenu.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Solving\CubeSolver.cs" />
+    <Compile Include="Solving\Fridrich\CrossSolver.cs" />
+    <Compile Include="Solving\Fridrich\CubeSolverFridrich.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

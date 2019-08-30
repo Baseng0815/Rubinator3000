@@ -4,39 +4,60 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubinator3000 {
+namespace Rubinator3000.Solving {
     public abstract class CubeSolver {
 
         protected Cube cube;
         protected MoveCollection moves;
+        protected bool movesCalculated = false;
 
-        public MoveCollection Moves { get => moves; }
+        public MoveCollection Moves {
+            get {
+                if (!movesCalculated)
+                    throw new InvalidOperationException();
+
+                return moves;
+            }
+        }
 
         /// <summary>
         /// Erstellt einen neuen CubeSolver und eine Kopie des aktuellen Cubes
         /// </summary>
         /// <param name="cube">Der zu lösende Cube</param>
-        public CubeSolver(Cube cube) {            
+        public CubeSolver(Cube cube) {
 #if DEBUG
             this.cube = cube;
 #else
-            this.cube = new Cube();
-
-            for (int face = 0; face < 6; face++) {
-                for (int tile = 0; tile < 9; tile++) {
-                    this.cube.SetTile((CubeFace)face, tile, cube.At((CubeFace)face, tile));
-                }
-            }
+            this.cube = Utility.DeepClone(cube);
 #endif
+            moves = new MoveCollection();
         }
 
+        /// <summary>
+        /// Brechnet in einer abgleiteten Klasse, die Züge zum lösen des Würfels
+        /// </summary>
         public abstract void CalcMoves();
 
-        protected void DoMove(Move move, int count = 1) {
-            cube.DoMove(move, count);
-            moves.Add(move, count);
+
+        protected void DoMove(CubeFace face, int count = 1) {
+            cube.DoMove(face, count);
+            moves.Add(face, count);
         }
 
-        protected void DoMove(CubeFace face, bool isPrime = false, int count = 1) => DoMove(new Move(face, isPrime), count);
+        /// <summary>
+        /// Gibt zurück, ob der Würfel sich im gelösten Zustand befindet
+        /// </summary>
+        /// <returns>Den Wert, der angibt, ob der Würfel gelöst ist</returns>
+        public bool GetCubeSolved() {
+            for (int face = 0; face < (int)CubeFace.NUMBER_FACES; face++) {
+                CubeColor faceColor = cube.At(face, 4);
+                for (int tile = 0; tile < 9; tile++) {
+                    if(faceColor != cube.At(face, tile))
+                        return false;
+                }
+            }
+
+            return true;
+        }
     }
 }

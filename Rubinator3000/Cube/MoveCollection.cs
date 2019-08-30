@@ -34,10 +34,10 @@ namespace Rubinator3000 {
             return moves.GetEnumerator();
         }
 
-        public void Add(CubeFace face, bool isPrime = false, int count = 1) => Add(new Move(face, isPrime), count);
+        public void Add(CubeFace face, int count = 1) => Add(new Move(face, count));
 
-        public void Add(Move move, int count = 1) {
-            for (int i = 0; i < count; i++) {
+        public void Add(Move move) {
+            for (int i = 0; i < move.Count; i++) {
                 if (moves.Count > 0) {
                     // optimization by removing unnecessary moves
                     // e.g. Ri R R => R
@@ -64,6 +64,10 @@ namespace Rubinator3000 {
             foreach (var move in moves) {
                 Add(move);
             }
+        }
+
+        public void Clear() {
+            moves.Clear();
         }
 
         public override string ToString() {
