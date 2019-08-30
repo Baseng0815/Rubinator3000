@@ -13,7 +13,7 @@ namespace Rubinator3000.Solving {
 
         public override void CalcMoves() {
             try {
-                CalcWhiteCross();
+                CalcCrossMoves();
 
                 CalcFTL();
 
@@ -32,7 +32,7 @@ namespace Rubinator3000.Solving {
             }
         }
 
-        partial void CalcWhiteCross();
+        partial void CalcCrossMoves();
         partial void CalcFTL();
         partial void CalcOLL();
         partial void CalcPLL();

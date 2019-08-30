@@ -42,8 +42,24 @@ namespace Rubinator3000 {
             Tile = tile;
         }
 
+
+
         public static implicit operator Position((CubeFace, int) tuple) {
             return new Position(tuple.Item1, tuple.Item2);
+        }
+
+        public static bool operator ==(Position left, Position right) {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Position left, Position right) {
+            return !(left == right);
+        }
+
+        public override bool Equals(object obj) {
+            return obj is Position position &&
+                   Face == position.Face &&
+                   Tile == position.Tile;
         }
     }
 

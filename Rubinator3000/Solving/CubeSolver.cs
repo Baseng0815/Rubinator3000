@@ -39,9 +39,11 @@ namespace Rubinator3000.Solving {
         public abstract void CalcMoves();
 
 
-        protected void DoMove(CubeFace face, int count = 1) {
+        protected void DoMove(CubeFace face, int count = 1, bool addMove = true) {
             cube.DoMove(face, count);
-            moves.Add(face, count);
+
+            if (addMove)
+                moves.Add(face, count);
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace Rubinator3000.Solving {
             for (int face = 0; face < (int)CubeFace.NUMBER_FACES; face++) {
                 CubeColor faceColor = cube.At(face, 4);
                 for (int tile = 0; tile < 9; tile++) {
-                    if(faceColor != cube.At(face, tile))
+                    if (faceColor != cube.At(face, tile))
                         return false;
                 }
             }
