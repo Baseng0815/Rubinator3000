@@ -26,6 +26,7 @@
                 <MenuItem Header="_Würfel">
                     <MenuItem Header="_Zurücksetzen" Click="MenuItemResetCube_Click"/>
                     <MenuItem Header="_Verdrehen" Click="MenuItemSuffle_Click"/>
+                    <MenuItem Header="_Lösen" Click="MenuItemSolveCube_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Züge">
                     

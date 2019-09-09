@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Rubinator3000.Solving;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -20,6 +23,27 @@ namespace Rubinator3000 {
         private void MenuItemResetCube_Click(object sender, RoutedEventArgs e) {
             Cube = new Cube();
             CubeViewer.Window.Invalidate();
+        }
+
+        private async void MenuItemSolveCube_Click(object sender, RoutedEventArgs e) {
+            CubeSolver solver = new CubeSolverFridrich(cube);
+
+#if !DEBUG
+            Task solvingTask = Task.Factory.StartNew(solver.CalcMoves);
+
+            await solvingTask;
+
+#else
+            solver.CalcMoves();
+#endif
+
+            MoveCollection moves = solver.Moves;
+
+            Task moveTask = Task.Factory.StartNew(() => {
+                cube.DoMoves(moves);
+            });
+
+            await moveTask;
         }
 
         // Edit

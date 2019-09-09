@@ -159,6 +159,14 @@ namespace Rubinator3000 {
             }
         }
 
+        public static CubeColor GetFaceColor(CubeFace face) {
+            return (CubeColor)(int)face;
+        }
+
+        public static CubeFace GetFace(CubeColor color) {
+            return (CubeFace)(int)color;
+        }
+
         public static readonly Tuple<Position, Position>[] EdgeStonePositions = new Tuple<Position, Position>[] {
             new Tuple<Position, Position>((UP, 1), (BACK, 1)), new Tuple<Position, Position>((UP, 3), (LEFT, 1)), new Tuple<Position, Position>((UP, 5), (RIGHT, 1)), new Tuple<Position, Position>((UP, 7), (FRONT, 1)),
 
