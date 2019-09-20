@@ -8,8 +8,9 @@ namespace Rubinator3000
 { 
     public class Move
     {
-        public CubeFace Face;
-        public bool IsPrime;
+        public readonly CubeFace Face;
+        public readonly int Count;
+        public bool IsPrime => Count == 3;
 
         // used for mapping Faces to strings (e.g. 0 to L)
         private static readonly string[] mappings = new string[]
@@ -17,10 +18,15 @@ namespace Rubinator3000
             "L", "U", "F", "D", "R", "B"
         };
 
-        public Move(CubeFace Face, bool IsPrime)
+        public Move(CubeFace Face, int count = 1)
         {
             this.Face = Face;
-            this.IsPrime = IsPrime;
+
+            while (count < 0) count += 4;            
+            this.Count = count % 4;
+
+            if (Count == 0)
+                throw new ArgumentOutOfRangeException();
         }
 
         public override bool Equals(object obj)
@@ -53,11 +59,11 @@ namespace Rubinator3000
             return str;
         }
 
-        public static bool operator ==(Move left, Move right) => left.Face == right.Face && left.IsPrime == right.IsPrime;
+        public static bool operator ==(Move left, Move right) => left.Face == right.Face && left.Count == right.Count;
 
         public static bool operator !=(Move left, Move right) => !(left == right);
 
-        public Move GetInverted() => new Move(Face, !IsPrime);
+        public Move GetInverted() => new Move(Face, -Count);
 
         internal void Print()
         {

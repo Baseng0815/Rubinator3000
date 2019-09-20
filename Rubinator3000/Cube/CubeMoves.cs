@@ -94,15 +94,15 @@ namespace Rubinator3000 {
                 
             }
         }
-        public void DoMove(CubeFace face, bool isPrime = false, int count = 1) => DoMove(new Move(face, isPrime), count);
+        public void DoMove(CubeFace face, int count = 1) => DoMove(new Move(face, count));
 
         /// <summary>
         /// does a move and renders the new cube by default
         /// </summary>
-        public void DoMove(Move move, int count = 1) {
+        public void DoMove(Move move) {
             CubeSide side = sides.First(e => e.Face == move.Face);
 
-            for (int c = 0; c < count; c++) {
+            for (int c = 0; c < move.Count; c++) {
                 RotateSide(side, move.IsPrime);
 
                 // animate move only if 3d is displayed, otherwise just set the state

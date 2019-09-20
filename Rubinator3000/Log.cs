@@ -12,12 +12,14 @@ namespace Rubinator3000 {
             TimeSpan time = DateTime.Now.TimeOfDay;
 
             string logMessage = string.Format("{0}:\t{1}", time.ToString(@"hh\:mm\:ss\.ff"), message);
-            MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
+            Application.Current.Dispatcher.Invoke(() => {
+                MainWindow window = (MainWindow)Application.Current.MainWindow;
+                window.LogStuff(logMessage);
+            });
 
 #if DEBUG
             System.Diagnostics.Debug.WriteLine($"Log:\t{logMessage}");
-#endif
-            mainWindow.LogStuff(logMessage);
+#endif            
         }
     }
 }

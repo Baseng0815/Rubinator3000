@@ -22,11 +22,11 @@ namespace Rubinator3000 {
     /// </summary>
     public partial class MainWindow : Window {
         private Queue<string> messages = new Queue<string>();
-        private Cube cube;
+        private volatile Cube cube;
         bool undoMode, redoMode;
-        private Stack<Move> undoneMoves = new Stack<Move>();
+        private Stack<Move> undoneMoves = new Stack<Move>();        
 
-        public Stack<Move> MoveHistory;
+        public Stack<Move> MoveHistory;        
 
         public Cube Cube {
             get => cube;
@@ -61,9 +61,11 @@ namespace Rubinator3000 {
                     MoveHistory.Push(e.Move);
                 }
 
-                textBoxMoves.Clear();
+                textBoxMoves.Dispatcher.Invoke(() => {
+                    textBoxMoves.Clear();
 
-                textBoxMoves.Text = string.Join("\r\n", MoveHistory.Reverse().Select(m => m.ToString()));
+                    textBoxMoves.Text = string.Join("\r\n", MoveHistory.Reverse().Select(m => m.ToString()));
+                });
             }
         }
 
@@ -83,7 +85,7 @@ namespace Rubinator3000 {
                 while (messages.Count > 0)
                     textBox.Text += $"{messages.Dequeue()}\r\n";
             }
-        }
+        }        
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
             DrawCube.StopDrawing();
