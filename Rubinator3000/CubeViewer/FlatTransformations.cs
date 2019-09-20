@@ -29,7 +29,7 @@ namespace Rubinator3000
             };
 
             Transformations = new TRSTransformation[6, 9];
-            for (CubeFace face = 0; face < CubeFace.NUMBER_FACES; face++)
+            for (CubeFace face = 0; (int)face < 6; face++)
                 for (int tile = 0; tile < 9; tile++)
                 {
                     TRSTransformation transform = new TRSTransformation(faceOffsets[(int)face], new Vector3(0));

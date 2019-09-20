@@ -172,7 +172,7 @@ namespace Rubinator3000 {
                 var data = currentState.GetData();
 
                 // each tile
-                for (CubeFace face = 0; face < CubeFace.NUMBER_FACES; face++) {
+                for (CubeFace face = 0; (int)face < 6; face++) {
                     // select positions relevant for current tile face
                     foreach (Position pos in CuboidTransformations.CuboidMappings[transform.Position].Where(x => x.Face == face)) {
                         CubeColor color = data[(int)pos.Face][pos.Tile];
@@ -192,7 +192,7 @@ namespace Rubinator3000 {
                 ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
                 ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
 
-                GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, (int)CubeFace.NUMBER_FACES);
+                GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, (int)6);
             }
         }
 

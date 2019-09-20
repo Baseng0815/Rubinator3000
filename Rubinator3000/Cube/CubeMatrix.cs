@@ -8,33 +8,33 @@ namespace Rubinator3000 {
     [Serializable]
     public class CubeMatrix {
         private int[,] arr;
-
-        public readonly int Size;        
+           
         public CubeColor this[int tile] {
             get {
                 if (tile < 0 || tile >= arr.Length)
                     throw new IndexOutOfRangeException();
 
-                return (CubeColor)arr[tile / Size, tile % Size];
+                return (CubeColor)arr[tile / 3, tile % 3];
             }
             set {
                 if (tile < 0 || tile >= arr.Length)
                     throw new IndexOutOfRangeException();
 
-                arr[tile / Size, tile % Size] = (int)value;
+                arr[tile / 3, tile % 3] = (int)value;
             }
         }
 
-        public CubeMatrix(int size = 3) {
-            arr = new int[size, size];
-            this.Size = size;
+        public CubeMatrix(CubeColor color) {
+            arr = new int[3, 3];            
 
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    arr[i, j] = -1;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    arr[i, j] = (int)color;
                 }
             }
         }
+
+        public CubeMatrix() : this(CubeColor.NONE) { }
 
         public void Rotate(bool isPrime = false) {
             if (isPrime) {
@@ -56,11 +56,11 @@ namespace Rubinator3000 {
         }
 
         public RowMatrix GetRow(int index) {
-            if (index < 0 || index >= Size)
+            if (index < 0 || index >= 3)
                 throw new IndexOutOfRangeException();
 
-            int[] row = new int[Size];
-            for (int i = 0; i < Size; i++) {
+            int[] row = new int[3];
+            for (int i = 0; i < 3; i++) {
                 row[i] = arr[index, i];
             }
 
@@ -68,17 +68,17 @@ namespace Rubinator3000 {
         }
 
         public IEnumerable<RowMatrix> GetRows() {
-            for (int i = 0; i < Size; i++) {
+            for (int i = 0; i < 3; i++) {
                 yield return GetRow(i);
             }
         }
 
         public ColumnMatrix GetColumn(int index) {
-            if (index < 0 || index >= Size)
+            if (index < 0 || index >= 3)
                 throw new IndexOutOfRangeException();
 
-            int[] column = new int[Size];
-            for (int i = 0; i < Size; i++) {
+            int[] column = new int[3];
+            for (int i = 0; i < 3; i++) {
                 column[i] = arr[i, index];
             }
 
@@ -86,63 +86,57 @@ namespace Rubinator3000 {
         }
 
         public IEnumerable<ColumnMatrix> GetColumns() {
-            for (int i = 0; i < Size; i++) {
+            for (int i = 0; i < 3; i++) {
                 yield return GetColumn(i);
             }
         }
 
         public void SetRow(int index, RowMatrix rowMatrix) {
-            if (index < 0 || index >= Size)
+            if (index < 0 || index >= 3)
                 throw new IndexOutOfRangeException();
+            
 
-            if (rowMatrix.Size != Size)
-                throw new ArgumentOutOfRangeException(nameof(rowMatrix));
-
-            for (int i = 0; i < Size; i++) {
+            for (int i = 0; i < 3; i++) {
                 arr[index, i] = rowMatrix[i];
             }
         }
 
         private void SetRows(IEnumerable<RowMatrix> rows) {
-            if (rows.Count() != Size)
+            if (rows.Count() != 3)
                 throw new ArgumentOutOfRangeException(nameof(rows));
 
-            for (int i = 0; i < Size; i++) {
+            for (int i = 0; i < 3; i++) {
                 SetRow(i, rows.ElementAt(i));
             }
         }
 
         public void SetColumn(int index, ColumnMatrix columnMatrix) {
-            if (index < 0 || index >= Size)
+            if (index < 0 || index >= 3)
                 throw new IndexOutOfRangeException();
+            
 
-            if (columnMatrix.Size != Size)
-                throw new ArgumentOutOfRangeException(nameof(columnMatrix));
-
-            for (int i = 0; i < Size; i++) {
+            for (int i = 0; i < 3; i++) {
                 arr[i, index] = columnMatrix[i];
             }
         }
 
         private void SetColumns(IEnumerable<ColumnMatrix> columns) {
-            if (columns.Count() != Size)
+            if (columns.Count() != 3)
                 throw new ArgumentOutOfRangeException(nameof(columns));
 
-            for (int i = 0; i < Size; i++) {
+            for (int i = 0; i < 3; i++) {
                 SetColumn(i, columns.ElementAt(i));
             }
         }
     }
 
-    public interface ISubmatrix {
-        int Size { get; }
+    public interface ISubmatrix {        
         ISubmatrix GetReverse();
         ISubmatrix GetTranspose();
     }
 
     public struct RowMatrix : ISubmatrix {
-        private int[] row;
-        public int Size => row.Length;
+        private int[] row;        
         public int this[int i] {
             get {
                 if (i < 0 || row.Length <= i)
@@ -174,8 +168,7 @@ namespace Rubinator3000 {
     }
 
     public struct ColumnMatrix : ISubmatrix {
-        private int[] column;
-        public int Size => column.Length;
+        private int[] column;        
         public int this[int i] {
             get {
                 if (i < 0 || column.Length <= i)

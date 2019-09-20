@@ -51,7 +51,7 @@ namespace Rubinator3000.Solving {
         /// </summary>
         /// <returns>Den Wert, der angibt, ob der Würfel gelöst ist</returns>
         public bool GetCubeSolved() {
-            for (int face = 0; face < (int)CubeFace.NUMBER_FACES; face++) {
+            for (int face = 0; face < (int)6; face++) {
                 CubeColor faceColor = cube.At(face, 4);
                 for (int tile = 0; tile < 9; tile++) {
                     if (faceColor != cube.At(face, tile))

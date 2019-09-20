@@ -40,14 +40,13 @@ namespace Rubinator3000
         {
             CubeMatrix[] oldData = obj.GetData();
             CubeMatrix[] newData = new CubeMatrix[6];
-
-            int size = oldData[0].Size;
+            
 
             for (int i = 0; i < 6; i++) {
-                newData[i] = new CubeMatrix(size);
-                for (int x = 0; x < size; x++) {
-                    for (int y = 0; y < size; y++) {
-                        int tile = size * x + y;
+                newData[i] = new CubeMatrix();
+                for (int x = 0; x < 6; x++) {
+                    for (int y = 0; y < 6; y++) {
+                        int tile = 6 * x + y;
 
                         newData[i][tile] = oldData[i][tile];
                     }

@@ -22,19 +22,14 @@ namespace Rubinator3000 {
     /// </summary>
     public partial class MainWindow : Window {
         private Queue<string> messages = new Queue<string>();
-        private volatile Cube cube;
-        bool undoMode, redoMode;
-        private Stack<Move> undoneMoves = new Stack<Move>();        
-
-        public Stack<Move> MoveHistory;        
+        private volatile Cube cube;           
 
         public Cube Cube {
             get => cube;
             set {
                 if (cube != null)
                     cube.OnMoveDone -= Cube_OnMoveDone;
-
-                MoveHistory.Clear();
+                
                 cube = value;
                 value.OnMoveDone += Cube_OnMoveDone;
                 DrawCube.SetState(value);
@@ -43,29 +38,14 @@ namespace Rubinator3000 {
         }
 
         public MainWindow() {
-            InitializeComponent();
-            MoveHistory = new Stack<Move>();
+            InitializeComponent();            
 
             Cube = new Cube();
         }
 
         private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
-            if (sender is Cube c && c.Equals(cube)) {
-                if (undoMode) {
-                    undoneMoves.Push(e.Move);
-                }
-                else {
-                    if (!redoMode)
-                        undoneMoves.Clear();
-
-                    MoveHistory.Push(e.Move);
-                }
-
-                textBoxMoves.Dispatcher.Invoke(() => {
-                    textBoxMoves.Clear();
-
-                    textBoxMoves.Text = string.Join("\r\n", MoveHistory.Reverse().Select(m => m.ToString()));
-                });
+            if (sender is Cube c && c.Equals(cube)) {                
+                
             }
         }
 

@@ -29,14 +29,10 @@
                     <MenuItem Header="_Lösen" Click="MenuItemSolveCube_Click"/>
                 </MenuItem>
                 <MenuItem Header="_Züge">
-                    
+
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="_Beenden" Click="MenuItemClose_Click"/>
-            </MenuItem>
-            <MenuItem Header="_Bearbeiten">
-                <MenuItem Header="_Rückgängig" Click="MenuItemUndo_Click" InputGestureText="Strg+Z"/>
-                <MenuItem Header="_Wiederholen" Click="MenuItemRedo_Click" InputGestureText="Strg+Y"/>
             </MenuItem>
             <MenuItem Header="_Ansicht">
                 <MenuItem Header="_2D Ansicht" Click="MenuItemChangeView_Click" Tag="2D"/>

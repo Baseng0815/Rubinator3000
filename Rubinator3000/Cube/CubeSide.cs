@@ -31,7 +31,7 @@ namespace Rubinator3000 {
             if (submatices.Length != 4)
                 throw new ArgumentOutOfRangeException(nameof(submatices));
 
-            if (face == CubeFace.NONE || face == CubeFace.NUMBER_FACES)
+            if (face == CubeFace.NONE || (int)face == 6)
                 throw new ArgumentOutOfRangeException(nameof(face));
 
             Face = face;

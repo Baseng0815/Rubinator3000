@@ -13,8 +13,7 @@ namespace Rubinator3000 {
         YELLOW,
         RED,
         BLUE,
-
-        NUMBER_COLORS,
+        
         NONE = -1
     };
 
@@ -25,8 +24,7 @@ namespace Rubinator3000 {
         DOWN,
         RIGHT,
         BACK,
-
-        NUMBER_FACES,
+        
         NONE = -1
     };
 
@@ -68,11 +66,9 @@ namespace Rubinator3000 {
         private CubeMatrix[] data = new CubeMatrix[6];        
 
         public Cube() {
-            for (int face = 0; face < (int)CubeFace.NUMBER_FACES; face++) {
-                data[face] = new CubeMatrix();
-
-                for (int tile = 0; tile < 9; tile++)
-                    data[face][tile] = (CubeColor)face;
+            for (int face = 0; face < 6; face++) {
+                data[face] = new CubeMatrix((CubeColor)face);
+                
             }            
         }
 
@@ -136,10 +132,7 @@ namespace Rubinator3000 {
             return data;
         }
 
-        public static bool IsOpponentColor(CubeColor color1, CubeColor color2) {
-            if (color2 == CubeColor.NUMBER_COLORS) {
-                throw new ArgumentException();
-            }
+        public static bool IsOpponentColor(CubeColor color1, CubeColor color2) {            
 
             switch (color1) {
                 case CubeColor.ORANGE:
@@ -155,7 +148,7 @@ namespace Rubinator3000 {
                 case CubeColor.BLUE:
                     return color2 == CubeColor.GREEN;
                 default:
-                    throw new ArgumentException();
+                    throw new ArgumentException(color1 == CubeColor.NONE ? nameof(color1) : nameof(color2));
             }
         }
 

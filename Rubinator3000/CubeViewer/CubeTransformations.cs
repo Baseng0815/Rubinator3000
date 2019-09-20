@@ -37,7 +37,7 @@ namespace Rubinator3000
 
             Transformations = new TRSTransformation[6];
 
-            for (CubeFace face = 0; face < CubeFace.NUMBER_FACES; face++)
+            for (CubeFace face = 0; (int)face < 6; face++)
                 Transformations[(int)face] = new TRSTransformation(position,
                     faceRotations[(int)face]);
         }

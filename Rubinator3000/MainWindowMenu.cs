@@ -44,31 +44,7 @@ namespace Rubinator3000 {
             });
 
             await moveTask;
-        }
-
-        // Edit
-
-        private void MenuItemUndo_Click(object sender, RoutedEventArgs e) {
-            if(MoveHistory.Count > 0) {
-                Move m = MoveHistory.Pop();
-
-                undoMode = true;
-                cube.DoMove(m.GetInverted());
-            }
-
-            undoMode = false;
-        }
-
-        private void MenuItemRedo_Click(object sender, RoutedEventArgs e) {
-            if(undoneMoves.Count > 0) {
-                Move m = undoneMoves.Pop();
-
-                redoMode = true;
-                cube.DoMove(m.GetInverted());
-            }
-            
-            redoMode = false;
-        }
+        }        
 
         // View
         private void MenuItemChangeView_Click(object sender, RoutedEventArgs e) {

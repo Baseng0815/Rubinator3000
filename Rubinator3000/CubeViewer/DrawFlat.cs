@@ -39,7 +39,7 @@ namespace Rubinator3000
         {
             var data = currentState.GetData();
 
-            for (CubeFace face = 0; face < CubeFace.NUMBER_FACES; face++)
+            for (CubeFace face = 0; (int)face < 6; face++)
             {
                 for (int tile = 0; tile < 9; tile++)
                 {

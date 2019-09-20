@@ -7,8 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace Rubinator3000 {
-    //[DebuggerNonUserCode]
 
+    [DebuggerNonUserCode]
     partial class Cube {
         private static readonly IEnumerable<CubeSide> sides = new CubeSide[] {
             new CubeSide(CubeFace.LEFT, (1, 0, true, 1), (2, 0, true, 1), (3, 0, true, 1), (5, 2, true, -1)),
@@ -55,7 +55,7 @@ namespace Rubinator3000 {
                     currentMatrix = data[current.face];
                     if (submatrix is RowMatrix)
                         currentMatrix.SetRow(current.index, (RowMatrix)submatrix);
-                    else if (submatrix is ColumnMatrix column)
+                    else if (submatrix is ColumnMatrix)
                         currentMatrix.SetColumn(current.index, (ColumnMatrix)submatrix);
                 }
             }
@@ -82,7 +82,7 @@ namespace Rubinator3000 {
                     currentMatrix = data[current.face];
                     if (submatrix is RowMatrix)
                         currentMatrix.SetRow(current.index, (RowMatrix)submatrix);
-                    else if (submatrix is ColumnMatrix column)
+                    else if (submatrix is ColumnMatrix)
                         currentMatrix.SetColumn(current.index, (ColumnMatrix)submatrix);
                 }
             }
