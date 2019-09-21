@@ -79,20 +79,23 @@ namespace Rubinator3000 {
                         Stopwatch watch = new Stopwatch();
 
                         double anglePerMillisecond = 90 / move.TurnDuration;
-                        if (move.Move.IsPrime)
-                            anglePerMillisecond *= -1;
+                        // if move is null, skip animation and directly set state
+                        if (move.Move != null) {
+                            if (move.Move.IsPrime)
+                                anglePerMillisecond *= -1;
 
-                        watch.Start();
+                            watch.Start();
 
-                        // rotate until 90 degrees is hit, then reset rotation and copy cube
-                        // also, issue a redraw
-                        while (Math.Abs(faceRotations[(int)move.Move.Face]) < 90) { 
-                            SetFaceRotation(move.Move.Face, (float)(watch.ElapsedMilliseconds * anglePerMillisecond));
-                            CubeViewer.Window.Invalidate();
+                            // rotate until 90 degrees is hit, then reset rotation and copy cube
+                            // also, issue a redraw
+                            while (Math.Abs(faceRotations[(int)move.Move.Face]) < 90) {
+                                SetFaceRotation(move.Move.Face, (float)(watch.ElapsedMilliseconds * anglePerMillisecond));
+                                CubeViewer.Window.Invalidate();
+                            }
                         }
                     }
 
-                    SetState(move.EndState);
+                    currentState = move.EndState;
                     faceRotations[(int)move.Move.Face] = 0;
                 }
             }
@@ -100,7 +103,7 @@ namespace Rubinator3000 {
 
         public static void Init(Vector3[] _renderColors, Cube cube = null) {
             if (cube != null)
-                SetState(cube);
+                currentState = cube;
             else
                 currentState = new Cube();
 
@@ -134,17 +137,13 @@ namespace Rubinator3000 {
             Log.LogStuff("Animation Thread Stop");
         }
 
-        public static void SetState(Cube cube) {
-            // deep copy because otherwise, the arrays would refer to the same memory
-            currentState = Utility.DeepClone(cube);
-            CubeViewer.Window.Invalidate();
-        }
-
         /// <summary>
-        /// Adds the animated move to the queue
+        /// Adds the move to the queue
+        /// <p>Acts like state set when no move and no duration is given</p>
         /// </summary>
-        public static void AddAnimatedMove(AnimatedMove move) {
-            moveQueue.Enqueue(move);
+        public static void AddMove(Cube endState, Move move = null, int duration = 0) {
+            // deep copy because otherwise, the arrays would refer to the same memory
+            moveQueue.Enqueue(new AnimatedMove { Move = move, EndState = Utility.DeepClone(endState), TurnDuration = duration });
 
             Log.LogStuff($"Animate Move: {move.ToString()}");
         }

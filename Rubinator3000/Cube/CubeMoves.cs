@@ -97,7 +97,7 @@ namespace Rubinator3000 {
         public void DoMove(CubeFace face, int count = 1) => DoMove(new Move(face, count));
 
         /// <summary>
-        /// does a move and renders the new cube by default
+        /// does a move
         /// </summary>
         public void DoMove(Move move) {
             CubeSide side = sides.First(e => e.Face == move.Face);
@@ -105,13 +105,9 @@ namespace Rubinator3000 {
             for (int c = 0; c < move.Count; c++) {
                 RotateSide(side, move.IsPrime);
 
-                // animate move only if 3d is displayed, otherwise just set the state
-                if (Renderer.DisplayMode == CubeDisplayMode.CUBE)
-                    DrawCube.AddAnimatedMove(new AnimatedMove { EndState = Utility.DeepClone(this), Move = move, TurnDuration = 1000 });
-                else
-                    DrawCube.SetState(this);
-
-                DrawFlat.SetState(this);
+                if (this.isRenderCube) {
+                    DrawCube.AddMove(this, move, 1000);
+                }
 
                 OnMoveDone?.Invoke(this, new MoveEventArgs(move));
             }

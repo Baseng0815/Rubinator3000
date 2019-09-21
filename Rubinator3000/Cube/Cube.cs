@@ -63,13 +63,14 @@ namespace Rubinator3000 {
 
     [Serializable]
     public partial class Cube {
-        private CubeMatrix[] data = new CubeMatrix[6];        
+        private CubeMatrix[] data = new CubeMatrix[6];
+        private readonly bool isRenderCube;
 
-        public Cube() {
+        public Cube(bool isRenderCube = false) {
+            this.isRenderCube = isRenderCube;
             for (int face = 0; face < 6; face++) {
                 data[face] = new CubeMatrix((CubeColor)face);
-                
-            }            
+            }
         }
 
         internal Cube(CubeMatrix[] matrices) {
