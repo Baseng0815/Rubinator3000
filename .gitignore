@@ -327,3 +327,6 @@ healthchecksdb
 
 # Old Files
 Rubinator3000_old/
+
+# Visual Studio Code Files
+.vscode/

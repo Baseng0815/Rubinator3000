@@ -19,8 +19,9 @@ namespace Rubinator3000 {
             new CubeSide(CubeFace.BACK, (0, 0, true, 1), (3, 2, false, 1), (4, 2, true, -1), (1, 0, false, -1))
         };
 
-        public delegate void MoveEventHandler(object sender, MoveEventArgs e);        
-        public event MoveEventHandler OnMoveDone;
+#if DEBUG
+        public event Arduino.MoveEventHandler OnMoveDone;
+#endif
 
         private void RotateSide(CubeSide side, bool isPrime) {
             CubeMatrix matrix = data[(int)side.Face];
@@ -109,18 +110,13 @@ namespace Rubinator3000 {
                     DrawCube.AddMove(this, move, 1000);
                 }
 
+#if DEBUG
                 OnMoveDone?.Invoke(this, new MoveEventArgs(move));
+#endif
             }
 
             Log.LogStuff("Move done: " + move.ToString());            
         }
     }
 
-    public class MoveEventArgs : EventArgs {
-        public Move Move { get; }        
-
-        public MoveEventArgs(Move move) {
-            Move = move ?? throw new ArgumentNullException(nameof(move));            
-        }
-    }
 }
