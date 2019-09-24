@@ -46,12 +46,23 @@ namespace Rubinator3000 {
             return colors.Item1 == color || colors.Item2 == color;
         }
 
+        public IEnumerable<CubeColor> GetColors() {
+            yield return colors.Item1;
+            yield return colors.Item2;
+        }
+
         public Position GetColorPosition(CubeColor color) {
             if (!(colors.Item1 == color || colors.Item2 == color))
                 throw new ArgumentOutOfRangeException(nameof(color));
 
             var pos = Positions;
             return cube.At(pos.Item1) == color ? pos.Item1 : pos.Item2;
+        }
+
+        public IEnumerable<Position> GetPositions() {
+            var pos = Positions;
+            yield return pos.Item1;
+            yield return pos.Item2;
         }
 
         public bool InRightPosition() {

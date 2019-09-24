@@ -64,7 +64,11 @@ namespace Rubinator3000 {
     [Serializable]
     public partial class Cube {
         private CubeMatrix[] data = new CubeMatrix[6];
-        private readonly bool isRenderCube;               
+        private readonly bool isRenderCube;   
+
+        internal CubeMatrix[] Data {
+            get => data;
+        }            
 
         internal Cube(CubeMatrix[] matrices = null, bool isRenderCube = false) : this(isRenderCube) {
             if(matrices == null) {

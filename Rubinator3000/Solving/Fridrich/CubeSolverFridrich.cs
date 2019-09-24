@@ -36,5 +36,17 @@ namespace Rubinator3000.Solving {
         partial void CalcFTL();
         partial void CalcOLL();
         partial void CalcPLL();
+
+        private static readonly Position[] edgePositions;
+        private static readonly CubeFace[] middleLayerFaces = { CubeFace.LEFT, CubeFace.FRONT, CubeFace.RIGHT, CubeFace.BACK };
+
+        static CubeSolverFridrich() {
+            edgePositions = new Position[24];
+            for (int face = 0; face < 6; face++) {
+                for (int tile = 0; tile < 4; tile++) {
+                    edgePositions[4 * face + tile] = new Position((CubeFace)face, tile * 2 + 1);
+                }
+            }
+        }
     }
 }

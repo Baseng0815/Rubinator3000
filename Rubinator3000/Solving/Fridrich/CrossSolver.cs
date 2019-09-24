@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable IDE0039
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,52 +12,38 @@ namespace Rubinator3000.Solving {
     partial class CubeSolverFridrich {
 
         partial void CalcCrossMoves() {
-            IEnumerable<EdgeStone> whiteStones = CrossSolver.GetWhiteEdges(cube);
 
-            int rotation = Cross_CountAndSortStones(whiteStones);
+            IEnumerable<Position> whiteEdgePositions = edgePositions.Where(p => cube.At(p) == WHITE);
 
-            // sort white edges
+            // die Steine in die richtige Orientierung bringen
+            Func<Position, bool> predicate = (pos) => (pos.Tile == 1 || pos.Tile == 7) && middleLayerFaces.Contains(pos.Face);
 
-            while (whiteStones.Any(e => !e.InRightPosition())) {
-                EdgeStone edge = whiteStones.First(e => !e.InRightPosition());
-            }
-        }
+            while (whiteEdgePositions.Any(predicate)) {
+                // die Steine auf jeder Seite zählen, die sich in der falschen Orientierung befinden
+                IEnumerable<(CubeFace face, int count)> whiteFacesCount = from face in middleLayerFaces
+                                                                          select (face, whiteEdgePositions.Count(predicate));
 
-        int Cross_CountAndSortStones(IEnumerable<EdgeStone> stones) {
-            int[] stonesCount = new int[4];
-            for (int i = 0; i < 4; i++) {
-                stonesCount[i] = stones.Count(s => s.InRightPosition());
+                // Steine auf der Seite mit den meißten falschen Steinen richtig orientieren
+                CubeFace faceToRot = whiteFacesCount.First(f => f.count == whiteFacesCount.Select(wf => wf.count).Max()).face;
 
-                DoMove(UP, addMove: false);
-            }
+                // die linke Seite drehen, um den richtig orientierten weißen Kantenstein nicht falsch zu orientieren
+                if (cube.At(faceToRot, 3) == WHITE) {
+                    CubeFace leftFace = middleLayerFaces[((int)faceToRot + 3) % 4];
 
-            int maxCount = stonesCount.Max();
-            int delta = Array.IndexOf(stonesCount, maxCount);
+                    while (cube.At(faceToRot, 3) == WHITE) 
+                        DoMove(leftFace);                    
+                }
 
-            int rotation = 0;
-            RotWhiteFace(ref rotation, delta);
-            rotation = 0;
+                // die rechte Seite drehen, um den richtig orientierten weißen Kantenstein nicht falsch zu orientieren
+                if (cube.At(faceToRot, 5) == WHITE) {
+                    CubeFace rightFace = middleLayerFaces[((int)faceToRot + 1) % 4];
 
-            // sort stones
-            while (stones.Any(s => !s.InRightPosition() && s.GetColorPosition(WHITE).Face == UP)) {
+                    while (cube.At(faceToRot, 5) == WHITE)
+                        DoMove(faceToRot, 5);
+                }
 
-            }
-        }
-
-        void RotWhiteFace(ref int rotation, int count = 1, bool addMove = true) {
-            DoMove(UP, count, addMove);
-            rotation += count;
-
-            if (rotation > 3)
-                rotation %= 4;
-        }
-
-        private abstract class CrossSolver {
-            public static IEnumerable<EdgeStone> GetWhiteEdges(Cube cube) {
-                var stones = from edgeStone in Cube.EdgeStonePositions
-                             select EdgeStone.FromPosition(cube, edgeStone.Item1);
-
-                return stones.Where(s => s.HasColor(WHITE));
+                // die vordere Seite drehen, um die Steine richtig zu orientieren
+                DoMove(faceToRot);
             }
         }
     }
