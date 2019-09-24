@@ -70,7 +70,7 @@ namespace Rubinator3000 {
             get => data;
         }            
 
-        internal Cube(CubeMatrix[] matrices = null, bool isRenderCube = false) : this(isRenderCube) {
+        internal Cube(CubeMatrix[] matrices = null, bool isRenderCube = false) {
             if(matrices == null) {
                 data = new CubeMatrix[6];
                 for (int face = 0; face < 6; face++)
