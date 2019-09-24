@@ -64,22 +64,24 @@ namespace Rubinator3000 {
     [Serializable]
     public partial class Cube {
         private CubeMatrix[] data = new CubeMatrix[6];
-        private readonly bool isRenderCube;
+        private readonly bool isRenderCube;               
 
-        public Cube(bool isRenderCube = false) {
-            this.isRenderCube = isRenderCube;
-            for (int face = 0; face < 6; face++) {
-                data[face] = new CubeMatrix((CubeColor)face);
+        internal Cube(CubeMatrix[] matrices = null, bool isRenderCube = false) : this(isRenderCube) {
+            if(matrices == null) {
+                data = new CubeMatrix[6];
+                for (int face = 0; face < 6; face++)
+                    data[face] = new CubeMatrix((CubeColor)face);
             }
+            else {           
+                if (matrices.Length != 6)
+                    throw new ArgumentOutOfRangeException(nameof(matrices));
+
+                data = matrices;
+            }
+
+            this.isRenderCube = isRenderCube;
         }
-
-        internal Cube(CubeMatrix[] matrices) {
-            if (matrices.Length != 6)
-                throw new ArgumentOutOfRangeException(nameof(matrices));
-
-            data = matrices;
-        }
-
+ 
         /// <summary>
         /// Set a whole face
         /// </summary>
