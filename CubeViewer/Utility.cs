@@ -28,33 +28,7 @@ namespace Rubinator3000
             float z = vec.Z * (float)Math.PI / 180f;
 
             return new Vector3(x, y, z);
-        }
-
-        /// <summary>
-        /// Deep copy an cube
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static Cube DeepClone(Cube obj)
-        {
-            CubeMatrix[] oldData = obj.GetData();
-            CubeMatrix[] newData = new CubeMatrix[6];
-            
-
-            for (int i = 0; i < 6; i++) {
-                newData[i] = new CubeMatrix();
-                for (int x = 0; x < 6; x++) {
-                    for (int y = 0; y < 6; y++) {
-                        int tile = 6 * x + y;
-
-                        newData[i][tile] = oldData[i][tile];
-                    }
-                }
-            }
-
-            return new Cube(newData);
-        }
+        }        
 
         /// <summary>
         /// Convert radians to degrees

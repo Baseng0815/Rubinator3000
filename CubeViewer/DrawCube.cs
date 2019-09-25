@@ -143,7 +143,7 @@ namespace Rubinator3000 {
         /// </summary>
         public static void AddMove(Cube endState, Move move = null, int duration = 0) {
             // deep copy because otherwise, the arrays would refer to the same memory
-            moveQueue.Enqueue(new AnimatedMove { Move = move, EndState = Utility.DeepClone(endState), TurnDuration = duration });
+            moveQueue.Enqueue(new AnimatedMove { Move = move, EndState = (Cube)endState.Clone(), TurnDuration = duration });
 
             Log.LogStuff($"Animate Move: {move.ToString()}");
         }

@@ -62,13 +62,15 @@ namespace Rubinator3000 {
     }
 
     [Serializable]
-    public partial class Cube {
+    public partial class Cube : ICloneable {
         private CubeMatrix[] data = new CubeMatrix[6];
         private readonly bool isRenderCube;   
 
         internal CubeMatrix[] Data {
             get => data;
         }            
+
+        public EdgeStone[] Edges { get; }
 
         internal Cube(CubeMatrix[] matrices = null, bool isRenderCube = false) {
             if(matrices == null) {
@@ -84,6 +86,8 @@ namespace Rubinator3000 {
             }
 
             this.isRenderCube = isRenderCube;
+
+            Edges = EdgeStonePositions.Select(p => new EdgeStone(new Tuple<CubeColor, CubeColor>(At(p.Item1), At(p.Item2)), this)).ToArray();
         }
  
         /// <summary>
@@ -167,12 +171,29 @@ namespace Rubinator3000 {
             return (CubeFace)(int)color;
         }
 
+        public object Clone() {            
+            CubeMatrix[] newData = new CubeMatrix[6];
+
+            for (int i = 0; i < 6; i++) {
+                newData[i] = new CubeMatrix();
+                for (int x = 0; x < 6; x++) {
+                    for (int y = 0; y < 6; y++) {
+                        int tile = 6 * x + y;
+
+                        newData[i][tile] = data[i][tile];
+                    }
+                }
+            }
+
+            return new Cube(newData);
+        }
+
         public static readonly Tuple<Position, Position>[] EdgeStonePositions = new Tuple<Position, Position>[] {
             new Tuple<Position, Position>((UP, 1), (BACK, 1)), new Tuple<Position, Position>((UP, 3), (LEFT, 1)), new Tuple<Position, Position>((UP, 5), (RIGHT, 1)), new Tuple<Position, Position>((UP, 7), (FRONT, 1)),
 
             new Tuple<Position, Position>((LEFT, 3), (BACK, 5)), new Tuple<Position, Position>((FRONT, 3), (LEFT, 5)), new Tuple<Position, Position>((RIGHT, 3), (FRONT, 5)), new Tuple<Position, Position>((BACK, 3), (RIGHT, 5)),
 
             new Tuple<Position, Position>((DOWN, 1), (FRONT, 7)), new Tuple<Position, Position>((DOWN, 3), (LEFT, 7)), new Tuple<Position, Position>((DOWN, 5), (RIGHT, 7)), new Tuple<Position, Position>((DOWN, 7), (BACK, 7)),
-        };
+        };                
     }
 }
