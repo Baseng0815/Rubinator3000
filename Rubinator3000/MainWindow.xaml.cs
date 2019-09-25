@@ -43,14 +43,9 @@ namespace Rubinator3000
         {
             InitializeComponent();
 
-            // For Camera Tests
+            WebCamControl webCamControl = new WebCamControl(0, ref previewBottomLeft);
 
-            CameraWindow cameraWindow = new CameraWindow();
-            cameraWindow.Show();
-
-            // For Camera Tests
-
-            Cube = new Cube();
+            // Cube = new Cube();
         }
 
         private void Cube_OnMoveDone(object sender, MoveEventArgs e)

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace Rubinator3000.CubeScan
 {
@@ -25,7 +26,7 @@ namespace Rubinator3000.CubeScan
         private bool shouldStop = true;
 
         // This array stores the rgb colors from all faces of the cube. Its used to differentiate between the 6 different colors
-        private static Color[,,] colors = new Color[6,3,3];
+        private static Color[,,] colors;
 
         private List<FacePosition> facesToRead = new List<FacePosition>();
 
@@ -33,6 +34,18 @@ namespace Rubinator3000.CubeScan
         {
             this.previewImage = previewImage;
             CameraIndex = cameraIndex;
+
+            colors = new Color[6, 3, 3];
+            for (int i = 0; i < colors.GetLength(0); i++)
+            {
+                for (int j = 0; j < colors.GetLength(1); j++)
+                {
+                    for (int k = 0; k < colors.GetLength(2); k++)
+                    {
+                        colors[i, j, k] = Color.Empty;
+                    }
+                }
+            }
 
             thread = new Thread(new ThreadStart(Run));
             thread.Start();
@@ -44,7 +57,10 @@ namespace Rubinator3000.CubeScan
 
             while (!shouldStop)
             {
+                if (CubeIsFullyScanned())
+                {
 
+                }
             }
         }
 
@@ -81,16 +97,26 @@ namespace Rubinator3000.CubeScan
             Application.Current.Dispatcher.Invoke(() => { previewImage.Source = Convert(currentBitmap.GetBitmap()); });
 
             // TODO Process Bitmap
+
+            facesToRead.Add(new FacePosition(0.5, 0.5, 0, 0, 0));
+
+            foreach (FacePosition pos in facesToRead)
+            {
+                if (pos.IsRectangleDrawn)
+                {
+                    
+                }
+            }
         }
 
         // Converts Bitmap to BitmapSource
-        public System.Windows.Media.Imaging.BitmapSource Convert(Bitmap bitmap)
+        private BitmapSource Convert(Bitmap bitmap)
         {
             var bitmapData = bitmap.LockBits(
                 new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
                 System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
 
-            var bitmapSource = System.Windows.Media.Imaging.BitmapSource.Create(
+            var bitmapSource = BitmapSource.Create(
                 bitmapData.Width, bitmapData.Height,
                 bitmap.HorizontalResolution, bitmap.VerticalResolution,
                 System.Windows.Media.PixelFormats.Bgr24, null,
@@ -98,6 +124,25 @@ namespace Rubinator3000.CubeScan
 
             bitmap.UnlockBits(bitmapData);
             return bitmapSource;
+        }
+
+        private bool CubeIsFullyScanned()
+        {
+            for (int i = 0; i < colors.GetLength(0); i++)
+            {
+                for (int j = 0; j < colors.GetLength(1); j++)
+                {
+                    for (int k = 0; k < colors.GetLength(2); k++)
+                    {
+                        if (colors[i, j, k] == null)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
         }
 
         public void RequestStop()

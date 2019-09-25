@@ -8,16 +8,18 @@ namespace Rubinator3000.CubeScan
 {
     class FacePosition
     {
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        // The Relative Coordinates are holding the percentages of the width/height and not the absolute values
+        public double RelativeX { get; private set; }
+        public double RelativeY { get; private set; }
         public int FaceIndex { get; private set; }
         public int RowIndex { get; private set; }
         public int ColIndex { get; private set; }
+        public bool IsRectangleDrawn { get; set; }
 
-        public FacePosition(int x, int y, int faceIndex, int rowIndex, int colIndex)
+        public FacePosition(double relativeX, double relativeY, int faceIndex, int rowIndex, int colIndex)
         {
-            X = x;
-            Y = y;
+            RelativeX = relativeX;
+            RelativeY = relativeY;
             FaceIndex = faceIndex;
             RowIndex = rowIndex;
             ColIndex = colIndex;
