@@ -74,8 +74,11 @@ namespace Rubinator3000.CubeScan
             else
             {
                 this.bitmap = bitmap;
-                Width = bitmap.Width;
-                Height = bitmap.Height;
+                if (bitmap != null)
+                {
+                    Width = bitmap.Width;
+                    Height = bitmap.Height;
+                }
             }
         }
 

@@ -74,7 +74,14 @@ namespace Rubinator3000.CubeScan
             {
                 Log.LogStuff(String.Format("Initialization of Camera {0} started", CameraIndex));
 
+                // try to setup videoCapture
                 videoCapture = new VideoCapture(CameraIndex);
+                // if setup was unsuccessful (no camera connected)
+                if (!videoCapture.IsOpened)
+                {
+                    Log.LogStuff(String.Format("Initialization of Camera {0} failed", CameraIndex));
+                    return;
+                }
                 cameraIndexesInUse.Add(CameraIndex);
                 videoCapture.ImageGrabbed += ProcessCapturedFrame;
                 videoCapture.Start();
