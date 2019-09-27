@@ -27,6 +27,9 @@ namespace Rubinator3000
         private Queue<string> messages = new Queue<string>();
         private volatile Cube cube;
 
+        private WriteableBitmap[] previewBitmaps = new WriteableBitmap[4];
+        private WebCamControl[] webCamControls = new WebCamControl[4];
+
         public Cube Cube {
             get => cube;
             set {
@@ -43,9 +46,29 @@ namespace Rubinator3000
         {
             InitializeComponent();
 
-            WebCamControl webCamControl = new WebCamControl(0, ref previewBottomLeft);
+            InitalizeCameraPreviews();
 
             // Cube = new Cube();
+        }
+
+        private void InitalizeCameraPreviews()
+        {
+            const int width = 640;
+            const int height = 480;
+            for (int i = 0; i < 4; i++)
+            {
+                previewBitmaps[i] = new WriteableBitmap(Helper.EmptyBitmapSource(width, height));
+            }
+
+            cameraPreview0.Source = previewBitmaps[0];
+            cameraPreview1.Source = previewBitmaps[1];
+            cameraPreview2.Source = previewBitmaps[2];
+            cameraPreview3.Source = previewBitmaps[3];
+
+            webCamControls[0] = new WebCamControl(0, ref drawingCanvas0, ref previewBitmaps[0]);
+            webCamControls[1] = new WebCamControl(1, ref drawingCanvas1, ref previewBitmaps[1]);
+            webCamControls[2] = new WebCamControl(2, ref drawingCanvas2, ref previewBitmaps[2]);
+            webCamControls[3] = new WebCamControl(3, ref drawingCanvas3, ref previewBitmaps[3]);
         }
 
         private void Cube_OnMoveDone(object sender, MoveEventArgs e)
@@ -58,7 +81,7 @@ namespace Rubinator3000
 
         private void WindowsFormsHost_Initialized(object sender, EventArgs e)
         {
-            (sender as WindowsFormsHost).Child = CubeViewer.Window;
+            winFormsHost.Child = CubeViewer.Window;
         }
 
         internal void LogStuff(string message)
@@ -67,6 +90,13 @@ namespace Rubinator3000
                 textBoxLog.Text += $"{message}\r\n";
             else
                 messages.Enqueue(message);
+
+            if (winFormsHost.Child != null)
+            {
+                textBoxLog.Focus();
+                textBoxLog.CaretIndex = textBoxLog.Text.Length;
+                textBoxLog.ScrollToEnd();
+            }
         }
 
         private void TextBoxLog_Initialized(object sender, EventArgs e)
@@ -87,5 +117,6 @@ namespace Rubinator3000
 
             System.Windows.Application.Current.Shutdown();
         }
+
     }
 }

@@ -20,8 +20,7 @@ namespace Rubinator3000.CubeScan
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
 
-        private System.Windows.Controls.Image previewImage;
-        private Canvas faceRectCanvas;
+        private Canvas drawingCanvas;
 
         private static List<int> cameraIndexesInUse = new List<int>();
 
@@ -29,20 +28,22 @@ namespace Rubinator3000.CubeScan
         private VideoCapture videoCapture;
 
         private Bitmap currentBitmap = null;
-        private bool accessingBitmap = false;
+        private bool bitmapLocked = false;
+        private WriteableBitmap previewBitmap;
 
         private Thread thread;
         private bool shouldStop = true;
+        private bool capturing = false;
 
         // This array stores the rgb colors from all faces of the cube. Its used to differentiate between the 6 different colors
         private static Color[,,] colors;
 
-        private List<FacePosition> facesToRead = new List<FacePosition>();
+        private List<FacePosition> circlePositions = new List<FacePosition>();
 
-        public WebCamControl(int cameraIndex, ref System.Windows.Controls.Image previewImage, ref System.Windows.Controls.Canvas drawingCanvas)
+        public WebCamControl(int cameraIndex, ref Canvas drawingCanvas, ref WriteableBitmap previewBitmap)
         {
-            this.previewImage = previewImage;
-            this.faceRectCanvas = drawingCanvas;
+            this.drawingCanvas = drawingCanvas;
+            this.previewBitmap = previewBitmap; 
             CameraIndex = cameraIndex;
 
             colors = new Color[6, 3, 3];
@@ -58,76 +59,13 @@ namespace Rubinator3000.CubeScan
             }
 
             thread = new Thread(new ThreadStart(Run));
-            thread.Start();
-        }
+            //thread.Start();
 
-        private void Run()
-        {
             Init();
-
-            long loopStart = -1, loopEnd = -1;
-
-            while (!shouldStop)
-            {
-                loopStart = Helper.CurrentTimeMillis();
-                loopEnd = loopStart + 1000;
-
-                // Code in while loop
-
-                if (currentBitmap != null && !accessingBitmap)
-                {
-                    foreach (FacePosition pos in facesToRead)
-                    {
-                        int absoluteX = Convert.ToInt32(pos.RelativeX * currentBitmap.Width);
-                        int absoluteY = Convert.ToInt32(pos.RelativeY * currentBitmap.Height);
-
-                        int redSum = -1, greenSum = -1, blueSum = -1;
-                        int pixelCount = 0;
-
-                        for (int x = absoluteX - 3; x < absoluteX + 3; x++)
-                        {
-                            for (int y = absoluteY - 3; y < absoluteY + 3; y++)
-                            {
-                                if (currentBitmap != null)
-                                {
-                                    Color c = currentBitmap.GetPixel(x, y);
-                                    redSum += c.R;
-                                    greenSum += c.G;
-                                    blueSum += c.B;
-                                    pixelCount++;
-                                }
-                            }
-                        }
-
-                        if (pixelCount > 1)
-                        {
-                            int red = Convert.ToInt32(redSum / pixelCount);
-                            int green = Convert.ToInt32(greenSum / pixelCount);
-                            int blue = Convert.ToInt32(blueSum / pixelCount);
-
-                            // TODO what is row/col
-                            colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex] = Color.FromArgb(red, green, blue);
-                            Log.LogStuff(Helper.WhichColor(colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex]).ToString());
-                        }
-                    }
-                    if (CubeIsFullyScanned())
-                    {
-                        List<Color> colorsList = Helper.ColorsAsList(colors);
-                    }
-                }
-
-                // Code in while loop
-
-                while (Helper.CurrentTimeMillis() < loopEnd)
-                {
-                    Thread.Sleep(Convert.ToInt32(loopEnd - Helper.CurrentTimeMillis()));
-                }
-            }
         }
 
         private void Init()
         {
-            facesToRead.Add(new FacePosition(0.5, 0.5, 0, 0, 0));
             if (cameraIndexesInUse.Contains(CameraIndex))
             {
                 throw new Exception("Camera in use already");
@@ -151,46 +89,225 @@ namespace Rubinator3000.CubeScan
                 Log.LogStuff(String.Format("Initialization of Camera {0} finished", CameraIndex));
 
                 shouldStop = false;
+                capturing = true;
+            }
+        }
+
+        private void Run()
+        {
+            long loopStart = -1, loopEnd = -1;
+
+            while (!shouldStop)
+            {
+                loopStart = Helper.CurrentTimeMillis();
+                loopEnd = loopStart + 1000;
+
+                // Code in while loop
+
+                if (currentBitmap != null && capturing)
+                {
+                    // Draw rectangle on image
+                    foreach (FacePosition pos in circlePositions)
+                    {
+                        if (!pos.IsRectangleDrawn)
+                        {
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                System.Windows.Shapes.Ellipse circle = new System.Windows.Shapes.Ellipse();
+                                circle.Width = 7;
+                                circle.Height = 7;
+                                circle.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White);
+                                circle.StrokeThickness = 2;
+                                drawingCanvas.Children.Add(circle);
+                                Canvas.SetLeft(circle, pos.RelativeX * drawingCanvas.ActualWidth);
+                                Canvas.SetTop(circle, pos.RelativeY * drawingCanvas.ActualHeight);
+                                pos.IsRectangleDrawn = true;
+                            });
+                        }
+                    }
+
+                    foreach (FacePosition pos in circlePositions)
+                    {
+                        int absoluteX = Convert.ToInt32(pos.RelativeX * currentBitmap.Width);
+                        int absoluteY = Convert.ToInt32(pos.RelativeY * currentBitmap.Height);
+
+                        int redSum = -1, greenSum = -1, blueSum = -1;
+                        int pixelCount = 0;
+
+                        for (int x = absoluteX - 3; x < absoluteX + 3; x++)
+                        {
+                            for (int y = absoluteY - 3; y < absoluteY + 3; y++)
+                            {
+                                if (currentBitmap != null && !bitmapLocked)
+                                {
+                                    Color c = currentBitmap.GetPixel(x, y);
+
+                                    GC.Collect();
+
+                                    redSum += c.R;
+                                    greenSum += c.G;
+                                    blueSum += c.B;
+                                    pixelCount++;
+                                }
+                            }
+                        }
+
+                        if (pixelCount > 1)
+                        {
+                            int red = Convert.ToInt32(redSum / pixelCount);
+                            int green = Convert.ToInt32(greenSum / pixelCount);
+                            int blue = Convert.ToInt32(blueSum / pixelCount);
+
+                            // TODO what is row/col
+                            colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex] = Color.FromArgb(red, green, blue);
+                            Log.LogStuff(ColorIdentification.WhichColor(colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex]).ToString());
+                        }
+                    }
+                    if (CubeIsFullyScanned())
+                    {
+                        List<Color> colorsList = Helper.ColorsAsList(colors);
+                    }
+                }
+
+                // Code in while loop
+
+                while (Helper.CurrentTimeMillis() < loopEnd)
+                {
+                    Thread.Sleep(Convert.ToInt32(loopEnd - Helper.CurrentTimeMillis()));
+                }
             }
         }
 
         private void ProcessCapturedFrame(object sender, EventArgs e)
         {
-            Mat frameAsMat = new Mat();
-            videoCapture.Retrieve(frameAsMat, 0);
-
-            accessingBitmap = true;
-            currentBitmap = frameAsMat.Bitmap;
-
-            // TODO preview bitmap in window
-
-            accessingBitmap = false;
-
-            // Draw rectangle on image
-            foreach (FacePosition pos in facesToRead)
+            if (capturing)
             {
-                if (!pos.IsRectangleDrawn)
+                Mat frameAsMat = new Mat();
+                videoCapture.Retrieve(frameAsMat, 0);
+
+                currentBitmap = frameAsMat.Bitmap;
+
+                UpdatePreviewImage();
+
+                Process();
+            }
+        }
+
+        private void Process()
+        {
+            if (currentBitmap != null && capturing)
+            {
+                // Draw rectangle on image
+                foreach (FacePosition pos in circlePositions)
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
+                    if (!pos.IsRectangleDrawn)
                     {
-                        System.Windows.Shapes.Rectangle rect = new System.Windows.Shapes.Rectangle();
-                        rect.Width = 7;
-                        rect.Height = 7;
-                        rect.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White);
-                        rect.StrokeThickness = 2;
-                        faceRectCanvas.Children.Add(rect);
-                        Canvas.SetLeft(rect, pos.RelativeX * previewImage.ActualWidth);
-                        Canvas.SetTop(rect, pos.RelativeY * previewImage.ActualHeight);
-                        pos.IsRectangleDrawn = true;
-                    });
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            System.Windows.Shapes.Ellipse circle = new System.Windows.Shapes.Ellipse();
+                            circle.Width = 7;
+                            circle.Height = 7;
+                            circle.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White);
+                            circle.StrokeThickness = 2;
+                            drawingCanvas.Children.Add(circle);
+                            Canvas.SetLeft(circle, pos.RelativeX * drawingCanvas.ActualWidth);
+                            Canvas.SetTop(circle, pos.RelativeY * drawingCanvas.ActualHeight);
+                            pos.IsRectangleDrawn = true;
+                        });
+                    }
+                }
+
+                foreach (FacePosition pos in circlePositions)
+                {
+                    int absoluteX = Convert.ToInt32(pos.RelativeX * currentBitmap.Width);
+                    int absoluteY = Convert.ToInt32(pos.RelativeY * currentBitmap.Height);
+
+                    int redSum = -1, greenSum = -1, blueSum = -1;
+                    int pixelCount = 0;
+
+                    for (int x = absoluteX - 3; x < absoluteX + 3; x++)
+                    {
+                        for (int y = absoluteY - 3; y < absoluteY + 3; y++)
+                        {
+                            if (currentBitmap != null && !bitmapLocked)
+                            {
+                                Color c = currentBitmap.GetPixel(x, y);
+
+                                GC.Collect();
+
+                                redSum += c.R;
+                                greenSum += c.G;
+                                blueSum += c.B;
+                                pixelCount++;
+                            }
+                        }
+                    }
+
+                    if (pixelCount > 1)
+                    {
+                        int red = Convert.ToInt32(redSum / pixelCount);
+                        int green = Convert.ToInt32(greenSum / pixelCount);
+                        int blue = Convert.ToInt32(blueSum / pixelCount);
+
+                        // TODO what is row/col
+                        colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex] = Color.FromArgb(red, green, blue);
+                        Log.LogStuff(ColorIdentification.WhichColor(colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex]).ToString());
+                    }
+                }
+                if (CubeIsFullyScanned())
+                {
+                    List<Color> colorsList = Helper.ColorsAsList(colors);
                 }
             }
         }
 
-        // Converts Bitmap to BitmapSource
-        private BitmapSource BitmapToSource(Bitmap bitmap)
+        private void UpdatePreviewImage()
         {
-            return (bitmap == null) ? null : System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+
+            long pBackBuffer = 0, backBufferStride = 0;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                //lock bitmap in ui thread
+                previewBitmap.Lock();
+                pBackBuffer = (long)previewBitmap.BackBuffer; //Make pointer available to background thread
+                backBufferStride = previewBitmap.BackBufferStride;
+            });
+
+            unsafe
+            {
+                // Lock all pixels of "currentBitmap"
+                bitmapLocked = true;
+                BitmapData bitmapData = currentBitmap.LockBits(new Rectangle(0, 0, currentBitmap.Width, currentBitmap.Height), ImageLockMode.ReadOnly, currentBitmap.PixelFormat);
+
+                int bytesPerPixel = Bitmap.GetPixelFormatSize(currentBitmap.PixelFormat) / 8;
+                int heightInPixels = bitmapData.Height;
+                int widthInBytes = bitmapData.Width * bytesPerPixel;
+                int totalBytes = Convert.ToInt32((widthInBytes * heightInPixels));
+                byte* ptrFirstPixel = (byte*)bitmapData.Scan0;
+
+                for (int i = 0; i < totalBytes - bytesPerPixel; i += bytesPerPixel)
+                {
+                    int color_data = ptrFirstPixel[i + 2] << 16; // R
+                    color_data |= ptrFirstPixel[i + 1] << 8;   // G
+                    color_data |= ptrFirstPixel[i] << 0;   // B
+
+                    long bufferWithOffset = pBackBuffer + i;
+                    *((int*)bufferWithOffset) = color_data;
+                }
+
+                currentBitmap.UnlockBits(bitmapData);
+                bitmapLocked = false;
+
+            }
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                //UI thread does post update operations
+                int width = Convert.ToInt32(previewBitmap.Width);
+                int height = Convert.ToInt32(previewBitmap.Height);
+                previewBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
+                previewBitmap.Unlock();
+            });
         }
 
         private bool CubeIsFullyScanned()
@@ -212,9 +329,20 @@ namespace Rubinator3000.CubeScan
             return true;
         }
 
-        public void RequestStop()
+        public void Stop()
         {
+            capturing = false;
             shouldStop = true;
+        }
+
+        public void PauseCapture()
+        {
+            capturing = false;
+        }
+
+        public void ContinueCapture()
+        {
+            capturing = true;
         }
     }
 }

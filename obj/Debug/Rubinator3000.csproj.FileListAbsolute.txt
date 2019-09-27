@@ -283,9 +283,7 @@ D:\GitHub\Rubinator3000\bin\Debug\Emgu.CV.World.dll
 D:\GitHub\Rubinator3000\bin\Debug\ZedGraph.dll
 D:\GitHub\Rubinator3000\bin\Debug\Emgu.CV.UI.xml
 D:\GitHub\Rubinator3000\bin\Debug\Emgu.CV.World.xml
-D:\GitHub\Rubinator3000\bin\Debug\OpenTK.pdb
 D:\GitHub\Rubinator3000\bin\Debug\OpenTK.xml
-D:\GitHub\Rubinator3000\bin\Debug\OpenTK.GLControl.pdb
 D:\GitHub\Rubinator3000\bin\Debug\OpenTK.GLControl.xml
 D:\GitHub\Rubinator3000\bin\Debug\ZedGraph.xml
 D:\GitHub\Rubinator3000\bin\Debug\de\ZedGraph.resources.dll

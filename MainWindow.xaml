@@ -12,6 +12,13 @@
     <Window.Resources>
         <SolidColorBrush x:Key="BackgroundColor">#0F0F0F</SolidColorBrush>
         <SolidColorBrush x:Key="OutlineColor">#FFFFFF</SolidColorBrush>
+        <Style TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Lucida Console" />
+            <Setter Property="Background" Value="#000000" />
+            <Setter Property="Foreground" Value="Green" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="TextWrapping" Value="WrapWithOverflow" />
+        </Style>
     </Window.Resources>
     <Grid Background="{StaticResource BackgroundColor}">
         <Grid.RowDefinitions>
@@ -63,6 +70,7 @@
             BorderThickness="1">
             <!--  GLControl  -->
             <WindowsFormsHost
+                x:Name="winFormsHost"
                 Grid.Row="1"
                 Grid.Column="0"
                 Padding="5,5,5,5"
@@ -80,7 +88,6 @@
             BorderBrush="{StaticResource OutlineColor}"
             BorderThickness="1"
             FontFamily="Lucida Console"
-            Foreground="Green"
             HorizontalScrollBarVisibility="Auto"
             Initialized="TextBoxLog_Initialized"
             IsReadOnly="True"
@@ -93,19 +100,20 @@
             Margin="2.5,5,5,2.5">
             <Grid.RowDefinitions>
                 <RowDefinition Height=".05*" />
-                <RowDefinition Height=".17*" />
-                <RowDefinition Height=".80*" />
+                <RowDefinition Height=".176*" />
+                <RowDefinition Height=".794*" />
             </Grid.RowDefinitions>
 
             <!--  Move History  -->
-            <Label
+            <TextBox
                 Grid.Row="0"
                 Margin="0,0,0,2.5"
+                VerticalContentAlignment="Center"
                 Background="Black"
                 BorderBrush="{StaticResource OutlineColor}"
                 BorderThickness="1"
-                Content="Zugverlauf"
-                Foreground="{StaticResource OutlineColor}" />
+                IsReadOnly="True"
+                Text="Zugverlauf" />
 
             <TextBox
                 x:Name="textBoxMoves"
@@ -116,7 +124,6 @@
                 Background="Black"
                 BorderBrush="{StaticResource OutlineColor}"
                 BorderThickness="1"
-                Foreground="{StaticResource OutlineColor}"
                 IsReadOnly="True"
                 VerticalScrollBarVisibility="Auto" />
             <Border
@@ -125,66 +132,90 @@
                 BorderBrush="{StaticResource OutlineColor}"
                 BorderThickness="1">
                 <Grid
+                    x:Name="cameraPreviewGrid"
                     Grid.Row="2"
                     Grid.Column="1"
                     Background="Black">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width=".5*" />
+                        <ColumnDefinition Width=".5*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="2*" />
-                        <RowDefinition Height="2*" />
+                        <RowDefinition Height=".5*" />
+                        <RowDefinition Height=".5*" />
                     </Grid.RowDefinitions>
                     <Image
-                        x:Name="previewTopLeft"
+                        x:Name="cameraPreview0"
                         Grid.Row="0"
                         Grid.Column="0"
                         Margin="5,5,2.5,2.5" />
                     <Image
-                        x:Name="previewBottomLeft"
+                        x:Name="cameraPreview1"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="2.5,5,5,2.5" />
+                    <Image
+                        x:Name="cameraPreview2"
                         Grid.Row="1"
                         Grid.Column="0"
                         Margin="5,2.5,2.5,5" />
                     <Image
-                        x:Name="previewTopRight"
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="2.5,5,2.5,5" />
-                    <Image
-                        x:Name="previewBottomRight"
+                        x:Name="cameraPreview3"
                         Grid.Row="1"
                         Grid.Column="1"
                         Margin="2.5,2.5,5,5" />
-                    <TextBlock
+                    <TextBox
                         Grid.Row="0"
                         Grid.Column="0"
-                        Margin="5,5,5,5"
-                        Padding="5,5,5,5"
-                        Foreground="White"
+                        MaxWidth="80"
+                        MaxHeight="12"
+                        Margin="5,5,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
                         Text="Camera 0" />
-                    <TextBlock
+                    <TextBox
                         Grid.Row="0"
                         Grid.Column="1"
-                        Margin="5,5,5,5"
-                        Padding="5,5,5,5"
-                        Foreground="White"
+                        MaxWidth="80"
+                        MaxHeight="12"
+                        Margin="2.5,5,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
                         Text="Camera 1" />
-                    <TextBlock
+                    <TextBox
                         Grid.Row="1"
                         Grid.Column="0"
-                        Margin="5,5,5,5"
-                        Padding="5,5,5,5"
-                        Foreground="White"
+                        MaxWidth="80"
+                        MaxHeight="12"
+                        Margin="5,2.5,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
                         Text="Camera 2" />
-                    <TextBlock
+                    <TextBox
                         Grid.Row="1"
                         Grid.Column="1"
-                        Margin="5,5,5,5"
-                        Padding="5,5,5,5"
-                        Foreground="White"
+                        MaxWidth="80"
+                        MaxHeight="12"
+                        Margin="2.5,2.5,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
                         Text="Camera 3" />
-                    <Canvas Grid.RowSpan="2" Grid.ColumnSpan="2" />
+                    <Canvas
+                        x:Name="drawingCanvas0"
+                        Grid.Row="0"
+                        Grid.Column="0" />
+                    <Canvas
+                        x:Name="drawingCanvas1"
+                        Grid.Row="0"
+                        Grid.Column="1" />
+                    <Canvas
+                        x:Name="drawingCanvas2"
+                        Grid.Row="1"
+                        Grid.Column="0" />
+                    <Canvas
+                        x:Name="drawingCanvas3"
+                        Grid.Row="1"
+                        Grid.Column="1" />
                 </Grid>
             </Border>
         </Grid>
