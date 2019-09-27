@@ -15,7 +15,7 @@ namespace Rubinator3000.CubeScan
         public int RowIndex { get; private set; }
         public int ColIndex { get; private set; }
 
-        public bool IsRectangleDrawn { get; set; } = false;
+        public bool IsCircleDrawn { get; set; } = false;
 
         public FacePosition(double relativeX, double relativeY, int faceIndex, int rowIndex, int colIndex)
         {

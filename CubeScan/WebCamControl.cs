@@ -1,10 +1,12 @@
 ﻿using Emgu.CV;
+using Emgu.CV.Util;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,33 +19,39 @@ namespace Rubinator3000.CubeScan
 {
     class WebCamControl
     {
-        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
-        public static extern bool DeleteObject(IntPtr hObject);
 
-        private Canvas drawingCanvas;
-
+        // This list is to prevent, that multiple "WebCamControl"-Objects access the same usb camera
         private static List<int> cameraIndexesInUse = new List<int>();
 
         public int CameraIndex { get; set; }
+
+        // Capture-object to retrieve images from usb camera
         private VideoCapture videoCapture;
 
-        private Bitmap currentBitmap = null;
-        private bool bitmapLocked = false;
+        // This Bitmap caches the most recent bitmap from the videoCapture
+        private FastAccessBitmap currentBitmap = new FastAccessBitmap(null);
         private WriteableBitmap previewBitmap;
 
         private Thread thread;
-        private bool shouldStop = true;
+        private bool threadShouldStop = true;
+
+        // capturing decides, if the camera should update "currentBitmap" and the gui-camerastream
         private bool capturing = false;
 
         // This array stores the rgb colors from all faces of the cube. Its used to differentiate between the 6 different colors
         private static Color[,,] colors;
 
+        // This List stores, where the Program reads out the colors
         private List<FacePosition> circlePositions = new List<FacePosition>();
+        
+
+        // This canvas is to draw the circles, at the positions in "circlePositions"
+        private Canvas drawingCanvas;
 
         public WebCamControl(int cameraIndex, ref Canvas drawingCanvas, ref WriteableBitmap previewBitmap)
         {
             this.drawingCanvas = drawingCanvas;
-            this.previewBitmap = previewBitmap; 
+            this.previewBitmap = previewBitmap;
             CameraIndex = cameraIndex;
 
             colors = new Color[6, 3, 3];
@@ -59,13 +67,15 @@ namespace Rubinator3000.CubeScan
             }
 
             thread = new Thread(new ThreadStart(Run));
-            //thread.Start();
-
-            Init();
+            thread.Start();
         }
 
         private void Init()
         {
+            // This position is for debug uses
+            circlePositions.Add(new FacePosition(0.5, 0.5, 0, 0, 0));
+
+            // Prevent 2 "WebCamControl"-objects from accessing the same usb camera
             if (cameraIndexesInUse.Contains(CameraIndex))
             {
                 throw new Exception("Camera in use already");
@@ -76,40 +86,53 @@ namespace Rubinator3000.CubeScan
 
                 // try to setup videoCapture
                 videoCapture = new VideoCapture(CameraIndex);
-                // if setup was unsuccessful (no camera connected)
+
+                // if setup was unsuccessful (if no camera connected)
                 if (!videoCapture.IsOpened)
                 {
                     Log.LogStuff(String.Format("Initialization of Camera {0} failed", CameraIndex));
                     return;
                 }
-                cameraIndexesInUse.Add(CameraIndex);
-                videoCapture.ImageGrabbed += ProcessCapturedFrame;
-                videoCapture.Start();
+                else
+                {
+                    cameraIndexesInUse.Add(CameraIndex);
+                    videoCapture.ImageGrabbed += ProcessCapturedFrame;
 
-                Log.LogStuff(String.Format("Initialization of Camera {0} finished", CameraIndex));
+                    // start the video apture
+                    videoCapture.Start();
 
-                shouldStop = false;
-                capturing = true;
+                    Log.LogStuff(String.Format("Initialization of Camera {0} finished", CameraIndex));
+
+                    threadShouldStop = false;
+                    // tell the program, that "currentBitmap" and the gui-camerastream should be updated
+                    capturing = true;
+                }
             }
         }
 
         private void Run()
         {
+            Init();
+
             long loopStart = -1, loopEnd = -1;
 
-            while (!shouldStop)
+            int counter = 0;
+
+            while (!threadShouldStop)
             {
                 loopStart = Helper.CurrentTimeMillis();
                 loopEnd = loopStart + 1000;
 
                 // Code in while loop
 
-                if (currentBitmap != null && capturing)
+                counter++;
+
+                if (!currentBitmap.IsNull() && capturing)
                 {
                     // Draw rectangle on image
                     foreach (FacePosition pos in circlePositions)
                     {
-                        if (!pos.IsRectangleDrawn)
+                        if (!pos.IsCircleDrawn)
                         {
                             Application.Current.Dispatcher.Invoke(() =>
                             {
@@ -121,7 +144,7 @@ namespace Rubinator3000.CubeScan
                                 drawingCanvas.Children.Add(circle);
                                 Canvas.SetLeft(circle, pos.RelativeX * drawingCanvas.ActualWidth);
                                 Canvas.SetTop(circle, pos.RelativeY * drawingCanvas.ActualHeight);
-                                pos.IsRectangleDrawn = true;
+                                pos.IsCircleDrawn = true;
                             });
                         }
                     }
@@ -131,43 +154,18 @@ namespace Rubinator3000.CubeScan
                         int absoluteX = Convert.ToInt32(pos.RelativeX * currentBitmap.Width);
                         int absoluteY = Convert.ToInt32(pos.RelativeY * currentBitmap.Height);
 
-                        int redSum = -1, greenSum = -1, blueSum = -1;
-                        int pixelCount = 0;
+                        // TODO what is row/col
+                        colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex] = currentBitmap.ReadPixel(absoluteX - 1, absoluteY - 1, 3, 3);
+                        Log.LogStuff(ColorIdentification.WhichColor(colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex]).ToString());
 
-                        for (int x = absoluteX - 3; x < absoluteX + 3; x++)
-                        {
-                            for (int y = absoluteY - 3; y < absoluteY + 3; y++)
-                            {
-                                if (currentBitmap != null && !bitmapLocked)
-                                {
-                                    Color c = currentBitmap.GetPixel(x, y);
-
-                                    GC.Collect();
-
-                                    redSum += c.R;
-                                    greenSum += c.G;
-                                    blueSum += c.B;
-                                    pixelCount++;
-                                }
-                            }
-                        }
-
-                        if (pixelCount > 1)
-                        {
-                            int red = Convert.ToInt32(redSum / pixelCount);
-                            int green = Convert.ToInt32(greenSum / pixelCount);
-                            int blue = Convert.ToInt32(blueSum / pixelCount);
-
-                            // TODO what is row/col
-                            colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex] = Color.FromArgb(red, green, blue);
-                            Log.LogStuff(ColorIdentification.WhichColor(colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex]).ToString());
-                        }
                     }
                     if (CubeIsFullyScanned())
                     {
                         List<Color> colorsList = Helper.ColorsAsList(colors);
                     }
                 }
+
+                GC.Collect();
 
                 // Code in while loop
 
@@ -182,132 +180,12 @@ namespace Rubinator3000.CubeScan
         {
             if (capturing)
             {
-                Mat frameAsMat = new Mat();
-                videoCapture.Retrieve(frameAsMat, 0);
+                Mat mat = new Mat();
+                videoCapture.Read(mat);
+                currentBitmap.SetBitmap(mat.Bitmap);
 
-                currentBitmap = frameAsMat.Bitmap;
-
-                UpdatePreviewImage();
-
-                Process();
+                currentBitmap.DisplayOnWpfImageControl(previewBitmap);
             }
-        }
-
-        private void Process()
-        {
-            if (currentBitmap != null && capturing)
-            {
-                // Draw rectangle on image
-                foreach (FacePosition pos in circlePositions)
-                {
-                    if (!pos.IsRectangleDrawn)
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            System.Windows.Shapes.Ellipse circle = new System.Windows.Shapes.Ellipse();
-                            circle.Width = 7;
-                            circle.Height = 7;
-                            circle.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White);
-                            circle.StrokeThickness = 2;
-                            drawingCanvas.Children.Add(circle);
-                            Canvas.SetLeft(circle, pos.RelativeX * drawingCanvas.ActualWidth);
-                            Canvas.SetTop(circle, pos.RelativeY * drawingCanvas.ActualHeight);
-                            pos.IsRectangleDrawn = true;
-                        });
-                    }
-                }
-
-                foreach (FacePosition pos in circlePositions)
-                {
-                    int absoluteX = Convert.ToInt32(pos.RelativeX * currentBitmap.Width);
-                    int absoluteY = Convert.ToInt32(pos.RelativeY * currentBitmap.Height);
-
-                    int redSum = -1, greenSum = -1, blueSum = -1;
-                    int pixelCount = 0;
-
-                    for (int x = absoluteX - 3; x < absoluteX + 3; x++)
-                    {
-                        for (int y = absoluteY - 3; y < absoluteY + 3; y++)
-                        {
-                            if (currentBitmap != null && !bitmapLocked)
-                            {
-                                Color c = currentBitmap.GetPixel(x, y);
-
-                                GC.Collect();
-
-                                redSum += c.R;
-                                greenSum += c.G;
-                                blueSum += c.B;
-                                pixelCount++;
-                            }
-                        }
-                    }
-
-                    if (pixelCount > 1)
-                    {
-                        int red = Convert.ToInt32(redSum / pixelCount);
-                        int green = Convert.ToInt32(greenSum / pixelCount);
-                        int blue = Convert.ToInt32(blueSum / pixelCount);
-
-                        // TODO what is row/col
-                        colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex] = Color.FromArgb(red, green, blue);
-                        Log.LogStuff(ColorIdentification.WhichColor(colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex]).ToString());
-                    }
-                }
-                if (CubeIsFullyScanned())
-                {
-                    List<Color> colorsList = Helper.ColorsAsList(colors);
-                }
-            }
-        }
-
-        private void UpdatePreviewImage()
-        {
-
-            long pBackBuffer = 0, backBufferStride = 0;
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                //lock bitmap in ui thread
-                previewBitmap.Lock();
-                pBackBuffer = (long)previewBitmap.BackBuffer; //Make pointer available to background thread
-                backBufferStride = previewBitmap.BackBufferStride;
-            });
-
-            unsafe
-            {
-                // Lock all pixels of "currentBitmap"
-                bitmapLocked = true;
-                BitmapData bitmapData = currentBitmap.LockBits(new Rectangle(0, 0, currentBitmap.Width, currentBitmap.Height), ImageLockMode.ReadOnly, currentBitmap.PixelFormat);
-
-                int bytesPerPixel = Bitmap.GetPixelFormatSize(currentBitmap.PixelFormat) / 8;
-                int heightInPixels = bitmapData.Height;
-                int widthInBytes = bitmapData.Width * bytesPerPixel;
-                int totalBytes = Convert.ToInt32((widthInBytes * heightInPixels));
-                byte* ptrFirstPixel = (byte*)bitmapData.Scan0;
-
-                for (int i = 0; i < totalBytes - bytesPerPixel; i += bytesPerPixel)
-                {
-                    int color_data = ptrFirstPixel[i + 2] << 16; // R
-                    color_data |= ptrFirstPixel[i + 1] << 8;   // G
-                    color_data |= ptrFirstPixel[i] << 0;   // B
-
-                    long bufferWithOffset = pBackBuffer + i;
-                    *((int*)bufferWithOffset) = color_data;
-                }
-
-                currentBitmap.UnlockBits(bitmapData);
-                bitmapLocked = false;
-
-            }
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                //UI thread does post update operations
-                int width = Convert.ToInt32(previewBitmap.Width);
-                int height = Convert.ToInt32(previewBitmap.Height);
-                previewBitmap.AddDirtyRect(new Int32Rect(0, 0, width, height));
-                previewBitmap.Unlock();
-            });
         }
 
         private bool CubeIsFullyScanned()
@@ -332,7 +210,7 @@ namespace Rubinator3000.CubeScan
         public void Stop()
         {
             capturing = false;
-            shouldStop = true;
+            threadShouldStop = true;
         }
 
         public void PauseCapture()

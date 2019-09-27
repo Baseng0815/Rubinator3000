@@ -62,9 +62,9 @@ namespace Rubinator3000.CubeScan
             double percentageSum = 0;
 
             // Very high if r, g and b are very close together
-            percentageSum += (color.R > color.G) ? color.G / (double)color.R : color.R / (double)color.G;
-            percentageSum += (color.R > color.B) ? color.B / (double)color.R : color.R / (double)color.B;
-            percentageSum += (color.G > color.B) ? color.B / (double)color.G : color.G / (double)color.B;
+            percentageSum += 1 - Math.Abs(color.R - color.G);
+            percentageSum += 1 - Math.Abs(color.R - color.B);
+            percentageSum += 1 - Math.Abs(color.G - color.B);
 
             double percentage = percentageSum / 3;
 

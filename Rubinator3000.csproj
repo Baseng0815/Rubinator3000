@@ -83,8 +83,10 @@
     </ApplicationDefinition>
     <Compile Include="Communication\Arduino.cs" />
     <Compile Include="Communication\ArduinoUSB.cs" />
+    <Compile Include="CubeScan\AbsoluteCoordinate.cs" />
     <Compile Include="CubeScan\ColorIdentification.cs" />
     <Compile Include="CubeScan\FacePosition.cs" />
+    <Compile Include="CubeScan\FastAccessBitmap.cs" />
     <Compile Include="CubeScan\Helper.cs" />
     <Compile Include="CubeScan\WebCamControl.cs" />
     <Compile Include="CubeViewer\DrawFlat.cs" />

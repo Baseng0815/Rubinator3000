@@ -57,7 +57,7 @@ namespace Rubinator3000
             const int height = 480;
             for (int i = 0; i < 4; i++)
             {
-                previewBitmaps[i] = new WriteableBitmap(Helper.EmptyBitmapSource(width, height));
+                previewBitmaps[i] = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr24, null);
             }
 
             cameraPreview0.Source = previewBitmaps[0];
