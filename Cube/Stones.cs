@@ -59,6 +59,12 @@ namespace Rubinator3000 {
             return cube.At(pos.Item1) == color ? pos.Item1 : pos.Item2;
         }
 
+        public Position GetColorPosition(Func<CubeColor, bool> colorPredicate) {
+            CubeColor[] stoneColors = { colors.Item1, colors.Item2 };
+
+            return GetColorPosition(stoneColors.First(colorPredicate));
+        }
+
         public IEnumerable<Position> GetPositions() {
             var pos = Positions;
             yield return pos.Item1;

@@ -11,15 +11,6 @@ namespace Rubinator3000.Solving {
         protected MoveCollection moves;
         protected bool movesCalculated = false;
 
-        public MoveCollection Moves {
-            get {
-                if (!movesCalculated)
-                    throw new InvalidOperationException();
-
-                return moves;
-            }
-        }
-
         /// <summary>
         /// Erstellt einen neuen CubeSolver und eine Kopie des aktuellen Cubes
         /// </summary>
@@ -33,10 +24,22 @@ namespace Rubinator3000.Solving {
             moves = new MoveCollection();
         }
 
+        public MoveCollection GetMoves() {
+            if (!movesCalculated)
+                CalcMoves();
+
+            return moves;
+        }
+
         /// <summary>
         /// Brechnet in einer abgleiteten Klasse, die Züge zum lösen des Würfels
         /// </summary>
-        public abstract void CalcMoves();
+        protected abstract void CalcMoves();
+
+        /// <summary>
+        /// Gibt in einer abgeleiteten Klasse an, ob der Solver seine Arbeit erfolgreich vollendet hat
+        /// </summary>
+        public abstract bool Solved { get; }
 
 
         protected void DoMove(CubeFace face, int count = 1, bool addMove = true) {
@@ -51,7 +54,7 @@ namespace Rubinator3000.Solving {
         /// </summary>
         /// <returns>Den Wert, der angibt, ob der Würfel gelöst ist</returns>
         public bool GetCubeSolved() {
-            for (int face = 0; face < (int)6; face++) {
+            for (int face = 0; face < 6; face++) {
                 CubeColor faceColor = cube.At(face, 4);
                 for (int tile = 0; tile < 9; tile++) {
                     if (faceColor != cube.At(face, tile))

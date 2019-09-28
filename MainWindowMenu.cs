@@ -28,16 +28,7 @@ namespace Rubinator3000 {
         private async void MenuItemSolveCube_Click(object sender, RoutedEventArgs e) {
             CubeSolver solver = new CubeSolverFridrich(cube);
 
-#if !DEBUG
-            Task solvingTask = Task.Factory.StartNew(solver.CalcMoves);
-
-            await solvingTask;
-
-#else
-            solver.CalcMoves();
-#endif
-
-            MoveCollection moves = solver.Moves;
+            MoveCollection moves = solver.GetMoves();
 
             Task moveTask = Task.Factory.StartNew(() => {
                 cube.DoMoves(moves);

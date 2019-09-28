@@ -48,7 +48,11 @@ namespace Rubinator3000
 
             InitalizeCameraPreviews();
 
-            // Cube = new Cube();
+#if DEBUG
+            Cube = new Cube(isRenderCube: true);
+#else
+            Cube = new Cube();
+#endif
         }
 
         private void InitalizeCameraPreviews()
