@@ -36,28 +36,22 @@ namespace Rubinator3000 {
 
         public void Add(CubeFace face, int count = 1) => Add(new Move(face, count));
 
-        public void Add(Move move) {
-            for (int i = 0; i < move.Count; i++) {
-                if (moves.Count > 0) {
-                    // optimization by removing unnecessary moves
-                    // e.g. Ri R R => R
-                    Move lastMove = moves.Last();
+        public void Add(Move move) {           
+            if (moves.Count > 0) {
+                Move last = moves.Last();
 
-                    if (lastMove != move.GetInverted()) {
-                        if (move == lastMove)
-                            //... [x -3], [x-2], [x-1] + [x]
-                            if (moves.Count > 1 && moves[moves.Count - 2] == lastMove) {
-                                moves.RemoveRange(moves.Count - 2, 2);
-                                moves.Add(move.GetInverted());
-                                return;
-                            }
+                // wenn der vorherige Move die gleiche Seite hatte, wird die Anzahl der Vierteldrehugen zum vorherigen Addiert
+                if (last.Face == move.Face) {
+                    last.Count += move.Count;
 
-                        moves.Add(move);
+                    // sollten sich der neue und der vorherige Move aufheben, so wird der vorherige entfernt
+                    if (last.Count == 0) {
+                        moves.RemoveAt(moves.Count - 1);
                     }
-                    else moves.RemoveAt(moves.Count - 1);
                 }
                 else moves.Add(move);
             }
+            else moves.Add(move);
         }
 
         public void AddRange(IEnumerable<Move> moves) {

@@ -36,7 +36,8 @@ namespace Rubinator3000.Solving {
                 int maxCount = count.Max();
                 // die weiße Seite so drehen, dass die meisten Steine stimmen
                 int rotCount = Array.IndexOf(count, maxCount);
-                DoMove(UP, rotCount);
+                if (rotCount != 0)
+                    DoMove(UP, rotCount);
 
                 // das Pivot Element festlegen
                 pivotStone = whiteEdges.First(e => e.InRightPosition());
@@ -68,7 +69,7 @@ namespace Rubinator3000.Solving {
 
             MoveStonesToWhiteFace();
 
-            SortStones();
+            //SortStones();
         }
 
 
@@ -112,7 +113,7 @@ namespace Rubinator3000.Solving {
             int[] count = new int[4];
             for (int i = 0; i < 4; i++) {
                 count[i] = whiteEdges.Count(e => e.InRightPosition());
-                DoMove(UP);
+                DoMove(UP, addMove: false);
             }
 
             return count;
@@ -130,8 +131,10 @@ namespace Rubinator3000.Solving {
                 // die weiße Seite ricthig ausrichten
                 int delta = GetDelta(edge);
                 int pivotDelta = GetDelta(pivotStone);
-                while (delta != pivotDelta)
+                while (delta != pivotDelta) {
                     DoMove(UP);
+                    pivotDelta = GetDelta(pivotStone);
+                }
 
                 // die Seite und die Anzahl der Drehungen bestimmen
                 Position secndPosition = edge.GetColorPosition(c => c != WHITE);
@@ -158,7 +161,7 @@ namespace Rubinator3000.Solving {
 
                 DoMove(faceToRot, count);
             }
-        }        
+        }
 
         /// <summary>
         /// Sortiert die restlichen falschen Steine auf der weißen Seite
