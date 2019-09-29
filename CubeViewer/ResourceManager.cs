@@ -16,6 +16,7 @@ namespace Rubinator3000
         {
             LoadedTextures.Add("cubeBlendFrame", new Texture("Resources/BlendFrame.png"));
             LoadedTextures.Add("cubeBumpMap", new Texture("Resources/NormalMap1.png"));
+            Log.LogStuff("Texture loading finished.");
 
             // geometry
             Vector3[] positions = new Vector3[]
@@ -95,6 +96,7 @@ namespace Rubinator3000
             }
 
             LoadedModels.Add("cubePlane", new Model(vertices, true));
+            Log.LogStuff("Model loading finished.");
         }
 
         private static void InitFlatData()

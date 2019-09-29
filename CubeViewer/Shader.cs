@@ -19,6 +19,8 @@ namespace Rubinator3000
         private int CompileShader(string file, ShaderType type)
         {
             int shader = GL.CreateShader(type);
+            string shaderSource = File.ReadAllText(file);
+            Log.LogStuff(string.Format("Shader type {0} source: {1}", type, shaderSource));
             GL.ShaderSource(shader, File.ReadAllText(file));
             GL.CompileShader(shader);
             var info = GL.GetShaderInfoLog(shader);

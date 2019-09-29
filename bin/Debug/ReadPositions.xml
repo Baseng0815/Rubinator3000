@@ -1,9 +1,2 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<CameraReadPositions>
-  <Camera CameraIndex="0">
-    <ReadPosition RelativeX="0.6" RelativeY="0.3" FaceIndex="0" RowIndex="0" XmlColIndex="0" />
-  </Camera>
-  <Camera CameraIndex="1" />
-  <Camera CameraIndex="2" />
-  <Camera CameraIndex="3" />
-</CameraReadPositions>
+<CameraReadPositions />

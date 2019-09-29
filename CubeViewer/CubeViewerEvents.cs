@@ -20,6 +20,7 @@ namespace Rubinator3000
         // event handling is not needed when in 2d drawing mode
         public static void DetachInputEvents()
         {
+            Log.LogStuff("Input events detached");
             Window.MouseMove -= MouseMoveEvent;
             Window.MouseUp -= MouseButtonUpEvent;
             Window.KeyDown -= KeyDownEvent;
@@ -29,11 +30,11 @@ namespace Rubinator3000
         // event handling is needed when in 3d drawing mode
         public static void AttachInputEvents()
         {
+            Log.LogStuff("Input events attached");
             Window.MouseMove += MouseMoveEvent;
             Window.MouseUp += MouseButtonUpEvent;
             Window.KeyDown += KeyDownEvent;
             Window.MouseWheel += MouseWheelEvent;
-
         }
 
         private static void WindowResizeEvent(object sender, EventArgs e)

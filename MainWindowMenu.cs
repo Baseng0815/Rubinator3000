@@ -44,12 +44,12 @@ namespace Rubinator3000 {
                     case "2D":
                         Renderer.DisplayMode = CubeDisplayMode.FLAT;
                         CubeViewer.Window.Invalidate();
-                        CubeViewer.AttachInputEvents();
+                        CubeViewer.DetachInputEvents();
                         break;
                     case "3D":
                         Renderer.DisplayMode = CubeDisplayMode.CUBE;
                         CubeViewer.Window.Invalidate();
-                        CubeViewer.DetachInputEvents();
+                        CubeViewer.AttachInputEvents();
                         break;
                     default:
                         break;
