@@ -17,13 +17,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Rubinator3000
-{
+namespace Rubinator3000 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
-    {
+    public partial class MainWindow : Window {
+
         private Queue<string> messages = new Queue<string>();
         private volatile Cube cube;
 
@@ -42,21 +41,20 @@ namespace Rubinator3000
             }
         }
 
-        public MainWindow()
-        {
+        public MainWindow() {
+
             InitializeComponent();
 
-            InitalizeCameraPreviews();
+            //Cube = new Cube();
 
-            // Cube = new Cube();
+            InitalizeCameraPreviews();
         }
 
-        private void InitalizeCameraPreviews()
-        {
+        private void InitalizeCameraPreviews() {
+
             const int width = 640;
             const int height = 480;
-            for (int i = 0; i < 4; i++)
-            {
+            for (int i = 0; i < 4; i++) {
                 previewBitmaps[i] = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr24, null);
             }
 
@@ -69,50 +67,51 @@ namespace Rubinator3000
             webCamControls[1] = new WebCamControl(1, ref drawingCanvas1, ref previewBitmaps[1]);
             webCamControls[2] = new WebCamControl(2, ref drawingCanvas2, ref previewBitmaps[2]);
             webCamControls[3] = new WebCamControl(3, ref drawingCanvas3, ref previewBitmaps[3]);
+
+            WebCamControl.LoadAllPositionsFromXml();
         }
 
-        private void Cube_OnMoveDone(object sender, MoveEventArgs e)
-        {
-            if (sender is Cube c && c.Equals(cube))
-            {
+        private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
+
+            if (sender is Cube c && c.Equals(cube)) {
 
             }
         }
 
-        private void WindowsFormsHost_Initialized(object sender, EventArgs e)
-        {
+        private void WindowsFormsHost_Initialized(object sender, EventArgs e) {
+
             winFormsHost.Child = CubeViewer.Window;
         }
 
-        internal void LogStuff(string message)
-        {
+        internal void LogStuff(string message) {
+
             if (textBoxLog != null)
                 textBoxLog.Text += $"{message}\r\n";
             else
                 messages.Enqueue(message);
 
-            if (winFormsHost.Child != null)
-            {
+            if (winFormsHost.Child != null) {
                 textBoxLog.Focus();
                 textBoxLog.CaretIndex = textBoxLog.Text.Length;
                 textBoxLog.ScrollToEnd();
             }
         }
 
-        private void TextBoxLog_Initialized(object sender, EventArgs e)
-        {
-            if (sender is System.Windows.Controls.TextBox textBox)
-            {
+        private void TextBoxLog_Initialized(object sender, EventArgs e) {
+
+            if (sender is System.Windows.Controls.TextBox textBox) {
                 while (messages.Count > 0)
                     textBox.Text += $"{messages.Dequeue()}\r\n";
             }
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+
             DrawCube.StopDrawing();
 
-            // Without this line, the program would throw an exception on every close
+            WebCamControl.SaveAllPositionsToXml();
+
+            // Without this line, the program would throw an exception on close
             Environment.Exit(0);
 
             System.Windows.Application.Current.Shutdown();

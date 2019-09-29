@@ -1,226 +1,374 @@
 ﻿using Emgu.CV;
-using Emgu.CV.Util;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Xml.Linq;
+using static Rubinator3000.CubeScan.XmlDesignations;
 
-namespace Rubinator3000.CubeScan
-{
-    class WebCamControl
-    {
+namespace Rubinator3000.CubeScan {
+
+    class WebCamControl {
+
+        #region Static Variables
 
         // This list is to prevent, that multiple "WebCamControl"-Objects access the same usb camera
         private static List<int> cameraIndexesInUse = new List<int>();
 
-        public int CameraIndex { get; set; }
+        public static int ReadRadius = 3;
 
+        // This list stores the rgb colors at all tiles of the cube. Its used to differentiate between the 6 different colors
+        private static readonly ConcurrentDictionary<ReadPosition, Ellipse> positionsToReadAt = new ConcurrentDictionary<ReadPosition, Ellipse>();
+        private static readonly Queue<ReadPosition> pendingPositions = new Queue<ReadPosition>();
+
+        private static string PathToXml => ".\\ReadPositions.xml";
+
+        #endregion
+
+        #region Member Variables
         // Capture-object to retrieve images from usb camera
         private VideoCapture videoCapture;
 
-        // This Bitmap caches the most recent bitmap from the videoCapture
-        private FastAccessBitmap currentBitmap = new FastAccessBitmap(null);
-        private WriteableBitmap previewBitmap;
+        private readonly int cameraIndex;
 
-        private Thread thread;
+        // This Bitmap caches the most recent bitmap from the videoCapture
+        private readonly FastAccessBitmap currentBitmap = new FastAccessBitmap(null);
+
+        // This WriteableBitmap points to the bitmap, that is used by the camera stream
+        private readonly WriteableBitmap previewBitmap;
+
+        private readonly Thread thread;
         private bool threadShouldStop = true;
 
-        // capturing decides, if the camera should update "currentBitmap" and the gui-camerastream
-        private bool capturing = false;
+        // Points on the gui canvas, where the circles of the positions should be drawn on
+        private readonly Canvas drawingCanvas;
 
-        // This array stores the rgb colors from all faces of the cube. Its used to differentiate between the 6 different colors
-        private static Color[,,] colors;
+        private readonly int ticksPerSecond;
 
-        // This List stores, where the Program reads out the colors
-        private List<FacePosition> circlePositions = new List<FacePosition>();
-        
+        #endregion
 
-        // This canvas is to draw the circles, at the positions in "circlePositions"
-        private Canvas drawingCanvas;
+        public WebCamControl(int cameraIndex, ref Canvas drawingCanvas, ref WriteableBitmap previewBitmap, int ticksPerSecond = 1) {
 
-        public WebCamControl(int cameraIndex, ref Canvas drawingCanvas, ref WriteableBitmap previewBitmap)
-        {
             this.drawingCanvas = drawingCanvas;
             this.previewBitmap = previewBitmap;
-            CameraIndex = cameraIndex;
-
-            colors = new Color[6, 3, 3];
-            for (int i = 0; i < colors.GetLength(0); i++)
-            {
-                for (int j = 0; j < colors.GetLength(1); j++)
-                {
-                    for (int k = 0; k < colors.GetLength(2); k++)
-                    {
-                        colors[i, j, k] = Color.Empty;
-                    }
-                }
-            }
+            this.cameraIndex = cameraIndex;
+            this.ticksPerSecond = ticksPerSecond;
 
             thread = new Thread(new ThreadStart(Run));
             thread.Start();
         }
 
-        private void Init()
-        {
-            // This position is for debug uses
-            circlePositions.Add(new FacePosition(0.5, 0.5, 0, 0, 0));
+        #region Member Functions
 
-            // Prevent 2 "WebCamControl"-objects from accessing the same usb camera
-            if (cameraIndexesInUse.Contains(CameraIndex))
-            {
+        private void Init() {
+
+            // Prevent 2 "WebCamControl"-objects from accessing the same usb-camera
+            if (cameraIndexesInUse.Contains(cameraIndex)) {
+
                 throw new Exception("Camera in use already");
             }
-            else
-            {
-                Log.LogStuff(String.Format("Initialization of Camera {0} started", CameraIndex));
+            else {
+                Log.LogStuff(string.Format("Initialization of Camera {0} started", cameraIndex));
 
                 // try to setup videoCapture
-                videoCapture = new VideoCapture(CameraIndex);
+                videoCapture = new VideoCapture(cameraIndex);
 
-                // if setup was unsuccessful (if no camera connected)
-                if (!videoCapture.IsOpened)
-                {
-                    Log.LogStuff(String.Format("Initialization of Camera {0} failed", CameraIndex));
+                // if setup was unsuccessful (if no camera connected at "CameraIndex")
+                if (!videoCapture.IsOpened) {
+
+                    Log.LogStuff(String.Format("Initialization of Camera {0} failed", cameraIndex));
                     return;
                 }
-                else
-                {
-                    cameraIndexesInUse.Add(CameraIndex);
+                else {
+
+                    cameraIndexesInUse.Add(cameraIndex);
+
+                    // setup usb-camera-input handling
                     videoCapture.ImageGrabbed += ProcessCapturedFrame;
 
                     // start the video apture
                     videoCapture.Start();
 
-                    Log.LogStuff(String.Format("Initialization of Camera {0} finished", CameraIndex));
+                    Log.LogStuff(string.Format("Initialization of Camera {0} finished", cameraIndex));
 
                     threadShouldStop = false;
-                    // tell the program, that "currentBitmap" and the gui-camerastream should be updated
-                    capturing = true;
                 }
             }
         }
 
-        private void Run()
-        {
+        private void Run() {
+
             Init();
 
-            long loopStart = -1, loopEnd = -1;
+            while (!threadShouldStop) {
 
-            int counter = 0;
+                long loopStart = Helper.CurrentTimeMillis();
+                long loopEnd = loopStart + 1000 / ticksPerSecond;
 
-            while (!threadShouldStop)
-            {
-                loopStart = Helper.CurrentTimeMillis();
-                loopEnd = loopStart + 1000;
+                // Code in while loop  
 
-                // Code in while loop
+                if (!currentBitmap.IsNull()) {
 
-                counter++;
+                    // Draw all pending circles on the canvas
+                    while (pendingPositions.Count > 0) {
 
-                if (!currentBitmap.IsNull() && capturing)
-                {
-                    // Draw rectangle on image
-                    foreach (FacePosition pos in circlePositions)
-                    {
-                        if (!pos.IsCircleDrawn)
-                        {
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                System.Windows.Shapes.Ellipse circle = new System.Windows.Shapes.Ellipse();
-                                circle.Width = 7;
-                                circle.Height = 7;
-                                circle.Stroke = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White);
-                                circle.StrokeThickness = 2;
-                                drawingCanvas.Children.Add(circle);
-                                Canvas.SetLeft(circle, pos.RelativeX * drawingCanvas.ActualWidth);
-                                Canvas.SetTop(circle, pos.RelativeY * drawingCanvas.ActualHeight);
-                                pos.IsCircleDrawn = true;
-                            });
+                        if (pendingPositions.Peek().CameraIndex == cameraIndex) {
+                            ReadPosition pos = pendingPositions.Dequeue();
+
+                            Ellipse circle = DrawCircleAtPosition(pos);
+
+                            bool success = false;
+                            while (!success) {
+
+                                // Add position and related circle (that is drawn on the screen) for later processing
+                                success = positionsToReadAt.TryAdd(pos, circle);
+                            }
                         }
                     }
 
-                    foreach (FacePosition pos in circlePositions)
-                    {
-                        int absoluteX = Convert.ToInt32(pos.RelativeX * currentBitmap.Width);
-                        int absoluteY = Convert.ToInt32(pos.RelativeY * currentBitmap.Height);
+                    // Read all colors from positions in readPositions
+                    foreach (ReadPosition pos in positionsToReadAt.Keys) {
 
-                        // TODO what is row/col
-                        colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex] = currentBitmap.ReadPixel(absoluteX - 1, absoluteY - 1, 3, 3);
-                        Log.LogStuff(ColorIdentification.WhichColor(colors[pos.FaceIndex, pos.RowIndex, pos.ColIndex]).ToString());
-
+                        // Already stores the color in the position
+                        ReadColorAtPosition(pos);
                     }
-                    if (CubeIsFullyScanned())
-                    {
-                        List<Color> colorsList = Helper.ColorsAsList(colors);
-                    }
-                }
 
-                GC.Collect();
+                    // This block will be only executed by the primary webcamcontrol
+                    if (cameraIndex == 0) {
 
-                // Code in while loop
+                        // If the whole cube is scanned, send the cube-configuration to the cube solver
+                        if (CubeIsFullyScanned()) {
 
-                while (Helper.CurrentTimeMillis() < loopEnd)
-                {
-                    Thread.Sleep(Convert.ToInt32(loopEnd - Helper.CurrentTimeMillis()));
-                }
-            }
-        }
-
-        private void ProcessCapturedFrame(object sender, EventArgs e)
-        {
-            if (capturing)
-            {
-                Mat mat = new Mat();
-                videoCapture.Read(mat);
-                currentBitmap.SetBitmap(mat.Bitmap);
-
-                currentBitmap.DisplayOnWpfImageControl(previewBitmap);
-            }
-        }
-
-        private bool CubeIsFullyScanned()
-        {
-            for (int i = 0; i < colors.GetLength(0); i++)
-            {
-                for (int j = 0; j < colors.GetLength(1); j++)
-                {
-                    for (int k = 0; k < colors.GetLength(2); k++)
-                    {
-                        if (colors[i, j, k] == null)
-                        {
-                            return false;
+                            SortAndValidateColors();
                         }
                     }
+
+                    // Code in while loop  
+
+                    if (GC.GetTotalMemory(true) > (500 * 10 ^ 6)) {
+                        // Force Gargabe Collection if 500 MB or more are estimated to be allocated
+                        GC.Collect();
+                    }
+
+                    while (Helper.CurrentTimeMillis() < loopEnd) {
+
+                        Thread.Sleep(Convert.ToInt32(loopEnd - Helper.CurrentTimeMillis()));
+                    }
+                }
+            }
+        }
+
+        private void ProcessCapturedFrame(object sender, EventArgs e) {
+
+            Mat mat = new Mat();
+            videoCapture.Read(mat);
+            currentBitmap.SetBitmap(mat.Bitmap);
+
+            currentBitmap.DisplayOnWpfImageControl(previewBitmap);
+        }
+
+        private Ellipse DrawCircleAtPosition(ReadPosition pos) {
+
+            Ellipse circle = null;
+
+            Application.Current.Dispatcher.Invoke(() => {
+
+                // Initialize circle, that should be drawn over camera stream
+                circle = new Ellipse {
+                    Width = ReadRadius * 2 + 1,
+                    Height = ReadRadius * 2 + 1,
+                    Stroke = Helper.ColorBrush(CubeColor.WHITE), // Default color of circle
+                    StrokeThickness = ReadRadius / 2
+                };
+
+                // Add circle to the canvas over the camera stream
+                drawingCanvas.Children.Add(circle);
+
+                // Set position of circle on canvas
+                Canvas.SetLeft(circle, pos.RelativeX * drawingCanvas.ActualWidth);
+                Canvas.SetTop(circle, pos.RelativeY * drawingCanvas.ActualHeight);
+
+            });
+
+            // Wait until GUI-Thread has drawn circle
+            while (circle == null) {
+                Thread.Sleep(1);
+            }
+
+            return circle;
+        }
+
+        private void ReadColorAtPosition(ReadPosition pos) {
+
+            int absoluteX = Convert.ToInt32(pos.RelativeX * currentBitmap.Width);
+            int absoluteY = Convert.ToInt32(pos.RelativeY * currentBitmap.Height);
+
+            Color colorAtPos = currentBitmap.ReadPixel(absoluteX - ReadRadius, absoluteY - ReadRadius, ReadRadius * 2 + 1, ReadRadius * 2 + 1);
+
+            if (colorAtPos != Color.Empty) {
+                pos.Color = colorAtPos;
+            }
+        }
+
+        #endregion
+
+        #region Static Functions
+
+        private static bool CubeIsFullyScanned() {
+
+            foreach (ReadPosition tempPos in positionsToReadAt.Keys) {
+
+                if (tempPos.Color == Color.Empty) {
+                    return false;
                 }
             }
 
-            return true;
+            return positionsToReadAt.Count > 0;
         }
 
-        public void Stop()
-        {
-            capturing = false;
-            threadShouldStop = true;
+        private static void SortAndValidateColors() {
+
+            List<ReadPosition> unsorted = new List<ReadPosition>(positionsToReadAt.Keys);
+
+            List<ReadPosition> sorted = new List<ReadPosition>();
+
+            // This for loop moves all colors from the unsorted list to the sorted list while sorting them ()
+            for (int i = 0; i < 6; i++) {
+                Move9Highest(i, ref unsorted, ref sorted);
+            }
+
+            /* the list "sorted" looks now like this
+             *  indicies 0-8:   all positions, with orange tiles
+             *  indicies 9-17:  all positions, with white tiles
+             *  indicies 18-26: all positions, with green tiles
+             *  indicies 27-35: all positions, with yellow tiles
+             *  indicies 36-44: all positions, with red tiles
+             *  indicies 45-53: all positions, with blue tiles
+             */
+
+            Cube cube = new Cube();
+
+            for (int i = 0; i < sorted.Count; i++) {
+
+                ReadPosition colorAtPos = sorted[i];
+
+                /* "currentColorToSet" changes in switch 
+                * -> the first 9 loop cycles assign all orange tiles to the cube
+                * -> the next 9 loop cycles assign all white tiles
+                * etc.
+                */
+                CubeColor currentColorToSet = CubeColor.NONE;
+
+                switch (Math.Floor(i / 9d)) {
+
+                    case (int)CubeColor.ORANGE:
+                        currentColorToSet = CubeColor.ORANGE;
+                        break;
+                    case (int)CubeColor.WHITE:
+                        currentColorToSet = CubeColor.WHITE;
+                        break;
+                    case (int)CubeColor.GREEN:
+                        currentColorToSet = CubeColor.GREEN;
+                        break;
+                    case (int)CubeColor.YELLOW:
+                        currentColorToSet = CubeColor.YELLOW;
+                        break;
+                    case (int)CubeColor.RED:
+                        currentColorToSet = CubeColor.RED;
+                        break;
+                    case (int)CubeColor.BLUE:
+                        currentColorToSet = CubeColor.BLUE;
+                        break;
+                }
+
+                // Assign tiles to the cube
+                cube.SetTile((CubeFace)colorAtPos.FaceIndex, colorAtPos.RowIndex * 3 + colorAtPos.ColIndex, currentColorToSet);
+            }
         }
 
-        public void PauseCapture()
-        {
-            capturing = false;
+        private static void Move9Highest(int colorIndex, ref List<ReadPosition> unsortedSource, ref List<ReadPosition> sortedDestination) {
+
+            // Find indicies of 9 highest color-percentages of "colorIndex" in unsortedSource and move them to the sortedDestination
+            for (int i = 0; i < 9; i++) {
+
+                int maxIndex = ColorIdentification.MaxIndex(colorIndex, unsortedSource);
+                sortedDestination.Add(unsortedSource[maxIndex]);
+                unsortedSource.RemoveAt(maxIndex);
+            }
         }
 
-        public void ContinueCapture()
-        {
-            capturing = true;
+        public static void AddPosition(ReadPosition readPosition) {
+
+            pendingPositions.Enqueue(readPosition);
         }
+
+        public static void SaveAllPositionsToXml() {
+
+            // Setup XmlDocument
+            XDocument docToSave = new XDocument(new XElement(CameraReadPositions)) {
+                Declaration = new XDeclaration("1.0", "UTF-8", null)
+            };
+
+            // Store Positions for the 4 cameras in "doc"
+            for (int currentCameraIndex = 0; currentCameraIndex < 4; currentCameraIndex++) {
+
+                XElement cameraElement = new XElement(Camera, new XAttribute(CameraIndex, currentCameraIndex));
+
+                foreach (ReadPosition pos in positionsToReadAt.Keys) {
+
+                    if (pos.CameraIndex == currentCameraIndex) {
+
+                        XElement readPositionElement = new XElement(XmlDesignations.ReadPosition);
+                        readPositionElement.Add(new XAttribute(RelativeX, pos.RelativeX));
+                        readPositionElement.Add(new XAttribute(RelativeY, pos.RelativeY));
+                        readPositionElement.Add(new XAttribute(FaceIndex, pos.FaceIndex));
+                        readPositionElement.Add(new XAttribute(RowIndex, pos.RowIndex));
+                        readPositionElement.Add(new XAttribute(ColIndex, pos.ColIndex));
+
+                        cameraElement.Add(readPositionElement);
+                    }
+
+                    // "doc.Root" is the XElement defined in the Constructor of "doc"
+                    docToSave.Root.Add(cameraElement);
+                }
+            }
+
+            docToSave.Save(PathToXml);
+        }
+
+        public static void LoadAllPositionsFromXml() {
+
+            if (!File.Exists(PathToXml)) {
+                return;
+            }
+
+            XDocument loadedDoc = XDocument.Load(PathToXml);
+
+            IEnumerable<XElement> cameraElements = loadedDoc.Root.Elements();
+
+            foreach (XElement cameraElement in cameraElements) {
+
+                foreach (XElement readPositionElement in cameraElement.Elements()) {
+
+                    AddPosition(new ReadPosition(
+                        double.Parse(readPositionElement.Attribute(RelativeX).Value.Replace('.', ',')),
+                        double.Parse(readPositionElement.Attribute(RelativeY).Value.Replace('.', ',')),
+                        int.Parse(readPositionElement.Attribute(FaceIndex).Value),
+                        int.Parse(readPositionElement.Attribute(RowIndex).Value),
+                        int.Parse(readPositionElement.Attribute(ColIndex).Value),
+                        int.Parse(cameraElement.Attribute(CameraIndex).Value)
+                        )
+                    );
+                }
+            }
+        }
+
+        #endregion
     }
 }
