@@ -5,11 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Rubinator3000
-{ 
-    public class Move
-    {
-        public readonly CubeFace Face;
-        public readonly int Count;
+{
+    public class Move {
+        private int count;
+
+        public CubeFace Face { get; internal set; }
+        public int Count {
+            get => count;
+            set {
+                count = value;
+                while (count < 0) count += 4;
+                count %= 4;
+            }
+        }
         public bool IsPrime => Count == 3;
 
         // used for mapping Faces to strings (e.g. 0 to L)
@@ -35,7 +43,7 @@ namespace Rubinator3000
                 return false;
 
             var move = (Move)obj;
-            return this.Face == move.Face && this.IsPrime == move.IsPrime;
+            return Face == move.Face && IsPrime == move.IsPrime;
         }
 
         internal static bool TryParse(string str, out Move move)
@@ -59,7 +67,7 @@ namespace Rubinator3000
             return str;
         }
 
-        public static bool operator ==(Move left, Move right) => left.Face == right.Face && left.Count == right.Count;
+        public static bool operator ==(Move left, Move right) => left?.Face == right?.Face && left?.Count == right?.Count;
 
         public static bool operator !=(Move left, Move right) => !(left == right);
 

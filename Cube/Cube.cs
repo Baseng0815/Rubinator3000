@@ -176,9 +176,9 @@ namespace Rubinator3000 {
 
             for (int i = 0; i < 6; i++) {
                 newData[i] = new CubeMatrix();
-                for (int x = 0; x < 6; x++) {
-                    for (int y = 0; y < 6; y++) {
-                        int tile = 6 * x + y;
+                for (int x = 0; x < 3; x++) {
+                    for (int y = 0; y < 3; y++) {
+                        int tile = 3 * x + y;
 
                         newData[i][tile] = data[i][tile];
                     }

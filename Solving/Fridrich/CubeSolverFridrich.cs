@@ -6,15 +6,18 @@ using System.Threading.Tasks;
 
 namespace Rubinator3000.Solving {
     public partial class CubeSolverFridrich : CubeSolver {
+        public override bool Solved => GetCubeSolved();
 
         public CubeSolverFridrich(Cube cube) : base(cube) {
 
         }
 
-        public override void CalcMoves() {
-            try {
-                CalcCrossMoves();
+        protected override void CalcMoves() {
+            // Das weiße Kreuz lösen
+            CrossSolver cross = new CrossSolver(cube);
+            moves.AddRange(cross.GetMoves());
 
+            try {               
                 CalcFTL();
 
                 CalcOLL();
@@ -31,8 +34,7 @@ namespace Rubinator3000.Solving {
                 throw;
             }
         }
-
-        partial void CalcCrossMoves();
+        
         partial void CalcFTL();
         partial void CalcOLL();
         partial void CalcPLL();        
