@@ -17,5 +17,7 @@ namespace Rubinator3000
         public static readonly int ViewerDelay = int.Parse(ConfigurationManager.AppSettings["viewerDelay"]);
         public static readonly float MouseSensitivity = float.Parse(ConfigurationManager.AppSettings["mouseSensitivity"]);
         public static readonly float ScrollSensitivity = float.Parse(ConfigurationManager.AppSettings["scrollSensitivity"]);
+
+        public static int MoveAnimatedTime = int.Parse(ConfigurationManager.AppSettings["moveAnimationTime"]);
     }
 }

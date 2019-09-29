@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubinator3000 {
+namespace Rubinator3000 {    
     public struct EdgeStone {
         private Tuple<CubeColor, CubeColor> colors;
         private readonly Cube cube;
@@ -29,7 +30,7 @@ namespace Rubinator3000 {
 
                 return (from edge in Cube.EdgeStonePositions
                         where cube.At(edge.Item1) == colors.Item1 || cube.At(edge.Item2) == colors.Item1
-                        select edge).First(edge => cube.At(edge.Item2) == colors.Item2 || cube.At(edge.Item2) == colors.Item2);
+                        select edge).First();
 
             }
         }

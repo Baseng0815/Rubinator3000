@@ -29,6 +29,9 @@ namespace Rubinator3000.Solving {
             // die Steine in die richtige Orientierung bringen
             OrientateStones();
 
+            if (Solved)
+                return;
+
             // überprüfen, ob sich ein Kantenstein auf der weißen Seite befindet
             if (whiteEdges.Any(e => e.GetColorPosition(WHITE).Face == UP)) {
                 int[] count = CountRightStones();

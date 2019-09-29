@@ -59,6 +59,10 @@ namespace Rubinator3000 {
                    Face == position.Face &&
                    Tile == position.Tile;
         }
+
+        public override string ToString() {
+            return Enum.GetName(typeof(CubeFace), Face)[0] + Tile.ToString();
+        }
     }
 
     [Serializable]
