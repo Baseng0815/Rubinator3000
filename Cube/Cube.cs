@@ -63,6 +63,10 @@ namespace Rubinator3000 {
         public override string ToString() {
             return Enum.GetName(typeof(CubeFace), Face)[0] + Tile.ToString();
         }
+
+        public override int GetHashCode() {
+            return ((int)Face)^Tile;
+        }
     }
 
     [Serializable]

@@ -99,21 +99,37 @@ namespace Rubinator3000.CubeScan {
             return percentage;
         }
 
-        public static int MaxIndex(int cubeColorIndex, List<ReadPosition> colorsAtPositions) {
+        public static int MaxIndex(int cubeColorIndex, List<ReadPosition> colorsToCompare) {
+            
+            // cubeColorIndex tells, for which cube-color the percentages should be calculated
 
-            int max = -1;
+            if (colorsToCompare.Count == 50) {
+                int i = 0;
+            }
 
-            for (int i = 0; i < colorsAtPositions.Count; i++) {
+            int maxIndex = -1;
+            double maxValue = double.MinValue;
 
-                double[] pcts = CalculateColor(colorsAtPositions[i].Color);
+            double[] pcts = new double[6];
 
-                if (pcts[cubeColorIndex] > max) {
+            for (int i = 0; i < colorsToCompare.Count; i++) {
 
-                    max = i;
+                pcts = CalculateColor(colorsToCompare[i].Color);
+
+                if (pcts[cubeColorIndex] > maxValue) {
+
+                    maxIndex = i;
                 }
             }
 
-            return max;
+            if (maxIndex == -1) {
+                int cci = cubeColorIndex;
+                List<ReadPosition> ctc = colorsToCompare;
+                double[] ds = pcts;
+                return maxIndex;
+            }
+
+            return maxIndex;
         }
     }
 }

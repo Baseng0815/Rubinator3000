@@ -27,14 +27,28 @@ namespace Rubinator3000.CubeScan {
 
         public static int ReadRadius = 3;
 
+        public const int MAXPOSITIONSTOREAD = 48;
+
         // This list stores the rgb colors at all tiles of the cube. Its used to differentiate between the 6 different colors
-        private static readonly List<ReadPosition> positionsToReadAt = new List<ReadPosition>();
+        public static readonly List<ReadPosition> PositionsToReadAt = new List<ReadPosition>();
         private static readonly Queue<ReadPosition>[] pendingPositions = {
             new Queue<ReadPosition>(),
             new Queue<ReadPosition>(),
             new Queue<ReadPosition>(),
             new Queue<ReadPosition>()
         };
+
+        public static readonly List<ReadPosition> middleTiles = new List<ReadPosition>() {
+            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 255, 165, 0)), // Orange
+            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 255, 255, 255)), // White
+            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 0, 0, 255)), // Green
+            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 255, 255, 0)), // Yellow
+            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 255, 0, 0)), // Red
+            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 0, 0, 255)) // Blue
+            };
+
+        private static long lastCubeGeneration = Helper.CurrentTimeMillis();
+
         private static string PathToXml => ".\\ReadPositions.xml";
 
         #endregion
@@ -135,25 +149,30 @@ namespace Rubinator3000.CubeScan {
 
                     pos.Circle = DrawCircleAtPosition(pos, drawingCanvas);
 
-                    positionsToReadAt.Add(pos);
+                    PositionsToReadAt.Add(pos);
                 }
 
                 // Read all colors from positions in readPositions
-                for (int i = 0; i < positionsToReadAt.Count; i++) {
+                for (int i = 0; i < PositionsToReadAt.Count; i++) {
 
-                    if (positionsToReadAt[i].CameraIndex == cameraIndex) {
+                    if (PositionsToReadAt[i].CameraIndex == cameraIndex) {
 
-                        positionsToReadAt[i].Color = ReadColorAtPosition(positionsToReadAt[i]);
+                        PositionsToReadAt[i].Color = ReadColorAtPosition(PositionsToReadAt[i]);
                     }
                 }
 
                 // This block will be only executed by the primary webcamcontrol
                 if (cameraIndex == 0) {
 
-                    // If the whole cube is scanned, send the cube-configuration to the cube solver
-                    if (CubeIsFullyScanned()) {
+                    if (Helper.CurrentTimeMillis() - lastCubeGeneration > 10000) {
+                        // Run this code only every 10 seconds
 
-                        SortAndValidateColors();
+                        // If the whole cube is scanned, send the cube-configuration to the cube solver
+                        if (CubeIsFullyScanned()) {
+
+                            SortAndValidateColors();
+                        }
+                        lastCubeGeneration = Helper.CurrentTimeMillis();
                     }
                 }
 
@@ -195,25 +214,32 @@ namespace Rubinator3000.CubeScan {
 
         private static bool CubeIsFullyScanned() {
 
-            foreach (ReadPosition tempPos in positionsToReadAt) {
+            foreach (ReadPosition tempPos in PositionsToReadAt) {
 
                 if (tempPos.Color == Color.Empty) {
                     return false;
                 }
             }
 
-            return positionsToReadAt.Count == 54;
+            return PositionsToReadAt.Count == MAXPOSITIONSTOREAD;
         }
 
         private static void SortAndValidateColors() {
 
-            List<ReadPosition> unsorted = new List<ReadPosition>(positionsToReadAt);
+            List<ReadPosition> unsorted = new List<ReadPosition>(PositionsToReadAt);
+
+            // Add the middle-tiles, because they wont be read out with the camera
+            unsorted.AddRange(middleTiles);
 
             List<ReadPosition> sorted = new List<ReadPosition>();
 
             // This for loop moves all colors from the unsorted list to the sorted list while sorting them ()
             for (int i = 0; i < 6; i++) {
-                Move9Highest(i, ref unsorted, ref sorted);
+                if (!(unsorted.Count >= 9)) {
+                    Log.LogStuff("Cube Generation Failed");
+                    return;
+                }
+                Move9Highest(colorIndex: i, ref unsorted, ref sorted);
             }
 
             /* the list "sorted" looks now like this
@@ -238,7 +264,7 @@ namespace Rubinator3000.CubeScan {
                 */
                 CubeColor currentColorToSet = CubeColor.NONE;
 
-                switch (Math.Floor(i / 9d)) {
+                switch (Math.Floor(i / 8d)) {
 
                     case (int)CubeColor.ORANGE:
                         currentColorToSet = CubeColor.ORANGE;
@@ -263,7 +289,12 @@ namespace Rubinator3000.CubeScan {
                 // Assign tiles to the cube
                 cube.SetTile((CubeFace)colorAtPos.FaceIndex, colorAtPos.RowIndex * 3 + colorAtPos.ColIndex, currentColorToSet);
 
-                CircleByIndicies(colorAtPos.FaceIndex, colorAtPos.RowIndex, colorAtPos.ColIndex).Stroke = Helper.ColorBrush(currentColorToSet);
+                Application.Current.Dispatcher.Invoke(() => {
+
+                    if (colorAtPos.RowIndex != 2 && colorAtPos.ColIndex != 2) {
+                        CircleByIndicies(colorAtPos.FaceIndex, colorAtPos.RowIndex, colorAtPos.ColIndex).Stroke = Helper.ColorBrush(currentColorToSet);
+                    }
+                });
             }
         }
 
@@ -285,7 +316,7 @@ namespace Rubinator3000.CubeScan {
 
         public static Ellipse CircleByIndicies(int faceIndex, int rowIndex, int colIndex) {
 
-            foreach (ReadPosition pos in positionsToReadAt) {
+            foreach (ReadPosition pos in PositionsToReadAt) {
                 if (pos.RowIndex == rowIndex && pos.ColIndex == colIndex && pos.FaceIndex == faceIndex) {
                     return pos.Circle;
                 }
@@ -306,7 +337,7 @@ namespace Rubinator3000.CubeScan {
 
                 XElement cameraElement = new XElement(XmlCamera, new XAttribute(XmlCameraIndex, currentCameraIndex));
 
-                foreach (ReadPosition pos in positionsToReadAt) {
+                foreach (ReadPosition pos in PositionsToReadAt) {
 
                     if (pos.CameraIndex == currentCameraIndex) {
 
@@ -370,7 +401,7 @@ namespace Rubinator3000.CubeScan {
                 circle = new Ellipse {
                     Width = ReadRadius * 2 + 1,
                     Height = ReadRadius * 2 + 1,
-                    Stroke = Helper.ColorBrush(CubeColor.WHITE), // Default color of circle
+                    Stroke = Helper.ColorBrush(CubeColor.NONE), // Default color of circle will be black
                     StrokeThickness = ReadRadius / 2
                 };
 
@@ -401,7 +432,7 @@ namespace Rubinator3000.CubeScan {
             // Draw all circles
             for (int i = 0; i < canvases.Length; i++) {
 
-                foreach (ReadPosition entry in positionsToReadAt) {
+                foreach (ReadPosition entry in PositionsToReadAt) {
 
                     if (entry.CameraIndex == i) {
 

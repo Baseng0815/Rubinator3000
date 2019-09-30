@@ -23,8 +23,6 @@ namespace Rubinator3000.CubeScan {
 
         private int _bytesPerPixel = 3;
 
-        private bool locked = false;
-
         public FastAccessBitmap(Bitmap bitmap) {
             SetBitmap(bitmap);
         }
