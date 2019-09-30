@@ -44,7 +44,7 @@ namespace Rubinator3000 {
         public MainWindow() {
 
             InitializeComponent();
-            
+
             InitalizeCameraPreviews();
 
 #if DEBUG
@@ -67,10 +67,10 @@ namespace Rubinator3000 {
             cameraPreview2.Source = previewBitmaps[2];
             cameraPreview3.Source = previewBitmaps[3];
 
-            webCamControls[0] = new WebCamControl(0, ref drawingCanvas0, ref previewBitmaps[0]);
-            webCamControls[1] = new WebCamControl(1, ref drawingCanvas1, ref previewBitmaps[1]);
-            webCamControls[2] = new WebCamControl(2, ref drawingCanvas2, ref previewBitmaps[2]);
-            webCamControls[3] = new WebCamControl(3, ref drawingCanvas3, ref previewBitmaps[3]);
+            webCamControls[0] = new WebCamControl(0, ref cameraCanvas0, ref previewBitmaps[0]);
+            webCamControls[1] = new WebCamControl(1, ref cameraCanvas1, ref previewBitmaps[1]);
+            webCamControls[2] = new WebCamControl(2, ref cameraCanvas2, ref previewBitmaps[2]);
+            webCamControls[3] = new WebCamControl(3, ref cameraCanvas3, ref previewBitmaps[3]);
 
             WebCamControl.LoadAllPositionsFromXml();
         }
@@ -82,11 +82,6 @@ namespace Rubinator3000 {
             }
         }
 
-        private void WindowsFormsHost_Initialized(object sender, EventArgs e) {
-
-            winFormsHost.Child = CubeViewer.Window;
-        }
-
         internal void LogStuff(string message) {
 
             if (textBoxLog != null)
@@ -94,19 +89,81 @@ namespace Rubinator3000 {
             else
                 messages.Enqueue(message);
 
+            // Auto Scroll Implementation
             if (winFormsHost.Child != null) {
                 textBoxLog.Focus();
                 textBoxLog.CaretIndex = textBoxLog.Text.Length;
                 textBoxLog.ScrollToEnd();
             }
+
         }
 
         private void TextBoxLog_Initialized(object sender, EventArgs e) {
 
-            if (sender is System.Windows.Controls.TextBox textBox) {
-                while (messages.Count > 0)
-                    textBox.Text += $"{messages.Dequeue()}\r\n";
+            if (sender == textBoxLog) {
+
+                while (messages.Count > 0) {
+
+                    // Append message to textBoxLog-Control
+                    textBoxLog.Text += $"{messages.Dequeue()}\r\n";
+                }
             }
+        }
+
+        private void CameraPreview_MouseDown(object sender, MouseButtonEventArgs e) {
+            
+            // Manual Position Adding
+
+            bool? positionAddingAllowed = allowPosAdd.IsChecked;
+
+            // If chbxPosAdd is not checked, then return
+            if (positionAddingAllowed == null || positionAddingAllowed == false) {
+                return;
+            }
+
+            Image clickedImage = (Image)sender;
+            Point clickPosition = e.GetPosition(clickedImage);
+
+            var colorDialog = new ColorDialog();
+
+            int[] indicies;
+
+            if (colorDialog.ShowDialog() == true) {
+                indicies = colorDialog.Result;
+            }
+            else {
+                return;
+            }
+
+            int cameraIndex = -1;
+
+            if (clickedImage == cameraPreview0)
+                cameraIndex = 0;
+
+            else if (clickedImage == cameraPreview1)
+                cameraIndex = 1;
+
+            else if (clickedImage == cameraPreview2)
+                cameraIndex = 2;
+
+            else if (clickedImage == cameraPreview3)
+                cameraIndex = 3;
+
+            ReadPosition tempPos = new ReadPosition(
+                    clickPosition.X / clickedImage.ActualWidth,
+                    clickPosition.Y / clickedImage.ActualHeight,
+                    indicies[0],
+                    indicies[1],
+                    indicies[2],
+                    cameraIndex
+                );
+
+            WebCamControl.AddPosition(tempPos);
+        }
+
+        private void WinFormsHost_Initialized(object sender, EventArgs e) {
+
+            winFormsHost.Child = CubeViewer.Window;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
@@ -121,5 +178,10 @@ namespace Rubinator3000 {
             System.Windows.Application.Current.Shutdown();
         }
 
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e) {
+
+            Canvas[] canvases = { cameraCanvas0, cameraCanvas1, cameraCanvas2, cameraCanvas3 };
+            WebCamControl.RedrawAllCircles(canvases);
+        }
     }
 }

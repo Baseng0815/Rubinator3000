@@ -26,6 +26,7 @@ namespace Rubinator3000.CubeScan {
         // This list stores the rgb colors at all tiles of the cube. Its used to differentiate between the 6 different colors
         private static readonly ConcurrentDictionary<ReadPosition, Ellipse> positionsToReadAt = new ConcurrentDictionary<ReadPosition, Ellipse>();
         private static readonly Queue<ReadPosition> pendingPositions = new Queue<ReadPosition>();
+        private static int pendingCameraIndex = -1;
 
         private static string PathToXml => ".\\ReadPositions.xml";
 
@@ -115,20 +116,25 @@ namespace Rubinator3000.CubeScan {
 
                 if (!currentBitmap.IsNull()) {
 
-                    // Draw all pending circles on the canvas
+                    // Draw all pending circles on the canvas and add their positions to readPositions
                     while (pendingPositions.Count > 0) {
 
-                        if (pendingPositions.Peek().CameraIndex == cameraIndex) {
+                        if (pendingCameraIndex == -1) {
+
+                            pendingCameraIndex = pendingPositions.Peek().CameraIndex;
+                        }
+                        if (pendingCameraIndex == cameraIndex) {
+
                             ReadPosition pos = pendingPositions.Dequeue();
 
-                            Ellipse circle = DrawCircleAtPosition(pos);
+                            Ellipse circle = DrawCircleAtPosition(pos, drawingCanvas);
 
                             bool success = false;
                             while (!success) {
-
-                                // Add position and related circle (that is drawn on the screen) for later processing
                                 success = positionsToReadAt.TryAdd(pos, circle);
                             }
+
+                            pendingCameraIndex = -1;
                         }
                     }
 
@@ -171,37 +177,6 @@ namespace Rubinator3000.CubeScan {
             currentBitmap.SetBitmap(mat.Bitmap);
 
             currentBitmap.DisplayOnWpfImageControl(previewBitmap);
-        }
-
-        private Ellipse DrawCircleAtPosition(ReadPosition pos) {
-
-            Ellipse circle = null;
-
-            Application.Current.Dispatcher.Invoke(() => {
-
-                // Initialize circle, that should be drawn over camera stream
-                circle = new Ellipse {
-                    Width = ReadRadius * 2 + 1,
-                    Height = ReadRadius * 2 + 1,
-                    Stroke = Helper.ColorBrush(CubeColor.WHITE), // Default color of circle
-                    StrokeThickness = ReadRadius / 2
-                };
-
-                // Add circle to the canvas over the camera stream
-                drawingCanvas.Children.Add(circle);
-
-                // Set position of circle on canvas
-                Canvas.SetLeft(circle, pos.RelativeX * drawingCanvas.ActualWidth);
-                Canvas.SetTop(circle, pos.RelativeY * drawingCanvas.ActualHeight);
-
-            });
-
-            // Wait until GUI-Thread has drawn circle
-            while (circle == null) {
-                Thread.Sleep(1);
-            }
-
-            return circle;
         }
 
         private void ReadColorAtPosition(ReadPosition pos) {
@@ -289,6 +264,8 @@ namespace Rubinator3000.CubeScan {
 
                 // Assign tiles to the cube
                 cube.SetTile((CubeFace)colorAtPos.FaceIndex, colorAtPos.RowIndex * 3 + colorAtPos.ColIndex, currentColorToSet);
+
+                CircleByIndicies(colorAtPos.FaceIndex, colorAtPos.RowIndex, colorAtPos.ColIndex).Stroke = Helper.ColorBrush(currentColorToSet);
             }
         }
 
@@ -308,10 +285,21 @@ namespace Rubinator3000.CubeScan {
             pendingPositions.Enqueue(readPosition);
         }
 
+        public static Ellipse CircleByIndicies(int faceIndex, int rowIndex, int colIndex) {
+
+            foreach (KeyValuePair<ReadPosition, Ellipse> pos in positionsToReadAt) {
+                if (pos.Key.RowIndex == rowIndex && pos.Key.ColIndex == colIndex && pos.Key.FaceIndex == faceIndex) {
+                    return pos.Value;
+                }
+            }
+
+            return null;
+        }
+
         public static void SaveAllPositionsToXml() {
 
             // Setup XmlDocument
-            XDocument docToSave = new XDocument(new XElement(CameraReadPositions)) {
+            XDocument docToSave = new XDocument(new XElement(XmlCameraReadPositions)) {
                 Declaration = new XDeclaration("1.0", "UTF-8", null)
             };
 
@@ -365,6 +353,57 @@ namespace Rubinator3000.CubeScan {
                         int.Parse(cameraElement.Attribute(CameraIndex).Value)
                         )
                     );
+                }
+            }
+        }
+
+        private static Ellipse DrawCircleAtPosition(ReadPosition pos, Canvas canvas) {
+
+            Ellipse circle = null;
+
+            Application.Current.Dispatcher.Invoke(() => {
+
+                // Initialize circle, that should be drawn over camera stream
+                circle = new Ellipse {
+                    Width = ReadRadius * 2 + 1,
+                    Height = ReadRadius * 2 + 1,
+                    Stroke = Helper.ColorBrush(CubeColor.WHITE), // Default color of circle
+                    StrokeThickness = ReadRadius / 2
+                };
+
+                // Add circle to the canvas over the camera stream
+                canvas.Children.Add(circle);
+
+                // Set position of circle on canvas
+                Canvas.SetLeft(circle, pos.RelativeX * canvas.ActualWidth);
+                Canvas.SetTop(circle, pos.RelativeY * canvas.ActualHeight);
+
+            });
+
+            // Wait until GUI-Thread has drawn circle
+            while (circle == null) {
+                Thread.Sleep(1);
+            }
+
+            return circle;
+        }
+
+        public static void RedrawAllCircles(Canvas[] canvases) {
+
+            // Remove all children (circles) of each canvas
+            for (int i = 0; i < canvases.Length; i++) {
+                canvases[i].Children.Clear();
+            }
+
+            // Draw all circles
+            for (int i = 0; i < canvases.Length; i++) {
+                
+                foreach (KeyValuePair<ReadPosition, Ellipse> entry in positionsToReadAt) {
+
+                    if (entry.Key.CameraIndex == i) {
+
+                        DrawCircleAtPosition(entry.Key, canvases[i]);
+                    }
                 }
             }
         }
