@@ -16,18 +16,29 @@ namespace Rubinator3000.CubeScan {
         public Color Color { get; set; } // Stores the Rgb-values of that are read out at the this position
         public Ellipse Circle { get; set; }
 
+<<<<<<< HEAD
         public ReadPosition(double relativeX, double relativeY, int faceIndex, int rowIndex, int colIndex, int cameraIndex, Color? color = null, Ellipse circle = null) {
+=======
+        public ReadPosition(double relativeX, double relativeY, int faceIndex, int rowIndex, int colIndex, int cameraIndex, Color color = new Color(), Ellipse circle = null) {
+>>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
             RelativeX = relativeX;
             RelativeY = relativeY;
             FaceIndex = faceIndex;
             RowIndex = rowIndex;
             ColIndex = colIndex;
             CameraIndex = cameraIndex;
+<<<<<<< HEAD
             Color = color == null ? Color.Empty : color.Value;
             Circle = circle;
         }
 
         // Currently not in use
+=======
+            Color = color;
+            Circle = circle;
+        }
+
+>>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
         public ReadPosition Clone() {
 
             // Creates a clean clone without any references to the old ReadPosition

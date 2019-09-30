@@ -227,9 +227,12 @@ namespace Rubinator3000.CubeScan {
         private static void SortAndValidateColors() {
 
             List<ReadPosition> unsorted = new List<ReadPosition>(PositionsToReadAt);
+<<<<<<< HEAD
 
             // Add the middle-tiles, because they wont be read out with the camera
             unsorted.AddRange(middleTiles);
+=======
+>>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
 
             List<ReadPosition> sorted = new List<ReadPosition>();
 
@@ -239,7 +242,11 @@ namespace Rubinator3000.CubeScan {
                     Log.LogStuff("Cube Generation Failed");
                     return;
                 }
+<<<<<<< HEAD
                 Move9Highest(colorIndex: i, ref unsorted, ref sorted);
+=======
+                Move9Highest(i, ref unsorted, ref sorted);
+>>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
             }
 
             /* the list "sorted" looks now like this
@@ -291,9 +298,14 @@ namespace Rubinator3000.CubeScan {
 
                 Application.Current.Dispatcher.Invoke(() => {
 
+<<<<<<< HEAD
                     if (colorAtPos.RowIndex != 2 && colorAtPos.ColIndex != 2) {
                         CircleByIndicies(colorAtPos.FaceIndex, colorAtPos.RowIndex, colorAtPos.ColIndex).Stroke = Helper.ColorBrush(currentColorToSet);
                     }
+=======
+                    CircleByIndicies(colorAtPos.FaceIndex, colorAtPos.RowIndex, colorAtPos.ColIndex).Stroke = Helper.ColorBrush(currentColorToSet);
+
+>>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
                 });
             }
         }

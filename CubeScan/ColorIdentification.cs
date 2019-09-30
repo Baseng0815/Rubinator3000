@@ -103,6 +103,7 @@ namespace Rubinator3000.CubeScan {
             
             // cubeColorIndex tells, for which cube-color the percentages should be calculated
 
+<<<<<<< HEAD
             if (colorsToCompare.Count == 50) {
                 int i = 0;
             }
@@ -111,6 +112,9 @@ namespace Rubinator3000.CubeScan {
             double maxValue = double.MinValue;
 
             double[] pcts = new double[6];
+=======
+            int max = int.MinValue;
+>>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
 
             for (int i = 0; i < colorsToCompare.Count; i++) {
 
