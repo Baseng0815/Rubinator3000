@@ -4,3 +4,4 @@ D:\GitHub\Rubinator3000\obj\Release\App.g.cs
 D:\GitHub\Rubinator3000\obj\Release\Rubinator3000_Content.g.cs
 D:\GitHub\Rubinator3000\obj\Release\Rubinator3000_MarkupCompile.cache
 D:\GitHub\Rubinator3000\obj\Release\Rubinator3000_MarkupCompile.lref
+D:\GitHub\Rubinator3000\obj\Release\ColorDialog.g.cs

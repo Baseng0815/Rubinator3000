@@ -25,7 +25,7 @@ namespace Rubinator3000.CubeScan {
                 case CubeColor.YELLOW: return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Yellow);
                 case CubeColor.RED: return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Red);
                 case CubeColor.BLUE: return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Blue);
-                default: return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White);
+                default: return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Black);
             }
         }
 

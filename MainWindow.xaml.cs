@@ -18,6 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Rubinator3000 {
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -74,11 +75,10 @@ namespace Rubinator3000 {
             canvases[3] = cameraCanvas3;
 
             webCamControls[0] = new WebCamControl(0, ref canvases[0], ref previewBitmaps[0]);
-            /*
             webCamControls[1] = new WebCamControl(1, ref canvases[1], ref previewBitmaps[1]);
             webCamControls[2] = new WebCamControl(2, ref canvases[2], ref previewBitmaps[2]);
             webCamControls[3] = new WebCamControl(3, ref canvases[3], ref previewBitmaps[3]);
-            */
+            
             WebCamControl.LoadAllPositionsFromXml();
         }
 
@@ -120,6 +120,10 @@ namespace Rubinator3000 {
         private void CameraPreview_MouseDown(object sender, MouseButtonEventArgs e) {
 
             // Manual Position Adding
+
+            if (WebCamControl.PositionsToReadAt.Count >= WebCamControl.MAXPOSITIONSTOREAD) {
+                return;
+            }
 
             bool? positionAddingAllowed = allowPosAdd.IsChecked;
 

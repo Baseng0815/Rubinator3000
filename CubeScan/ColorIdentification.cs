@@ -101,7 +101,7 @@ namespace Rubinator3000.CubeScan {
 
         public static int MaxIndex(int cubeColorIndex, List<ReadPosition> colorsAtPositions) {
 
-            int max = -1;
+            int max = int.MinValue;
 
             for (int i = 0; i < colorsAtPositions.Count; i++) {
 
