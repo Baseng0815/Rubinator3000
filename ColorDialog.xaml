@@ -24,6 +24,7 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Left" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="BorderBrush" Value="#323232" />
         </Style>
     </Window.Resources>
     <Grid>
@@ -52,15 +53,18 @@
         <TextBox
             x:Name="inputFaceIndex"
             Grid.Row="0"
-            Grid.Column="1" />
+            Grid.Column="1"
+            KeyDown="TextBox_KeyDown" />
         <TextBox
             x:Name="inputRowIndex"
             Grid.Row="1"
-            Grid.Column="1" />
+            Grid.Column="1"
+            KeyDown="TextBox_KeyDown" />
         <TextBox
             x:Name="inputColIndex"
             Grid.Row="2"
-            Grid.Column="1" />
+            Grid.Column="1"
+            KeyDown="TextBox_KeyDown" />
 
         <Button
             Grid.Row="3"
@@ -69,6 +73,6 @@
             Margin="2,2,2,2"
             VerticalAlignment="Center"
             Click="Button_Click"
-            Content="Submit" />
+            Content="Confirm" />
     </Grid>
 </Window>

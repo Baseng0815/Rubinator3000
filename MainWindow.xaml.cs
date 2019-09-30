@@ -28,6 +28,7 @@ namespace Rubinator3000 {
 
         private WriteableBitmap[] previewBitmaps = new WriteableBitmap[4];
         private WebCamControl[] webCamControls = new WebCamControl[4];
+        private Canvas[] canvases = new Canvas[4];
 
         public Cube Cube {
             get => cube;
@@ -67,11 +68,17 @@ namespace Rubinator3000 {
             cameraPreview2.Source = previewBitmaps[2];
             cameraPreview3.Source = previewBitmaps[3];
 
-            webCamControls[0] = new WebCamControl(0, ref cameraCanvas0, ref previewBitmaps[0]);
-            webCamControls[1] = new WebCamControl(1, ref cameraCanvas1, ref previewBitmaps[1]);
-            webCamControls[2] = new WebCamControl(2, ref cameraCanvas2, ref previewBitmaps[2]);
-            webCamControls[3] = new WebCamControl(3, ref cameraCanvas3, ref previewBitmaps[3]);
+            canvases[0] = cameraCanvas0;
+            canvases[1] = cameraCanvas1;
+            canvases[2] = cameraCanvas2;
+            canvases[3] = cameraCanvas3;
 
+            webCamControls[0] = new WebCamControl(0, ref canvases[0], ref previewBitmaps[0]);
+            /*
+            webCamControls[1] = new WebCamControl(1, ref canvases[1], ref previewBitmaps[1]);
+            webCamControls[2] = new WebCamControl(2, ref canvases[2], ref previewBitmaps[2]);
+            webCamControls[3] = new WebCamControl(3, ref canvases[3], ref previewBitmaps[3]);
+            */
             WebCamControl.LoadAllPositionsFromXml();
         }
 
@@ -111,7 +118,7 @@ namespace Rubinator3000 {
         }
 
         private void CameraPreview_MouseDown(object sender, MouseButtonEventArgs e) {
-            
+
             // Manual Position Adding
 
             bool? positionAddingAllowed = allowPosAdd.IsChecked;
@@ -158,7 +165,7 @@ namespace Rubinator3000 {
                     cameraIndex
                 );
 
-            WebCamControl.AddPosition(tempPos);
+            WebCamControl.AddPosition(tempPos, cameraIndex);
         }
 
         private void WinFormsHost_Initialized(object sender, EventArgs e) {
@@ -178,10 +185,6 @@ namespace Rubinator3000 {
             System.Windows.Application.Current.Shutdown();
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e) {
-
-            Canvas[] canvases = { cameraCanvas0, cameraCanvas1, cameraCanvas2, cameraCanvas3 };
-            WebCamControl.RedrawAllCircles(canvases);
-        }
     }
 }
+
