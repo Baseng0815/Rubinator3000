@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define DEBUG_CROSS
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,13 +28,23 @@ namespace Rubinator3000.Solving {
 
         protected override void CalcMoves() {
             // die Steine in die richtige Orientierung bringen
+#if DEBUG_CROSS
+            Log.LogStuff("Start stone orientation");
+#endif
             OrientateStones();
 
             if (Solved)
                 return;
 
+#if DEBUG_CROSS
+            Log.LogStuff("Select Pivot Stone");
+#endif
+
             // überprüfen, ob sich ein Kantenstein auf der weißen Seite befindet
             if (whiteEdges.Any(e => e.GetColorPosition(WHITE).Face == UP)) {
+#if DEBUG_CROSS
+                Log.LogStuff("Found stone on white face");
+#endif
                 int[] count = CountRightStones();
 
                 int maxCount = count.Max();
@@ -46,6 +57,9 @@ namespace Rubinator3000.Solving {
                 pivotStone = whiteEdges.First(e => e.InRightPosition());
             }
             else {
+#if DEBUG_CROSS
+                Log.LogStuff("No stone on white face");
+#endif
                 CubeFace faceToRot; int count;
 
                 // das Pivot Element "zufällig" festlegen
@@ -69,6 +83,9 @@ namespace Rubinator3000.Solving {
 
                 DoMove(faceToRot, count);
             }
+#if DEBUG_CROSS
+            Log.LogStuff("Pivot selected: " + pivotStone.GetColors().First(c => c != WHITE));
+#endif
 
             MoveStonesToWhiteFace();
 
@@ -83,9 +100,15 @@ namespace Rubinator3000.Solving {
             // alle 4 seitlichen Seiten überprüfen
             for (int f = 0; f < 4; f++) {
                 CubeFace face = MiddleLayerFaces[f];
+#if DEBUG_CROSS
+                Log.LogStuff(string.Format("Orientate stones on {0} face", face));
+#endif
 
                 // überprüfen, ob sich weiße Kantensteine in falscher Orientierung befinden
                 if (cube.At(face, 1) == WHITE || cube.At(face, 7) == WHITE) {
+#if DEBUG_CROSS
+                    Log.LogStuff("False orientated stones found");
+#endif
 
                     // richtig orientierte Steine in Sicherheit bringen
                     while (cube.At(face, 3) == WHITE) {
@@ -127,9 +150,16 @@ namespace Rubinator3000.Solving {
         /// </summary>
         protected void MoveStonesToWhiteFace() {
             Func<EdgeStone, bool> predicate = e => e.GetColorPosition(WHITE).Face != UP;
+#if DEBUG_CROSS
+            Log.LogStuff("Move stones to white face");
+#endif
 
             while (whiteEdges.Any(predicate)) {
                 EdgeStone edge = whiteEdges.First(predicate);
+
+#if DEBUG_CROSS
+                Log.LogStuff("Move " + edge.GetColors().First(c => c != WHITE) + " to white face\r\nPosition: " + edge.GetColorPosition(c => c != WHITE).ToString());
+#endif
 
                 // die weiße Seite ricthig ausrichten
                 int delta = GetDelta(edge);
