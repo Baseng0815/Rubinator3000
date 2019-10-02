@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Rubinator3000.CubeScan {
     static class ColorIdentification {
 
         // "color" is the rgb color, that should be identified
-        private static double[] CalculateColor(Color color) {
+        public static double[] CalculateColorPercentages(Color color) {
 
             double[] percentages = new double[6];
             percentages[0] = OrangePercentage(color);
@@ -25,7 +26,9 @@ namespace Rubinator3000.CubeScan {
 
             // Very high if r is far away from b and r*(11/17) is close to g
             percentageSum += 1 - (color.B / (double)color.R);
-            percentageSum += 1 - (color.B / ((double)color.R) * (11 / (double)17));
+
+            double orangeValue = (color.R * (106 / (double)255));
+            percentageSum += orangeValue > color.G ? color.G / orangeValue : orangeValue / color.G;
 
             double percentage = percentageSum / 2;
 
@@ -37,9 +40,10 @@ namespace Rubinator3000.CubeScan {
             double percentageSum = 0;
 
             // Very high if r, g and b are very close together
-            percentageSum += 1 - Math.Abs(color.R - color.G);
-            percentageSum += 1 - Math.Abs(color.R - color.B);
-            percentageSum += 1 - Math.Abs(color.G - color.B);
+
+            percentageSum += color.R > color.G ? (color.G / (double)color.R) : (color.R / (double)color.G);
+            percentageSum += color.R > color.B ? (color.B / (double)color.R) : (color.R / (double)color.B);
+            percentageSum += color.G > color.B ? (color.B / (double)color.G) : (color.G / (double)color.B);
 
             double percentage = percentageSum / 3;
 
@@ -99,41 +103,26 @@ namespace Rubinator3000.CubeScan {
             return percentage;
         }
 
-        public static int MaxIndex(int cubeColorIndex, List<ReadPosition> colorsToCompare) {
-            
-            // cubeColorIndex tells, for which cube-color the percentages should be calculated
+        public static int[] Max8Indicies(CubeColor cubeColor, List<ReadPosition> ctc) {
 
-<<<<<<< HEAD
-            if (colorsToCompare.Count == 50) {
-                int i = 0;
+            if (ctc.Count == 8) {
+
+                return new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
             }
 
-            int maxIndex = -1;
-            double maxValue = double.MinValue;
+            // <index, percentage of cubeColor>
+            Dictionary<int, double> probableIndicies = new Dictionary<int, double>();
 
-            double[] pcts = new double[6];
-=======
-            int max = int.MinValue;
->>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
+            for (int i = 0; i < ctc.Count; i++) {
 
-            for (int i = 0; i < colorsToCompare.Count; i++) {
-
-                pcts = CalculateColor(colorsToCompare[i].Color);
-
-                if (pcts[cubeColorIndex] > maxValue) {
-
-                    maxIndex = i;
-                }
+                probableIndicies.Add(i, ctc[i].Percentages[(int)cubeColor]);
             }
 
-            if (maxIndex == -1) {
-                int cci = cubeColorIndex;
-                List<ReadPosition> ctc = colorsToCompare;
-                double[] ds = pcts;
-                return maxIndex;
-            }
+            probableIndicies = probableIndicies.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
-            return maxIndex;
-        }
+            List<ReadPosition> lrp = ctc;
+
+            return probableIndicies.Keys.ToList().GetRange(probableIndicies.Count - 8, 8).ToArray();
+        }   
     }
 }

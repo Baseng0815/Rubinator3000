@@ -434,7 +434,6 @@ D:\GitHub\Rubinator3000\obj\Debug\MainWindow.baml
 D:\GitHub\Rubinator3000\obj\Debug\Rubinator3000.g.resources
 D:\GitHub\Rubinator3000\obj\Debug\Rubinator3000.Properties.Resources.resources
 D:\GitHub\Rubinator3000\obj\Debug\Rubinator3000.csproj.GenerateResource.cache
-D:\GitHub\Rubinator3000\obj\Debug\Rubinator3000.csproj.CoreCompileInputs.cache
 D:\GitHub\Rubinator3000\obj\Debug\Rubinator3000.csproj.CopyComplete
 D:\GitHub\Rubinator3000\obj\Debug\Rubinator3000.exe
 D:\GitHub\Rubinator3000\obj\Debug\Rubinator3000.pdb

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
@@ -37,15 +38,6 @@ namespace Rubinator3000.CubeScan {
             new Queue<ReadPosition>(),
             new Queue<ReadPosition>()
         };
-
-        public static readonly List<ReadPosition> middleTiles = new List<ReadPosition>() {
-            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 255, 165, 0)), // Orange
-            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 255, 255, 255)), // White
-            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 0, 0, 255)), // Green
-            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 255, 255, 0)), // Yellow
-            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 255, 0, 0)), // Red
-            new ReadPosition(-1, -1, 0, 2, 2, -1, Color.FromArgb(255, 0, 0, 255)) // Blue
-            };
 
         private static long lastCubeGeneration = Helper.CurrentTimeMillis();
 
@@ -139,11 +131,13 @@ namespace Rubinator3000.CubeScan {
                 while (frameUpdates.Count > 0) {
 
                     Bitmap bmp = frameUpdates.Dequeue();
-                    DisplayOnWpfImageControl(new Bitmap(bmp), previewBitmap);
+                    Bitmap bitmap = new Bitmap(bmp);
+                    DisplayOnWpfImageControl(bitmap, previewBitmap);
+                    bitmap.Dispose();
                     currentBitmap.SetBitmap(bmp);
                 }
 
-                // Draw all circles of positions on canvas
+                // Add all pendingPositions to PositionsToReadAt and draw their circles
                 while (pendingPositions[cameraIndex].Count > 0) {
                     ReadPosition pos = pendingPositions[cameraIndex].Dequeue();
 
@@ -226,98 +220,48 @@ namespace Rubinator3000.CubeScan {
 
         private static void SortAndValidateColors() {
 
-            List<ReadPosition> unsorted = new List<ReadPosition>(PositionsToReadAt);
-<<<<<<< HEAD
+            // Positions left to assign
+            List<ReadPosition> positions = new List<ReadPosition>(PositionsToReadAt);
 
-            // Add the middle-tiles, because they wont be read out with the camera
-            unsorted.AddRange(middleTiles);
-=======
->>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
+            // Assign color percentages to each color
+            for (int i = 0; i < positions.Count; i++) {
 
-            List<ReadPosition> sorted = new List<ReadPosition>();
-
-            // This for loop moves all colors from the unsorted list to the sorted list while sorting them ()
-            for (int i = 0; i < 6; i++) {
-                if (!(unsorted.Count >= 9)) {
-                    Log.LogStuff("Cube Generation Failed");
-                    return;
-                }
-<<<<<<< HEAD
-                Move9Highest(colorIndex: i, ref unsorted, ref sorted);
-=======
-                Move9Highest(i, ref unsorted, ref sorted);
->>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
+                positions[i].Percentages = ColorIdentification.CalculateColorPercentages(positions[i].Color);
             }
-
-            /* the list "sorted" looks now like this
-             *  indicies 0-8:   all positions, with orange tiles
-             *  indicies 9-17:  all positions, with white tiles
-             *  indicies 18-26: all positions, with green tiles
-             *  indicies 27-35: all positions, with yellow tiles
-             *  indicies 36-44: all positions, with red tiles
-             *  indicies 45-53: all positions, with blue tiles
-             */
 
             Cube cube = new Cube();
 
-            for (int i = 0; i < sorted.Count; i++) {
+            for (int i = 0; i < 6; i++) {
 
-                ReadPosition colorAtPos = sorted[i];
+                CubeColor currentCubeColor = (CubeColor)i;
 
-                /* "currentColorToSet" changes in switch 
-                * -> the first 9 loop cycles assign all orange tiles to the cube
-                * -> the next 9 loop cycles assign all white tiles
-                * etc.
-                */
-                CubeColor currentColorToSet = CubeColor.NONE;
+                int[] maxIndicies = ColorIdentification.Max8Indicies(currentCubeColor, positions);
 
-                switch (Math.Floor(i / 8d)) {
+                List<ReadPosition> positionsToRemove = new List<ReadPosition>();
 
-                    case (int)CubeColor.ORANGE:
-                        currentColorToSet = CubeColor.ORANGE;
-                        break;
-                    case (int)CubeColor.WHITE:
-                        currentColorToSet = CubeColor.WHITE;
-                        break;
-                    case (int)CubeColor.GREEN:
-                        currentColorToSet = CubeColor.GREEN;
-                        break;
-                    case (int)CubeColor.YELLOW:
-                        currentColorToSet = CubeColor.YELLOW;
-                        break;
-                    case (int)CubeColor.RED:
-                        currentColorToSet = CubeColor.RED;
-                        break;
-                    case (int)CubeColor.BLUE:
-                        currentColorToSet = CubeColor.BLUE;
-                        break;
+                for (int j = 0; j < maxIndicies.Length; j++) {
+
+                    // Assign tiles to the cube
+                    cube.SetTile((CubeFace)(positions[maxIndicies[j]].FaceIndex), positions[maxIndicies[j]].RowIndex * 3 + positions[maxIndicies[j]].ColIndex, currentCubeColor);
+                    positions[maxIndicies[j]].AssumedCubeColor = currentCubeColor;
+
+                    // Dye the circle of the readposition in the corresponding color
+                    Application.Current.Dispatcher.Invoke(() => {
+                        
+                        // Change color of all the circles
+                        CircleByIndicies(positions[maxIndicies[j]].FaceIndex, positions[maxIndicies[j]].RowIndex, positions[maxIndicies[j]].ColIndex).Stroke = Helper.ColorBrush(currentCubeColor);
+                    });
+                    positionsToRemove.Add(positions[j]);
                 }
 
-                // Assign tiles to the cube
-                cube.SetTile((CubeFace)colorAtPos.FaceIndex, colorAtPos.RowIndex * 3 + colorAtPos.ColIndex, currentColorToSet);
+                // Sort maxIndicies -> highest value at index=0
+                maxIndicies = maxIndicies.OrderByDescending(c => c).ToArray();
 
-                Application.Current.Dispatcher.Invoke(() => {
+                // Remove all positions, that were assigned to the cube in this loop cycle
+                for (int j = 0; j < maxIndicies.Length; j++) {
 
-<<<<<<< HEAD
-                    if (colorAtPos.RowIndex != 2 && colorAtPos.ColIndex != 2) {
-                        CircleByIndicies(colorAtPos.FaceIndex, colorAtPos.RowIndex, colorAtPos.ColIndex).Stroke = Helper.ColorBrush(currentColorToSet);
-                    }
-=======
-                    CircleByIndicies(colorAtPos.FaceIndex, colorAtPos.RowIndex, colorAtPos.ColIndex).Stroke = Helper.ColorBrush(currentColorToSet);
-
->>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
-                });
-            }
-        }
-
-        private static void Move9Highest(int colorIndex, ref List<ReadPosition> unsortedSource, ref List<ReadPosition> sortedDestination) {
-
-            // Find indicies of 9 highest color-percentages of "colorIndex" in unsortedSource and move them to the sortedDestination
-            for (int i = 0; i < 9; i++) {
-
-                int maxIndex = ColorIdentification.MaxIndex(colorIndex, unsortedSource);
-                sortedDestination.Add(unsortedSource[maxIndex]);
-                unsortedSource.RemoveAt(maxIndex);
+                    positions.RemoveAt(maxIndicies[j]);
+                }
             }
         }
 
@@ -353,7 +297,7 @@ namespace Rubinator3000.CubeScan {
 
                     if (pos.CameraIndex == currentCameraIndex) {
 
-                        XElement readPositionElement = new XElement(XmlDesignations.XmlReadPosition);
+                        XElement readPositionElement = new XElement(XmlReadPosition);
                         readPositionElement.Add(new XAttribute(XmlRelativeX, pos.RelativeX));
                         readPositionElement.Add(new XAttribute(XmlRelativeY, pos.RelativeY));
                         readPositionElement.Add(new XAttribute(XmlFaceIndex, pos.FaceIndex));
@@ -362,10 +306,10 @@ namespace Rubinator3000.CubeScan {
 
                         cameraElement.Add(readPositionElement);
                     }
-
-                    // "doc.Root" is the XElement defined in the Constructor of "doc"
-                    docToSave.Root.Add(cameraElement);
                 }
+
+                // "doc.Root" is the XElement defined in the Constructor of "doc"
+                docToSave.Root.Add(cameraElement);
             }
 
             if (File.Exists(PathToXml)) {
@@ -409,49 +353,28 @@ namespace Rubinator3000.CubeScan {
 
             Application.Current.Dispatcher.Invoke(() => {
 
-                // Initialize circle, that should be drawn over camera stream
-                circle = new Ellipse {
-                    Width = ReadRadius * 2 + 1,
-                    Height = ReadRadius * 2 + 1,
-                    Stroke = Helper.ColorBrush(CubeColor.NONE), // Default color of circle will be black
-                    StrokeThickness = ReadRadius / 2
-                };
-
-                // Add circle to the canvas over the camera stream
-                canvas.Children.Add(circle);
+                circle = GenerateCircle(pos.AssumedCubeColor);
 
                 // Set position of circle on canvas
                 Canvas.SetLeft(circle, pos.RelativeX * canvas.ActualWidth - ReadRadius);
                 Canvas.SetTop(circle, pos.RelativeY * canvas.ActualHeight - ReadRadius);
 
+                // Add circle to the canvas over the camera stream
+                canvas.Children.Add(circle);
             });
-
-            // Wait until GUI-Thread has drawn circle
-            while (circle == null) {
-                Thread.Sleep(1);
-            }
 
             return circle;
         }
 
-        public static void RedrawAllCircles(Canvas[] canvases) {
+        private static Ellipse GenerateCircle(CubeColor cc) {
 
-            // Remove all children (circles) of each canvas
-            for (int i = 0; i < canvases.Length; i++) {
-                canvases[i].Children.Clear();
-            }
-
-            // Draw all circles
-            for (int i = 0; i < canvases.Length; i++) {
-
-                foreach (ReadPosition entry in PositionsToReadAt) {
-
-                    if (entry.CameraIndex == i) {
-
-                        DrawCircleAtPosition(entry, canvases[i]);
-                    }
-                }
-            }
+            // Initialize circle, that should be drawn over camera stream
+            return new Ellipse {
+                Width = ReadRadius * 2 + 1,
+                Height = ReadRadius * 2 + 1,
+                Stroke = Helper.ColorBrush(cc),
+                StrokeThickness = ReadRadius / 1.5
+            };
         }
 
         public static void DisplayOnWpfImageControl(Bitmap bitmap, WriteableBitmap writeableBitmap) {
@@ -460,7 +383,7 @@ namespace Rubinator3000.CubeScan {
                 // Reserve the backBuffer of writeableBitmap for updates
                 writeableBitmap.Lock();
                 unsafe {
-                    BitmapData tempData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                    BitmapData tempData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
                     // CopyMemory(destPointer, sourcePointer, byteLength to copy);
                     CopyMemory(writeableBitmap.BackBuffer, tempData.Scan0, writeableBitmap.BackBufferStride * bitmap.Height);

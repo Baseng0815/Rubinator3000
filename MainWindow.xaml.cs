@@ -29,7 +29,7 @@ namespace Rubinator3000 {
 
         private WriteableBitmap[] previewBitmaps = new WriteableBitmap[4];
         private WebCamControl[] webCamControls = new WebCamControl[4];
-        private Canvas[] canvases = new Canvas[4];
+        public static Canvas[] canvases = new Canvas[4];
 
         public Cube Cube {
             get => cube;
@@ -121,7 +121,7 @@ namespace Rubinator3000 {
 
             // Manual Position Adding
 
-            if (WebCamControl.PositionsToReadAt.Count >= WebCamControl.MAXPOSITIONSTOREAD) {
+            if (WebCamControl.PositionsToReadAt.Count == WebCamControl.MAXPOSITIONSTOREAD) {
                 return;
             }
 

@@ -15,30 +15,26 @@ namespace Rubinator3000.CubeScan {
         public int CameraIndex { get; set; }
         public Color Color { get; set; } // Stores the Rgb-values of that are read out at the this position
         public Ellipse Circle { get; set; }
+        public double[] Percentages { get; set; }
+        public CubeColor AssumedCubeColor { get; set; }
 
-<<<<<<< HEAD
-        public ReadPosition(double relativeX, double relativeY, int faceIndex, int rowIndex, int colIndex, int cameraIndex, Color? color = null, Ellipse circle = null) {
-=======
-        public ReadPosition(double relativeX, double relativeY, int faceIndex, int rowIndex, int colIndex, int cameraIndex, Color color = new Color(), Ellipse circle = null) {
->>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
+        public ReadPosition(double relativeX, double relativeY, int faceIndex, int rowIndex, int colIndex, int cameraIndex, Color? color = null, Ellipse circle = null, double[] percentages = null, CubeColor cubeColor = CubeColor.NONE) {
+
             RelativeX = relativeX;
             RelativeY = relativeY;
             FaceIndex = faceIndex;
             RowIndex = rowIndex;
             ColIndex = colIndex;
             CameraIndex = cameraIndex;
-<<<<<<< HEAD
+
             Color = color == null ? Color.Empty : color.Value;
             Circle = circle;
+            Percentages = percentages;
+            Percentages = percentages == null ? new double[6] : percentages;
+            AssumedCubeColor = cubeColor;
         }
 
         // Currently not in use
-=======
-            Color = color;
-            Circle = circle;
-        }
-
->>>>>>> 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97
         public ReadPosition Clone() {
 
             // Creates a clean clone without any references to the old ReadPosition
@@ -56,12 +52,14 @@ namespace Rubinator3000.CubeScan {
                     Height = Convert.ToDouble(Circle.Height),
                     Stroke = new System.Windows.Media.SolidColorBrush(
                         System.Windows.Media.Color.FromArgb(
-                            Convert.ToByte(((System.Windows.Media.SolidColorBrush)Circle.Stroke).Color.A), 
-                            Convert.ToByte(((System.Windows.Media.SolidColorBrush)Circle.Stroke).Color.R), 
-                            Convert.ToByte(((System.Windows.Media.SolidColorBrush)Circle.Stroke).Color.G), 
+                            Convert.ToByte(((System.Windows.Media.SolidColorBrush)Circle.Stroke).Color.A),
+                            Convert.ToByte(((System.Windows.Media.SolidColorBrush)Circle.Stroke).Color.R),
+                            Convert.ToByte(((System.Windows.Media.SolidColorBrush)Circle.Stroke).Color.G),
                             Convert.ToByte(((System.Windows.Media.SolidColorBrush)Circle.Stroke).Color.B))),
                     StrokeThickness = Convert.ToDouble(Circle.StrokeThickness)
-                }
+                },
+                (double[])Percentages.Clone(),
+                AssumedCubeColor
             );
         }
     }
