@@ -92,7 +92,6 @@
     <Compile Include="CubeScan\Helper.cs" />
     <Compile Include="CubeScan\WebCamControl.cs" />
     <Compile Include="CubeScan\XmlElementDesignations.cs" />
-    <Compile Include="CubeViewer\DrawFlat.cs" />
     <Compile Include="CubeViewer\FlatTransformations.cs" />
     <Compile Include="Cube\Stones.cs" />
     <Compile Include="Log.cs" />
@@ -119,7 +118,6 @@
     <Compile Include="CubeViewer\DrawCube.cs" />
     <Compile Include="CubeViewer\Model.cs" />
     <Compile Include="CubeViewer\CubeTransformations.cs" />
-    <Compile Include="CubeViewer\Renderer.cs" />
     <Compile Include="CubeViewer\ResourceManager.cs" />
     <Compile Include="CubeViewer\Shader.cs" />
     <Compile Include="CubeViewer\Texture.cs" />

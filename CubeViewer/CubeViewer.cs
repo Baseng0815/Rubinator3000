@@ -46,8 +46,7 @@ namespace Rubinator3000
                 renderColors[i] /= 255f;
 
             DrawCube.Init(renderColors);
-            DrawFlat.Init(renderColors);
-            Log.LogStuff("DrawCube and DrawFlat initialized.");
+            Log.LogStuff("DrawCube initialized.");
 
             Window = new GLControl();
             Window.VSync = false;
@@ -56,6 +55,9 @@ namespace Rubinator3000
                 Settings.CameraFov, Settings.CameraDistance);
 
             Log.LogStuff("Window and view initialized.");
+
+            GL.Enable(EnableCap.DepthTest);
+            GL.ClearColor(Color.Black);
 
             // add events to window
             Window.Resize += WindowResizeEvent;
