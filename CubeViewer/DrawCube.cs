@@ -102,7 +102,8 @@ namespace Rubinator3000 {
                     }
 
                     currentState = move.EndState;
-                    faceRotations[(int)move.Move.Face] = 0;
+                    if (move.Move != null)
+                        faceRotations[(int)move.Move.Face] = 0;
                 }
             }
         }
@@ -160,7 +161,8 @@ namespace Rubinator3000 {
             // deep copy because otherwise, the arrays would refer to the same memory
             moveQueue.Enqueue(new AnimatedMove { Move = move, EndState = (Cube)endState.Clone(), TurnDuration = Settings.MoveAnimatedTime });
 
-            Log.LogStuff($"Animate Move: {move.ToString()}");
+            if (move != null)
+                Log.LogStuff($"Animate Move: {move.ToString()}");
         }
 
         public static void Draw(View view) {

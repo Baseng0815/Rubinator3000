@@ -44,7 +44,6 @@ namespace Rubinator3000 {
         }
 
         public MainWindow() {
-
             InitializeComponent();
 
             InitalizeCameraPreviews();

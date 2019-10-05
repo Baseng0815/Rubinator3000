@@ -1,59 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CameraReadPositions>
-  <Camera CameraIndex="0">
-    <ReadPosition RelativeX="0.19076330183988066" RelativeY="0.1808387203712914" FaceIndex="0" RowIndex="0" ColIndex="0" />
-    <ReadPosition RelativeX="0.19076330183988066" RelativeY="0.39632023868722044" FaceIndex="0" RowIndex="0" ColIndex="1" />
-    <ReadPosition RelativeX="0.38034559920437594" RelativeY="0.392176363334991" FaceIndex="0" RowIndex="0" ColIndex="2" />
-    <ReadPosition RelativeX="0.16590004972650421" RelativeY="0.57036300348085545" FaceIndex="0" RowIndex="1" ColIndex="0" />
-    <ReadPosition RelativeX="0.37762618100447537" RelativeY="0.54964362671970846" FaceIndex="0" RowIndex="1" ColIndex="2" />
-    <ReadPosition RelativeX="0.19736760318249627" RelativeY="0.78584452179678443" FaceIndex="0" RowIndex="2" ColIndex="0" />
-    <ReadPosition RelativeX="0.3620866484336151" RelativeY="0.78998839714901392" FaceIndex="0" RowIndex="2" ColIndex="1" />
-    <ReadPosition RelativeX="0.56410057185479856" RelativeY="0.802420023205702" FaceIndex="0" RowIndex="2" ColIndex="2" />
-    <ReadPosition RelativeX="0.60100696171059176" RelativeY="0.58279462953754368" FaceIndex="1" RowIndex="0" ColIndex="0" />
-    <ReadPosition RelativeX="0.60411486822476379" RelativeY="0.37560086192607339" FaceIndex="1" RowIndex="0" ColIndex="1" />
-    <ReadPosition RelativeX="0.80923669816011934" RelativeY="0.40460798939167925" FaceIndex="1" RowIndex="0" ColIndex="2" />
-    <ReadPosition RelativeX="0.7968050721034311" RelativeY="0.1891264710757502" FaceIndex="1" RowIndex="1" ColIndex="0" />
-    <ReadPosition RelativeX="0.39377431906614785" RelativeY="0.17618158236057088" FaceIndex="5" RowIndex="0" ColIndex="0" />
-    <ReadPosition RelativeX="0.58054474708171211" RelativeY="0.16788067444876803" FaceIndex="5" RowIndex="0" ColIndex="1" />
-  </Camera>
-  <Camera CameraIndex="1">
-    <ReadPosition RelativeX="0.20319492789656887" RelativeY="0.42947124150505567" FaceIndex="1" RowIndex="1" ColIndex="2" />
-    <ReadPosition RelativeX="0.19387120835405269" RelativeY="0.61180175700314943" FaceIndex="1" RowIndex="2" ColIndex="0" />
-    <ReadPosition RelativeX="0.20008702138239681" RelativeY="0.78998839714901392" FaceIndex="1" RowIndex="2" ColIndex="1" />
-    <ReadPosition RelativeX="0.39277722526106412" RelativeY="0.82728327531907853" FaceIndex="1" RowIndex="2" ColIndex="2" />
-    <ReadPosition RelativeX="0.44561163600198905" RelativeY="0.20155809713243841" FaceIndex="2" RowIndex="0" ColIndex="0" />
-    <ReadPosition RelativeX="0.58235952262555946" RelativeY="0.1808387203712914" FaceIndex="2" RowIndex="0" ColIndex="1" />
-    <ReadPosition RelativeX="0.790589259075087" RelativeY="0.16426321896237378" FaceIndex="2" RowIndex="0" ColIndex="2" />
-    <ReadPosition RelativeX="0.60722277473893582" RelativeY="0.37974473727830282" FaceIndex="2" RowIndex="1" ColIndex="0" />
-    <ReadPosition RelativeX="0.59789905519641973" RelativeY="0.54135587601524959" FaceIndex="2" RowIndex="1" ColIndex="2" />
-    <ReadPosition RelativeX="0.60722277473893582" RelativeY="0.76512514503563744" FaceIndex="2" RowIndex="2" ColIndex="0" />
-    <ReadPosition RelativeX="0.20933852140077822" RelativeY="0.19278339818417659" FaceIndex="5" RowIndex="0" ColIndex="2" />
-    <ReadPosition RelativeX="0.39922178988326851" RelativeY="0.42935927367055793" FaceIndex="5" RowIndex="1" ColIndex="0" />
-    <ReadPosition RelativeX="0.40856031128404668" RelativeY="0.63273151750972778" FaceIndex="5" RowIndex="1" ColIndex="2" />
-    <ReadPosition RelativeX="0.80389105058365762" RelativeY="0.42105836575875505" FaceIndex="5" RowIndex="2" ColIndex="0" />
-    <ReadPosition RelativeX="0.78832684824902721" RelativeY="0.60782879377431931" FaceIndex="5" RowIndex="2" ColIndex="1" />
-    <ReadPosition RelativeX="0.78832684824902721" RelativeY="0.80290012970168634" FaceIndex="5" RowIndex="2" ColIndex="2" />
-  </Camera>
-  <Camera CameraIndex="2">
-    <ReadPosition RelativeX="0.21251864743908502" RelativeY="0.18365655561080743" FaceIndex="2" RowIndex="2" ColIndex="1" />
-    <ReadPosition RelativeX="0.19387120835405269" RelativeY="0.40742582463119525" FaceIndex="2" RowIndex="2" ColIndex="2" />
-    <ReadPosition RelativeX="0.39588513177523621" RelativeY="0.18365655561080743" FaceIndex="3" RowIndex="0" ColIndex="0" />
-    <ReadPosition RelativeX="0.37102187966185979" RelativeY="0.39499419857450707" FaceIndex="3" RowIndex="0" ColIndex="1" />
-    <ReadPosition RelativeX="0.14725261064147188" RelativeY="0.57732471407260089" FaceIndex="3" RowIndex="0" ColIndex="2" />
-    <ReadPosition RelativeX="0.153468423669816" RelativeY="0.743079728161777" FaceIndex="3" RowIndex="1" ColIndex="0" />
-    <ReadPosition RelativeX="0.35237444057682743" RelativeY="0.58146858942483026" FaceIndex="3" RowIndex="1" ColIndex="2" />
-    <ReadPosition RelativeX="0.35237444057682743" RelativeY="0.77208685562738288" FaceIndex="3" RowIndex="2" ColIndex="0" />
-    <ReadPosition RelativeX="0.560604177026355" RelativeY="0.64362671970827134" FaceIndex="3" RowIndex="2" ColIndex="1" />
-    <ReadPosition RelativeX="0.56992789656887122" RelativeY="0.80523785844521811" FaceIndex="3" RowIndex="2" ColIndex="2" />
-    <ReadPosition RelativeX="0.82166832421680758" RelativeY="0.12149842532736635" FaceIndex="4" RowIndex="0" ColIndex="0" />
-    <ReadPosition RelativeX="0.81545251118846351" RelativeY="0.43228907674457168" FaceIndex="4" RowIndex="0" ColIndex="1" />
-  </Camera>
-  <Camera CameraIndex="3">
-    <ReadPosition RelativeX="0.19697911486822511" RelativeY="0.16708105420188979" FaceIndex="4" RowIndex="0" ColIndex="2" />
-    <ReadPosition RelativeX="0.19377431906614787" RelativeY="0.40727885862516222" FaceIndex="4" RowIndex="1" ColIndex="0" />
-    <ReadPosition RelativeX="0.40856031128404668" RelativeY="0.38652658884565511" FaceIndex="4" RowIndex="1" ColIndex="2" />
-    <ReadPosition RelativeX="0.421011673151751" RelativeY="0.589898832684825" FaceIndex="4" RowIndex="2" ColIndex="0" />
-    <ReadPosition RelativeX="0.43035019455252921" RelativeY="0.843076523994812" FaceIndex="4" RowIndex="2" ColIndex="1" />
-    <ReadPosition RelativeX="0.26848249027237353" RelativeY="0.85552788586251627" FaceIndex="4" RowIndex="2" ColIndex="2" />
-  </Camera>
+  <Camera CameraIndex="0" />
+  <Camera CameraIndex="1" />
+  <Camera CameraIndex="2" />
+  <Camera CameraIndex="3" />
 </CameraReadPositions>
