@@ -124,7 +124,7 @@ namespace Rubinator3000
             // clear the window
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            Renderer.Render(view);
+            DrawCube.Draw(view);
 
             // swap back and front buffers
             Window.SwapBuffers();

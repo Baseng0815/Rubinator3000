@@ -22,9 +22,13 @@ namespace Rubinator3000 {
         }
     }
 
+    public enum CubeDisplayMode { NONE = 0, FLAT = 1, CUBE = 2 };
+
     public static class DrawCube {
         // colors[CuboidIndex, FaceIndex]
         private static Cube currentState;
+
+        private static Shader cubeShader, flatShader;
 
         // a cuboid may be rotated only by one face at a time
         // i.e. rotations like F and R are forbidden, but F and B are fine
@@ -39,6 +43,8 @@ namespace Rubinator3000 {
 
         public static TRSTransformation Transformation;
         public static bool AnimateMoves = true;
+
+        public static CubeDisplayMode DisplayMode = CubeDisplayMode.CUBE;
 
         // set absolute face rotation
         private static void SetFaceRotation(CubeFace face, float amount) {
@@ -96,12 +102,22 @@ namespace Rubinator3000 {
                     }
 
                     currentState = move.EndState;
-                    faceRotations[(int)move.Move.Face] = 0;
+                    if (move.Move != null)
+                        faceRotations[(int)move.Move.Face] = 0;
                 }
             }
         }
 
         public static void Init(Vector3[] _renderColors, Cube cube = null) {
+            cubeShader = new Shader("Resources/CubeShader");
+            flatShader = new Shader("Resources/FlatShader");
+
+            cubeShader.Bind();
+
+            // texture units to sampler
+            for (int i = 0; i < 2; i++)
+                cubeShader.Upload(string.Format("texture{0}", i.ToString()), i);
+
             if (cube != null)
                 currentState = cube;
             else
@@ -145,55 +161,86 @@ namespace Rubinator3000 {
             // deep copy because otherwise, the arrays would refer to the same memory
             moveQueue.Enqueue(new AnimatedMove { Move = move, EndState = (Cube)endState.Clone(), TurnDuration = Settings.MoveAnimatedTime });
 
-            Log.LogStuff($"Animate Move: {move.ToString()}");
+            if (move != null)
+                Log.LogStuff($"Animate Move: {move.ToString()}");
         }
 
-        public static void Draw(Shader shader) {
-            // each cuboid
-            for (int cuboid = 0; cuboid < CuboidTransformations.Transformations.Length; cuboid++) {
-                if (cuboid == 13) continue;
-                var transform = CuboidTransformations.Transformations[cuboid];
-                var cuboidMat = transform.GetMatrix();
+        public static void Draw(View view) {
+            // draw cube
+            if (DisplayMode == CubeDisplayMode.CUBE) {
+                cubeShader.Bind();
 
-                // apply face rotations by looking up key by value
-                CubeFace? cuboidFace = null;
-                foreach (var mapping in CuboidTransformations.FaceMappings) {
-                    if (mapping.Value.Contains(cuboid) && faceRotations[(int)mapping.Key] != 0)
-                        cuboidFace = mapping.Key;
-                }
+                // view and projection matrices
+                cubeShader.Upload("viewMatrix", view.ViewMatrix);
+                cubeShader.Upload("projectionMatrix", view.ProjectionMatrix);
 
-                // reset render colors
-                for (int i = 0; i < 6; i++)
-                    shader.Upload(string.Format("color[{0}]", i.ToString()),
-                        new Vector3(.1f));
+                // each cuboid
+                for (int cuboid = 0; cuboid < CuboidTransformations.Transformations.Length; cuboid++) {
+                    if (cuboid == 13) continue;
+                    var transform = CuboidTransformations.Transformations[cuboid];
+                    var cuboidMat = transform.GetMatrix();
 
-                // cube color data (matrix array)
-                var data = currentState.GetData();
-
-                // each tile
-                for (CubeFace face = 0; (int)face < 6; face++) {
-                    // select positions relevant for current tile face
-                    foreach (Position pos in CuboidTransformations.CuboidMappings[transform.Position].Where(x => x.Face == face)) {
-                        CubeColor color = data[(int)pos.Face][pos.Tile];
-                        shader.Upload(string.Format("color[{0}]", ((int)pos.Face).ToString()),
-                            renderColors[(int)color]);
+                    // apply face rotations by looking up key by value
+                    CubeFace? cuboidFace = null;
+                    foreach (var mapping in CuboidTransformations.FaceMappings) {
+                        if (mapping.Value.Contains(cuboid) && faceRotations[(int)mapping.Key] != 0)
+                            cuboidFace = mapping.Key;
                     }
 
-                    var rotMat = cuboidFace != null ? faceRotationMatrices[(int)cuboidFace] : Matrix4.Identity;
-                    var model = CubeTransformations.Transformations[(int)face].GetMatrix() * cuboidMat * rotMat;
+                    // reset render colors
+                    for (int i = 0; i < 6; i++)
+                        cubeShader.Upload(string.Format("color[{0}]", i.ToString()),
+                            new Vector3(.1f));
 
-                    shader.Upload(string.Format("modelMatrix[{0}]", ((int)face).ToString()), model);
-                    shader.Upload("cubeModelMatrix", Transformation.GetMatrix());
+                    // cube color data (matrix array)
+                    var data = currentState.GetData();
+
+                    // each tile
+                    for (CubeFace face = 0; (int)face < 6; face++) {
+                        // select positions relevant for current tile face
+                        foreach (Position pos in CuboidTransformations.CuboidMappings[transform.Position].Where(x => x.Face == face)) {
+                            CubeColor color = data[(int)pos.Face][pos.Tile];
+                            cubeShader.Upload(string.Format("color[{0}]", ((int)pos.Face).ToString()),
+                                renderColors[(int)color]);
+                        }
+
+                        var rotMat = cuboidFace != null ? faceRotationMatrices[(int)cuboidFace] : Matrix4.Identity;
+                        var model = CubeTransformations.Transformations[(int)face].GetMatrix() * cuboidMat * rotMat;
+
+                        cubeShader.Upload(string.Format("modelMatrix[{0}]", ((int)face).ToString()), model);
+                        cubeShader.Upload("cubeModelMatrix", Transformation.GetMatrix());
+                    }
+
+                    // access time for a dict is close to O(1), so no significant performance loss
+                    ResourceManager.LoadedModels["cubePlane"].BindVao();
+                    ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
+                    ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
+
+                    GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, (int)6);
                 }
 
-                // access time for a dict is close to O(1), so no significant performance loss
-                ResourceManager.LoadedModels["cubePlane"].BindVao();
-                ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
-                ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
+            // draw flat
+            } else if (DisplayMode == CubeDisplayMode.FLAT) {
+                var data = currentState.GetData();
 
-                GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, (int)6);
+                flatShader.Bind();
+                for (CubeFace face = 0; (int)face < 6; face++)
+                {
+                    for (int tile = 0; tile < 9; tile++)
+                    {
+                        int ind = (int)face * 9 + tile;
+                        flatShader.Upload(string.Format("modelMatrix[{0}]", ind), FlatTransformations.Transformations[(int)face, tile].GetMatrix());
+
+                        CubeColor color = data[(int)face][tile];
+                        flatShader.Upload(string.Format("color[{0}]", ind), renderColors[(int)color]);
+                    }
+                }
+
+                ResourceManager.LoadedModels["flatPlane"].BindVao();
+                ResourceManager.LoadedTextures["flatBlendFrame"].Bind(0);
+
+                GL.DrawElementsInstanced(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, (IntPtr)0, 54);
             }
         }
-
     }
 }

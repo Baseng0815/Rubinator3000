@@ -42,12 +42,12 @@ namespace Rubinator3000 {
             if(sender is MenuItem menuItem){
                 switch (menuItem.Tag as string) {
                     case "2D":
-                        Renderer.DisplayMode = CubeDisplayMode.FLAT;
+                        DrawCube.DisplayMode = CubeDisplayMode.FLAT;
                         CubeViewer.Window.Invalidate();
                         CubeViewer.DetachInputEvents();
                         break;
                     case "3D":
-                        Renderer.DisplayMode = CubeDisplayMode.CUBE;
+                        DrawCube.DisplayMode = CubeDisplayMode.CUBE;
                         CubeViewer.Window.Invalidate();
                         CubeViewer.AttachInputEvents();
                         break;

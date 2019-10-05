@@ -43,12 +43,11 @@ namespace Rubinator3000 {
 
                 cube = value;
                 value.OnMoveDone += Cube_OnMoveDone;
-                DrawFlat.SetState(value);
+                DrawCube.AddMove(value);
             }
         }
 
         public MainWindow() {
-
             InitializeComponent();
 
             InitalizeCameraPreviews();
