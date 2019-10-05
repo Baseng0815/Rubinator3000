@@ -1,6 +1,5 @@
 ﻿using Emgu.CV;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -8,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -26,12 +26,14 @@ namespace Rubinator3000.CubeScan {
         // This list is to prevent, that multiple "WebCamControl"-Objects access the same usb camera
         private static List<int> cameraIndexesInUse = new List<int>();
 
-        public static int ReadRadius = 3;
+        public static int ReadRadius = 6;
 
         public const int MAXPOSITIONSTOREAD = 48;
+        public const int MAXPOSITIONSPERCAMERA = 12;
 
         // This list stores the rgb colors at all tiles of the cube. Its used to differentiate between the 6 different colors
-        public static readonly List<ReadPosition> PositionsToReadAt = new List<ReadPosition>();
+        private static readonly ReadPosition[,] PositionsToReadAt = new ReadPosition[4, MAXPOSITIONSPERCAMERA];
+        public static int TotalPositionCount = 0;
         private static readonly Queue<ReadPosition>[] pendingPositions = {
             new Queue<ReadPosition>(),
             new Queue<ReadPosition>(),
@@ -46,41 +48,45 @@ namespace Rubinator3000.CubeScan {
         #endregion
 
         #region Members
-        // Capture-object to retrieve images from usb camera
+        // Capture-object to retrieve bitmaps from usb camera
         private VideoCapture videoCapture;
 
+        // Index of usb camera in os-settings
         private readonly int cameraIndex;
 
-        // This Bitmap caches the most recent bitmap from the videoCapture
+        // This Bitmap caches the most recent bitmap from the videoCapture for color analysing
         private readonly FastAccessBitmap currentBitmap = new FastAccessBitmap(null);
 
-        // This WriteableBitmap points to the bitmap, that is used by the camera stream
+        // This WriteableBitmap points to the bitmap, that will be shown in the camera stream
         private readonly WriteableBitmap previewBitmap;
 
         // Points on the gui canvas, where the circles of the positions should be drawn on
         private readonly Canvas drawingCanvas;
 
-        private readonly Thread thread;
+        // The Thread of
+        private Thread thread;
         private readonly int ticksPerSecond;
         private bool threadShouldStop = true;
+        public bool Initialized { get; set; } = false;
 
-        private readonly Queue<Bitmap> frameUpdates = new Queue<Bitmap>();
+        // This Queue holds only the updates of the bitmaps for color identification, not for gui camera stream
+        private readonly Queue<Bitmap> frames = new Queue<Bitmap>();
+
         #endregion
 
-        public WebCamControl(int cameraIndex, ref Canvas drawingCanvas, ref WriteableBitmap previewBitmap, int ticksPerSecond = 60) {
+        public WebCamControl(int cameraIndex, ref Canvas drawingCanvas, ref WriteableBitmap previewBitmap, int ticksPerSecond = 1) {
 
             this.drawingCanvas = drawingCanvas;
             this.previewBitmap = previewBitmap;
             this.cameraIndex = cameraIndex;
             this.ticksPerSecond = ticksPerSecond;
 
-            thread = new Thread(new ThreadStart(Run));
-            thread.Start();
+            TryInitializeAndStart();
         }
 
         #region Member Functions
 
-        private void Init() {
+        private bool InitCameraCapture() {
 
             // Prevent 2 "WebCamControl"-objects from accessing the same usb-camera
             if (cameraIndexesInUse.Contains(cameraIndex)) {
@@ -97,7 +103,6 @@ namespace Rubinator3000.CubeScan {
                 if (!videoCapture.IsOpened) {
 
                     Log.LogStuff(String.Format("Initialization of Camera {0} failed", cameraIndex));
-                    return;
                 }
                 else {
 
@@ -111,14 +116,15 @@ namespace Rubinator3000.CubeScan {
 
                     Log.LogStuff(string.Format("Initialization of Camera {0} finished", cameraIndex));
 
-                    threadShouldStop = false;
+                    Initialized = true;
+                    return true;
                 }
             }
+            Initialized = false;
+            return false;
         }
 
         private void Run() {
-
-            Init();
 
             while (!threadShouldStop) {
 
@@ -128,49 +134,55 @@ namespace Rubinator3000.CubeScan {
                 // Code in while loop  
 
                 // Handle all frameUpdates
-                while (frameUpdates.Count > 0) {
+                while (frames.Count > 0) {
 
-                    Bitmap bmp = frameUpdates.Dequeue();
-                    Bitmap bitmap = new Bitmap(bmp);
-                    DisplayOnWpfImageControl(bitmap, previewBitmap);
-                    bitmap.Dispose();
+                    Bitmap bmp = frames.Dequeue();
                     currentBitmap.SetBitmap(bmp);
                 }
 
                 // Add all pendingPositions to PositionsToReadAt and draw their circles
                 while (pendingPositions[cameraIndex].Count > 0) {
+
                     ReadPosition pos = pendingPositions[cameraIndex].Dequeue();
 
-                    pos.Circle = DrawCircleAtPosition(pos, drawingCanvas);
+                    for (int i = 0; i < PositionsToReadAt.GetLength(1); i++) {
 
-                    PositionsToReadAt.Add(pos);
+                        if (PositionsToReadAt[cameraIndex, i] == null) {
+
+                            pos.Circle = DrawCircleAtPosition(pos, drawingCanvas);
+                            PositionsToReadAt[cameraIndex, i] = pos;
+                            TotalPositionCount++;
+                            break;
+                        }
+                    }
                 }
 
                 // Read all colors from positions in readPositions
-                for (int i = 0; i < PositionsToReadAt.Count; i++) {
+                for (int i = 0; i < PositionsToReadAt.GetLength(1); i++) {
 
-                    if (PositionsToReadAt[i].CameraIndex == cameraIndex) {
-
-                        PositionsToReadAt[i].Color = ReadColorAtPosition(PositionsToReadAt[i]);
+                    if (PositionsToReadAt[cameraIndex, i] == null) {
+                        continue;
                     }
+                    PositionsToReadAt[cameraIndex, i].Color = ReadColorAtPosition(PositionsToReadAt[cameraIndex, i]);
                 }
 
                 // This block will be only executed by the primary webcamcontrol
                 if (cameraIndex == 0) {
 
-                    if (Helper.CurrentTimeMillis() - lastCubeGeneration > 10000) {
-                        // Run this code only every 10 seconds
+                    // If the whole cube is scanned, send the cube-configuration to the cube solver
+                    if (CubeIsFullyScanned()) {
 
-                        // If the whole cube is scanned, send the cube-configuration to the cube solver
-                        if (CubeIsFullyScanned()) {
-
-                            SortAndValidateColors();
-                        }
-                        lastCubeGeneration = Helper.CurrentTimeMillis();
+                        SortAndValidateColors();
                     }
+                    lastCubeGeneration = Helper.CurrentTimeMillis();
                 }
 
                 // Code in while loop  
+
+                if (GC.GetTotalMemory(true) > 500 * Math.Pow(10, 6)) {
+
+                    GC.Collect();
+                }
 
                 while (Helper.CurrentTimeMillis() < loopEnd) {
 
@@ -183,8 +195,14 @@ namespace Rubinator3000.CubeScan {
 
             Mat mat = new Mat();
             videoCapture.Read(mat);
+            Bitmap readBitmap = mat.Bitmap;
+            DisplayOnWpfImageControl(readBitmap, previewBitmap);
 
-            frameUpdates.Enqueue(new Bitmap(mat.Bitmap));
+            if (frames.Count > 0) {
+                frames.Dequeue().Dispose();
+            }
+            frames.Enqueue(new Bitmap(readBitmap));
+            readBitmap.Dispose();
         }
 
         private Color ReadColorAtPosition(ReadPosition pos) {
@@ -202,26 +220,67 @@ namespace Rubinator3000.CubeScan {
             return Color.Empty;
         }
 
+        private void StartThread() {
+
+            thread = new Thread(new ThreadStart(Run));
+            threadShouldStop = false;
+            thread.Start();
+        }
+
+        public void TryInitializeAndStart() {
+
+            // Make the task independent from the calling thread, so it wont get blocked
+            Task.Run(() => {
+
+                StopThread();
+
+                if (InitCameraCapture()) {
+                    StartThread();
+                }
+            });
+        }
+
+        public void StopThread() {
+
+            // wait for thread stop
+            threadShouldStop = true;
+
+            if (videoCapture != null) {
+                // Disable video stream
+                videoCapture.ImageGrabbed -= ProcessCapturedFrame;
+            }
+
+            Initialized = false;
+
+            // Make cameraIndex use free for other cameras
+            cameraIndexesInUse.Remove(cameraIndex);
+        }
+
         #endregion
 
         #region Static Functions
 
         private static bool CubeIsFullyScanned() {
 
-            foreach (ReadPosition tempPos in PositionsToReadAt) {
+            List<ReadPosition> allPositions = AllReadPositions();
+
+
+            foreach (ReadPosition tempPos in allPositions) {
 
                 if (tempPos.Color == Color.Empty) {
                     return false;
                 }
             }
 
-            return PositionsToReadAt.Count == MAXPOSITIONSTOREAD;
+            return allPositions.Count == MAXPOSITIONSTOREAD;
         }
 
         private static void SortAndValidateColors() {
 
+            List<ReadPosition> allPositions = AllReadPositions();
+
             // Positions left to assign
-            List<ReadPosition> positions = new List<ReadPosition>(PositionsToReadAt);
+            List<ReadPosition> positions = new List<ReadPosition>(allPositions);
 
             // Assign color percentages to each color
             for (int i = 0; i < positions.Count; i++) {
@@ -237,21 +296,20 @@ namespace Rubinator3000.CubeScan {
 
                 int[] maxIndicies = ColorIdentification.Max8Indicies(currentCubeColor, positions);
 
-                List<ReadPosition> positionsToRemove = new List<ReadPosition>();
-
                 for (int j = 0; j < maxIndicies.Length; j++) {
 
+                    ReadPosition currentPosition = positions[maxIndicies[j]];
+
                     // Assign tiles to the cube
-                    cube.SetTile((CubeFace)(positions[maxIndicies[j]].FaceIndex), positions[maxIndicies[j]].RowIndex * 3 + positions[maxIndicies[j]].ColIndex, currentCubeColor);
-                    positions[maxIndicies[j]].AssumedCubeColor = currentCubeColor;
+                    cube.SetTile((CubeFace)(currentPosition.FaceIndex), currentPosition.RowIndex * 3 + currentPosition.ColIndex, currentCubeColor);
+                    currentPosition.AssumedCubeColor = currentCubeColor;
 
                     // Dye the circle of the readposition in the corresponding color
                     Application.Current.Dispatcher.Invoke(() => {
-                        
-                        // Change color of all the circles
-                        CircleByIndicies(positions[maxIndicies[j]].FaceIndex, positions[maxIndicies[j]].RowIndex, positions[maxIndicies[j]].ColIndex).Stroke = Helper.ColorBrush(currentCubeColor);
+
+                        // Change circle color of the current position on the gui
+                        CircleByIndicies(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush(currentCubeColor);
                     });
-                    positionsToRemove.Add(positions[j]);
                 }
 
                 // Sort maxIndicies -> highest value at index=0
@@ -265,23 +323,133 @@ namespace Rubinator3000.CubeScan {
             }
         }
 
-        public static void AddPosition(ReadPosition readPosition, int index) {
+        private static List<ReadPosition> AllReadPositions() {
 
-            pendingPositions[index].Enqueue(readPosition);
+            List<ReadPosition> returnList = new List<ReadPosition>();
+
+            for (int i = 0; i < PositionsToReadAt.GetLength(0); i++) {
+
+                for (int j = 0; j < PositionsToReadAt.GetLength(1); j++) {
+
+                    if (PositionsToReadAt[i, j] != null) {
+
+                        returnList.Add(PositionsToReadAt[i, j]);
+                    }
+                }
+            }
+
+            return returnList;
+        }
+
+        public static string AddPosition(ReadPosition readPosition, int cameraIndex) {
+
+            List<ReadPosition> slice = GetSlice(cameraIndex);
+
+
+            if (PositionExists(readPosition.FaceIndex, readPosition.RowIndex, readPosition.ColIndex)) {
+
+                return "Position not added: Entered Tile is already being scanned";
+            }
+            else if (slice.Count >= MAXPOSITIONSPERCAMERA) {
+
+                return string.Format("Position not added: Camera already has {0} Tiles to scan", MAXPOSITIONSPERCAMERA);
+            }
+            else {
+
+                pendingPositions[cameraIndex].Enqueue(readPosition);
+                return "Position added";
+            }
+
+        }
+
+        private static void RemovePosition(int faceIndex, int rowIndex, int colIndex) {
+
+            for (int i = 0; i < PositionsToReadAt.GetLength(0); i++) {
+
+                for (int j = 0; j < PositionsToReadAt.GetLength(1); j++) {
+
+                    if (PositionsToReadAt[i, j].FaceIndex == faceIndex && PositionsToReadAt[i, j].RowIndex == rowIndex && PositionsToReadAt[i, j].ColIndex == colIndex) {
+
+                        PositionsToReadAt[i, j] = null;
+                        TotalPositionCount--;
+                        return;
+                    }
+                }
+            }
+        }
+
+        private static bool PositionExists(int faceIndex, int rowIndex, int colIndex) {
+
+            for (int i = 0; i < PositionsToReadAt.GetLength(0); i++) {
+
+                for (int j = 0; j < PositionsToReadAt.GetLength(1); j++) {
+
+                    ReadPosition pos = PositionsToReadAt[i, j];
+                    if (pos == null) {
+
+                        continue;
+                    }
+                    else if (pos.FaceIndex == faceIndex && pos.RowIndex == rowIndex && pos.ColIndex == colIndex) {
+
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public static Ellipse CircleByIndicies(int faceIndex, int rowIndex, int colIndex) {
 
-            foreach (ReadPosition pos in PositionsToReadAt) {
-                if (pos.RowIndex == rowIndex && pos.ColIndex == colIndex && pos.FaceIndex == faceIndex) {
-                    return pos.Circle;
+            for (int i = 0; i < PositionsToReadAt.GetLength(0); i++) {
+
+                for (int j = 0; j < PositionsToReadAt.GetLength(1); j++) {
+
+                    ReadPosition tempPosition = PositionsToReadAt[i, j];
+
+                    if (tempPosition.RowIndex == rowIndex && tempPosition.ColIndex == colIndex && tempPosition.FaceIndex == faceIndex) {
+
+                        return tempPosition.Circle;
+                    }
                 }
             }
 
             return null;
         }
 
+        private static List<ReadPosition> GetSlice(int index) {
+
+            // This method will return a list with all added positions, without any "null-positions"
+
+            List<ReadPosition> returnList = new List<ReadPosition>();
+
+            for (int i = 0; i < PositionsToReadAt.GetLength(1); i++) {
+
+                if (PositionsToReadAt[index, i] != null) {
+
+                    returnList.Add(PositionsToReadAt[index, i]);
+                }
+            }
+
+            return returnList;
+        }
+
         public static void SaveAllPositionsToXml() {
+
+            List<ReadPosition> allPositions = new List<ReadPosition>();
+            allPositions.AddRange(GetSlice(0));
+            allPositions.AddRange(GetSlice(1));
+            allPositions.AddRange(GetSlice(2));
+            allPositions.AddRange(GetSlice(3));
+
+            // Make sure that all positions, even the pendings are going to be saved
+            for (int i = 0; i < pendingPositions.Length; i++) {
+
+                while (pendingPositions[i].Count > 0) {
+
+                    allPositions.Add(pendingPositions[i].Dequeue());
+                }
+            }
 
             // Setup XmlDocument
             XDocument docToSave = new XDocument(new XElement(XmlCameraReadPositions)) {
@@ -293,7 +461,7 @@ namespace Rubinator3000.CubeScan {
 
                 XElement cameraElement = new XElement(XmlCamera, new XAttribute(XmlCameraIndex, currentCameraIndex));
 
-                foreach (ReadPosition pos in PositionsToReadAt) {
+                foreach (ReadPosition pos in allPositions) {
 
                     if (pos.CameraIndex == currentCameraIndex) {
 
@@ -334,14 +502,17 @@ namespace Rubinator3000.CubeScan {
 
                 foreach (XElement readPositionElement in cameraElement.Elements()) {
 
-                    AddPosition(new ReadPosition(
-                        double.Parse(readPositionElement.Attribute(XmlRelativeX).Value.Replace('.', ',')),
-                        double.Parse(readPositionElement.Attribute(XmlRelativeY).Value.Replace('.', ',')),
-                        int.Parse(readPositionElement.Attribute(XmlFaceIndex).Value),
-                        int.Parse(readPositionElement.Attribute(XmlRowIndex).Value),
-                        int.Parse(readPositionElement.Attribute(XmlColIndex).Value),
-                        int.Parse(cameraElement.Attribute(XmlCameraIndex).Value)
-                        ), int.Parse(cameraElement.Attribute(XmlCameraIndex).Value)
+                    Log.LogStuff(
+                        AddPosition(new ReadPosition(
+                            double.Parse(readPositionElement.Attribute(XmlRelativeX).Value.Replace('.', ',')),
+                            double.Parse(readPositionElement.Attribute(XmlRelativeY).Value.Replace('.', ',')),
+                            int.Parse(readPositionElement.Attribute(XmlFaceIndex).Value),
+                            int.Parse(readPositionElement.Attribute(XmlRowIndex).Value),
+                            int.Parse(readPositionElement.Attribute(XmlColIndex).Value),
+                            int.Parse(cameraElement.Attribute(XmlCameraIndex).Value)
+                            ),
+                            int.Parse(cameraElement.Attribute(XmlCameraIndex).Value)
+                        )
                     );
                 }
             }
@@ -354,6 +525,8 @@ namespace Rubinator3000.CubeScan {
             Application.Current.Dispatcher.Invoke(() => {
 
                 circle = GenerateCircle(pos.AssumedCubeColor);
+                circle.ToolTip = string.Format("{0}[{1},{2}]", (CubeColor)pos.FaceIndex, pos.RowIndex, pos.ColIndex);
+                circle.MouseUp += Circle_MouseUp;
 
                 // Set position of circle on canvas
                 Canvas.SetLeft(circle, pos.RelativeX * canvas.ActualWidth - ReadRadius);
@@ -372,9 +545,41 @@ namespace Rubinator3000.CubeScan {
             return new Ellipse {
                 Width = ReadRadius * 2 + 1,
                 Height = ReadRadius * 2 + 1,
-                Stroke = Helper.ColorBrush(cc),
-                StrokeThickness = ReadRadius / 1.5
+                Fill = Helper.ColorBrush(cc),
             };
+        }
+
+        private static void Circle_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+
+            if (!MainWindow.PositionEditingAllowed || e.ChangedButton != System.Windows.Input.MouseButton.Right) {
+
+                return;
+            }
+
+            Ellipse circle = (Ellipse)sender;
+            string tooltipText = circle.ToolTip.ToString();
+
+            // Tooltip of circle looks like that: "CubeColor[RowIndex, FaceIndex]"
+            int faceIndex = (int)CubeColorByString(tooltipText.Substring(0, tooltipText.IndexOf('[')));
+            int rowIndex = Convert.ToInt32(char.GetNumericValue(tooltipText[tooltipText.IndexOf('[') + 1]));
+            int colIndex = Convert.ToInt32(char.GetNumericValue(tooltipText[tooltipText.IndexOf(']') - 1]));
+
+            RemovePosition(faceIndex, rowIndex, colIndex);
+            ((Canvas)circle.Parent).Children.Remove(circle);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0066:Convert switch statement to expression", Justification = "Current C# Version 7.3 is too low")]
+        public static CubeColor CubeColorByString(string cubeColorString) {
+
+            switch (cubeColorString) {
+                case "ORANGE": return CubeColor.ORANGE;
+                case "WHITE": return CubeColor.WHITE;
+                case "GREEN": return CubeColor.GREEN;
+                case "YELLOW": return CubeColor.YELLOW;
+                case "RED": return CubeColor.RED;
+                case "BLUE": return CubeColor.BLUE;
+                default: return CubeColor.NONE;
+            }
         }
 
         public static void DisplayOnWpfImageControl(Bitmap bitmap, WriteableBitmap writeableBitmap) {
@@ -394,7 +599,6 @@ namespace Rubinator3000.CubeScan {
 
                 // Specify the area of the bitmap, that changed (in this case, the whole bitmap changed)
                 writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, bitmap.Width, bitmap.Height));
-                bitmap.Dispose();
 
                 // Release the backBuffer of writeableBitmap and make it available for display
                 writeableBitmap.Unlock();

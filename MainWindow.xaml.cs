@@ -24,12 +24,16 @@ namespace Rubinator3000 {
     /// </summary>
     public partial class MainWindow : Window {
 
+        public static bool PositionEditingAllowed = false;
+
         private Queue<string> messages = new Queue<string>();
         private volatile Cube cube;
 
-        private WriteableBitmap[] previewBitmaps = new WriteableBitmap[4];
-        private WebCamControl[] webCamControls = new WebCamControl[4];
-        public static Canvas[] canvases = new Canvas[4];
+        private const int cameraCount = 4;
+        private readonly Image[] cameraPreviews = new Image[cameraCount];
+        private readonly WriteableBitmap[] previewBitmaps = new WriteableBitmap[cameraCount];
+        private readonly WebCamControl[] webCamControls = new WebCamControl[cameraCount];
+        private readonly Canvas[] canvases = new Canvas[cameraCount];
 
         public Cube Cube {
             get => cube;
@@ -60,25 +64,37 @@ namespace Rubinator3000 {
 
             const int width = 640;
             const int height = 480;
-            for (int i = 0; i < 4; i++) {
+
+            // Link the image-controls to cameraPreviews-array
+            cameraPreviews[0] = cameraPreview0;
+            cameraPreviews[1] = cameraPreview1;
+            cameraPreviews[2] = cameraPreview2;
+            cameraPreviews[3] = cameraPreview3;
+
+            // Initialize previewBitmaps
+            for (int i = 0; i < cameraCount; i++) {
                 previewBitmaps[i] = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr24, null);
             }
 
-            cameraPreview0.Source = previewBitmaps[0];
-            cameraPreview1.Source = previewBitmaps[1];
-            cameraPreview2.Source = previewBitmaps[2];
-            cameraPreview3.Source = previewBitmaps[3];
+            // Link the previewBitmaps to the according image-controls
+            for (int i = 0; i < cameraCount; i++) {
 
+                cameraPreviews[i].Source = previewBitmaps[i];
+            }
+
+            // Link the canvas-controls to canvases array;
             canvases[0] = cameraCanvas0;
             canvases[1] = cameraCanvas1;
             canvases[2] = cameraCanvas2;
             canvases[3] = cameraCanvas3;
 
-            webCamControls[0] = new WebCamControl(0, ref canvases[0], ref previewBitmaps[0]);
-            webCamControls[1] = new WebCamControl(1, ref canvases[1], ref previewBitmaps[1]);
-            webCamControls[2] = new WebCamControl(2, ref canvases[2], ref previewBitmaps[2]);
-            webCamControls[3] = new WebCamControl(3, ref canvases[3], ref previewBitmaps[3]);
-            
+            // Initialize all webcam-controls
+            for (int i = 0; i < cameraCount; i++) {
+
+                webCamControls[i] = new WebCamControl(i, ref canvases[i], ref previewBitmaps[i]);
+            }
+
+            // Load all positions, that were saved in "ReadPositions.xml"
             WebCamControl.LoadAllPositionsFromXml();
         }
 
@@ -121,14 +137,7 @@ namespace Rubinator3000 {
 
             // Manual Position Adding
 
-            if (WebCamControl.PositionsToReadAt.Count == WebCamControl.MAXPOSITIONSTOREAD) {
-                return;
-            }
-
-            bool? positionAddingAllowed = allowPosAdd.IsChecked;
-
-            // If chbxPosAdd is not checked, then return
-            if (positionAddingAllowed == null || positionAddingAllowed == false) {
+            if (!PositionEditingAllowed || e.ChangedButton != MouseButton.Left || WebCamControl.TotalPositionCount == WebCamControl.MAXPOSITIONSTOREAD) {
                 return;
             }
 
@@ -140,36 +149,31 @@ namespace Rubinator3000 {
             int[] indicies;
 
             if (colorDialog.ShowDialog() == true) {
+
+                /* indicies stores the indicies of the position to add
+                 * [0] faceIndex
+                 * [1] rowIndex
+                 * [2] colIndex
+                 */
                 indicies = colorDialog.Result;
             }
             else {
                 return;
             }
 
-            int cameraIndex = -1;
-
-            if (clickedImage == cameraPreview0)
-                cameraIndex = 0;
-
-            else if (clickedImage == cameraPreview1)
-                cameraIndex = 1;
-
-            else if (clickedImage == cameraPreview2)
-                cameraIndex = 2;
-
-            else if (clickedImage == cameraPreview3)
-                cameraIndex = 3;
+            // Determine, which cameraPreview was clicked
+            int cameraIndex = Array.IndexOf(cameraPreviews, clickedImage);
 
             ReadPosition tempPos = new ReadPosition(
-                    clickPosition.X / clickedImage.ActualWidth,
-                    clickPosition.Y / clickedImage.ActualHeight,
-                    indicies[0],
-                    indicies[1],
-                    indicies[2],
-                    cameraIndex
+                    clickPosition.X / clickedImage.ActualWidth, // calculate relativeX
+                    clickPosition.Y / clickedImage.ActualHeight, // calculate relativeY
+                    indicies[0], // faceIndex
+                    indicies[1], // rowIndex
+                    indicies[2], // colIndex
+                    cameraIndex 
                 );
 
-            WebCamControl.AddPosition(tempPos, cameraIndex);
+            Log.LogStuff(WebCamControl.AddPosition(tempPos, cameraIndex));
         }
 
         private void WinFormsHost_Initialized(object sender, EventArgs e) {
@@ -181,6 +185,10 @@ namespace Rubinator3000 {
 
             DrawCube.StopDrawing();
 
+            for (int i = 0; i < webCamControls.Length; i++) {
+
+                webCamControls[i].StopThread();
+            }
             WebCamControl.SaveAllPositionsToXml();
 
             // Without this line, the program would throw an exception on close
@@ -189,6 +197,17 @@ namespace Rubinator3000 {
             System.Windows.Application.Current.Shutdown();
         }
 
+        private void CameraPreviewMenuItem_Click(object sender, RoutedEventArgs e) {
+
+            Image cameraPreivew = (Image)(((System.Windows.Controls.ContextMenu)((System.Windows.Controls.MenuItem)sender).Parent).PlacementTarget);
+
+            int cameraIndex = Array.IndexOf(cameraPreviews, cameraPreivew);
+            webCamControls[cameraIndex].TryInitializeAndStart();
+        }
+
+        private void AllowPosEdit_Click(object sender, RoutedEventArgs e) {
+
+            PositionEditingAllowed = allowPosEdit.IsChecked.Value;
+        }
     }
 }
-

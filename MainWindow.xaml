@@ -39,10 +39,16 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
 
+        <!--  Camera Preview Context Menu Template  -->
+        <ContextMenu x:Key="cameraPreviewContextMenu">
+            <MenuItem Click="CameraPreviewMenuItem_Click" Header="Reinitialize" />
+        </ContextMenu>
+
         <!--  Image Preset  -->
         <Style TargetType="Image">
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="ContextMenu" Value="{StaticResource cameraPreviewContextMenu}" />
         </Style>
 
         <!--  TextBox Preset  -->
@@ -152,7 +158,10 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
-                    <CheckBox x:Name="allowPosAdd" Content="Allow Position Adding" />
+                    <CheckBox
+                        x:Name="allowPosEdit"
+                        Click="AllowPosEdit_Click"
+                        Content="Allow Position Adding" />
                 </Grid>
             </Border>
 
