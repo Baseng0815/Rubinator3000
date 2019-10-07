@@ -64,17 +64,7 @@ namespace Rubinator3000.Solving {
 
             return true;
         }
-
-        public static readonly Position[] EdgePositions;
-        public static readonly CubeFace[] MiddleLayerFaces = { CubeFace.LEFT, CubeFace.FRONT, CubeFace.RIGHT, CubeFace.BACK };
-
-        static CubeSolver() {
-            EdgePositions = new Position[24];
-            for (int face = 0; face < 6; face++) {
-                for (int tile = 0; tile < 4; tile++) {
-                    EdgePositions[4 * face + tile] = new Position((CubeFace)face, tile * 2 + 1);
-                }
-            }
-        }
+        
+        public static readonly CubeFace[] MiddleLayerFaces = { CubeFace.LEFT, CubeFace.FRONT, CubeFace.RIGHT, CubeFace.BACK };      
     }
 }
