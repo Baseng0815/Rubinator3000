@@ -501,16 +501,18 @@ namespace Rubinator3000.CubeScan {
 
                 foreach (XElement readPositionElement in cameraElement.Elements()) {
 
+                    var d = double.Parse(readPositionElement.Attribute(XmlRelativeX).Value, NumberStyles.AllowDecimalPoint, CultureInfo.GetCultureInfo("en-us"));
+
                     Log.LogStuff(
                         AddPosition(new ReadPosition(
-                            double.Parse(readPositionElement.Attribute(XmlRelativeX).Value, NumberStyles.AllowDecimalPoint),
-                            double.Parse(readPositionElement.Attribute(XmlRelativeY).Value, NumberStyles.AllowDecimalPoint),
-                            int.Parse(readPositionElement.Attribute(XmlFaceIndex).Value),
-                            int.Parse(readPositionElement.Attribute(XmlRowIndex).Value),
-                            int.Parse(readPositionElement.Attribute(XmlColIndex).Value),
-                            int.Parse(cameraElement.Attribute(XmlCameraIndex).Value)
+                            double.Parse(readPositionElement.Attribute(XmlRelativeX).Value, NumberStyles.AllowDecimalPoint, CultureInfo.GetCultureInfo("en-us")),
+                            double.Parse(readPositionElement.Attribute(XmlRelativeY).Value, NumberStyles.AllowDecimalPoint, CultureInfo.GetCultureInfo("en-us")),
+                            int.Parse(readPositionElement.Attribute(XmlFaceIndex).Value, CultureInfo.GetCultureInfo("en-us")),
+                            int.Parse(readPositionElement.Attribute(XmlRowIndex).Value, CultureInfo.GetCultureInfo("en-us")),
+                            int.Parse(readPositionElement.Attribute(XmlColIndex).Value, CultureInfo.GetCultureInfo("en-us")),
+                            int.Parse(cameraElement.Attribute(XmlCameraIndex).Value, CultureInfo.GetCultureInfo("en-us"))
                             ),
-                            int.Parse(cameraElement.Attribute(XmlCameraIndex).Value)
+                            int.Parse(cameraElement.Attribute(XmlCameraIndex).Value, CultureInfo.GetCultureInfo("en-us"))
                         )
                     );
                 }
