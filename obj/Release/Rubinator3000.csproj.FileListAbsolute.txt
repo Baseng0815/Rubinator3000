@@ -5,3 +5,10 @@ D:\GitHub\Rubinator3000\obj\Release\Rubinator3000_Content.g.cs
 D:\GitHub\Rubinator3000\obj\Release\Rubinator3000_MarkupCompile.cache
 D:\GitHub\Rubinator3000\obj\Release\Rubinator3000_MarkupCompile.lref
 D:\GitHub\Rubinator3000\obj\Release\ColorDialog.g.cs
+D:\Development\Projects\Rubinator3000\obj\Release\Rubinator3000.csprojAssemblyReference.cache
+D:\Development\Projects\Rubinator3000\obj\Release\ColorDialog.g.cs
+D:\Development\Projects\Rubinator3000\obj\Release\MainWindow.g.cs
+D:\Development\Projects\Rubinator3000\obj\Release\App.g.cs
+D:\Development\Projects\Rubinator3000\obj\Release\Rubinator3000_Content.g.cs
+D:\Development\Projects\Rubinator3000\obj\Release\Rubinator3000_MarkupCompile.cache
+D:\Development\Projects\Rubinator3000\obj\Release\Rubinator3000_MarkupCompile.lref

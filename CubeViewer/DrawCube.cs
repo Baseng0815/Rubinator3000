@@ -102,6 +102,7 @@ namespace Rubinator3000 {
                     }
 
                     currentState = move.EndState;
+                    CubeViewer.Window.Invalidate();
                     if (move.Move != null)
                         faceRotations[(int)move.Move.Face] = 0;
                 }

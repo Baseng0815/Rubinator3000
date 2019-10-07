@@ -35,7 +35,7 @@ namespace Rubinator3000
 
             Vector3[] renderColors = new Vector3[]
             {
-                new Vector3(255, 165, 0),
+                new Vector3(255, 106, 0),
                 new Vector3(255, 255, 255),
                 new Vector3(0, 255, 0),
                 new Vector3(255, 255, 0),

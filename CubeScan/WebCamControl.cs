@@ -44,7 +44,7 @@ namespace Rubinator3000.CubeScan {
 
         private static long lastCubeGeneration = Helper.CurrentTimeMillis();
 
-        private static string PathToXml => ".\\ReadPositions.xml";
+        private static string PathToXml => "./Resources/ReadPositions.xml";
 
         #endregion
 
@@ -110,7 +110,12 @@ namespace Rubinator3000.CubeScan {
                     cameraIndexesInUse.Add(cameraIndex);
 
                     // setup usb-camera-input handling
-                    videoCapture.ImageGrabbed += ProcessCapturedFrame;
+                    //TODO videoCapture.ImageGrabbed += ProcessCapturedFrame;
+
+                    Bitmap bitmap = (Bitmap)System.Drawing.Image.FromFile(string.Format("./TestBitmap{0}.png", cameraIndex));
+                    frames.Enqueue(bitmap);
+                    DisplayOnWpfImageControl(bitmap, previewBitmap);
+
 
                     // start the video apture
                     videoCapture.Start();
