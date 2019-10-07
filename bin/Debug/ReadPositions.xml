@@ -1,29 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CameraReadPositions>
-<<<<<<< HEAD
   <Camera CameraIndex="0">
     <ReadPosition RelativeX="0.2" RelativeY="0.2" FaceIndex="0" RowIndex="0" ColIndex="0" />
     <ReadPosition RelativeX="0.2" RelativeY="0.4" FaceIndex="0" RowIndex="0" ColIndex="1" />
     <ReadPosition RelativeX="0.2" RelativeY="0.6" FaceIndex="0" RowIndex="0" ColIndex="2" />
     <ReadPosition RelativeX="0.2" RelativeY="0.8" FaceIndex="0" RowIndex="1" ColIndex="0" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.2" FaceIndex="0" RowIndex="1" ColIndex="2" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.4" FaceIndex="0" RowIndex="2" ColIndex="0" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.6" FaceIndex="0" RowIndex="2" ColIndex="1" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.8" FaceIndex="0" RowIndex="2" ColIndex="2" />
-    <ReadPosition RelativeX="0.6" RelativeY="0.2" FaceIndex="1" RowIndex="0" ColIndex="0" />
-    <ReadPosition RelativeX="0.6" RelativeY="0.4" FaceIndex="1" RowIndex="0" ColIndex="1" />
-    <ReadPosition RelativeX="0.6" RelativeY="0.6" FaceIndex="1" RowIndex="0" ColIndex="2" />
-    <ReadPosition RelativeX="0.6" RelativeY="0.8" FaceIndex="1" RowIndex="1" ColIndex="0" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.2" FaceIndex="0" RowIndex="1" ColIndex="1" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.4" FaceIndex="0" RowIndex="2" ColIndex="2" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.6" FaceIndex="0" RowIndex="2" ColIndex="0" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.8" FaceIndex="0" RowIndex="2" ColIndex="1" />
+    <ReadPosition RelativeX="0.6" RelativeY="0.2" FaceIndex="1" RowIndex="0" ColIndex="2" />
+    <ReadPosition RelativeX="0.6" RelativeY="0.4" FaceIndex="1" RowIndex="0" ColIndex="0" />
+    <ReadPosition RelativeX="0.6" RelativeY="0.6" FaceIndex="1" RowIndex="0" ColIndex="1" />
+    <ReadPosition RelativeX="0.6" RelativeY="0.8" FaceIndex="1" RowIndex="1" ColIndex="2" />
   </Camera>
   <Camera CameraIndex="1">
-    <ReadPosition RelativeX="0.2" RelativeY="0.2" FaceIndex="1" RowIndex="1" ColIndex="2" />
-    <ReadPosition RelativeX="0.2" RelativeY="0.4" FaceIndex="1" RowIndex="2" ColIndex="0" />
-    <ReadPosition RelativeX="0.2" RelativeY="0.6" FaceIndex="1" RowIndex="2" ColIndex="1" />
-    <ReadPosition RelativeX="0.2" RelativeY="0.8" FaceIndex="1" RowIndex="2" ColIndex="2" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.2" FaceIndex="2" RowIndex="0" ColIndex="0" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.4" FaceIndex="2" RowIndex="0" ColIndex="1" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.6" FaceIndex="2" RowIndex="0" ColIndex="2" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.8" FaceIndex="2" RowIndex="1" ColIndex="0" />
+    <ReadPosition RelativeX="0.2" RelativeY="0.2" FaceIndex="1" RowIndex="1" ColIndex="0" />
+    <ReadPosition RelativeX="0.2" RelativeY="0.4" FaceIndex="1" RowIndex="2" ColIndex="1" />
+    <ReadPosition RelativeX="0.2" RelativeY="0.6" FaceIndex="1" RowIndex="2" ColIndex="2" />
+    <ReadPosition RelativeX="0.2" RelativeY="0.8" FaceIndex="1" RowIndex="2" ColIndex="0" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.2" FaceIndex="2" RowIndex="0" ColIndex="1" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.4" FaceIndex="2" RowIndex="0" ColIndex="2" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.6" FaceIndex="2" RowIndex="0" ColIndex="0" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.8" FaceIndex="2" RowIndex="1" ColIndex="1" />
     <ReadPosition RelativeX="0.6" RelativeY="0.2" FaceIndex="2" RowIndex="1" ColIndex="2" />
     <ReadPosition RelativeX="0.6" RelativeY="0.4" FaceIndex="2" RowIndex="2" ColIndex="0" />
     <ReadPosition RelativeX="0.6" RelativeY="0.6" FaceIndex="2" RowIndex="2" ColIndex="1" />
@@ -34,33 +33,27 @@
     <ReadPosition RelativeX="0.2" RelativeY="0.4" FaceIndex="3" RowIndex="0" ColIndex="1" />
     <ReadPosition RelativeX="0.2" RelativeY="0.6" FaceIndex="3" RowIndex="0" ColIndex="2" />
     <ReadPosition RelativeX="0.2" RelativeY="0.8" FaceIndex="3" RowIndex="1" ColIndex="0" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.2" FaceIndex="3" RowIndex="1" ColIndex="2" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.4" FaceIndex="3" RowIndex="2" ColIndex="0" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.6" FaceIndex="3" RowIndex="2" ColIndex="1" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.8" FaceIndex="3" RowIndex="2" ColIndex="2" />
-    <ReadPosition RelativeX="0.6" RelativeY="0.2" FaceIndex="4" RowIndex="0" ColIndex="0" />
-    <ReadPosition RelativeX="0.6" RelativeY="0.4" FaceIndex="4" RowIndex="0" ColIndex="1" />
-    <ReadPosition RelativeX="0.6" RelativeY="0.6" FaceIndex="4" RowIndex="0" ColIndex="2" />
-    <ReadPosition RelativeX="0.6" RelativeY="0.8" FaceIndex="4" RowIndex="1" ColIndex="0" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.2" FaceIndex="3" RowIndex="1" ColIndex="1" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.4" FaceIndex="3" RowIndex="2" ColIndex="2" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.6" FaceIndex="3" RowIndex="2" ColIndex="0" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.8" FaceIndex="3" RowIndex="2" ColIndex="1" />
+    <ReadPosition RelativeX="0.6" RelativeY="0.2" FaceIndex="4" RowIndex="0" ColIndex="2" />
+    <ReadPosition RelativeX="0.6" RelativeY="0.4" FaceIndex="4" RowIndex="0" ColIndex="0" />
+    <ReadPosition RelativeX="0.6" RelativeY="0.6" FaceIndex="4" RowIndex="0" ColIndex="1" />
+    <ReadPosition RelativeX="0.6" RelativeY="0.8" FaceIndex="4" RowIndex="1" ColIndex="2" />
   </Camera>
   <Camera CameraIndex="3">
-    <ReadPosition RelativeX="0.2" RelativeY="0.2" FaceIndex="4" RowIndex="1" ColIndex="2" />
-    <ReadPosition RelativeX="0.2" RelativeY="0.4" FaceIndex="4" RowIndex="2" ColIndex="0" />
-    <ReadPosition RelativeX="0.2" RelativeY="0.6" FaceIndex="4" RowIndex="2" ColIndex="1" />
-    <ReadPosition RelativeX="0.2" RelativeY="0.8" FaceIndex="4" RowIndex="2" ColIndex="2" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.2" FaceIndex="5" RowIndex="0" ColIndex="0" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.4" FaceIndex="5" RowIndex="0" ColIndex="1" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.6" FaceIndex="5" RowIndex="0" ColIndex="2" />
-    <ReadPosition RelativeX="0.4" RelativeY="0.8" FaceIndex="5" RowIndex="1" ColIndex="0" />
+    <ReadPosition RelativeX="0.2" RelativeY="0.2" FaceIndex="4" RowIndex="1" ColIndex="0" />
+    <ReadPosition RelativeX="0.2" RelativeY="0.4" FaceIndex="4" RowIndex="2" ColIndex="1" />
+    <ReadPosition RelativeX="0.2" RelativeY="0.6" FaceIndex="4" RowIndex="2" ColIndex="2" />
+    <ReadPosition RelativeX="0.2" RelativeY="0.8" FaceIndex="4" RowIndex="2" ColIndex="0" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.2" FaceIndex="5" RowIndex="0" ColIndex="1" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.4" FaceIndex="5" RowIndex="0" ColIndex="2" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.6" FaceIndex="5" RowIndex="0" ColIndex="0" />
+    <ReadPosition RelativeX="0.4" RelativeY="0.8" FaceIndex="5" RowIndex="1" ColIndex="1" />
     <ReadPosition RelativeX="0.6" RelativeY="0.2" FaceIndex="5" RowIndex="1" ColIndex="2" />
     <ReadPosition RelativeX="0.6" RelativeY="0.4" FaceIndex="5" RowIndex="2" ColIndex="0" />
     <ReadPosition RelativeX="0.6" RelativeY="0.6" FaceIndex="5" RowIndex="2" ColIndex="1" />
     <ReadPosition RelativeX="0.6" RelativeY="0.8" FaceIndex="5" RowIndex="2" ColIndex="2" />
-  </Camera>
-=======
-  <Camera CameraIndex="0" />
-  <Camera CameraIndex="1" />
-  <Camera CameraIndex="2" />
-  <Camera CameraIndex="3" />
->>>>>>> refs/remotes/origin/master
+	</Camera>
 </CameraReadPositions>

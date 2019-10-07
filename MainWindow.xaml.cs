@@ -27,13 +27,15 @@ namespace Rubinator3000 {
         public static bool PositionEditingAllowed = false;
 
         private Queue<string> messages = new Queue<string>();
-        private volatile Cube cube;
+        public static volatile Cube cube;
 
         private const int cameraCount = 4;
         private readonly Image[] cameraPreviews = new Image[cameraCount];
         private readonly WriteableBitmap[] previewBitmaps = new WriteableBitmap[cameraCount];
         private readonly WebCamControl[] webCamControls = new WebCamControl[cameraCount];
         private readonly Canvas[] canvases = new Canvas[cameraCount];
+
+        private ColorDialog colorDialog;
 
         public Cube Cube {
             get => cube;
@@ -143,13 +145,14 @@ namespace Rubinator3000 {
             Image clickedImage = (Image)sender;
             Point clickPosition = e.GetPosition(clickedImage);
 
-            var colorDialog = new ColorDialog();
+            colorDialog = new ColorDialog();
 
             int[] indicies;
 
-            if (colorDialog.ShowDialog() == true) {
+            if (colorDialog.ShowDialog() // Waits until dialog gets closed
+                == true) {
 
-                /* indicies stores the indicies of the position to add
+                /* "indicies" stores the indicies of the position to add
                  * [0] faceIndex
                  * [1] rowIndex
                  * [2] colIndex

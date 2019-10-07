@@ -111,6 +111,10 @@ namespace Rubinator3000 {
         /// </summary>
         public void SetTile(CubeFace face, int tile, CubeColor color) {
             data[(int)face][tile] = color;
+            if (isRenderCube) {
+
+                DrawCube.AddMove(this);
+            }
         }
 
         /// <summary>

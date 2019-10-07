@@ -25,6 +25,7 @@ namespace Rubinator3000 {
         public ColorDialog() {
             InitializeComponent();
 
+            Topmost = true;
             inputFaceIndex.Focus();
         }
 

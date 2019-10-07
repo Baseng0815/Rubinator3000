@@ -176,7 +176,7 @@ namespace Rubinator3000.CubeScan {
                     }
                     lastCubeGeneration = Helper.CurrentTimeMillis();
                 }
-
+                
                 // Code in while loop  
 
                 if (GC.GetTotalMemory(true) > 500 * Math.Pow(10, 6)) {
@@ -288,8 +288,6 @@ namespace Rubinator3000.CubeScan {
                 positions[i].Percentages = ColorIdentification.CalculateColorPercentages(positions[i].Color);
             }
 
-            Cube cube = new Cube();
-
             for (int i = 0; i < 6; i++) {
 
                 CubeColor currentCubeColor = (CubeColor)i;
@@ -301,7 +299,7 @@ namespace Rubinator3000.CubeScan {
                     ReadPosition currentPosition = positions[maxIndicies[j]];
 
                     // Assign tiles to the cube
-                    cube.SetTile((CubeFace)(currentPosition.FaceIndex), currentPosition.RowIndex * 3 + currentPosition.ColIndex, currentCubeColor);
+                    MainWindow.cube.SetTile((CubeFace)(currentPosition.FaceIndex), currentPosition.RowIndex * 3 + currentPosition.ColIndex, currentCubeColor);
                     currentPosition.AssumedCubeColor = currentCubeColor;
 
                     // Dye the circle of the readposition in the corresponding color
@@ -368,7 +366,7 @@ namespace Rubinator3000.CubeScan {
 
                 for (int j = 0; j < PositionsToReadAt.GetLength(1); j++) {
 
-                    if (PositionsToReadAt[i, j].FaceIndex == faceIndex && PositionsToReadAt[i, j].RowIndex == rowIndex && PositionsToReadAt[i, j].ColIndex == colIndex) {
+                    if (PositionsToReadAt[i, j] != null && PositionsToReadAt[i, j].FaceIndex == faceIndex && PositionsToReadAt[i, j].RowIndex == rowIndex && PositionsToReadAt[i, j].ColIndex == colIndex) {
 
                         PositionsToReadAt[i, j] = null;
                         TotalPositionCount--;
