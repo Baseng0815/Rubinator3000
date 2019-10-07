@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -39,7 +40,7 @@ namespace Rubinator3000 {
 
         private static Vector3[] renderColors;
 
-        private static Thread animatedMoveThread;
+        private static Task task;
 
         public static TRSTransformation Transformation;
         public static bool AnimateMoves = true;
@@ -76,36 +77,35 @@ namespace Rubinator3000 {
         }
 
         // do animated moves
-        private static void AnimatedMoveThread() {
-            while (true) {
-                if (moveQueue.Count > 0) {
-                    AnimatedMove move = moveQueue.Dequeue();
+        private static void AnimateMovesTask() {
+            while (moveQueue.Count > 0) {
+                Log.LogStuff("Animated move executing in animated move task");
+                AnimatedMove move = moveQueue.Dequeue();
 
-                    if (move.TurnDuration > 0) {
-                        Stopwatch watch = new Stopwatch();
+                if (move.TurnDuration > 0) {
+                    Stopwatch watch = new Stopwatch();
 
-                        double anglePerMillisecond = 90 / move.TurnDuration;
-                        // if move is null, skip animation and directly set state
-                        if (move.Move != null) {
-                            if (move.Move.IsPrime)
-                                anglePerMillisecond *= -1;
+                    double anglePerMillisecond = 90 / move.TurnDuration;
+                    // if move is null, skip animation and directly set state
+                    if (move.Move != null) {
+                        if (move.Move.IsPrime)
+                            anglePerMillisecond *= -1;
 
-                            watch.Start();
+                        watch.Start();
 
-                            // rotate until 90 degrees is hit, then reset rotation and copy cube
-                            // also, issue a redraw
-                            while (Math.Abs(faceRotations[(int)move.Move.Face]) < 90) {
-                                SetFaceRotation(move.Move.Face, (float)(watch.ElapsedMilliseconds * anglePerMillisecond));
-                                CubeViewer.Window.Invalidate();
-                            }
+                        // rotate until 90 degrees is hit, then reset rotation and copy cube
+                        // also, issue a redraw
+                        while (Math.Abs(faceRotations[(int)move.Move.Face]) < 90) {
+                            SetFaceRotation(move.Move.Face, (float)(watch.ElapsedMilliseconds * anglePerMillisecond));
+                            CubeViewer.Window.Invalidate();
                         }
                     }
-
-                    currentState = move.EndState;
-                    CubeViewer.Window.Invalidate();
-                    if (move.Move != null)
-                        faceRotations[(int)move.Move.Face] = 0;
                 }
+
+                currentState = move.EndState;
+                CubeViewer.Window.Invalidate();
+                if (move.Move != null)
+                    faceRotations[(int)move.Move.Face] = 0;
             }
         }
 
@@ -137,19 +137,11 @@ namespace Rubinator3000 {
 
             moveQueue = new Queue<AnimatedMove>();
 
-            animatedMoveThread = new Thread(new ThreadStart(AnimatedMoveThread));
-            animatedMoveThread.Start();
-
             Log.LogStuff("Animation Thread Start");
         }
 
         public static void StopDrawing() {
-            animatedMoveThread.Abort();
-
-            try {
-                animatedMoveThread.Join();
-            }
-            catch { }
+            task.Wait();
 
             Log.LogStuff("Animation Thread Stop");
         }
@@ -161,6 +153,17 @@ namespace Rubinator3000 {
         public static void AddMove(Cube endState, Move move = null, int duration = 0) {
             // deep copy because otherwise, the arrays would refer to the same memory
             moveQueue.Enqueue(new AnimatedMove { Move = move, EndState = (Cube)endState.Clone(), TurnDuration = Settings.MoveAnimatedTime });
+
+            bool makeNewTask = false;
+            if (task != null) {
+                if (task.Status != TaskStatus.Running) {
+                    makeNewTask = true;
+                }
+            } else makeNewTask = true;
+
+            if (makeNewTask)
+                task = Task.Factory.StartNew(() => AnimateMovesTask());
+
 
             if (move != null)
                 Log.LogStuff($"Animate Move: {move.ToString()}");

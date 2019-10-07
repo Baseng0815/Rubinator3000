@@ -85,7 +85,7 @@ namespace Rubinator3000
 
         private static void MouseWheelEvent(object sender, MouseEventArgs args)
         {
-            int delta = -args.Delta / System.Windows.Input.Mouse.MouseWheelDeltaForOneLine;
+            int delta = -args.Delta / SystemInformation.MouseWheelScrollDelta;
 
             view.ChangeFov(delta * Settings.ScrollSensitivity);
             Window.Invalidate();
