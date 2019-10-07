@@ -330,3 +330,6 @@ Rubinator3000_old/
 
 # Visual Studio Code Files
 .vscode/
+
+bin/
+obj/

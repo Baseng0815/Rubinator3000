@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Rubinator3000 {
+    [System.Diagnostics.DebuggerNonUserCode]
     public static class Log {
         public static void LogStuff(string message) {
             TimeSpan time = DateTime.Now.TimeOfDay;

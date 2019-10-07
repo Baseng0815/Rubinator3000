@@ -63,6 +63,18 @@
             <Setter Property="TextWrapping" Value="WrapWithOverflow" />
         </Style>
 
+        <Style TargetType="Menu" >
+            <Setter Property="Background" Value="{StaticResource BackgroundColor}"/>
+            <Setter Property="FontFamily" Value="{StaticResource Font}"/>
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}"/>
+        </Style>
+
+        <Style TargetType="MenuItem">
+            <Setter Property="Background" Value="{StaticResource BackgroundColor}"/>
+            <Setter Property="FontFamily" Value="{StaticResource Font}"/>
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}"/>
+        </Style>
+
     </Window.Resources>
     <Grid Background="{StaticResource BackgroundColor}">
         <Grid.ColumnDefinitions>
