@@ -55,5 +55,5 @@
     <ReadPosition RelativeX="0.6" RelativeY="0.4" FaceIndex="5" RowIndex="2" ColIndex="0" />
     <ReadPosition RelativeX="0.6" RelativeY="0.6" FaceIndex="5" RowIndex="2" ColIndex="1" />
     <ReadPosition RelativeX="0.6" RelativeY="0.8" FaceIndex="5" RowIndex="2" ColIndex="2" />
-	</Camera>
+  </Camera>
 </CameraReadPositions>

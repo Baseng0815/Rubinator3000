@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -502,8 +503,8 @@ namespace Rubinator3000.CubeScan {
 
                     Log.LogStuff(
                         AddPosition(new ReadPosition(
-                            double.Parse(readPositionElement.Attribute(XmlRelativeX).Value.Replace('.', ',')),
-                            double.Parse(readPositionElement.Attribute(XmlRelativeY).Value.Replace('.', ',')),
+                            double.Parse(readPositionElement.Attribute(XmlRelativeX).Value, NumberStyles.AllowDecimalPoint),
+                            double.Parse(readPositionElement.Attribute(XmlRelativeY).Value, NumberStyles.AllowDecimalPoint),
                             int.Parse(readPositionElement.Attribute(XmlFaceIndex).Value),
                             int.Parse(readPositionElement.Attribute(XmlRowIndex).Value),
                             int.Parse(readPositionElement.Attribute(XmlColIndex).Value),
