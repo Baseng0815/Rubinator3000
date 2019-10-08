@@ -25,7 +25,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>1</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -56,6 +56,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -91,6 +92,7 @@
     <Compile Include="CubeScan\WebCamControl.cs" />
     <Compile Include="CubeScan\XmlElementDesignations.cs" />
     <Compile Include="CubeViewer\FlatTransformations.cs" />
+    <Compile Include="Cube\Position.cs" />
     <Compile Include="Cube\Stones.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MainWindowMenu.cs" />
@@ -100,6 +102,7 @@
     <Compile Include="Solving\Fridrich\CubeSolverFridrich.cs" />
     <Compile Include="Solving\LLPatterns.cs" />
     <Compile Include="Solving\LLSolver.cs" />
+    <Compile Include="Solving\SolvingUtility.cs" />
     <Page Include="ColorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -187,6 +190,7 @@
     <Content Include="Resources\DebugShader.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\pllSolving.xml" />
     <Content Include="Resources\TQShader.frag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

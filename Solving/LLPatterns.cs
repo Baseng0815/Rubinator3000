@@ -52,10 +52,45 @@ namespace Rubinator3000.Solving {
     public struct PllPattern : IPattern {
         public int Number { get; }
 
+        private byte[][] patternData;
 
+        private static readonly Dictionary<CubeColor, int> middleLayerColors;
+
+        static PllPattern() {
+            middleLayerColors = new Dictionary<CubeColor, int>();
+            middleLayerColors.Add(ORANGE, 0);
+            middleLayerColors.Add(GREEN, 1);
+            middleLayerColors.Add(RED, 2);
+            middleLayerColors.Add(BLUE, 3);
+        }
+
+        public PllPattern(int number, byte[][] patternData) {
+            if (patternData.Length != 4 || patternData.Any(e => e.Length != 3))
+                throw new ArgumentOutOfRangeException(nameof(patternData));
+
+            this.patternData = patternData;
+            this.Number = number;
+        }
 
         public bool IsMatch(Cube cube) {
-            throw new NotImplementedException();
+            for (int f = 0; f < 4; f++) {
+                CubeFace face = CubeSolver.MiddleLayerFaces[f];
+
+                CubeColor[] tiles = {
+                    cube.At(face, 6),
+                    cube.At(face, 7),
+                    cube.At(face, 8)
+                };
+
+                int delta0 = (middleLayerColors[tiles[0]] - middleLayerColors[tiles[1]]).NormalizeCount();
+                int delta1 = (middleLayerColors[tiles[0]] - middleLayerColors[tiles[2]]).NormalizeCount();
+                int delta2 = (middleLayerColors[tiles[1]] - middleLayerColors[tiles[2]]).NormalizeCount();
+
+                if (delta0 != patternData[f][0] || delta1 != patternData[f][1] || delta2 != patternData[f][2])
+                    return false;
+            }
+
+            return true;
         }
     }
 }

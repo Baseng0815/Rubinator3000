@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubinator3000.Solving;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,13 +76,25 @@ namespace Rubinator3000 {
             MoveCollectionParser parser = new MoveCollectionParser();
             return parser.Parse(s);
         }
+
+        public MoveCollection TransformMoves(CubeOrientation orientation) {            
+
+            MoveCollection newMoves = new MoveCollection();
+            for (IEnumerator<Move> e = GetEnumerator(); e.MoveNext(); ) {
+                Move m = e.Current;
+                newMoves.Add(orientation.TransformFace(m.Face), m.Count);
+            }
+
+            return newMoves;
+        }
     }    
+
+    public enum OrientationMove { X, Y, Z }
 
     /// <summary>
     /// Eine Hilfsklasse, um eine MoveCollection zu parsen, die M,E,S oder x,y,z Moves enthält
     /// </summary>
-    public class MoveCollectionParser {
-        private enum OrientationMove { X, Y, Z }
+    public class MoveCollectionParser {        
         private CubeFace[] cubeOrientation;
         private static readonly char[] faceMappings = { 'L', 'U', 'F', 'D', 'R', 'B' };
         private static readonly char[] orientationMoveChars = { 'x', 'y', 'z' };
@@ -166,7 +179,7 @@ namespace Rubinator3000 {
         }
 
         private void ChangeOrientation(OrientationMove move, int count = 1) {
-            while (count < 0) count += 4;            
+            count = count.NormalizeCount();
 
             switch (move) {
                 case OrientationMove.X:

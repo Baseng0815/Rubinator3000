@@ -23,7 +23,7 @@ namespace Rubinator3000 {
         public event Arduino.MoveEventHandler OnMoveDone;
 #endif
 
-        private void RotateSide(CubeSide side, bool isPrime) {
+        protected void RotateSide(CubeSide side, bool isPrime) {
             CubeMatrix matrix = data[(int)side.Face];
             matrix.Rotate(isPrime);
 
@@ -100,7 +100,7 @@ namespace Rubinator3000 {
         /// <summary>
         /// does a move
         /// </summary>
-        public void DoMove(Move move) {
+        public virtual void DoMove(Move move) {
             CubeSide side = sides.First(e => e.Face == move.Face);
 
             for (int c = 0; c < move.Count; c++) {

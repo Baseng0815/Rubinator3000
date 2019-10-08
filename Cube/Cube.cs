@@ -5,74 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using static Rubinator3000.CubeFace;
 
-namespace Rubinator3000 {
-    public enum CubeColor : int {
-        ORANGE,
-        WHITE,
-        GREEN,
-        YELLOW,
-        RED,
-        BLUE,
-        
-        NONE = -1
-    };
-
-    public enum CubeFace : int {
-        LEFT,
-        UP,
-        FRONT,
-        DOWN,
-        RIGHT,
-        BACK,
-        
-        NONE = -1
-    };
-
-    /// <summary>
-    /// Represent a tile position on a cube
-    /// </summary>
-    public struct Position {
-        public CubeFace Face { get; set; }
-        public int Tile { get; set; }
-
-        public Position(CubeFace face, int tile) {
-            Face = face;
-            Tile = tile;
-        }
-
-
-
-        public static implicit operator Position((CubeFace, int) tuple) {
-            return new Position(tuple.Item1, tuple.Item2);
-        }
-
-        public static bool operator ==(Position left, Position right) {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(Position left, Position right) {
-            return !(left == right);
-        }
-
-        public override bool Equals(object obj) {
-            return obj is Position position &&
-                   Face == position.Face &&
-                   Tile == position.Tile;
-        }
-
-        public override string ToString() {
-            return Enum.GetName(typeof(CubeFace), Face)[0] + Tile.ToString();
-        }
-
-        public override int GetHashCode() {
-            return ((int)Face)^Tile;
-        }
-    }
+namespace Rubinator3000 {    
 
     [Serializable]
     public partial class Cube : ICloneable {
         private CubeMatrix[] data = new CubeMatrix[6];
-        private readonly bool isRenderCube;   
+        internal readonly bool isRenderCube;   
 
         internal CubeMatrix[] Data {
             get => data;
@@ -171,6 +109,25 @@ namespace Rubinator3000 {
                     return color2 == CubeColor.GREEN;
                 default:
                     throw new ArgumentException(color1 == CubeColor.NONE ? nameof(color1) : nameof(color2));
+            }
+        }
+
+        public static CubeFace GetOpponentFace(CubeFace face) {
+            switch (face) {
+                case CubeFace.LEFT:
+                    return RIGHT;
+                case CubeFace.UP:
+                    return DOWN;
+                case CubeFace.FRONT:
+                    return BACK;
+                case CubeFace.DOWN:
+                    return UP;
+                case CubeFace.RIGHT:
+                    return LEFT;
+                case CubeFace.BACK:
+                    return FRONT;
+                default:
+                    return NONE;                
             }
         }
 

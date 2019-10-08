@@ -14,9 +14,7 @@ namespace Rubinator3000
         public int Count {
             get => count;
             set {
-                count = value;
-                while (count < 0) count += 4;
-                count %= 4;
+                count = value.NormalizeCount();                
             }
         }
         public bool IsPrime => Count == 3;
@@ -30,7 +28,7 @@ namespace Rubinator3000
         public Move(CubeFace Face, int count = 1)
         {
             this.Face = Face;
-            this.Count = count.NomalizeCount();
+            this.Count = count;
 
             if (Count == 0)
                 throw new ArgumentOutOfRangeException();

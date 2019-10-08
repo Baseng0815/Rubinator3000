@@ -61,17 +61,30 @@ namespace Rubinator3000.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///   Sucht eine lokalisierte Zeichenfolge, die &lt;?xml version=&quot;1.0&quot; standalone=&quot;yes&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;OllSolving&gt;
         ///  &lt;ollPattern number=&quot;0&quot; face=&quot;511&quot; side0=&quot;0&quot; side1=&quot;0&quot; side2=&quot;0&quot; side3=&quot;0&quot; algorithm=&quot;LWDLiDiMiDLDiLi&quot; /&gt;
         ///  &lt;ollPattern number=&quot;1&quot; face=&quot;501&quot; side0=&quot;2&quot; side1=&quot;2&quot; side2=&quot;0&quot; side3=&quot;0&quot; algorithm=&quot;LDLiDiMDLDiLWi&quot; /&gt;
         ///  &lt;ollPattern number=&quot;2&quot; face=&quot;381&quot; side0=&quot;2&quot; side1=&quot;0&quot; side2=&quot;2&quot; side3=&quot;0&quot; algorithm=&quot;LWiLDLDLiDiLWLWLiLiDLDiLWi&quot; /&gt;
-        ///  &lt;ollPattern number=&quot;3&quot; face=&quot;341&quot; side0=&quot;2&quot; side1=&quot;2&quot; side2=&quot;2&quot; side3=&quot;2&quot; algorithm=&quot;LiLiULiDDLUiLiDDLi&quot; /&gt;
-        ///  &lt;ollPattern [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///  &lt;ollPattern number=&quot;3&quot; face=&quot;341&quot; side0=&quot;2&quot; side1=&quot;2&quot; side2=&quot;2&quot; side3=&quot;2&quot; algorithm=&quot;LiLiULiDDLUiLiDDLi&quot;  [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string ollSolving {
             get {
                 return ResourceManager.GetString("ollSolving", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die &lt;?xml version=&quot;1.0&quot; standalone=&quot;yes&quot; encoding=&quot;utf-8&quot; ?&gt;
+        ///&lt;pllSolving&gt;
+        ///    &lt;pllPattern number=&quot;00&quot; face0=&quot;10&quot; face1=&quot;60&quot; face2=&quot;49&quot; face3=&quot;45&quot; algorithm=&quot;x2yiRiFRiB2RFiRiB2R2&quot; /&gt;
+        ///    &lt;pllPattern number=&quot;01&quot; face0=&quot;15&quot; face1=&quot;40&quot; face2=&quot;30&quot; face3=&quot;19&quot; algorithm=&quot;x2yiR2B2RFRiB2RFiR&quot; /&gt;
+        ///    &lt;pllPattern number=&quot;02&quot; face0=&quot;59&quot; face1=&quot;25&quot; face2=&quot;59&quot; face3=&quot;25&quot; algorithm=&quot;x2yixiRUiRiDRURiDiRURiDRUiRiDi&quot; /&gt;
+        ///    &lt;pllPattern number=&quot;03&quot; face0=&quot;49&quot; face1=&quot;49&quot; face2=&quot;00&quot; face3=&quot;34&quot; algorithm=&quot;x2yiRUiRURURUiRiUiR2&quot;  [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        /// </summary>
+        internal static string pllSolving {
+            get {
+                return ResourceManager.GetString("pllSolving", resourceCulture);
             }
         }
     }

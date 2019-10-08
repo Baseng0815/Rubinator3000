@@ -21,6 +21,14 @@ namespace Rubinator3000.Solving {
             new CubeColor[4] { CubeColor.ORANGE, CubeColor.WHITE, CubeColor.RED, CubeColor.YELLOW }
         };
 
+        /// <summary>
+        /// Gibt den Unterschied der Farben zurück. Der Unterschied ist die Anzahl der Seite im Uhrzeigersinn, um die Farbe auf 
+        /// die richtige Seite zu bringen. Er wird durch die Differenz von der Seitenfarbe und der Farbe bestimmt.
+        /// </summary>
+        /// <param name="color">Die Farbe</param>
+        /// <param name="faceColor">Die Seite auf der sich die Farbe befindet</param>
+        /// <param name="faceToRot">Die Seite, die gedreht werden soll, um die Farbe auf die richtige Seite zu bringen</param>
+        /// <returns></returns>
         public static int GetDelta(this CubeColor color, CubeColor faceColor, CubeFace faceToRot) {
             CubeColor[] colors = layerColors[(int)faceToRot];
 
@@ -34,7 +42,7 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentOutOfRangeException(nameof(faceToRot));
 
             int delta = Array.IndexOf(colors, faceColor) - Array.IndexOf(colors, color);
-            return delta.NomalizeCount();
+            return delta.NormalizeCount();
         }
 
         /// <summary>
@@ -42,7 +50,7 @@ namespace Rubinator3000.Solving {
         /// </summary>
         /// <param name="count"></param>
         /// <returns></returns>
-        public static int NomalizeCount(this int count) {
+        public static int NormalizeCount(this int count) {
             while (count < 0) count += 4;
             return count % 4;
         }
