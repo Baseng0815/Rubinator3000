@@ -16,6 +16,9 @@ namespace Rubinator3000.Solving {
         /// </summary>
         /// <param name="cube">Der zu lösende Cube</param>
         public CubeSolver(Cube cube) {
+            if (!CheckCube(cube)) {
+                throw new ArgumentException();
+            }
 #if DEBUG
             this.cube = cube;
 #else
@@ -35,6 +38,8 @@ namespace Rubinator3000.Solving {
         /// Brechnet in einer abgleiteten Klasse, die Züge zum lösen des Würfels
         /// </summary>
         protected abstract void CalcMoves();
+
+        protected abstract bool CheckCube(Cube cube);
 
         /// <summary>
         /// Gibt in einer abgeleiteten Klasse an, ob der Solver seine Arbeit erfolgreich vollendet hat

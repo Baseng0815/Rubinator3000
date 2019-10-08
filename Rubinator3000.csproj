@@ -98,6 +98,8 @@
     <Compile Include="Solving\CrossSolver.cs" />
     <Compile Include="Solving\CubeSolver.cs" />
     <Compile Include="Solving\Fridrich\CubeSolverFridrich.cs" />
+    <Compile Include="Solving\LLPatterns.cs" />
+    <Compile Include="Solving\LLSolver.cs" />
     <Page Include="ColorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

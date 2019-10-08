@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubinator3000.Solving;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,9 +30,7 @@ namespace Rubinator3000
         public Move(CubeFace Face, int count = 1)
         {
             this.Face = Face;
-
-            while (count < 0) count += 4;            
-            this.Count = count % 4;
+            this.Count = count.NomalizeCount();
 
             if (Count == 0)
                 throw new ArgumentOutOfRangeException();

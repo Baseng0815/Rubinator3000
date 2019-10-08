@@ -1,0 +1,13 @@
+<?xml version="1.0" standalone="yes" encoding="utf-8" ?>
+<pllSolving>
+    <pllPattern number="00" face0="10" face1="60" face2="49" face3="45" algorithm="x2yiRiFRiB2RFiRiB2R2" />
+    <pllPattern number="01" face0="15" face1="40" face2="30" face3="19" algorithm="x2yiR2B2RFRiB2RFiR" />
+    <pllPattern number="02" face0="59" face1="25" face2="59" face3="25" algorithm="x2yixiRUiRiDRURiDiRURiDRUiRiDi" />
+    <pllPattern number="03" face0="49" face1="49" face2="00" face3="34" algorithm="x2yiRUiRURURUiRiUiR2" />
+    <pllPattern number="04" face0="19" face1="34" face2="00" face3="19" algorithm="x2yiLiULiUiLiUiLiULUL2" />
+    <pllPattern number="05" face0="34" face1="34" face2="34" face3="34" algorithm="x2yiM2UiM2U2M2UiM2" />
+    <pllPattern number="06" face0="19" face1="49" face2="19" face3="49" algorithm="x2yiM2UiM2UiMiU2M2U2MiU2" />
+    <pllPattern number="07" face0="15" face1="34" face2="60" face3="59" algorithm="x2yiRURiUiRiFR2UiRiUiRURiFi" />
+    <pllPattern number="08" face0="60" face1="00" face2="60" face3="40" algorithm="x2yi" />
+    <pllPattern number="" face0="" face1="" face2="" face3="" algorithm="x2yi" />
+</pllSolving>
