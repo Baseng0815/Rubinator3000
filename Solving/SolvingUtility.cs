@@ -42,17 +42,20 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentOutOfRangeException(nameof(faceToRot));
 
             int delta = Array.IndexOf(colors, faceColor) - Array.IndexOf(colors, color);
-            return delta.NormalizeCount();
+            return SolvingUtility.NormalizeCount(delta);
+        }        
+
+        public static int NormalizeCount(int count) {
+            return NormalizeCount(count, 0);
         }
 
-        /// <summary>
-        /// Bringt den Wert in den Bereich von 0 bis 3
-        /// </summary>
-        /// <param name="count"></param>
-        /// <returns></returns>
-        public static int NormalizeCount(this int count) {
-            while (count < 0) count += 4;
-            return count % 4;
+        public static int NormalizeCount(int count, int minCount) {
+            while (count < minCount) count += 4;
+
+            if(count < 0)
+                return -(int)(Math.Abs(count) % 4);
+            else 
+                return count;
         }
     }
 }

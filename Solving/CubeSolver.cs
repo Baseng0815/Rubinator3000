@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Rubinator3000.Solving {
     public abstract class CubeSolver {
 
-        protected Cube cube;
+        protected readonly Cube cube;
         protected MoveCollection moves;
         protected bool movesCalculated = false;
 
