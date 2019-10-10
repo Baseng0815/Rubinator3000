@@ -26,11 +26,12 @@ namespace Rubinator3000.Solving {
         /// die richtige Seite zu bringen. Er wird durch die Differenz von der Seitenfarbe und der Farbe bestimmt.
         /// </summary>
         /// <param name="color">Die Farbe</param>
-        /// <param name="faceColor">Die Seite auf der sich die Farbe befindet</param>
+        /// <param name="face">Die Seite auf der sich die Farbe befindet</param>
         /// <param name="faceToRot">Die Seite, die gedreht werden soll, um die Farbe auf die richtige Seite zu bringen</param>
         /// <returns></returns>
-        public static int GetDelta(this CubeColor color, CubeColor faceColor, CubeFace faceToRot) {
+        public static int GetDelta(this CubeColor color, CubeFace face, CubeFace faceToRot) {
             CubeColor[] colors = layerColors[(int)faceToRot];
+            CubeColor faceColor = Cube.GetFaceColor(face);
 
             if (Cube.IsOpponentColor(faceColor, Cube.GetFaceColor(faceToRot)) || faceColor == Cube.GetFaceColor(faceToRot))
                 throw new ArgumentOutOfRangeException();
@@ -43,19 +44,26 @@ namespace Rubinator3000.Solving {
 
             int delta = Array.IndexOf(colors, faceColor) - Array.IndexOf(colors, color);
             return SolvingUtility.NormalizeCount(delta);
-        }        
+        }
 
         public static int NormalizeCount(int count) {
-            return NormalizeCount(count, 0);
+            return NormalizeNumber(count, 0, 3);
         }
 
         public static int NormalizeCount(int count, int minCount) {
-            while (count < minCount) count += 4;
-
-            if(count < 0)
-                return -(int)(Math.Abs(count) % 4);
-            else 
-                return count;
+            return NormalizeNumber(count, minCount, minCount + 3);
+        }
+        
+        public static int NormalizeNumber(int number, int minValue, int maxValue) {
+            if (minValue >= maxValue)
+                throw new ArgumentOutOfRangeException(nameof(minValue), "Die untere Grenze muss kleiner als die obere sein");
+            
+            int l = maxValue - minValue + 1;
+            while (number < minValue) number += l;
+            if (number < 0)
+                return -(Math.Abs(number) % l);
+            else
+                return number % l;
         }
     }
 }

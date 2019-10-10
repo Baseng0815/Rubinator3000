@@ -92,6 +92,16 @@ namespace Rubinator3000 {
             return data;
         }
 
+        public IEnumerable<T> GetStonesOnFace<T>(CubeFace face) where T : IStone {
+            if(typeof(T) == typeof(EdgeStone)) {
+                return Edges.Where(e => e.GetPositions().Any(p => p.Face == face)).Cast<T>();
+            }
+            else {
+                // comming soon ...
+                throw new NotImplementedException();
+            }
+        }
+
         public static bool IsOpponentColor(CubeColor color1, CubeColor color2) {            
 
             switch (color1) {
