@@ -14,7 +14,7 @@ namespace Rubinator3000
         public int Count {
             get => count;
             set {
-                count = value.NormalizeCount();                
+                count = SolvingUtility.NormalizeCount(value);
             }
         }
         public bool IsPrime => Count == 3;
@@ -60,6 +60,8 @@ namespace Rubinator3000
         {
             string str = mappings[(int)Face];
             if (IsPrime) str += "i";
+            else if (count == 2)
+                str += "2";
 
             return str;
         }

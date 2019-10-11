@@ -42,11 +42,22 @@ namespace Rubinator3000 {
 
                 Cube cube = this.cube;
                 var colors = this.colors;
+                
+                foreach(var edgePos in Cube.EdgeStonePositions) {
+                    CubeColor color1 = cube.At(edgePos.Item1);
+                    CubeColor color2 = cube.At(edgePos.Item2);
 
-                return (from edge in Cube.EdgeStonePositions
-                        where cube.At(edge.Item1) == colors.Item1 || cube.At(edge.Item2) == colors.Item1
-                        select edge).First();
+                    if(color1 == colors.Item1) {
+                        if (color2 == colors.Item2)
+                            return edgePos;
+                    }
+                    else if(color1 == colors.Item2) {
+                        if (color2 == colors.Item1)
+                            return edgePos;
+                    }
+                }
 
+                throw new InvalidProgramException();
             }
         }
 
@@ -119,5 +130,12 @@ namespace Rubinator3000 {
 
             return new EdgeStone(colors, cube);
         }
+
+        public static bool operator ==(EdgeStone left, EdgeStone right) {
+            // compare colors
+            return left.GetColors().All(c => right.GetColors().Contains(c));
+        }
+
+        public static bool operator !=(EdgeStone left, EdgeStone right) => !(left == right);
     }
 }

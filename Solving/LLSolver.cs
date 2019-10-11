@@ -133,9 +133,7 @@ namespace Rubinator3000.Solving {
 
         private static void LoadPllPatterns() {
             XDocument doc = XDocument.Parse(Properties.Resources.pllSolving);
-            CubeFace[] orientation = new CubeFace[6] {
-                CubeFace.FRONT, CubeFace.DOWN, CubeFace.LEFT, CubeFace.UP, CubeFace.BACK, CubeFace.RIGHT
-            };
+            CubeOrientation orientation = new CubeOrientation(CubeFace.LEFT, CubeFace.DOWN);
 
             Func<XElement, (PllPattern, MoveCollection)> getPattern = e => {
                 int number = int.Parse(e.Attribute("number").Value);

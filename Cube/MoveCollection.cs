@@ -179,7 +179,7 @@ namespace Rubinator3000 {
         }
 
         private void ChangeOrientation(OrientationMove move, int count = 1) {
-            count = count.NormalizeCount();
+            count = SolvingUtility.NormalizeCount(count);
 
             switch (move) {
                 case OrientationMove.X:

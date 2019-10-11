@@ -82,9 +82,9 @@ namespace Rubinator3000.Solving {
                     cube.At(face, 8)
                 };
 
-                int delta0 = (middleLayerColors[tiles[0]] - middleLayerColors[tiles[1]]).NormalizeCount();
-                int delta1 = (middleLayerColors[tiles[0]] - middleLayerColors[tiles[2]]).NormalizeCount();
-                int delta2 = (middleLayerColors[tiles[1]] - middleLayerColors[tiles[2]]).NormalizeCount();
+                int delta0 = SolvingUtility.NormalizeCount(middleLayerColors[tiles[0]] - middleLayerColors[tiles[1]]);
+                int delta1 = SolvingUtility.NormalizeCount(middleLayerColors[tiles[0]] - middleLayerColors[tiles[2]]);
+                int delta2 = SolvingUtility.NormalizeCount(middleLayerColors[tiles[1]] - middleLayerColors[tiles[2]]);
 
                 if (delta0 != patternData[f][0] || delta1 != patternData[f][1] || delta2 != patternData[f][2])
                     return false;

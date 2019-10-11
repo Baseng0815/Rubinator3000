@@ -48,6 +48,9 @@ namespace Rubinator3000.Solving {
 
 
         protected void DoMove(CubeFace face, int count = 1, bool addMove = true) {
+            if (count == 0)
+                return;
+
             cube.DoMove(face, count);
 
             if (addMove)

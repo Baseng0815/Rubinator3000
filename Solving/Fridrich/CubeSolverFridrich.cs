@@ -37,6 +37,10 @@ namespace Rubinator3000.Solving {
         
         partial void CalcFTL();
         partial void CalcOLL();
-        partial void CalcPLL();        
+        partial void CalcPLL();
+
+        protected override bool CheckCube(Cube cube) {
+            throw new NotImplementedException();
+        }
     }
 }

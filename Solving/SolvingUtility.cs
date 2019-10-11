@@ -42,7 +42,7 @@ namespace Rubinator3000.Solving {
             if (!colors.Contains(color))
                 throw new ArgumentOutOfRangeException(nameof(faceToRot));
 
-            int delta = Array.IndexOf(colors, faceColor) - Array.IndexOf(colors, color);
+            int delta = Array.IndexOf(colors, color) - Array.IndexOf(colors, faceColor);
             return SolvingUtility.NormalizeCount(delta);
         }
 
