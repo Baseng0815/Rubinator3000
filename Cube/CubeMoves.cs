@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Rubinator3000 {
 
-    [DebuggerNonUserCode]
+    //[DebuggerNonUserCode]
     partial class Cube {
         private static readonly IEnumerable<CubeSide> sides = new CubeSide[] {
             new CubeSide(CubeFace.LEFT, (1, 0, true, 1), (2, 0, true, 1), (3, 0, true, 1), (5, 2, true, -1)),
@@ -63,7 +63,6 @@ namespace Rubinator3000 {
         public void DoMoves(IEnumerable<Move> moves) {
             foreach (var move in moves) {
                 DoMove(move);
-
             }
         }
         public void DoMove(CubeFace face, int count = 1) => DoMove(new Move(face, count));
@@ -75,15 +74,13 @@ namespace Rubinator3000 {
             CubeSide side = sides.First(e => e.Face == move.Face);
 
             for (int c = 0; c < move.Count; c++) {
-                RotateSide(side);
+                RotateSide(side);                                
+            }
 
-                if (this.isRenderCube) {
-                    DrawCube.AddMove(this, move, 1000);
-                }
+            OnMoveDone?.Invoke(this, new MoveEventArgs(move));
 
-#if DEBUG
-                OnMoveDone?.Invoke(this, new MoveEventArgs(move));
-#endif
+            if (this.isRenderCube) {
+                DrawCube.AddMove(this, move, 1000);
             }
 
             Log.LogStuff("Move done: " + move.ToString());
