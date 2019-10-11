@@ -54,11 +54,41 @@ namespace Rubinator3000 {
 
             InitalizeCameraPreviews();
 
+            KeyDown += MainWindow_KeyDown;
+
 #if DEBUG
             Cube = new Cube(isRenderCube: true);
 #else
             Cube = new Cube();
 #endif
+        }
+
+        private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
+            switch (e.Key) {
+                case Key.L:
+                    cube.DoMove(CubeFace.LEFT, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    break;
+                case Key.U:
+                    cube.DoMove(CubeFace.UP, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    break;
+                case Key.F:
+                    cube.DoMove(CubeFace.FRONT, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    break;
+                case Key.D:
+                    cube.DoMove(CubeFace.DOWN, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    break;
+                case Key.R:
+                    cube.DoMove(CubeFace.RIGHT, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    break;
+                case Key.B:
+                    cube.DoMove(CubeFace.BACK, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    break;
+                case Key.S:
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                        cube.Shuffle(10);
+                    break;
+
+            }
         }
 
         private void InitalizeCameraPreviews() {

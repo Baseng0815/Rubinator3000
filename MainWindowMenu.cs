@@ -25,7 +25,7 @@ namespace Rubinator3000 {
         }
 
         private async void MenuItemSolveCube_Click(object sender, RoutedEventArgs e) {
-            CubeSolver solver = new CubeSolverFridrich(cube);
+            CubeSolver solver = new CrossSolver(cube);
 
             MoveCollection moves = solver.GetMoves();
 

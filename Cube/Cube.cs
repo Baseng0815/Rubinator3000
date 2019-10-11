@@ -33,7 +33,7 @@ namespace Rubinator3000 {
 
             this.isRenderCube = isRenderCube;
 
-            //Edges = EdgeStonePositions.Select(p => new EdgeStone(new Tuple<CubeColor, CubeColor>(At(p.Item1), At(p.Item2)), this)).ToArray();
+            Edges = EdgeStonePositions.Select(p => new EdgeStone(new Tuple<CubeColor, CubeColor>(At(p.Item1), At(p.Item2)), this)).ToArray();
         }
  
         /// <summary>
