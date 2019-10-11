@@ -51,7 +51,17 @@ namespace Rubinator3000 {
                         moves.RemoveAt(moves.Count - 1);
                     }
                 }
-                else moves.Add(move);
+                // wenn der vorherige Move die Gegenseite des Würfels dreht und der davor die gleiche Seite wie der Move,
+                //kann die Anzahl der Vierteldrehungen zum vorherigen des vorherigen Moves addiert werden
+                else if(last.Face == Cube.GetOpponentFace(move.Face) && moves.ElementAt(moves.Count - 2).Face == move.Face) {
+                    Move m = moves.ElementAt(moves.Count - 2);
+                    m.Count += move.Count;
+
+                    if(m.Count == 0) {
+                        moves.RemoveAt(moves.Count - 2);
+                    }
+                }
+                else moves.Add(move);                
             }
             else moves.Add(move);
         }
