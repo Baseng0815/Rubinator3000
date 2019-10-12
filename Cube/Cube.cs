@@ -172,6 +172,14 @@ namespace Rubinator3000 {
             new Tuple<Position, Position>((LEFT, 3), (BACK, 5)), new Tuple<Position, Position>((FRONT, 3), (LEFT, 5)), new Tuple<Position, Position>((RIGHT, 3), (FRONT, 5)), new Tuple<Position, Position>((BACK, 3), (RIGHT, 5)),
 
             new Tuple<Position, Position>((DOWN, 1), (FRONT, 7)), new Tuple<Position, Position>((DOWN, 3), (LEFT, 7)), new Tuple<Position, Position>((DOWN, 5), (RIGHT, 7)), new Tuple<Position, Position>((DOWN, 7), (BACK, 7)),
-        };                
+        };
+
+        public static readonly Tuple<Position, Position, Position>[] CornerStonePositions = new Tuple<Position, Position, Position>[] {
+            new Tuple<Position, Position, Position>((UP, 0), (LEFT, 0), (BACK, 2)), new Tuple<Position, Position, Position>((UP, 2), (RIGHT, 2), (BACK, 0)),
+            new Tuple<Position, Position, Position>((UP, 6), (LEFT, 2), (FRONT, 0)), new Tuple<Position, Position, Position>((UP, 8), (RIGHT, 0), (FRONT, 2)),
+
+            new Tuple<Position, Position, Position>((DOWN, 0), (LEFT, 8), (FRONT, 6)), new Tuple<Position, Position, Position>((DOWN, 2), (RIGHT, 6), (FRONT, 8)),
+            new Tuple<Position, Position, Position>((DOWN, 6), (LEFT, 6), (BACK, 8)), new Tuple<Position, Position, Position>((DOWN, 8), (RIGHT, 8), (BACK, 6)),
+        };
     }
 }

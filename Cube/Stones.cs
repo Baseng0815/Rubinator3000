@@ -6,8 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Rubinator3000 {
-    public interface IStone
-    {        
+    public interface IStone {
         Position GetColorPosition(CubeColor color);
         Position GetColorPosition(Func<CubeColor, bool> colorPredicate);
         IEnumerable<CubeColor> GetColors();
@@ -16,44 +15,26 @@ namespace Rubinator3000 {
         bool InRightPosition();
     }
 
-    public struct EdgeStone : IStone
-    {
-        private Tuple<CubeColor, CubeColor> colors;
+    public struct EdgeStone : IStone {
+        private readonly Tuple<CubeColor, CubeColor> colors;
         private readonly Cube cube;
 
-        public Tuple<CubeColor, CubeColor> Colors
-        {
+        public Tuple<CubeColor, CubeColor> Colors {
             get => colors;
-            set
-            {
-                if (Cube.IsOpponentColor(value.Item1, value.Item2) || value.Item1 == value.Item2)
-                    throw new ArgumentException();
-
-                colors = value;
-            }
         }
 
-        public Tuple<Position, Position> Positions
-        {
-            get
-            {
-                if (this.cube == null || this.colors == null)
+        public Tuple<Position, Position> Positions {
+            get {
+                if (cube == null || colors == null)
                     throw new InvalidOperationException();
 
-                Cube cube = this.cube;
-                var colors = this.colors;
-                
-                foreach(var edgePos in Cube.EdgeStonePositions) {
-                    CubeColor color1 = cube.At(edgePos.Item1);
-                    CubeColor color2 = cube.At(edgePos.Item2);
 
-                    if(color1 == colors.Item1) {
-                        if (color2 == colors.Item2)
-                            return edgePos;
-                    }
-                    else if(color1 == colors.Item2) {
-                        if (color2 == colors.Item1)
-                            return edgePos;
+                foreach (var edgePos in Cube.EdgeStonePositions) {
+                    IEnumerable<CubeColor> colors = GetColors();
+
+                    if (colors.Contains(cube.At(edgePos.Item1))
+                        && colors.Contains(cube.At(edgePos.Item2))) {
+                        return edgePos;
                     }
                 }
 
@@ -61,28 +42,24 @@ namespace Rubinator3000 {
             }
         }
 
-        public EdgeStone(Tuple<CubeColor, CubeColor> colors, Cube cube)
-        {
+        public EdgeStone(Tuple<CubeColor, CubeColor> colors, Cube cube) {
             if (Cube.IsOpponentColor(colors.Item1, colors.Item2) || colors.Item1 == colors.Item2)
-                throw new ArgumentException();
+                throw new ArgumentException("Ein Kantenstein kann keine Gegenfarben enthalten", nameof(colors));
 
             this.colors = colors ?? throw new ArgumentNullException(nameof(colors));
             this.cube = cube ?? throw new ArgumentNullException(nameof(cube));
         }
 
-        public bool HasColor(CubeColor color)
-        {
+        public bool HasColor(CubeColor color) {
             return colors.Item1 == color || colors.Item2 == color;
         }
 
-        public IEnumerable<CubeColor> GetColors()
-        {
+        public IEnumerable<CubeColor> GetColors() {
             yield return colors.Item1;
             yield return colors.Item2;
         }
 
-        public Position GetColorPosition(CubeColor color)
-        {
+        public Position GetColorPosition(CubeColor color) {
             if (!(colors.Item1 == color || colors.Item2 == color))
                 throw new ArgumentOutOfRangeException(nameof(color));
 
@@ -90,40 +67,34 @@ namespace Rubinator3000 {
             return cube.At(pos.Item1) == color ? pos.Item1 : pos.Item2;
         }
 
-        public Position GetColorPosition(Func<CubeColor, bool> colorPredicate)
-        {
-            CubeColor[] stoneColors = { colors.Item1, colors.Item2 };
-
-            return GetColorPosition(stoneColors.First(colorPredicate));
+        public Position GetColorPosition(Func<CubeColor, bool> colorPredicate) {
+            return GetColorPosition(GetColors().First(colorPredicate));
         }
 
-        public IEnumerable<Position> GetPositions()
-        {
+        public IEnumerable<Position> GetPositions() {
             var pos = Positions;
             yield return pos.Item1;
             yield return pos.Item2;
         }
 
-        public bool InRightPosition()
-        {
-            var pos = Positions;
+        public bool InRightPosition() {
+            var pos = GetPositions();
             Cube cube = this.cube;
 
-            bool OnRightFace(Position s)
-            {
+            Func<Position, bool> onRightFace = s => {
                 CubeColor color = cube.At(s);
 
                 return (int)color == (int)s.Face;
-            }
+            };
 
-            return OnRightFace(pos.Item1) && OnRightFace(pos.Item2);
+            return pos.All(onRightFace);
         }
 
-        public static EdgeStone FromPosition(Cube cube, Position position)
-        {
+        public static EdgeStone FromPosition(Cube cube, Position position) {
             if (cube == null) throw new ArgumentNullException(nameof(cube));
 
-            if (!Cube.EdgeStonePositions.Any(e => e.Item1 == position || e.Item2 == position)) throw new ArgumentOutOfRangeException(nameof(position));
+            if (!Cube.EdgeStonePositions.Any(e => e.Item1 == position || e.Item2 == position))
+                throw new ArgumentOutOfRangeException(nameof(position));
 
             Tuple<Position, Position> pos = Cube.EdgeStonePositions.First(p => p.Item1 == position || p.Item2 == position);
             Tuple<CubeColor, CubeColor> colors = new Tuple<CubeColor, CubeColor>(cube.At(pos.Item1), cube.At(pos.Item2));
@@ -133,9 +104,123 @@ namespace Rubinator3000 {
 
         public static bool operator ==(EdgeStone left, EdgeStone right) {
             // compare colors
-            return left.GetColors().All(c => right.GetColors().Contains(c));
+            IEnumerable<CubeColor> leftColors = left.GetColors();
+            IEnumerable<CubeColor> rightColors = right.GetColors();
+
+            return leftColors.All(c => rightColors.Contains(c));
         }
 
         public static bool operator !=(EdgeStone left, EdgeStone right) => !(left == right);
+    }
+
+    public struct CornerStone : IStone {
+        private readonly Tuple<CubeColor, CubeColor, CubeColor> colors;
+        private readonly Cube cube;
+
+        public Tuple<CubeColor, CubeColor, CubeColor> Colors {
+            get => colors;
+        }
+
+        public Tuple<Position, Position, Position> Positions {
+            get {
+                if (cube == null || colors == null)
+                    throw new InvalidOperationException();
+
+                foreach (var corner in Cube.CornerStonePositions) {
+                    IEnumerable<CubeColor> colors = GetColors();
+
+                    if (colors.Contains(cube.At(corner.Item1))
+                        && colors.Contains(cube.At(corner.Item2))
+                        && colors.Contains(cube.At(corner.Item3))) {
+                        return corner;
+                    }
+                }
+
+                throw new InvalidProgramException();
+            }
+        }
+
+        public CornerStone(Tuple<CubeColor, CubeColor, CubeColor> colors, Cube cube) {
+            if (Cube.IsOpponentColor(colors.Item1, colors.Item2) || Cube.IsOpponentColor(colors.Item1, colors.Item3) || Cube.IsOpponentColor(colors.Item2, colors.Item3))
+                throw new ArgumentException("Ein Eckstein kann keine Gegenfarben enthalten", nameof(colors));
+
+            this.colors = colors ?? throw new ArgumentNullException(nameof(colors));
+            this.cube = cube ?? throw new ArgumentNullException(nameof(cube));
+        }
+
+        public Position GetColorPosition(CubeColor color) {
+            if (colors.Item1 != color || colors.Item2 != color || colors.Item3 != color)
+                throw new ArgumentOutOfRangeException(nameof(color));
+
+            var pos = Positions;
+            if (cube.At(pos.Item1) == color)
+                return pos.Item1;
+            else if (cube.At(pos.Item2) == color)
+                return pos.Item2;
+            else if (cube.At(pos.Item3) == color)
+                return pos.Item3;
+
+            throw new InvalidProgramException();
+        }
+
+        public Position GetColorPosition(Func<CubeColor, bool> colorPredicate) {
+            return GetColorPosition(GetColors().First(colorPredicate));
+        }
+
+        public IEnumerable<CubeColor> GetColors() {
+            yield return colors.Item1;
+            yield return colors.Item2;
+            yield return colors.Item3;
+        }
+
+        public IEnumerable<Position> GetPositions() {
+            var pos = Positions;
+
+            yield return pos.Item1;
+            yield return pos.Item2;
+            yield return pos.Item3;
+        }
+
+        public bool HasColor(CubeColor color) {
+            return colors.Item1 == color
+                || colors.Item2 == color
+                || colors.Item3 == color;
+        }
+
+        public bool InRightPosition() {
+            var pos = GetPositions();
+            Cube cube = this.cube;
+
+            Func<Position, bool> onRightFace = p => {
+                CubeColor color = cube.At(p);
+
+                return (int)color == (int)p.Face;
+            };
+
+            return pos.All(onRightFace);
+        }
+
+        public static CornerStone FromPosition(Cube cube, Position position) {
+            if (cube == null)
+                throw new ArgumentNullException(nameof(cube));
+
+            if (!Cube.CornerStonePositions.Any(c => c.Item1 == position || c.Item2 == position || c.Item3 == position))
+                throw new ArgumentOutOfRangeException(nameof(position));
+
+            Tuple<Position, Position, Position> positions = Cube.CornerStonePositions.First(c => c.Item1 == position || c.Item2 == position || c.Item3 == position);
+            Tuple<CubeColor, CubeColor, CubeColor> colors = new Tuple<CubeColor, CubeColor, CubeColor>(
+                cube.At(positions.Item1), cube.At(positions.Item2), cube.At(positions.Item3));
+
+            return new CornerStone(colors, cube);
+        }
+    
+        public static bool operator ==(CornerStone left, CornerStone right) {
+            IEnumerable<CubeColor> leftColors = left.GetColors();
+            IEnumerable<CubeColor> rightColors = right.GetColors();
+
+            return leftColors.All(c => rightColors.Contains(c));
+        }
+
+        public static bool operator !=(CornerStone left, CornerStone right) => !(left == right);
     }
 }
