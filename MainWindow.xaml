@@ -75,6 +75,12 @@
             <Setter Property="Foreground" Value="{StaticResource ForegroundColor}"/>
         </Style>
 
+        <Style TargetType="Window">
+            <Setter Property="Background" Value="{StaticResource BackgroundColor}"/>
+            <Setter Property="FontFamily" Value="{StaticResource Font}"/>
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}"/>
+        </Style>
+
     </Window.Resources>
     <Grid Background="{StaticResource BackgroundColor}">
         <Grid.ColumnDefinitions>
@@ -156,7 +162,9 @@
             </Border>
 
             <!--  Move History Output  -->
-            <Border Grid.Row="1" Grid.Column="0" />
+            <Border Grid.Row="1" Grid.Column="0" >
+                <TextBox x:Name="moveHistoryOutput" Margin="0"/>
+            </Border>
 
             <!--  Checkboxes  -->
             <Border

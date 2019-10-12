@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Rubinator3000.Solving {
     public abstract class CubeSolver {
@@ -71,6 +72,21 @@ namespace Rubinator3000.Solving {
             }
 
             return true;
+        }
+
+        public static MoveCollection SolveCube(Cube cube, Type cubeSolver) {
+            CubeSolver solver;
+            if (cubeSolver == typeof(CrossSolver)) {
+                solver = new CrossSolver(cube);
+
+                solver.CalcMoves();
+
+                if (!solver.Solved)
+                    MessageBox.Show("Der Würfel konnte nicht gelöst werden.");
+
+                return solver.moves;
+            }
+            else throw new NotImplementedException();
         }
         
         public static readonly CubeFace[] MiddleLayerFaces = { CubeFace.LEFT, CubeFace.FRONT, CubeFace.RIGHT, CubeFace.BACK };      

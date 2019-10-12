@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using Rubinator3000.CubeScan;
+using Rubinator3000.Solving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,6 +87,11 @@ namespace Rubinator3000 {
                 case Key.S:
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                         cube.Shuffle(10);
+                    else {
+                        MoveCollection solvingMoves = CubeSolver.SolveCube(cube, typeof(CrossSolver));
+                        moveHistoryOutput.Clear();
+                        moveHistoryOutput.AppendText(string.Join(" ", solvingMoves.Select(m => m.ToString())));
+                    }
                     break;
 
             }

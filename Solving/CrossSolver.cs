@@ -85,6 +85,8 @@ namespace Rubinator3000.Solving {
 
 
             } while (whiteEdges.Any(e => !IsEdgeRight(e)) && count < 10);
+
+            DoMove(UP, -WhiteFaceOrientation);
         }
         #endregion
 
