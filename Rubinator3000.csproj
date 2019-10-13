@@ -100,6 +100,7 @@
     <Compile Include="Solving\CrossSolver.cs" />
     <Compile Include="Solving\CubeSolver.cs" />
     <Compile Include="Solving\Fridrich\CubeSolverFridrich.cs" />
+    <Compile Include="Solving\FTLSolver.cs" />
     <Compile Include="Solving\LLPatterns.cs" />
     <Compile Include="Solving\LLSolver.cs" />
     <Compile Include="Solving\SolvingUtility.cs" />

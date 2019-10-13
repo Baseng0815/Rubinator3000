@@ -19,8 +19,29 @@ namespace Rubinator3000.Solving {
             new CubeColor[4] { CubeColor.WHITE, CubeColor.GREEN, CubeColor.YELLOW, CubeColor.BLUE },
             // BACK
             new CubeColor[4] { CubeColor.ORANGE, CubeColor.WHITE, CubeColor.RED, CubeColor.YELLOW }
-        };
+        };        
 
+        public static int NormalizeCount(int count) {
+            return NormalizeNumber(count, 0, 3);
+        }
+
+        public static int NormalizeCount(int count, int minCount) {
+            return NormalizeNumber(count, minCount, minCount + 3);
+        }
+        
+        public static int NormalizeNumber(int number, int minValue, int maxValue) {
+            if (minValue >= maxValue)
+                throw new ArgumentOutOfRangeException(nameof(minValue), "Die untere Grenze muss kleiner als die obere sein");
+            
+            int l = maxValue - minValue + 1;
+            while (number < minValue) number += l;
+            if (number < 0)
+                return -(Math.Abs(number) % l);
+            else
+                return number % l;
+        }
+
+        #region Extension Methodes
         /// <summary>
         /// Gibt den Unterschied der Farben zurück. Der Unterschied ist die Anzahl der Seite im Uhrzeigersinn, um die Farbe auf 
         /// die richtige Seite zu bringen. Er wird durch die Differenz von der Seitenfarbe und der Farbe bestimmt.
@@ -45,25 +66,45 @@ namespace Rubinator3000.Solving {
             int delta = Array.IndexOf(colors, color) - Array.IndexOf(colors, faceColor);
             return SolvingUtility.NormalizeCount(delta);
         }
-
-        public static int NormalizeCount(int count) {
-            return NormalizeNumber(count, 0, 3);
+        
+        public static CubeColor GetFaceColor(this CubeFace face) {
+            return Cube.GetFaceColor(face);
         }
 
-        public static int NormalizeCount(int count, int minCount) {
-            return NormalizeNumber(count, minCount, minCount + 3);
+        public static CubeFace GetFace(this CubeColor color) {
+            return Cube.GetFace(color);
         }
         
-        public static int NormalizeNumber(int number, int minValue, int maxValue) {
-            if (minValue >= maxValue)
-                throw new ArgumentOutOfRangeException(nameof(minValue), "Die untere Grenze muss kleiner als die obere sein");
-            
-            int l = maxValue - minValue + 1;
-            while (number < minValue) number += l;
-            if (number < 0)
-                return -(Math.Abs(number) % l);
-            else
-                return number % l;
+        public static Tuple<T, T> Swap<T>(this Tuple<T, T> tuple) {
+            return new Tuple<T, T>(tuple.Item2, tuple.Item1);            
         }
+
+        public static Tuple<T, T, T> Swap<T>(this Tuple<T, T, T> tuple, int firstItem, int secondItem) {
+            if (firstItem < 0 || firstItem > 2)
+                throw new ArgumentOutOfRangeException(nameof(firstItem));
+
+            if (secondItem < 0 || secondItem > 2)
+                throw new ArgumentOutOfRangeException(nameof(secondItem));
+
+            if (firstItem == secondItem)
+                return tuple;
+
+            T[] values = { tuple.Item1, tuple.Item2, tuple.Item3 };
+
+            T tmp = values[firstItem];
+            values[firstItem] = values[secondItem];
+            values[secondItem] = tmp;
+
+            return new Tuple<T, T, T>(values[0], values[1], values[2]);
+        }        
+        
+        public static bool ValuesEqual<T>(this IEnumerable<T> first, IEnumerable<T> second) {
+            return ValuesEqual(first, second, EqualityComparer<T>.Default);
+        }
+
+        public static bool ValuesEqual<T>(this IEnumerable<T> first, IEnumerable<T> second, EqualityComparer<T> comparer) {
+            return first.All(e => second.Any(f => comparer.Equals(e, f)));
+        }
+        #endregion
     }
 }
