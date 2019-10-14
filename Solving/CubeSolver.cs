@@ -90,5 +90,11 @@ namespace Rubinator3000.Solving {
         }
         
         public static readonly CubeFace[] MiddleLayerFaces = { CubeFace.LEFT, CubeFace.FRONT, CubeFace.RIGHT, CubeFace.BACK };      
+        public static readonly Tuple<CubeColor, CubeColor>[] MiddleLayerEdgesColors = new Tuple<CubeColor, CubeColor>[4] {
+            new Tuple<CubeColor, CubeColor>(ORANGE, GREEN),
+            new Tuple<CubeColor, CubeColor>(GREEN, RED),
+            new Tuple<CubeColor, CubeColor>(RED, BLUE),
+            new Tuple<CubeColor, CubeColor>(BLUE, ORANGE)
+        };
     }
 }

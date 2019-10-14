@@ -17,6 +17,7 @@ namespace Rubinator3000 {
         }            
 
         public EdgeStone[] Edges { get; }
+        public CornerStone[] Corners { get; }
 
         internal Cube(CubeMatrix[] matrices = null, bool isRenderCube = false) {
             if(matrices == null) {
@@ -33,7 +34,8 @@ namespace Rubinator3000 {
 
             this.isRenderCube = isRenderCube;
 
-            Edges = EdgeStonePositions.Select(p => new EdgeStone(new Tuple<CubeColor, CubeColor>(At(p.Item1), At(p.Item2)), this)).ToArray();
+            Edges = EdgeStonePositions.Select(p => new EdgeStone(new Tuple<CubeColor, CubeColor>(At(p.Item1), At(p.Item2)), this)).ToArray();            
+            Corners = CornerStonePositions.Select(p => new CornerStone(new Tuple<CubeColor, CubeColor, CubeColor>(At(p.Item1), At(p.Item2), At(p.Item3)), this)).ToArray();
         }
  
         /// <summary>

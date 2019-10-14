@@ -80,10 +80,7 @@ namespace Rubinator3000.Solving {
 
                 EdgeStone edgeToSolve = stoneRating.First().First();
 
-
                 HandleStone(edgeToSolve);
-
-
             } while (whiteEdges.Any(e => !IsEdgeRight(e)) && count < 10);
 
             DoMove(UP, -WhiteFaceOrientation);

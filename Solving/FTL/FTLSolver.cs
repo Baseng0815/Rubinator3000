@@ -39,32 +39,7 @@ namespace Rubinator3000.Solving {
             }
 
             return true;
-        }
-
-        public bool IsPaired(EdgeStone edge, CornerStone corner, out bool edgeRight) {
-            if (!edge.GetColors().All(c => corner.GetColors().Contains(c)))
-                throw new ArgumentException("Die Farben des Kantensteins sind nicht auf dem Eckstein vorhanden");
-
-            // get common edge and corner positions on same face            
-            IEnumerable<(Position corner, Position edge)> commonFaces = from ePos in edge.GetPositions()
-                                                                        join cPos in corner.GetPositions() on ePos.Face equals cPos.Face
-                                                                        select (cPos, ePos);
-            edgeRight = false;
-            if (commonFaces.Count() == 0)
-                return false;
-
-            // check if edge and corner position are side by side 
-            if (commonFaces.All(t => {
-                int d = Math.Abs(t.edge.Tile - t.corner.Tile);
-                return d == 1 || d == 3;
-            })) {
-                // return if colors are equal on each face
-                edgeRight = commonFaces.All(t => cube.At(t.edge) == cube.At(t.corner));
-                return true;
-            }
-
-            return false;
-        }
+        }        
 
         #region FTL Case Handling
         protected void RightPaired(EdgeStone edge, CornerStone corner) {
@@ -95,13 +70,6 @@ namespace Rubinator3000.Solving {
         protected void Paired_EdgeFalse(EdgeStone edge, CornerStone corner) {
             CubeColor edgeUpColor = cube.At(edge.GetPositions().First(p => p.Face == DOWN));
         }
-        #endregion
-
-        protected static readonly IEnumerable<CubeColor>[] MiddleLayerEdgesColors = new IEnumerable<CubeColor>[4] {
-            new List<CubeColor>() { ORANGE, GREEN },
-            new List<CubeColor>() { GREEN, RED },
-            new List<CubeColor>() { RED, BLUE },
-            new List<CubeColor>() { BLUE, ORANGE }
-        };
+        #endregion        
     }
 }

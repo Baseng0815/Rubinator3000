@@ -90,6 +90,10 @@ namespace Rubinator3000 {
             return pos.All(onRightFace);
         }
 
+        internal Cube GetCube() {
+            return cube;
+        }
+
         public static EdgeStone FromPosition(Cube cube, Position position) {
             if (cube == null) throw new ArgumentNullException(nameof(cube));
 

@@ -74,6 +74,12 @@ namespace Rubinator3000.Solving {
         public static CubeFace GetFace(this CubeColor color) {
             return Cube.GetFace(color);
         }
+
+        public static Tuple<T, T> ValuesEqual<T>(this Tuple<T, T> source, Tuple<T, T> tuple) {
+            return (source.Item1 == tuple.Item1 && source.Item2 == tuple.Item2) 
+                || (source.Item1 == tuple.Item2 && source.Item2 == tuple.Item1);
+                 
+        }
         
         public static Tuple<T, T> Swap<T>(this Tuple<T, T> tuple) {
             return new Tuple<T, T>(tuple.Item2, tuple.Item1);            
