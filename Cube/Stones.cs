@@ -202,7 +202,7 @@ namespace Rubinator3000 {
             };
 
             return pos.All(onRightFace);
-        }
+        }        
 
         public static CornerStone FromPosition(Cube cube, Position position) {
             if (cube == null)

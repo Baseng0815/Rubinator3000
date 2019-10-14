@@ -39,36 +39,41 @@ namespace Rubinator3000.Solving {
             }
 
             return true;
-        }        
+        }
 
         #region FTL Case Handling
-        protected void RightPaired(EdgeStone edge, CornerStone corner) {
-            if (!IsPaired(edge, corner, out bool edgeRight) || !edgeRight)
-                throw new InvalidOperationException("Der Kantenstein und der Eckstein müssen richtig verbunden sein");
+        protected void RightPaired(FTLPair pair) {
+            if (!pair.Paired)
+                throw new ArgumentOutOfRangeException(nameof(pair), pair, "Die Steine sind nicht korrekt gepaart");
 
-            // bring pair in right position                
-            CubeColor sideColor = cube.At(edge.GetPositions().First(p => MiddleLayerFaces.Any(f => p.Face == f)));
-            Position whitePos;
-            
-            while ((whitePos = corner.GetColorPosition(WHITE)).Face != Cube.GetOpponentFace(sideColor.GetFace())) {
+            // get the opponent face of the edge color on middle layer face
+            CubeFace faceToRot = cube.At(pair.Edge.GetPositions().First(p => p.Face != DOWN)).GetFace();
+            CubeFace targetFace = Cube.GetOpponentFace(faceToRot);
+            // bring the pair to right position
+            while (pair.CornerWhitePosition.Face != targetFace)
                 DoMove(DOWN);
-            }
 
-            // insert pair into the slot
-            // open the slot
-            CubeFace faceToRot = sideColor.GetFace();
-            int direction = whitePos.Tile == 6 ? 1 : -1;
+            // open side 
+            int direction = pair.CornerWhitePosition.Tile == 6 ? 1 : -1;
             DoMove(faceToRot, direction);
 
             // insert pair
             DoMove(DOWN, -direction);
 
-            // close the slot
+            // close side
             DoMove(faceToRot, -direction);
         }
-        
-        protected void Paired_EdgeFalse(EdgeStone edge, CornerStone corner) {
-            CubeColor edgeUpColor = cube.At(edge.GetPositions().First(p => p.Face == DOWN));
+
+        protected void FalsePaired(FTLPair pair) {
+            if (!(pair.IsPaired(out bool edgeRight) && edgeRight))
+                throw new ArgumentOutOfRangeException(nameof(pair), pair, "Die Steine haben nicht die richtige Verbindung für diesen Fall");
+
+            if (!pair.OnDownLayer)
+                throw new ArgumentOutOfRangeException(nameof(pair), pair, "Die Steine müssen sich auf der gelben Ebene befinden");
+
+
+
+            CubeFace faceToRot = pair.CornerWhitePosition.Face;
         }
         #endregion        
     }

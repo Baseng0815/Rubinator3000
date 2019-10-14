@@ -19,7 +19,7 @@ namespace Rubinator3000.Solving {
             new CubeColor[4] { CubeColor.WHITE, CubeColor.GREEN, CubeColor.YELLOW, CubeColor.BLUE },
             // BACK
             new CubeColor[4] { CubeColor.ORANGE, CubeColor.WHITE, CubeColor.RED, CubeColor.YELLOW }
-        };        
+        };
 
         public static int NormalizeCount(int count) {
             return NormalizeNumber(count, 0, 3);
@@ -28,11 +28,11 @@ namespace Rubinator3000.Solving {
         public static int NormalizeCount(int count, int minCount) {
             return NormalizeNumber(count, minCount, minCount + 3);
         }
-        
+
         public static int NormalizeNumber(int number, int minValue, int maxValue) {
             if (minValue >= maxValue)
                 throw new ArgumentOutOfRangeException(nameof(minValue), "Die untere Grenze muss kleiner als die obere sein");
-            
+
             int l = maxValue - minValue + 1;
             while (number < minValue) number += l;
             if (number < 0)
@@ -66,7 +66,7 @@ namespace Rubinator3000.Solving {
             int delta = Array.IndexOf(colors, color) - Array.IndexOf(colors, faceColor);
             return SolvingUtility.NormalizeCount(delta);
         }
-        
+
         public static CubeColor GetFaceColor(this CubeFace face) {
             return Cube.GetFaceColor(face);
         }
@@ -75,14 +75,16 @@ namespace Rubinator3000.Solving {
             return Cube.GetFace(color);
         }
 
-        public static Tuple<T, T> ValuesEqual<T>(this Tuple<T, T> source, Tuple<T, T> tuple) {
-            return (source.Item1 == tuple.Item1 && source.Item2 == tuple.Item2) 
-                || (source.Item1 == tuple.Item2 && source.Item2 == tuple.Item1);
-                 
+        public static bool ValuesEqual<T>(this Tuple<T, T> source, Tuple<T, T> tuple) {
+            EqualityComparer<T> comparer = EqualityComparer<T>.Default;
+
+            return (comparer.Equals(source.Item1, tuple.Item1) && comparer.Equals(source.Item2, tuple.Item2))
+                || (comparer.Equals(source.Item1, tuple.Item2) && comparer.Equals(source.Item2, tuple.Item1));
+
         }
-        
+
         public static Tuple<T, T> Swap<T>(this Tuple<T, T> tuple) {
-            return new Tuple<T, T>(tuple.Item2, tuple.Item1);            
+            return new Tuple<T, T>(tuple.Item2, tuple.Item1);
         }
 
         public static Tuple<T, T, T> Swap<T>(this Tuple<T, T, T> tuple, int firstItem, int secondItem) {
@@ -102,8 +104,8 @@ namespace Rubinator3000.Solving {
             values[secondItem] = tmp;
 
             return new Tuple<T, T, T>(values[0], values[1], values[2]);
-        }        
-        
+        }
+
         public static bool ValuesEqual<T>(this IEnumerable<T> first, IEnumerable<T> second) {
             return ValuesEqual(first, second, EqualityComparer<T>.Default);
         }
