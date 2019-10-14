@@ -69,6 +69,18 @@ namespace Rubinator3000.Solving {
             get => IsPaired(out bool colorsRight) && colorsRight;
         }
 
+        /// <summary>
+        /// Gibt zurück, ob beide Steine in dem richtigen Slot korrekt eingesetzt sind
+        /// </summary>
+        public bool Solved {
+            get {
+                return Corner.InRightPosition() && Edge.InRightPosition();
+            }
+        }
+
+        /// <summary>
+        /// Gibt zurück, ob sich beide Steine auf der gelben Seite befinden
+        /// </summary>
         public bool OnDownLayer {
             get {
                 Position whitePos = CornerWhitePosition;
@@ -87,7 +99,7 @@ namespace Rubinator3000.Solving {
         /// Gibt zurück, ob sich beide Steine nebeneinander befinden.
         /// </summary>
         /// <returns>Einen Wert, der angibt, ob sich beide Steine nebeneinander befinden</returns>
-        private bool IsPaired() {
+        public bool IsPaired() {
             return IsPaired(out _);
         }
 
