@@ -61,7 +61,7 @@ namespace Rubinator3000.Solving {
                 DoMove(faceToRot, -direction);
             }
             // in false slot
-            else if(pair.CornerWhitePosition.Face == UP) {
+            else if (pair.CornerWhitePosition.Face == UP) {
                 cornerPos = pair.Corner.GetPositions().First(p => p.Face != UP);
                 faceToRot = cornerPos.Face;
                 direction = cornerPos.Tile == 2 ? 1 : -1;
@@ -114,62 +114,50 @@ namespace Rubinator3000.Solving {
             DoMove(DOWN, -direction);
             DoMove(faceToRot, 2);
             DoMove(DOWN, -direction);
-            DoMove(faceToRot, -direction);            
-        }
-        
-        protected void CornerRight(FTLPair pair) {
-            if (!pair.Corner.InRightPosition())
-                throw new ArgumentOutOfRangeException(nameof(pair.Corner), pair, "Der Eckstein befindet sich nicht in der richtigen Position");
-
-            CubeFace faceToRot;
-            int direction;
-            // edge in slot
-            if (pair.Edge.GetPositions().All(p => p.Face != DOWN)) {
-                
-                // edge in right slot
-                if(pair.IsPaired()) {
-                    Position cornerPos = pair.Corner.GetColorPosition(c => c != WHITE);
-                    faceToRot = cornerPos.Face;
-                    direction = cornerPos.Tile == 2 ? 1 : -1;
-
-                    // remove pair from slot
-                    DoMove(faceToRot, direction);
-                    DoMove(DOWN, direction);
-                    DoMove(faceToRot, -direction);
-
-                    // handle as false paired
-                    FalsePaired(pair);
-                    return;
-                }
-                // edge in other slot
-                else {
-                    Position edgePos = pair.Edge.GetPositions().First();
-                    faceToRot = edgePos.Face;
-                    direction = edgePos.Tile == 5 ? 1 : -1;
-
-                    // remove edge from slot
-                    DoMove(faceToRot, direction);
-                    DoMove(DOWN, direction);
-                    DoMove(faceToRot, -direction);
-                }
-            }
-
-            //edge on yellow face
-            CubeFace targetFace = Cube.GetOpponentFace(cube.At(pair.Edge.GetPositions().First(p => p.Face == DOWN)).GetFace());
-            while (pair.Edge.GetPositions().First(p => p.Face != DOWN).Face != targetFace)
-                DoMove(DOWN);
-
-            faceToRot = Cube.GetOpponentFace(targetFace);
-            direction = pair.Corner.GetColorPosition(faceToRot.GetFaceColor()).Tile == 2 ? 1 : -1;
-
-            // pair the stones
-            DoMove(faceToRot, direction);
-            DoMove(DOWN, -direction);
             DoMove(faceToRot, -direction);
-
-            // handle as right paired
-            RightPaired(pair);
         }
-        #endregion        
+
+        protected void CornerInSlot(FTLPair pair) {
+            if (pair.CornerWhitePosition.Face != UP)
+                throw new InvalidOperationException("Der Eckstein muss sich in einem Slot befinden!");
+
+            CubeFace targetFace, faceToRot;
+            int direction;
+            // pair right paired in false slot  
+            if (pair.Paired && pair.CornerWhitePosition.Face == UP) {
+                Position cornerSidePos = pair.Corner.GetPositions().First(p => p.Face != UP);
+
+                faceToRot = cornerSidePos.Face;
+                direction = cornerSidePos.Tile == 2 ? 1 : -1;
+
+                DoMove(faceToRot, direction);
+                DoMove(DOWN, direction);
+                DoMove(faceToRot, -direction);
+
+                // handle as right paired
+                RightPaired(pair);
+            }
+            // edge on yellow layer
+            else if (pair.Edge.GetPositions().Any(p => p.Face == DOWN)) {
+                CubeColor upColor = cube.At(pair.Edge.GetPositions().First(p => p.Face == DOWN));
+                targetFace = Cube.GetOpponentFace(Cube.GetFace(upColor));
+                CubeColor sideColor = cube.At(pair.Edge.GetPositions().First(p => p.Face != DOWN));
+
+                // rotate the edge to opponent face of up color
+                while (pair.Edge.GetColorPosition(sideColor).Face != targetFace)
+                    DoMove(DOWN);
+
+                // pair corner and edge
+                faceToRot = Cube.GetFace(upColor);
+                direction = pair.Edge.GetColorPosition(upColor).Tile == 2 ? 1 : -1;
+                DoMove(faceToRot, direction);
+                DoMove(DOWN, -direction);
+                DoMove(faceToRot, -direction);
+
+                // handle as paired stones
+                RightPaired(pair);
+            }                      
+        }
+        #endregion
     }
 }
