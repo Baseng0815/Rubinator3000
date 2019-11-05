@@ -9,57 +9,32 @@ namespace Rubinator3000.Solving {
     /// Eine Hilfsstruktur, um die Verbindung von einem Kantenstein der mittleren Ebene und eines weißen Ecksteins herzustellen
     /// </summary>
     public struct FTLPair {
-        private Tuple<CubeColor, CubeColor> colors;
+        private (EdgeStone edge, CornerStone corner) stones;
         private readonly Cube cube;
 
         /// <summary>
-        /// Erstellt aus den angegebenen Farben einen neuen Slot.
+        /// Erstellt aus den angegebenen Steinen einen neuen Slot.
         /// </summary>
-        /// <param name="colors">Die Farben des Slots</param>
+        /// <param name="corner">Der Eckstein</param>
+        /// <param name="edge">Der Kantenstein</param>        
         /// <param name="cube">Der Würfel</param>
-        public FTLPair(Tuple<CubeColor, CubeColor> colors, Cube cube) {
-            if (!CubeSolver.MiddleLayerEdgesColors.Any(t => t.ValuesEqual(colors)))
-                throw new ArgumentOutOfRangeException();
-
-            this.colors = colors;
+        public FTLPair(CornerStone corner, EdgeStone edge, Cube cube) {
+            this.stones = (edge, corner);
             this.cube = cube;
-        }
-
-        /// <summary>
-        /// Erstellt aus dem Eckstein und Kantenstein einen neuen Slot.
-        /// </summary>
-        /// <param name="edge">Ein Kantenstein der mittleren Ebene</param>
-        /// <param name="corner">Der Eckstein der weißen Seite, der zu dem Kantenstein gehört</param>
-        public FTLPair(EdgeStone edge, CornerStone corner) {
-            Tuple<CubeColor, CubeColor> edgeColors = edge.Colors;
-            if (!CubeSolver.MiddleLayerEdgesColors.Any(c => c.ValuesEqual(edgeColors)))
-                throw new ArgumentOutOfRangeException(nameof(edge), edge, "Der Kantenstein muss ein Kantenstein der mittleren Ebene sein");
-
-            if (!(corner.HasColor(edgeColors.Item1) && corner.HasColor(edgeColors.Item2) && corner.HasColor(WHITE)))
-                throw new ArgumentOutOfRangeException(nameof(corner), corner, "Der Eckstein muss die gleichen Farben aufweisen, wie der Kantenstein");
-
-            this.colors = edgeColors;
-            this.cube = edge.GetCube();
         }
 
         /// <summary>
         /// Gibt den Kantenstein des Slots zurück.
         /// </summary>
         public EdgeStone Edge {
-            get {
-                Tuple<CubeColor, CubeColor> colors = this.colors;
-                return cube.Edges.First(e => e.Colors.ValuesEqual(colors));
-            }
+            get => stones.edge;
         }
 
         /// <summary>
         /// Gibt den Eckstein des Slots zurück.
         /// </summary>
         public CornerStone Corner {
-            get {
-                Tuple<CubeColor, CubeColor> colors = this.colors;
-                return cube.Corners.Where(c => c.HasColor(colors.Item1) && c.HasColor(colors.Item2) && c.HasColor(WHITE)).First();
-            }
+            get => stones.corner;
         }
 
         /// <summary>
@@ -84,7 +59,7 @@ namespace Rubinator3000.Solving {
         public bool OnDownLayer {
             get {
                 Position whitePos = CornerWhitePosition;
-                return CubeSolver.MiddleLayerFaces.Any(f => f == whitePos.Face);
+                return Edge.GetPositions().Any(p => p.Face == DOWN) && Corner.GetPositions().Any(p => p != whitePos && p.Face == DOWN);
             }
         }
 
@@ -130,6 +105,29 @@ namespace Rubinator3000.Solving {
             }
 
             return false;
-        }                
+        }
+
+        public override bool Equals(object obj) {
+            return obj is FTLPair pair &&
+                   EqualityComparer<Cube>.Default.Equals(cube, pair.cube) &&
+                   EqualityComparer<EdgeStone>.Default.Equals(Edge, pair.Edge) &&
+                   EqualityComparer<CornerStone>.Default.Equals(Corner, pair.Corner);
+        }
+
+        public override int GetHashCode() {
+            var hashCode = 198864972;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Cube>.Default.GetHashCode(cube);
+            hashCode = hashCode * -1521134295 + EqualityComparer<EdgeStone>.Default.GetHashCode(Edge);
+            hashCode = hashCode * -1521134295 + EqualityComparer<CornerStone>.Default.GetHashCode(Corner);
+            return hashCode;
+        }
+
+        public static bool operator ==(FTLPair left, FTLPair right) {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(FTLPair left, FTLPair right) {
+            return !(left == right);
+        }
     }
 }

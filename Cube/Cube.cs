@@ -5,27 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 using static Rubinator3000.CubeFace;
 
-namespace Rubinator3000 {    
+namespace Rubinator3000 {
 
     [Serializable]
     public partial class Cube : ICloneable {
         private CubeMatrix[] data = new CubeMatrix[6];
-        internal readonly bool isRenderCube;   
+        internal readonly bool isRenderCube;
 
         internal CubeMatrix[] Data {
             get => data;
-        }            
+        }
 
         public EdgeStone[] Edges { get; }
         public CornerStone[] Corners { get; }
 
         internal Cube(CubeMatrix[] matrices = null, bool isRenderCube = false) {
-            if(matrices == null) {
+            if (matrices == null) {
                 data = new CubeMatrix[6];
                 for (int face = 0; face < 6; face++)
                     data[face] = new CubeMatrix((CubeColor)face);
             }
-            else {           
+            else {
                 if (matrices.Length != 6)
                     throw new ArgumentOutOfRangeException(nameof(matrices));
 
@@ -34,10 +34,10 @@ namespace Rubinator3000 {
 
             this.isRenderCube = isRenderCube;
 
-            Edges = EdgeStonePositions.Select(p => new EdgeStone(new Tuple<CubeColor, CubeColor>(At(p.Item1), At(p.Item2)), this)).ToArray();            
+            Edges = EdgeStonePositions.Select(p => new EdgeStone(new Tuple<CubeColor, CubeColor>(At(p.Item1), At(p.Item2)), this)).ToArray();
             Corners = CornerStonePositions.Select(p => new CornerStone(new Tuple<CubeColor, CubeColor, CubeColor>(At(p.Item1), At(p.Item2), At(p.Item3)), this)).ToArray();
         }
- 
+
         /// <summary>
         /// Set a whole face
         /// </summary>
@@ -95,7 +95,7 @@ namespace Rubinator3000 {
         }
 
         public IEnumerable<T> GetStonesOnFace<T>(CubeFace face) where T : IStone {
-            if(typeof(T) == typeof(EdgeStone)) {
+            if (typeof(T) == typeof(EdgeStone)) {
                 return Edges.Where(e => e.GetPositions().Any(p => p.Face == face)).Cast<T>();
             }
             else {
@@ -104,7 +104,9 @@ namespace Rubinator3000 {
             }
         }
 
-        public static bool IsOpponentColor(CubeColor color1, CubeColor color2) {            
+        public static bool IsOpponentColor(CubeColor color1, CubeColor color2) {
+            if (color2 == CubeColor.NONE)
+                throw new ArgumentOutOfRangeException(nameof(color2));
 
             switch (color1) {
                 case CubeColor.ORANGE:
@@ -120,26 +122,48 @@ namespace Rubinator3000 {
                 case CubeColor.BLUE:
                     return color2 == CubeColor.GREEN;
                 default:
-                    throw new ArgumentException(color1 == CubeColor.NONE ? nameof(color1) : nameof(color2));
+                    throw new ArgumentException(nameof(color1));
             }
         }
 
         public static CubeFace GetOpponentFace(CubeFace face) {
             switch (face) {
-                case CubeFace.LEFT:
+                case LEFT:
                     return RIGHT;
-                case CubeFace.UP:
+                case UP:
                     return DOWN;
-                case CubeFace.FRONT:
+                case FRONT:
                     return BACK;
-                case CubeFace.DOWN:
+                case DOWN:
                     return UP;
-                case CubeFace.RIGHT:
+                case RIGHT:
                     return LEFT;
-                case CubeFace.BACK:
+                case BACK:
                     return FRONT;
                 default:
-                    return NONE;                
+                    return NONE;
+            }
+        }
+
+        public static bool IsOpponentFace(CubeFace face1, CubeFace face2) {
+            if (face2 == NONE)
+                throw new ArgumentOutOfRangeException(nameof(face2));
+
+            switch (face1) {
+                case LEFT:
+                    return face2 == RIGHT;
+                case UP:
+                    return face2 == DOWN;
+                case FRONT:
+                    return face2 == BACK;
+                case DOWN:
+                    return face2 == UP;
+                case RIGHT:
+                    return face2 == LEFT;
+                case BACK:
+                    return face2 == FRONT;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(face1));
             }
         }
 
@@ -151,7 +175,7 @@ namespace Rubinator3000 {
             return (CubeFace)(int)color;
         }
 
-        public object Clone() {            
+        public object Clone() {
             CubeMatrix[] newData = new CubeMatrix[6];
 
             for (int i = 0; i < 6; i++) {

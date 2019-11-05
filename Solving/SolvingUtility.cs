@@ -43,7 +43,7 @@ namespace Rubinator3000.Solving {
 
         #region Extension Methodes
         /// <summary>
-        /// Gibt den Unterschied der Farben zurück. Der Unterschied ist die Anzahl der Seite im Uhrzeigersinn, um die Farbe auf 
+        /// Gibt den Unterschied der Farben zurück. Der Unterschied ist die Anzahl der Dehungen der Seite im Uhrzeigersinn, um die Farbe auf 
         /// die richtige Seite zu bringen. Er wird durch die Differenz von der Seitenfarbe und der Farbe bestimmt.
         /// </summary>
         /// <param name="color">Die Farbe</param>
@@ -64,7 +64,7 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentOutOfRangeException(nameof(faceToRot));
 
             int delta = Array.IndexOf(colors, color) - Array.IndexOf(colors, faceColor);
-            return SolvingUtility.NormalizeCount(delta);
+            return NormalizeCount(delta);
         }
 
         public static CubeColor GetFaceColor(this CubeFace face) {

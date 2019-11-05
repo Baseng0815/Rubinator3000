@@ -27,6 +27,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>1</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IntermediateOutputPath>C:\Users\Philipp\AppData\Local\Temp\vs178E.tmp\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,6 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IntermediateOutputPath>C:\Users\Philipp\AppData\Local\Temp\vs178E.tmp\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV.UI, Version=4.1.1.3497, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
@@ -100,6 +102,7 @@
     <Compile Include="Solving\CrossSolver.cs" />
     <Compile Include="Solving\CubeSolver.cs" />
     <Compile Include="Solving\Fridrich\CubeSolverFridrich.cs" />
+    <Compile Include="Solving\FTL\FTLCases.cs" />
     <Compile Include="Solving\FTL\FTLPair.cs" />
     <Compile Include="Solving\FTL\FTLSolver.cs" />
     <Compile Include="Solving\LLPatterns.cs" />

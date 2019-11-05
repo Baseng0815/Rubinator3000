@@ -9,6 +9,8 @@ namespace Rubinator3000 {
     public interface IStone {
         Position GetColorPosition(CubeColor color);
         Position GetColorPosition(Func<CubeColor, bool> colorPredicate);
+
+        CubeColor GetColor(Position position);
         IEnumerable<CubeColor> GetColors();
         IEnumerable<Position> GetPositions();
         bool HasColor(CubeColor color);
@@ -57,6 +59,13 @@ namespace Rubinator3000 {
         public IEnumerable<CubeColor> GetColors() {
             yield return colors.Item1;
             yield return colors.Item2;
+        }
+
+        public CubeColor GetColor(Position position) {
+            if (!GetPositions().Contains(position))
+                throw new ArgumentOutOfRangeException("Die Position gehört nicht zu dem Stein");
+
+            return cube.At(position);
         }
 
         public Position GetColorPosition(CubeColor color) {
@@ -175,6 +184,13 @@ namespace Rubinator3000 {
             yield return colors.Item1;
             yield return colors.Item2;
             yield return colors.Item3;
+        }
+
+        public CubeColor GetColor(Position position) {
+            if (!GetPositions().Contains(position))
+                throw new ArgumentOutOfRangeException("Die Position gehört nicht zu dem Stein");
+
+            return cube.At(position);
         }
 
         public IEnumerable<Position> GetPositions() {
