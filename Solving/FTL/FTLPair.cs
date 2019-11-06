@@ -41,7 +41,7 @@ namespace Rubinator3000.Solving {
         /// Gibt an, ob beide Steine korrekt gepaart sind.
         /// </summary>
         public bool Paired {
-            get => IsPaired(out bool colorsRight) && colorsRight;
+            get => IsPaired(out bool colorsRight, out bool cornerRight) && colorsRight && cornerRight;
         }
 
         /// <summary>
@@ -70,6 +70,10 @@ namespace Rubinator3000.Solving {
             get => Corner.GetColorPosition(WHITE);
         }
 
+        public bool EdgeInSlot {
+            get => stones.edge.GetPositions().All(p => p.Face != DOWN);
+        }
+
         /// <summary>
         /// Gibt zurück, ob sich beide Steine nebeneinander befinden.
         /// </summary>
@@ -84,13 +88,14 @@ namespace Rubinator3000.Solving {
         /// </summary>
         /// <param name="edgeRight">Gibt an, ob die beiden Steine farblich korrekt verbunden sind</param>
         /// <returns>Gibt zurück, ob sich beide Steine nebeneinander befinden</returns>
-        public bool IsPaired(out bool edgeRight) {
+        public bool IsPaired(out bool edgeRight, out bool cornerRight) {
             // get common edge and corner positions on same face            
             IEnumerable<(Position corner, Position edge)> commonFaces = from ePos in Edge.GetPositions()
                                                                         join cPos in Corner.GetPositions() on ePos.Face equals cPos.Face
                                                                         select (cPos, ePos);
             Cube cube = this.cube;
             edgeRight = false;
+            cornerRight = false;
             if (commonFaces.Count() == 0)
                 return false;
 
@@ -99,13 +104,15 @@ namespace Rubinator3000.Solving {
                 int d = Math.Abs(t.edge.Tile - t.corner.Tile);
                 return d == 1 || d == 3;
             })) {
+                IStone Corner = this.Corner;
                 // return if colors are equal on each face
                 edgeRight = commonFaces.All(t => cube.At(t.edge) == cube.At(t.corner));
+                cornerRight = !commonFaces.Any(t => t.corner == Corner.GetColorPosition(WHITE));
                 return true;
             }
 
             return false;
-        }
+        }        
 
         public override bool Equals(object obj) {
             return obj is FTLPair pair &&

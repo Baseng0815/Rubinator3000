@@ -23,9 +23,21 @@ namespace Rubinator3000.Solving {
                 && Cube.IsOpponentFace(edgeSidePos.Face, cornerSidePos.Face)    // der Kantenstein muss auf der entgegengesetzten Seite liegen wie der Eckstein
                 && edgeSideColor != cornerSideColor;                            // die seitlichen Farben müssen unterschiedlich sein
         };
-    
-        private static readonly Func<FTLPair, bool> crocodileCase = p => {
 
-        }
+        private static readonly Func<FTLPair, bool> crocodileCase = p => {
+            if (!MiddleLayerFaces.Contains(p.CornerWhitePosition.Face))
+                return false;
+
+            if (!p.Edge.GetPositions().Any(pos => pos.Face == DOWN))
+                return false;
+
+            Position cornerSidePos = p.Corner.GetPositions().First(pos => pos.Face != UP && pos != p.CornerWhitePosition);
+            CubeColor cornerSideColor = p.Corner.GetColor(cornerSidePos);
+
+            Position edgeDownPos = p.Edge.GetPositions().First(pos => pos.Face == DOWN);
+            CubeColor edgeDownColor = p.Edge.GetColor(edgeDownPos);
+
+            return cornerSideColor == edgeDownColor;
+        };
     }
 }
