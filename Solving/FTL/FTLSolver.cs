@@ -42,85 +42,113 @@ namespace Rubinator3000.Solving {
 
         }
 
-        protected void CalcPairMoves(FTLPair pair) {
-            if (pair.EdgeInSlot) {
-                if (EagleSolveable(pair)) {
-                    FTL_Eagle(pair);
-                    return;
-                }
+        protected void CalcPairMoves(FTLPair pair, ref MoveCollection moves, bool addMoves = true) {
+            CubeFace faceToRot;
+            int direction;
 
-                // move edge to yellow layer
-                MoveEdgeUp(pair.Edge);
+            if (!addMoves && moves == null)
+                throw new ArgumentNullException(nameof(moves));
+
+            void DoMove(CubeFace face, int dir = 1) {
+                this.DoMove(face, dir, addMoves);
+                if (!addMoves) moves.Add(face, dir);
             }
 
-            if (pair.IsPaired(out bool edgeRight, out bool cornerRight)) {
-                // edge false but corner right orientated
-                if (!edgeRight && cornerRight) {
-                    FTL_Insert_FalsePaired(pair);
-                    return;
-                }
-                // right paired
-                else if (edgeRight) {
-                    FTL_Insert_RightPaired(pair);
-                }
-                // corner orientation false
-                else {
-                    Position cornerSidePos = pair.Corner.GetPositions().First(p => p.Face != DOWN && p != pair.CornerWhitePosition);
-                    CubeColor cornerSideColor = pair.Corner.GetColor(cornerSidePos);
+            // corner in slot
+            if (pair.CornerWhitePosition.Face == UP) {
+                // in right slot
+                if (pair.Corner.InRightPosition()) {
+                    // edge in slot
+                    if (pair.EdgeInSlot) {
+                        // already paired and in right slot
+                        if (pair.Edge.InRightPosition()) {
+                            return;
+                        }
+                        // edge false in slot
+                        else if (EdgeFalseInRightSlot(pair.Edge)) {
+                            // move pair to yellow layer
+                            var cornerPos = pair.Corner.GetPositions().First(p => p.Face != UP);
+                            faceToRot = cornerPos.Face;
+                            direction = cornerPos.Tile == 2 ? 1 : -1;
 
-                    int delta = SolvingUtility.GetDelta(cornerSideColor, cornerSidePos.Face, DOWN);
-                    DoMove(DOWN, delta);
-                    // corner white position on yellow face
-                    if (pair.CornerWhitePosition.Face == DOWN) {
-                        // transform to tiger                        
-                        CubeFace faceToRot = pair.CornerWhitePosition.Face;
-                        int direction = pair.CornerWhitePosition.Tile == 8 ? 1 : -1;
+                            DoMove(faceToRot, direction);
+                            DoMove(DOWN, direction);
+                            DoMove(faceToRot, -direction);
+
+                            // handle false paired yellow layer
+                            // goto falsePairedDownLayer;
+                        }
+                        // edge in other slot
+                        else {
+                            // move edge on yellow layer
+                            var edgePos = pair.Edge.Positions.Item1;
+                            faceToRot = edgePos.Face;
+                            direction = edgePos.Tile == 5 ? 1 : -1;
+
+                            DoMove(faceToRot, direction);
+                            DoMove(DOWN, direction);
+                            DoMove(faceToRot, -direction);
+
+                            // handle corner right edge yellow layer
+                            //goto cornerRightEdgeDOWN;
+                        }
+                    }
+                    // edge on yellow layer
+                    else {
+                        // move edge to right orientation
+                        var edgeUpColorFace = Cube.GetFace(pair.Edge.GetColor(p => p.Face == DOWN));
+                        CubeFace opponentFace = Cube.GetOpponentFace(edgeUpColorFace);
+
+                        while (pair.Edge.GetPosition(p => p.Face != DOWN).Face != opponentFace)
+                            DoMove(DOWN);
+
+                        // pair the stones
+                        var cornerPos = pair.Corner.GetPosition(p => p.Face == edgeUpColorFace);
+                        faceToRot = cornerPos.Face;
+                        direction = cornerPos.Tile == 2 ? 1 : -1;
+
                         DoMove(faceToRot, direction);
                         DoMove(DOWN, -direction);
                         DoMove(faceToRot, -direction);
 
-                        // hande tiger
-                        FTL_Tiger(pair);
+                        // handle right paired down layer
+                        // handleRightPairedDownLayer(pair, ref moves, addMoves);
                     }
-                    // same color on yellow face
+                }
+                // in false slot
+                else {
+                    // edge in slot
+                    if (pair.EdgeInSlot) {
+                        IEnumerable<CubeFace> cornerSideFaces = from pos in pair.Corner.GetPositions()
+                                                                where pos.Face != UP
+                                                                select pos.Face;
+                        // edge in same slot 
+                        if (pair.Edge.GetPositions().All(p => cornerSideFaces.Contains(p.Face))) {
+                            // right paired
+                            if (pair.Paired) {
+
+                            }
+                        }
+                    }
                     else {
-                        // transform to crocodile
-                        cornerSidePos = pair.Corner.GetPositions().First(p => p.Face != DOWN && p != pair.CornerWhitePosition);
-                        CubeFace faceToRot = cornerSidePos.Face;
-                        int direction = cornerSidePos.Tile == 8 ? 1 : -1;
+                        // move edge to right orientation
+                        var edgeUpColorFace = Cube.GetFace(pair.Edge.GetColor(p => p.Face == DOWN));
+                        CubeFace opponentFace = Cube.GetOpponentFace(edgeUpColorFace);
+
+                        while (pair.Edge.GetPosition(p => p.Face != DOWN).Face != opponentFace)
+                            DoMove(DOWN);
+
+                        // pair the stones
+                        var cornerPos = pair.Corner.GetPosition(p => p.Face == edgeUpColorFace);
+                        faceToRot = cornerPos.Face;
+                        direction = cornerPos.Tile == 2 ? 1 : -1;
 
                         DoMove(faceToRot, direction);
-                        DoMove(DOWN, direction);
+                        DoMove(DOWN, -direction);
                         DoMove(faceToRot, -direction);
 
-                        // handle crocodile
-                        FTL_Crocodile(pair);
-                    }
-                    return;
-                }
-            }
-
-            // not paired
-            // corner in slot
-            if (pair.Corner.GetPositions().Any(p => p.Face == UP)) {
-                // corner right in slot
-                if (pair.CornerWhitePosition.Face == UP) {
-                    FTL_LbLMethod(pair);
-                    return;
-                }
-                else {
-                    Position edgeSidePos = pair.Edge.GetPositions().First(p => p.Face != DOWN);
-                    CubeColor edgeSideColor = pair.Edge.GetColor(edgeSidePos);
-                    Position cornerSidePos = pair.Corner.GetPositions().First(p => p.Face != UP && p != pair.CornerWhitePosition);
-                    CubeColor cornerSideColor = pair.Corner.GetColor(cornerSidePos);
-
-                    if (edgeSideColor != cornerSideColor) {
-                        FTL_Crocodile(pair);
-                        return;
-                    }
-                    else {
-                        FTL_10(pair);
-                        return;
+                        // handle right paired down layer
+                        // handleRightPairedDownLayer(pair, ref moves, addMoves);
                     }
                 }
             }
@@ -250,36 +278,20 @@ namespace Rubinator3000.Solving {
             int direction = pair.CornerWhitePosition.Tile == 2 ? 1 : -1;
 
         }
-
-        protected void FTL_Eagle(FTLPair pair) {
-
-        }
-
-        private void FTL_LbLMethod(FTLPair pair) {
-            Position edgeUpPos = pair.Edge.GetPositions().First(p => p.Face == DOWN);
-            Position edgeSecndPos = pair.Edge.GetPositions().First(p => p.Face != DOWN);
-            CubeColor color = pair.Edge.GetColor(edgeUpPos);
-            Position cornerPos = pair.Corner.GetColorPosition(color);
-
-
-            // move edge to right position
-            int delta = SolvingUtility.GetDelta(color, edgeSecndPos.Face, DOWN) - 2;
-            DoMove(DOWN, delta);
-
-            CubeFace faceToRot = cornerPos.Face;
-            int direction = cornerPos.Tile == 2 ? 1 : -1;
-            DoMove(faceToRot, direction);
-            DoMove(DOWN, -direction);
-            DoMove(faceToRot, -direction);
-
-            // handle right paired 
-            FTL_Insert_RightPaired(pair);
-        }
-
-        private void FTL_10(FTLPair pair) {
-            throw new NotImplementedException();
-        }
         #endregion
+
+        private static bool EdgeFalseInRightSlot(EdgeStone edge) {
+            // edge in any slot
+            if (edge.GetPositions().All(p => p.Face != DOWN)) {
+                var color1Face = Cube.GetFace(edge.Colors.Item1);
+                var color2Face = Cube.GetFace(edge.Colors.Item2);
+
+                return edge.GetColorPosition(edge.Colors.Item1).Face == color2Face
+                    && edge.GetColorPosition(edge.Colors.Item2).Face == color1Face;
+            }
+
+            return false;
+        }
 
         private static bool OnDownLayer(IStone stone) {
             return stone.GetPositions().Any(p => p.Face == DOWN);

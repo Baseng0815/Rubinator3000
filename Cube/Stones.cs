@@ -9,10 +9,11 @@ namespace Rubinator3000 {
     public interface IStone {
         Position GetColorPosition(CubeColor color);
         Position GetColorPosition(Func<CubeColor, bool> colorPredicate);
-
         CubeColor GetColor(Position position);
+        CubeColor GetColor(Func<Position, bool> positionPredicate);
         IEnumerable<CubeColor> GetColors();
         IEnumerable<Position> GetPositions();
+        Position GetPosition(Func<Position, bool> predicate);
         bool HasColor(CubeColor color);
         bool InRightPosition();
     }
@@ -68,6 +69,14 @@ namespace Rubinator3000 {
             return cube.At(position);
         }
 
+        public CubeColor GetColor(Func<Position, bool> positionPredicate) {
+            if (!GetPositions().Any(positionPredicate))
+                throw new ArgumentException();
+
+            Position pos = GetPositions().First(positionPredicate);
+            return GetColor(pos);
+        }
+
         public Position GetColorPosition(CubeColor color) {
             if (!(colors.Item1 == color || colors.Item2 == color))
                 throw new ArgumentOutOfRangeException(nameof(color));
@@ -84,6 +93,13 @@ namespace Rubinator3000 {
             var pos = Positions;
             yield return pos.Item1;
             yield return pos.Item2;
+        }
+
+        public Position GetPosition(Func<Position, bool> predicate) {
+            if (!GetPositions().Any(predicate))
+                throw new ArgumentException();
+
+            return GetPositions().First(predicate);
         }
 
         public bool InRightPosition() {
@@ -193,12 +209,27 @@ namespace Rubinator3000 {
             return cube.At(position);
         }
 
+        public CubeColor GetColor(Func<Position, bool> positionPredicate) {
+            if (!GetPositions().Any(positionPredicate))
+                throw new ArgumentException();
+
+            Position pos = GetPositions().First(positionPredicate);
+            return GetColor(pos);
+        }
+
         public IEnumerable<Position> GetPositions() {
             var pos = Positions;
 
             yield return pos.Item1;
             yield return pos.Item2;
             yield return pos.Item3;
+        }
+
+        public Position GetPosition(Func<Position, bool> predicate) {
+            if (!GetPositions().Any(predicate))
+                throw new ArgumentException();
+
+            return GetPositions().First(predicate);
         }
 
         public bool HasColor(CubeColor color) {
@@ -218,7 +249,7 @@ namespace Rubinator3000 {
             };
 
             return pos.All(onRightFace);
-        }        
+        }
 
         public static CornerStone FromPosition(Cube cube, Position position) {
             if (cube == null)
@@ -233,7 +264,7 @@ namespace Rubinator3000 {
 
             return new CornerStone(colors, cube);
         }
-    
+
         public static bool operator ==(CornerStone left, CornerStone right) {
             IEnumerable<CubeColor> leftColors = left.GetColors();
             IEnumerable<CubeColor> rightColors = right.GetColors();
