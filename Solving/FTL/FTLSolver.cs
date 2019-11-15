@@ -48,7 +48,7 @@ namespace Rubinator3000.Solving {
 
             Action<CubeFace, int> doMove = (f, d) => DoMove(f, d);
 
-            // corner in slot
+            // corner in slot and white face on white side
             if (pair.CornerWhitePosition.Face == UP) {
                 // in right slot
                 if (pair.Corner.InRightPosition()) {
@@ -61,23 +61,23 @@ namespace Rubinator3000.Solving {
                         // edge false in slot
                         else if (EdgeFalseInRightSlot(pair.Edge)) {
                             // move pair to yellow layer
-                            MoveSlotUp(pair.Corner, doMove);
+                            MoveSlotUp(pair.Corner);
 
                             // handle false paired yellow layer
-                            FalsePairedDownLayer(pair, doMove);
+                            FalsePairedDownLayer(pair);
                         }
                         // edge in other slot
                         else {
                             // move edge on yellow layer
-                            MoveSlotUp(pair.Edge, doMove);
+                            MoveSlotUp(pair.Edge);
 
-                            // handle corner right edge yellow layer
-                            //goto cornerRightEdgeDOWN;
+                            // handle corner right and edge yellow layer
+                            CornerInSlot_WhiteUp_EdgeDown(pair);
                         }
                     }
                     // edge on yellow layer
                     else {
-                        CornerInSlotEdgeDown(pair, doMove);
+                        CornerInSlot_WhiteUp_EdgeDown(pair);
                     }
                 }
                 // in false slot
@@ -92,31 +92,69 @@ namespace Rubinator3000.Solving {
                             // right paired
                             if (pair.Paired) {
                                 // move on yellow layer
-                                MoveSlotUp(pair.Corner, doMove);
+                                MoveSlotUp(pair.Corner);
 
                                 // handle as right paired
-                                RightPairedDownLayer(pair, doMove);
+                                RightPairedDownLayer(pair);
                             }
                             else {
                                 // move edge on yellow layer
-                                MoveSlotUp(pair.Edge, doMove);
+                                MoveSlotUp(pair.Edge);
 
                                 // handle as false paired
-                                FalsePairedDownLayer(pair, doMove);
+                                FalsePairedDownLayer(pair);
                             }
                         }
                         // edge in other slot
                         else {
                             // move edge up
-                            MoveSlotUp(pair.Edge, doMove);
+                            MoveSlotUp(pair.Edge);
 
                             // handle corner in slot and edge on yellow layer
-                            CornerInSlotEdgeDown(pair, doMove);
+                            CornerInSlot_WhiteUp_EdgeDown(pair);
                         }
                     }
                     else {
                         // handle corner in slot and edge on yellow layer
-                        CornerInSlotEdgeDown(pair, doMove);
+                        CornerInSlot_WhiteUp_EdgeDown(pair);
+                    }
+                }
+            }
+            // corner in slot and white face to side 
+            else if (pair.Corner.GetPositions().Any(p => p.Face == UP)) {
+                // get the color on side which is not white
+                Position cornerSidePos = pair.Corner.GetPosition(p => p.Face != UP && p != pair.CornerWhitePosition);
+                CubeColor cornerSideColor = pair.Corner.GetColor(cornerSidePos);
+
+                // edge in slot
+                if (pair.EdgeInSlot) {
+                    // edge in same slot as corner
+                    if (pair.IsPaired()) {
+                        // move pair to up layer and try to calc the moves again
+                        MoveSlotUp(pair.Edge);
+
+                        CalcPairMoves(pair);
+                    }
+                    // edge in other slot
+                    else {
+                        // move edge to yellow layer and try to calc the moves new
+                        MoveSlotUp(pair.Edge);
+
+                        CalcPairMoves(pair);
+                    }
+                }
+                // edge on top
+                else {
+                    // edge color on top
+                    CubeColor edgeDownColor = pair.Edge.GetColor(p => p.Face == DOWN);
+
+                    // edge right
+                    if (cornerSideColor == edgeDownColor) {
+                        // handle crocodile
+                        CornerInSlot_WhiteSide_EdgeRightDown(pair);
+                    }
+                    else {
+                        CornerInSlot_WhiteSide_EdgeFalseDown(pair);
                     }
                 }
             }
@@ -134,7 +172,7 @@ namespace Rubinator3000.Solving {
 
         #region FTL Case Handling                
 
-        protected void FTL_Tiger(FTLPair pair) {            
+        protected void FTL_Tiger(FTLPair pair) {
 
             Position cornerSidePos = pair.Corner.GetPositions().First(p => p.Face != DOWN && p != pair.CornerWhitePosition);
             CubeColor cornerSideColor = pair.Corner.GetColor(cornerSidePos);
@@ -154,7 +192,7 @@ namespace Rubinator3000.Solving {
         }
 
         protected void FTL_Crocodile(FTLPair pair) {
-            
+
 
             Position edgeSidePos = pair.Edge.GetPositions().First(p => p.Face != DOWN);
             CubeColor edgeSideColor = pair.Edge.GetColor(edgeSidePos);
