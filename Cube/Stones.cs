@@ -131,6 +131,10 @@ namespace Rubinator3000 {
             return new EdgeStone(colors, cube);
         }
 
+        public override string ToString() {
+            return string.Format("edge({0}, {1})", colors.Item1, colors.Item2);
+        }
+
         public static bool operator ==(EdgeStone left, EdgeStone right) {
             // compare colors
             IEnumerable<CubeColor> leftColors = left.GetColors();

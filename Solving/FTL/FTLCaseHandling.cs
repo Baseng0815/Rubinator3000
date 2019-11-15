@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
 using static Rubinator3000.CubeFace;
+using static Rubinator3000.CubeColor;
 
 namespace Rubinator3000.Solving {
     partial class FTLSolver {
-        protected static void MoveSlotUp(CornerStone slotCorner, Action<CubeFace, int> doMoveAction) {
+        protected void MoveSlotUp(CornerStone slotCorner, Action<CubeFace, int> doMoveAction) {
             var cornerPos = slotCorner.GetPositions().First(p => p.Face != UP);
             CubeFace faceToRot = cornerPos.Face;
             int direction = cornerPos.Tile == 2 ? 1 : -1;
@@ -14,7 +15,7 @@ namespace Rubinator3000.Solving {
             doMoveAction(faceToRot, -direction);
         }
 
-        protected static void MoveSlotUp(EdgeStone slotEdge, Action<CubeFace, int> doMoveAction) {
+        protected void MoveSlotUp(EdgeStone slotEdge, Action<CubeFace, int> doMoveAction) {
             var edgePos = slotEdge.Positions.Item1;
             CubeFace faceToRot = edgePos.Face;
             int direction = edgePos.Tile == 5 ? 1 : -1;
@@ -24,7 +25,7 @@ namespace Rubinator3000.Solving {
             doMoveAction(faceToRot, -direction);
         }
 
-        protected static void RightPairedDownLayer(FTLPair pair, Action<CubeFace, int> doMoveAction) {
+        protected void RightPairedDownLayer(FTLPair pair, Action<CubeFace, int> doMoveAction) {
             // rotate pair in right position
             // 0-2 Moves
             (Position pos, CubeColor color) = pair.Corner.GetPositions().Select(p => (p, cube.At(p))).First(p => p.p.Face != UP && p.Item2 != WHITE);
@@ -43,7 +44,7 @@ namespace Rubinator3000.Solving {
             // sum 3-5 Moves
         }
 
-        protected static void FalsePairedDownLayer(FTLPair pair, Action<CubeFace, int> doMoveAction) {
+        protected void FalsePairedDownLayer(FTLPair pair, Action<CubeFace, int> doMoveAction) {
             // move corner above right slot
             // 0-2 moves
             Position pos = pair.Corner.GetPositions().First(p => p.Face == DOWN);
@@ -70,7 +71,7 @@ namespace Rubinator3000.Solving {
             }
         }
 
-        protected static void CornerInSlotEdgeDown(FTLPair pair, Action<CubeFace, int> doMoveAction) {
+        protected void CornerInSlotEdgeDown(FTLPair pair, Action<CubeFace, int> doMoveAction) {
             // move edge to right orientation
             var edgeUpColorFace = Cube.GetFace(pair.Edge.GetColor(p => p.Face == DOWN));
             CubeFace opponentFace = Cube.GetOpponentFace(edgeUpColorFace);

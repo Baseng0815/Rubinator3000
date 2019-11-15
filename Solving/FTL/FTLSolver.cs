@@ -134,9 +134,7 @@ namespace Rubinator3000.Solving {
 
         #region FTL Case Handling                
 
-        protected void FTL_Tiger(FTLPair pair) {
-            if (!eagleCase(pair))
-                throw new InvalidOperationException("Die beiden Steine befinden sich nicht in \"Tiger\"-Position");
+        protected void FTL_Tiger(FTLPair pair) {            
 
             Position cornerSidePos = pair.Corner.GetPositions().First(p => p.Face != DOWN && p != pair.CornerWhitePosition);
             CubeColor cornerSideColor = pair.Corner.GetColor(cornerSidePos);
@@ -156,8 +154,7 @@ namespace Rubinator3000.Solving {
         }
 
         protected void FTL_Crocodile(FTLPair pair) {
-            if (!crocodileCase(pair))
-                throw new InvalidOperationException("Die beiden Steine befinden sich nicht in \"Krokodil\"-Position");
+            
 
             Position edgeSidePos = pair.Edge.GetPositions().First(p => p.Face != DOWN);
             CubeColor edgeSideColor = pair.Edge.GetColor(edgeSidePos);

@@ -79,7 +79,7 @@ namespace Rubinator3000.Solving {
         /// </summary>
         /// <returns>Einen Wert, der angibt, ob sich beide Steine nebeneinander befinden</returns>
         public bool IsPaired() {
-            return IsPaired(out _);
+            return IsPaired(out _, out _);
         }
 
         /// <summary>
