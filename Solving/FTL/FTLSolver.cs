@@ -46,8 +46,6 @@ namespace Rubinator3000.Solving {
             CubeFace faceToRot;
             int direction;
 
-            Action<CubeFace, int> doMove = (f, d) => DoMove(f, d);
-
             // corner in slot and white face on white side
             if (pair.CornerWhitePosition.Face == UP) {
                 // in right slot
@@ -158,11 +156,47 @@ namespace Rubinator3000.Solving {
                     }
                 }
             }
+            // corner on down layer and white face on yellow side
+            else if (pair.CornerWhitePosition.Face == DOWN) {
+                // edge in slot
+                if (pair.EdgeInSlot) {
+                    CubeColor color = pair.Corner.GetColors().First(c => c != WHITE);
+                    int cornerTile = pair.Corner.GetColorPosition(color).Tile;
+                    int edgeTile = pair.Edge.GetColorPosition(color).Tile;
+
+                    // edge right orientated
+                    if (edgeTile + 3 == cornerTile) {
+                        EaglePosition(pair);
+                    }
+                    // edge false orientated
+                    else {
+                        CornerDown_YellowSide_EdgeFalse(pair);
+                    }
+                }
+                // edge on down layer
+                else {
+                    CornerDown_YellowSide_EdgeDown(pair);
+                }
+            }
+            // corner on down layer and white face to side
+            else {
+                // edge in slot
+                if (pair.EdgeInSlot) {
+                    // transform to tiger position
+
+                }
+            }
         }
 
         protected override bool CheckCube(Cube cube) {
-            for (int t = 0; t < 9; t++) {
+            for (int t = 1; t < 9; t += 2) {
                 if (!(cube.At(UP, t) == WHITE)) {
+                    return false;
+                }
+            }
+
+            foreach (var face in MiddleLayerFaces) {
+                if (!(cube.At(face, 1) == Cube.GetFaceColor(face))) {
                     return false;
                 }
             }
@@ -170,46 +204,7 @@ namespace Rubinator3000.Solving {
             return true;
         }
 
-        #region FTL Case Handling                
-
-        protected void FTL_Tiger(FTLPair pair) {
-
-            Position cornerSidePos = pair.Corner.GetPositions().First(p => p.Face != DOWN && p != pair.CornerWhitePosition);
-            CubeColor cornerSideColor = pair.Corner.GetColor(cornerSidePos);
-
-            // rotate stones right
-            // 0-2 moves
-            int delta = SolvingUtility.GetDelta(cornerSideColor, cornerSidePos.Face, DOWN);
-            DoMove(DOWN, delta);
-
-            // pair and insert
-            // 3 moves
-            var faceToRot = pair.CornerWhitePosition.Face;
-            int direction = pair.CornerWhitePosition.Tile == 8 ? 1 : -1;
-            DoMove(faceToRot, direction);
-            DoMove(DOWN, direction);
-            DoMove(faceToRot, -direction);
-        }
-
-        protected void FTL_Crocodile(FTLPair pair) {
-
-
-            Position edgeSidePos = pair.Edge.GetPositions().First(p => p.Face != DOWN);
-            CubeColor edgeSideColor = pair.Edge.GetColor(edgeSidePos);
-
-            // rotate edge right
-            // 0-2 moves
-            int delta = SolvingUtility.GetDelta(edgeSideColor, edgeSidePos.Face, DOWN);
-            DoMove(DOWN, delta);
-
-            // pair and insert
-            var faceToRot = pair.CornerWhitePosition.Face;
-            int direction = pair.CornerWhitePosition.Tile == 2 ? 1 : -1;
-
-        }
-        #endregion
-
-        private static bool EdgeFalseInRightSlot(EdgeStone edge) {
+        protected static bool EdgeFalseInRightSlot(EdgeStone edge) {
             // edge in any slot
             if (edge.GetPositions().All(p => p.Face != DOWN)) {
                 var color1Face = Cube.GetFace(edge.Colors.Item1);
