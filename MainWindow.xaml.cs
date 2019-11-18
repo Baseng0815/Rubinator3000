@@ -128,7 +128,7 @@ namespace Rubinator3000 {
             // Initialize all webcam-controls
             for (int i = 0; i < cameraCount; i++) {
 
-                webCamControls[i] = new WebCamControl(i, ref canvases[i], ref previewBitmaps[i]);
+                webCamControls[i] = new WebCamControl(i, /*ref*/ canvases[i], ref previewBitmaps[i]);
             }
 
             // Load all positions, that were saved in "ReadPositions.xml"

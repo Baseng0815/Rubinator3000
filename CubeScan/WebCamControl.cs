@@ -56,7 +56,7 @@ namespace Rubinator3000.CubeScan {
         private readonly int cameraIndex;
 
         // This Bitmap caches the most recent bitmap from the videoCapture for color analysing
-        private readonly FastAccessBitmap currentBitmap = new FastAccessBitmap(null);
+        private readonly FastAccessBitmap currentFABitmap = new FastAccessBitmap(null);
 
         // This WriteableBitmap points to the bitmap, that will be shown in the camera stream
         private readonly WriteableBitmap previewBitmap;
@@ -70,12 +70,12 @@ namespace Rubinator3000.CubeScan {
         private bool threadShouldStop = true;
         public bool Initialized { get; set; } = false;
 
-        // This Queue holds only the updates of the bitmaps for color identification, not for gui camera stream
-        private readonly Queue<Bitmap> frames = new Queue<Bitmap>();
+        // This Bitmap holds only the current update of the camera-stream for color identification, not for gui camera stream
+        private Bitmap frameToDisplay;
 
         #endregion
 
-        public WebCamControl(int cameraIndex, ref Canvas drawingCanvas, ref WriteableBitmap previewBitmap, int ticksPerSecond = 1) {
+        public WebCamControl(int cameraIndex, /*ref*/ Canvas drawingCanvas, ref WriteableBitmap previewBitmap, int ticksPerSecond = 1) {
 
             this.drawingCanvas = drawingCanvas;
             this.previewBitmap = previewBitmap;
@@ -110,12 +110,7 @@ namespace Rubinator3000.CubeScan {
                     cameraIndexesInUse.Add(cameraIndex);
 
                     // setup usb-camera-input handling
-                    //TODO videoCapture.ImageGrabbed += ProcessCapturedFrame;
-
-                    Bitmap bitmap = (Bitmap)System.Drawing.Image.FromFile(string.Format("./TestBitmap{0}.png", cameraIndex));
-                    frames.Enqueue(bitmap);
-                    DisplayOnWpfImageControl(bitmap, previewBitmap);
-
+                    videoCapture.ImageGrabbed += ProcessCapturedFrame;
 
                     // start the video apture
                     videoCapture.Start();
@@ -140,10 +135,11 @@ namespace Rubinator3000.CubeScan {
                 // Code in while loop  
 
                 // Handle all frameUpdates
-                while (frames.Count > 0) {
+                if (frameToDisplay != null) {
 
-                    Bitmap bmp = frames.Dequeue();
-                    currentBitmap.SetBitmap(bmp);
+                    currentFABitmap.SetBitmap(new Bitmap(frameToDisplay));
+                    frameToDisplay.Dispose();
+                    frameToDisplay = null;
                 }
 
                 // Add all pendingPositions to PositionsToReadAt and draw their circles
@@ -182,7 +178,7 @@ namespace Rubinator3000.CubeScan {
                     }
                     lastCubeGeneration = Helper.CurrentTimeMillis();
                 }
-                
+
                 // Code in while loop  
 
                 if (GC.GetTotalMemory(true) > 500 * Math.Pow(10, 6)) {
@@ -204,21 +200,22 @@ namespace Rubinator3000.CubeScan {
             Bitmap readBitmap = mat.Bitmap;
             DisplayOnWpfImageControl(readBitmap, previewBitmap);
 
-            if (frames.Count > 0) {
-                frames.Dequeue().Dispose();
+            if (frameToDisplay != null) {
+                frameToDisplay.Dispose();
+                frameToDisplay = null;
             }
-            frames.Enqueue(new Bitmap(readBitmap));
+            frameToDisplay = new Bitmap(readBitmap);
             readBitmap.Dispose();
         }
 
         private Color ReadColorAtPosition(ReadPosition pos) {
 
-            if (currentBitmap.BitmapIsValid()) {
+            if (currentFABitmap.BitmapIsValid()) {
 
-                int absoluteX = Convert.ToInt32(pos.RelativeX * currentBitmap.Width);
-                int absoluteY = Convert.ToInt32(pos.RelativeY * currentBitmap.Height);
+                int absoluteX = Convert.ToInt32(pos.RelativeX * currentFABitmap.Width);
+                int absoluteY = Convert.ToInt32(pos.RelativeY * currentFABitmap.Height);
 
-                Color colorAtPos = currentBitmap.ReadPixel(absoluteX - ReadRadius, absoluteY - ReadRadius, ReadRadius * 2 + 1, ReadRadius * 2 + 1);
+                Color colorAtPos = currentFABitmap.ReadPixel(absoluteX - ReadRadius, absoluteY - ReadRadius, ReadRadius * 2 + 1, ReadRadius * 2 + 1);
 
                 return colorAtPos;
             }
@@ -234,10 +231,10 @@ namespace Rubinator3000.CubeScan {
         }
 
         public void TryInitializeAndStart() {
-
-            // Make the task independent from the calling thread, so it wont get blocked
+            
+            // Make the task independent from the calling gui-thread, so it wont get blocked
             Task.Run(() => {
-
+               
                 StopThread();
 
                 if (InitCameraCapture()) {
@@ -593,17 +590,16 @@ namespace Rubinator3000.CubeScan {
             Application.Current.Dispatcher.Invoke(() => {
                 // Reserve the backBuffer of writeableBitmap for updates
                 writeableBitmap.Lock();
-                unsafe {
-                    BitmapData tempData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-                    // CopyMemory(destPointer, sourcePointer, byteLength to copy);
-                    CopyMemory(writeableBitmap.BackBuffer, tempData.Scan0, writeableBitmap.BackBufferStride * bitmap.Height);
+                BitmapData tempData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-                    bitmap.UnlockBits(tempData);
-                    tempData = null;
-                }
+                // CopyMemory(destPointer, sourcePointer, byteLength to copy);
+                CopyMemory(writeableBitmap.BackBuffer, tempData.Scan0, writeableBitmap.BackBufferStride * bitmap.Height);
 
-                // Specify the area of the bitmap, that changed (in this case, the whole bitmap changed)
+                bitmap.UnlockBits(tempData);
+                tempData = null;
+
+                // Specify the area of the bitmap, that changed (in this case, the whole bitmap)
                 writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, bitmap.Width, bitmap.Height));
 
                 // Release the backBuffer of writeableBitmap and make it available for display
