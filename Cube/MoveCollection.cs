@@ -11,6 +11,8 @@ namespace Rubinator3000 {
     public class MoveCollection : IEnumerable<Move> {
         private List<Move> moves;
 
+        public int Count => moves.Count;
+
         public MoveCollection() {
             moves = new List<Move>();
         }

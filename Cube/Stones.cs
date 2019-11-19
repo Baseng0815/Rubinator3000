@@ -182,7 +182,7 @@ namespace Rubinator3000 {
         }
 
         public Position GetColorPosition(CubeColor color) {
-            if (colors.Item1 != color || colors.Item2 != color || colors.Item3 != color)
+            if (colors.Item1 != color && colors.Item2 != color && colors.Item3 != color)
                 throw new ArgumentOutOfRangeException(nameof(color));
 
             var pos = Positions;

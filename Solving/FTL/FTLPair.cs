@@ -23,6 +23,29 @@ namespace Rubinator3000.Solving {
             this.cube = cube;
         }
 
+        public static FTLPair GetPair(IStone stone, Cube cube) {
+            if (stone is CornerStone corner) {
+                if (!corner.HasColor(WHITE))
+                    throw new ArgumentException();
+
+                var colors = corner.GetColors().Where(c => c != WHITE);
+                EdgeStone edge = cube.Edges.First(e => e.GetColors().All(c => colors.Contains(c)));
+
+                return new FTLPair(corner, edge, cube);
+            }
+            else if (stone is EdgeStone edge) {
+                if (edge.HasColor(WHITE) || edge.HasColor(YELLOW))
+                    throw new ArgumentException();
+
+                var colors = edge.GetColors();
+                corner = cube.Corners.First(cr => cr.GetColors().All(c => colors.Contains(c)) && cr.HasColor(WHITE));
+
+                return new FTLPair(corner, edge, cube);
+            }
+            else
+                throw new ArgumentException();
+        }
+
         /// <summary>
         /// Gibt den Kantenstein des Slots zurück.
         /// </summary>
@@ -130,7 +153,7 @@ namespace Rubinator3000.Solving {
         }
 
         public static bool operator ==(FTLPair left, FTLPair right) {
-            return left.Equals(right);
+            return left.Corner.GetColors().All(c => right.Corner.GetColors().Contains(c));
         }
 
         public static bool operator !=(FTLPair left, FTLPair right) {

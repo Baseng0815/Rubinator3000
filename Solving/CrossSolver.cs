@@ -69,7 +69,7 @@ namespace Rubinator3000.Solving {
             int count = 0;
 
             // bring rest of the stones in right position            
-            do {
+            while (!whiteEdges.All(e => IsEdgeRight(e))) {
                 // update rating
                 var stoneRating = from e in whiteEdges
                                   where !IsEdgeRight(e)
@@ -81,7 +81,7 @@ namespace Rubinator3000.Solving {
                 EdgeStone edgeToSolve = stoneRating.First().First();
 
                 HandleStone(edgeToSolve);
-            } while (!whiteEdges.All(e => IsEdgeRight(e)));
+            }
 
             DoMove(UP, -WhiteFaceOrientation);
         }
@@ -264,7 +264,7 @@ namespace Rubinator3000.Solving {
         /// </summary>
         /// <param name="edge">Der Kantenstein, dessen Farbunterschied bestimmt werden soll</param>
         /// <returns></returns>
-        protected int GetDelta(EdgeStone edge) {            
+        protected int GetDelta(EdgeStone edge) {
             CubeColor edgeColor = edge.GetColors().First(c => c != WHITE);
             CubeFace face = edge.GetColorPosition(c => c != WHITE).Face;
 

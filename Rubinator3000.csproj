@@ -103,7 +103,7 @@
     <Compile Include="Solving\CubeSolver.cs" />
     <Compile Include="Solving\Fridrich\CubeSolverFridrich.cs" />
     <Compile Include="Solving\FTL\FTLCaseHandling.cs" />
-    <Compile Include="Solving\FTL\FTLEvalutator.cs" />
+    <Compile Include="Solving\FTL\FTLMoveCalculator.cs" />
     <Compile Include="Solving\FTL\FTLPair.cs" />
     <Compile Include="Solving\FTL\FTLSolver.cs" />
     <Compile Include="Solving\LLPatterns.cs" />

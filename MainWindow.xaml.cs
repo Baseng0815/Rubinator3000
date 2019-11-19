@@ -88,7 +88,7 @@ namespace Rubinator3000 {
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                         cube.Shuffle(10);
                     else {
-                        MoveCollection solvingMoves = CubeSolver.SolveCube(cube, typeof(CrossSolver));
+                        MoveCollection solvingMoves = CubeSolver.SolveCube(cube, typeof(CubeSolverFridrich));
                         moveHistoryOutput.Clear();
                         moveHistoryOutput.AppendText(string.Join(" ", solvingMoves.Select(m => m.ToString())));
                     }
@@ -153,7 +153,7 @@ namespace Rubinator3000 {
             if (winFormsHost.Child != null) {
                 textBoxLog.Focus();
                 textBoxLog.CaretIndex = textBoxLog.Text.Length;
-                textBoxLog.ScrollToEnd();
+                //textBoxLog.ScrollToEnd();
             }
 
         }

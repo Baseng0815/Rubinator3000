@@ -17,12 +17,14 @@ namespace Rubinator3000.Solving {
             CrossSolver cross = new CrossSolver(cube);
             moves.AddRange(cross.GetMoves());
 
-            try {               
-                CalcFTL();
+            FTLSolver ftl = new FTLSolver(cube);
+            moves.AddRange(ftl.GetMoves());
 
-                CalcOLL();
+            try {                               
 
-                CalcPLL();
+                //CalcOLL();
+
+                //CalcPLL();
 
                 bool solved = GetCubeSolved();
 
@@ -33,14 +35,12 @@ namespace Rubinator3000.Solving {
             catch (Exception) {
                 throw;
             }
-        }
-        
-        partial void CalcFTL();
+        }               
         partial void CalcOLL();
         partial void CalcPLL();
 
         protected override bool CheckCube(Cube cube) {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

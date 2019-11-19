@@ -88,6 +88,16 @@ namespace Rubinator3000.Solving {
 
                 return solver.moves;
             }
+            else if (cubeSolver == typeof(CubeSolverFridrich)) {
+                solver = new CubeSolverFridrich(cube);
+
+                solver.CalcMoves();
+
+                if (!solver.Solved)
+                    MessageBox.Show("Der Würfel konnte nicht gelöst werden.");
+
+                return solver.moves;
+            }
             else throw new NotImplementedException();
         }
         
