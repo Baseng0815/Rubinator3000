@@ -1,3 +1,6 @@
+#include <Arduino.h>
+#line 1 "d:\\Repos\\Rubinator3000\\Hardware\\Arduino\\Arduino.ino"
+#line 1 "d:\\Repos\\Rubinator3000\\Hardware\\Arduino\\Arduino.ino"
 int steppers[6][4] = {
   { 25, 24, 23, 22 }, //l
   { 31, 30, 29, 28 }, //u
@@ -15,6 +18,11 @@ bool connected = false;
 
 int steppersCount[] = { 500, 500, 500, 500, 500, 500 };
 
+#line 18 "d:\\Repos\\Rubinator3000\\Hardware\\Arduino\\Arduino.ino"
+void setup();
+#line 47 "d:\\Repos\\Rubinator3000\\Hardware\\Arduino\\Arduino.ino"
+void loop();
+#line 18 "d:\\Repos\\Rubinator3000\\Hardware\\Arduino\\Arduino.ino"
 void setup() {
 	// put your setup code here, to run once:
 	Serial.begin(9600);
@@ -162,3 +170,4 @@ void move(int stepper, bool isPrime = false) {
 
   Serial.println("Move done");
 }
+
