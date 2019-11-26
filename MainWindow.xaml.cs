@@ -1,4 +1,6 @@
-﻿using OpenTK;
+﻿#undef Camera
+
+using OpenTK;
 using Rubinator3000.CubeScan;
 using Rubinator3000.Solving;
 using System;
@@ -98,7 +100,7 @@ namespace Rubinator3000 {
         }
 
         private void InitalizeCameraPreviews() {
-
+#if Camera
             const int width = 640;
             const int height = 480;
 
@@ -133,6 +135,7 @@ namespace Rubinator3000 {
 
             // Load all positions, that were saved in "ReadPositions.xml"
             WebCamControl.LoadAllPositionsFromXml();
+#endif
         }
 
         private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
@@ -171,7 +174,7 @@ namespace Rubinator3000 {
         }
 
         private void CameraPreview_MouseDown(object sender, MouseButtonEventArgs e) {
-
+#if Camera
             // Manual Position Adding
 
             if (!PositionEditingAllowed || e.ChangedButton != MouseButton.Left || WebCamControl.TotalPositionCount == WebCamControl.MAXPOSITIONSTOREAD) {
@@ -212,6 +215,7 @@ namespace Rubinator3000 {
                 );
 
             Log.LogStuff(WebCamControl.AddPosition(tempPos, cameraIndex));
+#endif
         }
 
         private void WinFormsHost_Initialized(object sender, EventArgs e) {
@@ -236,11 +240,12 @@ namespace Rubinator3000 {
         }
 
         private void CameraPreviewMenuItem_Click(object sender, RoutedEventArgs e) {
-
+#if Camera
             Image cameraPreivew = (Image)(((System.Windows.Controls.ContextMenu)((System.Windows.Controls.MenuItem)sender).Parent).PlacementTarget);
 
             int cameraIndex = Array.IndexOf(cameraPreviews, cameraPreivew);
             webCamControls[cameraIndex].TryInitializeAndStart();
+#endif
         }
 
         private void AllowPosEdit_Click(object sender, RoutedEventArgs e) {
