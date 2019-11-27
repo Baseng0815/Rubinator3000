@@ -119,7 +119,7 @@ namespace Rubinator3000.Solving {
             Cube cube = this.cube;
             edgeRight = false;
             cornerRight = false;
-            if (commonFaces.Count() == 0)
+            if (commonFaces.Count() == 0 || commonFaces.Count() == 1)
                 return false;
 
             // check if edge and corner position are side by side 

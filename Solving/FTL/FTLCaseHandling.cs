@@ -202,6 +202,7 @@ namespace Rubinator3000.Solving {
             CornerInSlot_WhiteSide_EdgeRightDown(pair);
         }
 
+        // works fine if not paired
         private static void CornerDown_YellowSide_EdgeDown(FTLPair pair) {
             CubeColor color = pair.Edge.GetColor(p => p.Face != DOWN);
             CubeFace targetFace = Cube.GetFace(color);
@@ -210,10 +211,13 @@ namespace Rubinator3000.Solving {
                 DoMove(DOWN);
 
             CubeFace faceToRot = pair.Edge.GetPosition(p => p.Face != DOWN).Face;
-            int direction = SolvingUtility.GetDelta(pair.Edge.GetColor(p => p.Face != DOWN),
-                                                        faceToRot, DOWN);
+            int colorSide = Array.IndexOf(CubeSolver.MiddleLayerFaces, (CubeFace)pair.Edge.GetColor(p => p.Face != DOWN));
+            int colorDown = Array.IndexOf(CubeSolver.MiddleLayerFaces, (CubeFace)pair.Edge.GetColor(p => p.Face == DOWN));
+            int direction = 2 - (colorDown - colorSide + 4) % 4;
+
             // move edge in right position            
             DoMove(faceToRot, direction);
+            
             // pair the stones
             while (pair.Corner.GetColorPosition(color).Face != targetFace)
                 DoMove(DOWN);
@@ -224,10 +228,11 @@ namespace Rubinator3000.Solving {
             RightPairedDownLayer(pair);
         }
 
+        // works fine
         private static void CornerDown_Side_EdgeSlot(FTLPair pair) {
             // transform to tiger
             CubeColor sideColor = pair.Corner.GetColor(p => p.Face != DOWN && p != pair.CornerWhitePosition);
-            CubeFace targetFace = pair.Edge.GetColorPosition(sideColor).Face;
+            CubeFace targetFace = Cube.GetOpponentFace(pair.Edge.GetColorPosition(sideColor).Face);
 
             while (pair.CornerWhitePosition.Face != targetFace)
                 DoMove(DOWN);
@@ -242,6 +247,7 @@ namespace Rubinator3000.Solving {
             TigerPosition(pair);
         }
 
+        // works fine
         private static void PairedDown_CornerFalse(FTLPair pair) {
             // transform to crocodile
             CubeColor sideColor = pair.Corner.GetColor(p => p.Face != DOWN && p != pair.CornerWhitePosition);
@@ -258,6 +264,98 @@ namespace Rubinator3000.Solving {
             DoMove(faceToRot, -direction);
 
             CornerInSlot_WhiteSide_EdgeRightDown(pair);
+        }
+
+        // works fine
+        private static void CornerDown_YellowSide_Paired(FTLPair pair) {
+            Position edgeSidePos = pair.Edge.GetPosition(p => p.Face != DOWN);
+            CubeColor edgeSideColor = pair.Edge.GetColor(edgeSidePos);
+            CubeColor cornerSideColor = pair.Corner.GetColor(p => p.Face == edgeSidePos.Face);
+
+            // move corner above slot
+            CubeFace targetFace = Cube.GetFace(pair.Edge.GetColor(p => p.Face != DOWN));
+
+            while (pair.Corner.GetColorPosition(cornerSideColor).Face != targetFace)
+                DoMove(DOWN);
+
+            // side colors equal
+            if (cornerSideColor == edgeSideColor) {                
+                // do algorithm "F2L 19"/"F2L 21"
+                CubeFace face1 = pair.Corner.GetColorPosition(c => !(c == WHITE || c == edgeSideColor)).Face;
+                CubeFace face2 = pair.Corner.GetColorPosition(edgeSideColor).Face;
+                int direction = pair.Corner.GetColorPosition(edgeSideColor).Tile == 8 ? 1 : -1;
+
+                DoMove(face1, direction);
+                DoMove(DOWN, direction);
+                DoMove(face2, direction);
+                DoMove(DOWN, -direction);
+                DoMove(face2, -direction);
+                DoMove(face1, -direction);
+                DoMove(face2, direction);
+                DoMove(DOWN, -direction);
+                DoMove(face2, -direction);
+            }
+            else {
+                // do algorithm "F2L 18"/"F2L 20"
+                CubeFace faceToRot = pair.Edge.GetColorPosition(edgeSideColor).Face;
+                int direction = pair.Corner.GetColorPosition(c => !(c == WHITE || c == edgeSideColor)).Tile == 8 ? 1 : -1;
+
+                DoMove(faceToRot, direction);
+                DoMove(DOWN, 2);
+                DoMove(faceToRot, -direction);
+                DoMove(DOWN, -direction);
+                DoMove(faceToRot, direction);
+                DoMove(DOWN, direction);
+                DoMove(faceToRot, -direction);
+            }
+        }
+    
+        private static void CornerDown_Side_EdgeDown(FTLPair pair) {
+            CubeColor edgeUpColor = pair.Edge.GetColor(p => p.Face == DOWN);
+            CubeColor cornerUpColor = pair.Corner.GetColor(p => p.Face == DOWN);
+
+            if(edgeUpColor == cornerUpColor) {
+                // transform to crocodile
+                CubeFace targetFace = Cube.GetFace(pair.Corner.GetColors().First(c => !(c == WHITE || c == cornerUpColor)));
+
+                while (pair.CornerWhitePosition.Face != targetFace)
+                    DoMove(DOWN);
+
+                CubeFace faceToRot = Cube.GetFace(cornerUpColor);
+                int direction = pair.CornerWhitePosition.Tile == 8 ? 1 : -1;
+
+                DoMove(faceToRot, direction);
+                DoMove(DOWN, -direction);
+                DoMove(faceToRot, -direction);
+
+                // handle crocodile
+                CornerInSlot_WhiteSide_EdgeRightDown(pair);
+            }
+            else {
+                // check if stones are in right position
+                bool isTiger = pair.Corner.GetColorPosition(c => !(c == WHITE || c == cornerUpColor)).Face 
+                    == Cube.GetOpponentFace(pair.Edge.GetPosition(p => p.Face != DOWN).Face);
+
+                if (!isTiger) {
+                    // move corner to slot
+                    CubeFace targetFace = Cube.GetFace(pair.Corner.GetColor(p => p.Face != DOWN && p != pair.CornerWhitePosition));
+
+                    while (pair.CornerWhitePosition.Face != targetFace)
+                        DoMove(DOWN);
+
+                    CubeFace faceToRot = Cube.GetFace(cornerUpColor);
+                    int direction = pair.CornerWhitePosition.Tile == 8 ? 1 : -1;
+
+                    DoMove(faceToRot, direction);
+                    DoMove(DOWN, -direction);
+                    DoMove(faceToRot, -direction);
+
+                    CornerInSlot_WhiteSide_EdgeFalseDown(pair);
+                }
+                else {
+                    TigerPosition(pair);
+                }
+            }
         }
     }
 }

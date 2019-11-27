@@ -52,7 +52,9 @@ namespace Rubinator3000.Solving {
             }
 
             movesCalculated = true;
-        }        
+        }     
+        
+        
 
         protected override bool CheckCube(Cube cube) {
             for (int t = 1; t < 9; t += 2) {

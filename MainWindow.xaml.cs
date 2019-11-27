@@ -224,7 +224,7 @@ namespace Rubinator3000 {
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
-
+#if Camera
             DrawCube.StopDrawing();
 
             for (int i = 0; i < webCamControls.Length; i++) {
@@ -237,6 +237,7 @@ namespace Rubinator3000 {
             Environment.Exit(0);
 
             System.Windows.Application.Current.Shutdown();
+#endif
         }
 
         private void CameraPreviewMenuItem_Click(object sender, RoutedEventArgs e) {

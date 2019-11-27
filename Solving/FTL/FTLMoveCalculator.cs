@@ -182,7 +182,12 @@ namespace Rubinator3000.Solving {
                 }
                 // edge on down layer
                 else {
-                    CornerDown_YellowSide_EdgeDown(pair);
+                    if (pair.IsPaired()) {
+                        CornerDown_YellowSide_Paired(pair);
+                    }
+                    else {
+                        CornerDown_YellowSide_EdgeDown(pair);
+                    }
                 }
             }
             // corner on down layer and white face to side
@@ -210,6 +215,10 @@ namespace Rubinator3000.Solving {
                                 FalsePairedDownLayer(pair);
                             }
                         }
+                    }
+                    // not paired
+                    else {
+                        CornerDown_Side_EdgeDown(pair);
                     }
                 }
             }
