@@ -5,51 +5,51 @@ using static Rubinator3000.CubeColor;
 using static Rubinator3000.CubeFace;
 
 namespace Rubinator3000.Solving {
-    internal static partial class FTLMoveCalculator {
-        private static Cube cube;
-        private static IEnumerable<FTLPair> pairs;
+    internal partial class FTLMoveCalculator {
+        private Cube cube;
+        private IEnumerable<FTLPair> pairs;
+        private FTLPair pair;
                                                     
 
         private delegate void DoMoveEventHandler(CubeFace face, int count = 1);
-        private static event DoMoveEventHandler DoMove;
+        private event DoMoveEventHandler DoMove;
 
-        public static MoveCollection CalcMoves(FTLPair pair, Cube cube) {
-            MoveCollection moves = new MoveCollection();
-            FTLMoveCalculator.cube = (Cube)cube.Clone();
+        public FTLMoveCalculator(FTLPair pair, Cube cube) {
+            this.cube = (Cube)cube.Clone();            
 
-            FTLMoveCalculator.cube.OnMoveDone += Cube_OnMoveDone;
-
-            pairs = from corner in FTLMoveCalculator.cube.Corners
+            pairs = from corner in this.cube.Corners
                     where corner.HasColor(WHITE)
-                    select FTLPair.GetPair(corner, FTLMoveCalculator.cube);
+                    select FTLPair.GetPair(corner, this.cube);
 
-            FTLPair newPair = pairs.First(p => p == pair);
+            this.pair = pairs.First(p => p == pair);
+        }
+
+        public MoveCollection CalcMoves() {
+            MoveCollection moves = new MoveCollection();                        
 
             void DoMove(CubeFace face, int count) {
                 if (count == 0)
                     return; 
 
                 Move m = new Move(face, count);
-                FTLMoveCalculator.cube.DoMove(m);
+                cube.DoMove(m);
                 moves.Add(m);
+
+                pairs = from corner in cube.Corners
+                        where corner.HasColor(WHITE)
+                        select FTLPair.GetPair(corner, cube);
             }
 
-            FTLMoveCalculator.DoMove += DoMove;
+            this.DoMove += DoMove;
 
-            CalcPairMoves(newPair);
+            CalcPairMoves();
 
-            FTLMoveCalculator.DoMove -= DoMove;
+            this.DoMove -= DoMove;
 
             return moves;
-        }
+        }        
 
-        private static void Cube_OnMoveDone(object sender, MoveEventArgs e) {
-            pairs = from corner in FTLMoveCalculator.cube.Corners
-                    where corner.HasColor(WHITE)
-                    select FTLPair.GetPair(corner, FTLMoveCalculator.cube);
-        }
-
-        private static void CalcPairMoves(FTLPair pair) {
+        private void CalcPairMoves() {
             CubeFace faceToRot;
             int direction;
 
@@ -69,7 +69,7 @@ namespace Rubinator3000.Solving {
                             MoveSlotUp(pair.Corner);
 
                             // handle false paired yellow layer
-                            FalsePairedDownLayer(pair);
+                            FalsePairedDownLayer();
                         }
                         // edge in other slot
                         else {
@@ -77,12 +77,12 @@ namespace Rubinator3000.Solving {
                             MoveSlotUp(pair.Edge);
 
                             // handle corner right and edge yellow layer
-                            CornerInSlot_WhiteUp_EdgeDown(pair);
+                            CornerInSlot_WhiteUp_EdgeDown();
                         }
                     }
                     // edge on yellow layer
                     else {
-                        CornerInSlot_WhiteUp_EdgeDown(pair);
+                        CornerInSlot_WhiteUp_EdgeDown();
                     }
                 }
                 // in false slot
@@ -100,14 +100,14 @@ namespace Rubinator3000.Solving {
                                 MoveSlotUp(pair.Corner);
 
                                 // handle as right paired
-                                RightPairedDownLayer(pair);
+                                RightPairedDownLayer();
                             }
                             else {
                                 // move edge on yellow layer
                                 MoveSlotUp(pair.Edge);
 
                                 // handle as false paired
-                                FalsePairedDownLayer(pair);
+                                FalsePairedDownLayer();
                             }
                         }
                         // edge in other slot
@@ -116,12 +116,12 @@ namespace Rubinator3000.Solving {
                             MoveSlotUp(pair.Edge);
 
                             // handle corner in slot and edge on yellow layer
-                            CornerInSlot_WhiteUp_EdgeDown(pair);
+                            CornerInSlot_WhiteUp_EdgeDown();
                         }
                     }
                     else {
                         // handle corner in slot and edge on yellow layer
-                        CornerInSlot_WhiteUp_EdgeDown(pair);
+                        CornerInSlot_WhiteUp_EdgeDown();
                     }
                 }
             }
@@ -138,14 +138,14 @@ namespace Rubinator3000.Solving {
                         // move pair to up layer and try to calc the moves again
                         MoveSlotUp(pair.Edge);
 
-                        CalcPairMoves(pair);
+                        CalcPairMoves();
                     }
                     // edge in other slot
                     else {
                         // move edge to yellow layer and try to calc the moves new
                         MoveSlotUp(pair.Edge);
 
-                        CalcPairMoves(pair);
+                        CalcPairMoves();
                     }
                 }
                 // edge on top
@@ -156,10 +156,10 @@ namespace Rubinator3000.Solving {
                     // edge right
                     if (cornerSideColor == edgeDownColor) {
                         // handle crocodile
-                        CornerInSlot_WhiteSide_EdgeRightDown(pair);
+                        CornerInSlot_WhiteSide_EdgeRightDown();
                     }
                     else {
-                        CornerInSlot_WhiteSide_EdgeFalseDown(pair);
+                        CornerInSlot_WhiteSide_EdgeFalseDown();
                     }
                 }
             }
@@ -173,20 +173,20 @@ namespace Rubinator3000.Solving {
 
                     // edge right orientated
                     if (edgeTile + 3 == cornerTile) {
-                        EaglePosition(pair);
+                        EaglePosition();
                     }
                     // edge false orientated
                     else {
-                        CornerDown_YellowSide_EdgeFalse(pair);
+                        CornerDown_YellowSide_EdgeFalse();
                     }
                 }
                 // edge on down layer
                 else {
                     if (pair.IsPaired()) {
-                        CornerDown_YellowSide_Paired(pair);
+                        CornerDown_YellowSide_Paired();
                     }
                     else {
-                        CornerDown_YellowSide_EdgeDown(pair);
+                        CornerDown_YellowSide_EdgeDown();
                     }
                 }
             }
@@ -194,7 +194,7 @@ namespace Rubinator3000.Solving {
             else {
                 // edge in slot
                 if (pair.EdgeInSlot) {
-                    CornerDown_Side_EdgeSlot(pair);
+                    CornerDown_Side_EdgeSlot();
                 }
                 // edge on yellow side
                 else {
@@ -202,23 +202,23 @@ namespace Rubinator3000.Solving {
                     if(pair.IsPaired(out bool edgeRight, out bool cornerRight)) {
                         // corner facing to edge side
                         if (!cornerRight) {
-                            PairedDown_CornerFalse(pair);
+                            PairedDown_CornerFalse();
                         }
                         // corner right
                         else {
                             // right paired
                             if (edgeRight) {
-                                RightPairedDownLayer(pair);
+                                RightPairedDownLayer();
                             }
                             // false paired
                             else {
-                                FalsePairedDownLayer(pair);
+                                FalsePairedDownLayer();
                             }
                         }
                     }
                     // not paired
                     else {
-                        CornerDown_Side_EdgeDown(pair);
+                        CornerDown_Side_EdgeDown();
                     }
                 }
             }

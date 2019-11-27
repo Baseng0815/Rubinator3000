@@ -64,6 +64,11 @@ namespace Rubinator3000 {
 #else
             Cube = new Cube();
 #endif
+            System.Threading.Thread.Sleep(1000);
+
+            cube.DoMoves(LLSolver.PllPatterns[5].algorithm);
+               
+                
         }
 
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {

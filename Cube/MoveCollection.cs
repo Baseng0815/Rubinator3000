@@ -109,6 +109,7 @@ namespace Rubinator3000 {
     public class MoveCollectionParser {        
         private CubeFace[] cubeOrientation;
         private static readonly char[] faceMappings = { 'L', 'U', 'F', 'D', 'R', 'B' };
+        private static readonly char[] middleMoves = { 'M', 'E', 'S' };
         private static readonly char[] orientationMoveChars = { 'x', 'y', 'z' };
 
         public MoveCollectionParser() {
@@ -121,7 +122,7 @@ namespace Rubinator3000 {
             for (int i = 0; i < moveString.Length; i++) {
                 char moveChar = moveString[i];
                 string postfix = new string(moveString.Skip(i + 1).TakeWhile(c => 
-                    !faceMappings.Contains(c) && !orientationMoveChars.Contains(c)).ToArray());
+                    !(faceMappings.Contains(c) || orientationMoveChars.Contains(c) || middleMoves.Contains(c))).ToArray());
                 i += postfix.Length;
 
                 // get rotations count ('i' = -1, '2' = 2, '' = 1)
@@ -149,10 +150,29 @@ namespace Rubinator3000 {
                             default:
                                 throw new InvalidProgramException();
                         }
-                        face = GetOpponentFace(face);                        
+                        face = Cube.GetOpponentFace(face);                        
                     }
 
                     moves.Add(face, count);
+                }
+                else if (middleMoves.Contains(moveChar)) {
+                    switch (char.ToLower(moveChar)) {
+                        case 'm':
+                            ChangeOrientation(OrientationMove.X, -count);
+                            moves.Add(cubeOrientation[(int)CubeFace.RIGHT], count);
+                            moves.Add(cubeOrientation[(int)CubeFace.LEFT], -count);
+                            break;
+                        case 'e':
+                            ChangeOrientation(OrientationMove.Y, -count);
+                            moves.Add(cubeOrientation[(int)CubeFace.UP], count);
+                            moves.Add(cubeOrientation[(int)CubeFace.DOWN], -count);
+                            break;
+                        case 's':
+                            ChangeOrientation(OrientationMove.Z, count);
+                            moves.Add(cubeOrientation[(int)CubeFace.FRONT], -count);
+                            moves.Add(cubeOrientation[(int)CubeFace.BACK], count);
+                            break;
+                    }
                 }
                 // orientation move
                 else if(orientationMoveChars.Contains(moveChar)) {
@@ -169,26 +189,7 @@ namespace Rubinator3000 {
             }
 
             return moves;
-        }
-
-        private CubeFace GetOpponentFace(CubeFace face) {
-            switch (face) {
-                case CubeFace.LEFT:
-                    return CubeFace.RIGHT;
-                case CubeFace.UP:
-                    return CubeFace.DOWN;
-                case CubeFace.FRONT:
-                    return CubeFace.BACK;
-                case CubeFace.DOWN:
-                    return CubeFace.UP;
-                case CubeFace.RIGHT:
-                    return CubeFace.LEFT;
-                case CubeFace.BACK:
-                    return CubeFace.FRONT;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(face));
-            }
-        }
+        }        
 
         private void ChangeOrientation(OrientationMove move, int count = 1) {
             count = SolvingUtility.NormalizeCount(count);

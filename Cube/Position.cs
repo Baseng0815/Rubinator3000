@@ -71,20 +71,20 @@ namespace Rubinator3000 {
                left , up, front, Cube.GetOpponentFace(up), Cube.GetOpponentFace(left), Cube.GetOpponentFace(front)
             };
 
-        }        
+        }
 
         private static CubeFace GetLeftFace(CubeFace front, CubeFace up) {
             int[] faces = neightbourFaces[(int)front];
-            return (CubeFace)faces[((int)up + 1) % 4];
+            return (CubeFace)faces[(int)up % 4];
         }
 
         private static readonly int[][] neightbourFaces = new int[6][] {
-            new int[4] { 1, 5, 3, 2 },
-            new int[4] { 0, 2, 4, 5 },
-            new int[4] { 0, 3, 4, 1 },
-            new int[4] { 0, 5, 4, 2 },
-            new int[4] { 1, 2, 3, 5 },
-            new int[4] { 0, 1, 4, 3 }
+            new int[6] { -1, 5, 1, 2, -1, 3 },
+            new int[6] { 2, -1, 4, -1, 5, 0 },
+            new int[6] { 3, 0, -1, 4, 1, -1 },
+            new int[6] { 5, -1, 0, -1, 2, 4 },
+            new int[6] { -1, 2, 3, 5, -1, 1 },
+            new int[6] { 1, 4, -1, 0, 3, -1 }
         };
 
         public CubeFace TransformFace(CubeFace face) {

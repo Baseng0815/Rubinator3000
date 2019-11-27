@@ -17,27 +17,20 @@ namespace Rubinator3000.Solving {
             CrossSolver cross = new CrossSolver(cube);
             moves.AddRange(cross.GetMoves());
 
+            // F2L
             FTLSolver ftl = new FTLSolver(cube);
             moves.AddRange(ftl.GetMoves());
 
-            try {                               
+            // OLL
+            LLSolver llSolver = new LLSolver(cube);
+            moves.AddRange(llSolver.GetMoves());
 
-                //CalcOLL();
+            bool solved = GetCubeSolved();
 
-                //CalcPLL();
-
-                bool solved = GetCubeSolved();
-
-                if (!solved) {
-                    moves.Clear();
-                }
+            if (!solved) {
+                moves.Clear();
             }
-            catch (Exception) {
-                throw;
-            }
-        }               
-        partial void CalcOLL();
-        partial void CalcPLL();
+        }        
 
         protected override bool CheckCube(Cube cube) {
             return true;

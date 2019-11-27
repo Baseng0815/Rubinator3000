@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Rubinator3000.CubeFace;
 using static Rubinator3000.CubeColor;
+using System.Threading;
 
 namespace Rubinator3000.Solving {
     public partial class FTLSolver : CubeSolver {
@@ -39,22 +40,37 @@ namespace Rubinator3000.Solving {
         }
 
         protected override void CalcMoves() {
-            while(pairs.Any(pair => !pair.Solved)) {
-                var pairMoves = from pair in pairs
-                                where !pair.Solved
-                                select FTLMoveCalculator.CalcMoves(pair, cube);
+            while (pairs.Any(pair => !pair.Solved)) {
+                FTLPair[] unsolvedPairs = pairs.Where(pair => !pair.Solved).ToArray();
+                int pairsCount = unsolvedPairs.Length;
 
-                int minMoves = pairMoves.Min(m => m.Count);
-                MoveCollection moves = pairMoves.First(e => e.Count == minMoves);
+                MoveCollection minMoves = null;
+                for (int i = 0; i < pairsCount; i++) {
+                    FTLMoveCalculator moveCalculator = new FTLMoveCalculator(unsolvedPairs[i], cube);
+                    MoveCollection pairMoves = moveCalculator.CalcMoves();
 
-                cube.DoMoves(moves);
-                this.moves.AddRange(moves);
+                    if (minMoves == null || pairMoves.Count < minMoves.Count)
+                        minMoves = pairMoves;
+                }
+
+                cube.DoMoves(minMoves);
+                moves.AddRange(minMoves);
             }
 
             movesCalculated = true;
-        }     
-        
-        
+        }
+
+        //protected override void CalcMoves() {
+        //    while (pairs.Any(pair => !pair.Solved)) {
+        //        FTLPair[] unsolvedPairs = pairs.Where(pair => !pair.Solved).ToArray();                                
+
+
+        //        cube.DoMoves(minMoves);
+        //        moves.AddRange(minMoves);
+        //    }
+
+        //    movesCalculated = true;
+        //}
 
         protected override bool CheckCube(Cube cube) {
             for (int t = 1; t < 9; t += 2) {
@@ -71,6 +87,6 @@ namespace Rubinator3000.Solving {
 
             return true;
         }
-        
+
     }
 }

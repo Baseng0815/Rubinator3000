@@ -37,7 +37,7 @@ namespace Rubinator3000.Solving {
             CubeOrientation orientation;
             MoveCollection moves;
             if (!OllSolved()) {
-                
+
                 for (count = 0; count < 4; count++) {
                     if (OllPatterns.Any(e => e.pattern.IsMatch(cube)))
                         break;
@@ -51,8 +51,8 @@ namespace Rubinator3000.Solving {
 
                 this.moves.AddRange(moves.TransformMoves(orientation));
             }
-            
-            for(count = 0; count < 4; count++) {
+
+            for (count = 0; count < 4; count++) {
                 if (PllPatterns.Any(p => p.pattern.IsMatch(cube)))
                     break;
 
@@ -79,15 +79,15 @@ namespace Rubinator3000.Solving {
             return true;
         }
 
-        #region static members
+        #region static members        
 
-        private static (OllPattern pattern, MoveCollection algorithm)[] OllPatterns;
-        private static (PllPattern pattern, MoveCollection algorithm)[] PllPatterns;
+        public static (OllPattern pattern, MoveCollection algorithm)[] OllPatterns;
+        public static (PllPattern pattern, MoveCollection algorithm)[] PllPatterns;
 
         public override bool Solved => throw new NotImplementedException();
 
         private static void LoadOllPatterns() {
-            XDocument doc = XDocument.Parse(Properties.Resources.ollSolving);
+            XDocument doc = XDocument.Load(@".\Resources\ollSolving.xml");
 
             Func<XElement, (OllPattern, MoveCollection)> getPattern = e => {
                 int ollNumber = int.Parse(e.Attribute("number").Value);
@@ -105,7 +105,7 @@ namespace Rubinator3000.Solving {
                 bool[][] sidesData = new bool[4][];
                 for (int s = 0; s < 4; s++) {
                     sidesData[s] = new bool[3];
-                    int sideValue = int.Parse(e.Attribute($"face{s}").Value);
+                    int sideValue = int.Parse(e.Attribute($"side{s}").Value);
 
                     for (int i = 0; i < 3; i++) {
                         int exp = (int)Math.Pow(2, i);
@@ -132,10 +132,11 @@ namespace Rubinator3000.Solving {
         }
 
         private static void LoadPllPatterns() {
-            XDocument doc = XDocument.Parse(Properties.Resources.pllSolving);
+            XDocument doc = XDocument.Load(@".\Resources\pllSolving.xml");
             CubeOrientation orientation = new CubeOrientation(CubeFace.LEFT, CubeFace.DOWN);
+            List<(PllPattern, MoveCollection)> patternMoves = new List<(PllPattern, MoveCollection)>();
 
-            Func<XElement, (PllPattern, MoveCollection)> getPattern = e => {
+            foreach (var e in doc.Root.Elements("pllPattern")) {
                 int number = int.Parse(e.Attribute("number").Value);
 
                 byte[][] patternData = new byte[4][];
@@ -151,20 +152,17 @@ namespace Rubinator3000.Solving {
 
                 try {
                     MoveCollection moves = MoveCollection.Parse(e.Attribute("algorithm").Value);
-                    return (new PllPattern(number, patternData), moves.TransformMoves(orientation));
+                    patternMoves.Add((new PllPattern(number, patternData), moves.TransformMoves(orientation)));
                 }
                 catch (FormatException ex) {
                     string message = $"Error:\tParsing Pll algorithm {number}";
                     Log.LogStuff(message);
                 }
 
-                return (new PllPattern(), null);
-            };
+             
+            }            
 
-            IEnumerable<(PllPattern, MoveCollection)> patterns = from element in doc.Root.Elements("pllPattern")
-                                                                 select getPattern(element);
-
-            PllPatterns = patterns.ToArray();
+            PllPatterns = patternMoves.ToArray();
         }
 
         static LLSolver() {

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" standalone="yes" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <OllSolving>
   <ollPattern number="0" face="511" side0="0" side1="0" side2="0" side3="0" algorithm="LWDLiDiMiDLDiLi" />
   <ollPattern number="1" face="501" side0="2" side1="2" side2="0" side3="0" algorithm="LDLiDiMDLDiLWi" />
