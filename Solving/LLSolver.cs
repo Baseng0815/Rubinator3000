@@ -23,7 +23,7 @@ namespace Rubinator3000.Solving {
             // check FTL is solved
             for (int f = 0; f < 4; f++) {
                 CubeColor faceColor = Cube.GetFaceColor(MiddleLayerFaces[f]);
-                for (int t = 3; t < 9; t++) {
+                for (int t = 0; t < 6; t++) {
                     if (cube.At(MiddleLayerFaces[f], t) != faceColor)
                         return false;
                 }
@@ -32,38 +32,30 @@ namespace Rubinator3000.Solving {
             return true;
         }
 
-        protected override void CalcMoves() {
-            int count = 0;
-            CubeOrientation orientation;
-            MoveCollection moves;
+        public override void SolveCube() {
+            MoveCollection algorithm;
+
+            int c = 0;
             if (!OllSolved()) {
-
-                for (count = 0; count < 4; count++) {
-                    if (OllPatterns.Any(e => e.pattern.IsMatch(cube)))
-                        break;
-
-                    DoMove(CubeFace.DOWN, addMove: false);
+                while (c < 4 && !OllPatterns.Any(p => p.pattern.IsMatch(cube))) {
+                    cube.DoMove(CubeFace.DOWN);
+                    c++;
                 }
-                moves = OllPatterns.First(e => e.pattern.IsMatch(cube)).algorithm;
-                DoMove(CubeFace.DOWN, 4 - count, false);
 
-                orientation = new CubeOrientation(MiddleLayerFaces[count], CubeFace.UP);
-
-                this.moves.AddRange(moves.TransformMoves(orientation));
+                algorithm = OllPatterns.First(p => p.pattern.IsMatch(cube)).algorithm;
+                cube.DoMoves(algorithm);
             }
 
-            for (count = 0; count < 4; count++) {
-                if (PllPatterns.Any(p => p.pattern.IsMatch(cube)))
-                    break;
+            if (!GetCubeSolved()) {
+                c = 0;
+                while (c < 4 && !PllPatterns.Any(p => p.pattern.IsMatch(cube))) {
+                    cube.DoMove(CubeFace.DOWN);
+                    c++;
+                }
 
-                DoMove(CubeFace.DOWN, addMove: false);
+                algorithm = PllPatterns.First(p => p.pattern.IsMatch(cube)).algorithm;
+                cube.DoMoves(algorithm);
             }
-            moves = OllPatterns.First(p => p.pattern.IsMatch(cube)).algorithm;
-            DoMove(CubeFace.DOWN, 4 - count, false);
-
-            orientation = new CubeOrientation(MiddleLayerFaces[count], CubeFace.UP);
-
-            this.moves.AddRange(moves.TransformMoves(orientation));
 
             if (!GetCubeSolved()) {
                 throw new InvalidProgramException();
@@ -159,8 +151,8 @@ namespace Rubinator3000.Solving {
                     Log.LogStuff(message);
                 }
 
-             
-            }            
+
+            }
 
             PllPatterns = patternMoves.ToArray();
         }

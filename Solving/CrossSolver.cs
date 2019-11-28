@@ -43,7 +43,7 @@ namespace Rubinator3000.Solving {
             }
         }
 
-        protected override void CalcMoves() {
+        public override void SolveCube() {
             // check white cross solved
             if (Solved)
                 return;
@@ -252,7 +252,7 @@ namespace Rubinator3000.Solving {
             int[] count = new int[4];
             for (int i = 0; i < 4; i++) {
                 count[i] = whiteEdges.Count(e => e.InRightPosition());
-                DoMove(UP, addMove: false);
+                DoMove(UP);
             }
 
             int maxCount = count.Max();

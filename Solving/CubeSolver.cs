@@ -10,9 +10,9 @@ using static Rubinator3000.CubeFace;
 namespace Rubinator3000.Solving {
     public abstract class CubeSolver {
 
-        protected readonly Cube cube;
-        protected MoveCollection moves;
-        protected bool movesCalculated = false;
+        protected readonly Cube cube;  
+        
+        public MoveCollection SolvingMoves { get; private set; }
 
         /// <summary>
         /// Erstellt einen neuen CubeSolver und eine Kopie des aktuellen Cubes
@@ -22,25 +22,24 @@ namespace Rubinator3000.Solving {
             if (!CheckCube(cube)) {
                 throw new ArgumentException();
             }
-#if DEBUG
+
             this.cube = cube;
-#else
-            this.cube = Utility.DeepClone(cube);
-#endif
-            moves = new MoveCollection();
+            SolvingMoves = new MoveCollection();
+            this.cube.OnMoveDone += Cube_OnMoveDone;
         }
 
-        public MoveCollection GetMoves() {
-            if (!movesCalculated)
-                CalcMoves();
-
-            return moves;
+        private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
+            SolvingMoves.Add(e.Move);
         }
 
         /// <summary>
         /// Brechnet in einer abgleiteten Klasse, die Züge zum lösen des Würfels
         /// </summary>
-        protected abstract void CalcMoves();
+        public abstract void SolveCube();
+
+        public virtual Task SolveCubeAsync() {
+            return Task.Factory.StartNew(SolveCube);
+        }
 
         protected abstract bool CheckCube(Cube cube);
 
@@ -50,14 +49,11 @@ namespace Rubinator3000.Solving {
         public abstract bool Solved { get; }
 
 
-        protected void DoMove(CubeFace face, int count = 1, bool addMove = true) {
+        protected void DoMove(CubeFace face, int count = 1) {
             if (count == 0)
                 return;
 
-            cube.DoMove(face, count);
-
-            if (addMove)
-                moves.Add(face, count);
+            cube.DoMove(face, count);            
         }
 
         /// <summary>
@@ -74,32 +70,7 @@ namespace Rubinator3000.Solving {
             }
 
             return true;
-        }
-
-        public static MoveCollection SolveCube(Cube cube, Type cubeSolver) {
-            CubeSolver solver;
-            if (cubeSolver == typeof(CrossSolver)) {
-                solver = new CrossSolver(cube);
-
-                solver.CalcMoves();
-
-                if (!solver.Solved)
-                    MessageBox.Show("Der Würfel konnte nicht gelöst werden.");
-
-                return solver.moves;
-            }
-            else if (cubeSolver == typeof(CubeSolverFridrich)) {
-                solver = new CubeSolverFridrich(cube);
-
-                solver.CalcMoves();
-
-                if (!solver.Solved)
-                    MessageBox.Show("Der Würfel konnte nicht gelöst werden.");
-
-                return solver.moves;
-            }
-            else throw new NotImplementedException();
-        }
+        }        
         
         public static readonly CubeFace[] MiddleLayerFaces = { CubeFace.LEFT, CubeFace.FRONT, CubeFace.RIGHT, CubeFace.BACK };      
         public static readonly Tuple<CubeColor, CubeColor>[] MiddleLayerEdgesColors = new Tuple<CubeColor, CubeColor>[4] {

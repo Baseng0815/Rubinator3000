@@ -12,25 +12,36 @@ namespace Rubinator3000.Solving {
 
         }
 
-        protected override void CalcMoves() {
+        public override void SolveCube() {
             // Das weiße Kreuz lösen
             CrossSolver cross = new CrossSolver(cube);
-            moves.AddRange(cross.GetMoves());
+            cross.SolveCube();
 
             // F2L
             FTLSolver ftl = new FTLSolver(cube);
-            moves.AddRange(ftl.GetMoves());
+            ftl.SolveCube();
 
-            // OLL
+            // OLL and PLL
             LLSolver llSolver = new LLSolver(cube);
-            moves.AddRange(llSolver.GetMoves());
+            llSolver.SolveCube();
+        }
 
-            bool solved = GetCubeSolved();
+        public override Task SolveCubeAsync() {
+            return Task.Factory.StartNew(async () => {
+                // Das weiße Kreuz lösen
+                CrossSolver cross = new CrossSolver(cube);
+                cross.SolveCube();
 
-            if (!solved) {
-                moves.Clear();
-            }
-        }        
+                // F2L
+                FTLSolver ftl = new FTLSolver(cube);
+                await ftl.SolveCubeAsync();
+                //moves.AddRange(ftl.GetMoves());
+
+                // OLL and PLL
+                LLSolver llSolver = new LLSolver(cube);
+                llSolver.SolveCube();
+            }).Unwrap();
+        }
 
         protected override bool CheckCube(Cube cube) {
             return true;

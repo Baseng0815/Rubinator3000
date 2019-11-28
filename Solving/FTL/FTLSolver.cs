@@ -39,7 +39,7 @@ namespace Rubinator3000.Solving {
                             cube);
         }
 
-        protected override void CalcMoves() {
+        public override void SolveCube() {
             while (pairs.Any(pair => !pair.Solved)) {
                 FTLPair[] unsolvedPairs = pairs.Where(pair => !pair.Solved).ToArray();
                 int pairsCount = unsolvedPairs.Length;
@@ -53,24 +53,44 @@ namespace Rubinator3000.Solving {
                         minMoves = pairMoves;
                 }
 
-                cube.DoMoves(minMoves);
-                moves.AddRange(minMoves);
-            }
-
-            movesCalculated = true;
+                cube.DoMoves(minMoves);                
+            }            
         }
 
-        //protected override void CalcMoves() {
-        //    while (pairs.Any(pair => !pair.Solved)) {
-        //        FTLPair[] unsolvedPairs = pairs.Where(pair => !pair.Solved).ToArray();                                
+        public override Task SolveCubeAsync() {
+            return Task.Factory.StartNew(async () => {
 
+                while (pairs.Any(pair => !pair.Solved)) {
+                    IEnumerable<FTLPair> unsolvedPairs = pairs.Where(pair => !pair.Solved);
 
-        //        cube.DoMoves(minMoves);
-        //        moves.AddRange(minMoves);
-        //    }
+                    List<Task<MoveCollection>> tasks = new List<Task<MoveCollection>>();
+                    foreach (var pair in unsolvedPairs) {
+                        var task = new Task<MoveCollection>(() => {
+                            FTLMoveCalculator moveCalculator = new FTLMoveCalculator(pair, cube);
+                            return moveCalculator.CalcMoves();
+                        });
 
-        //    movesCalculated = true;
-        //}
+                        tasks.Add(task);
+                    }
+
+                    tasks.ForEach(t => t.Start());
+
+                    MoveCollection minMoves = null;
+                    while (tasks.Count > 0) {
+                        var moves = await tasks.First();
+
+                        if(minMoves == null || minMoves.Count > moves.Count) {
+                            minMoves = moves;
+                        }
+
+                        tasks.RemoveAt(0);
+                    }
+
+                    cube.DoMoves(minMoves);                    
+                }                
+
+            }).Unwrap();
+        }        
 
         protected override bool CheckCube(Cube cube) {
             for (int t = 1; t < 9; t += 2) {

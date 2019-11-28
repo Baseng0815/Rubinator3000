@@ -180,14 +180,13 @@ namespace Rubinator3000 {
 
             for (int i = 0; i < 6; i++) {
                 newData[i] = new CubeMatrix();
-                for (int x = 0; x < 3; x++) {
-                    for (int y = 0; y < 3; y++) {
-                        int tile = 3 * x + y;
 
-                        newData[i][tile] = data[i][tile];
-                    }
-                }
+                for (int t = 0; t < 9; t++)
+                    newData[i][t] = data[i][t];
+
             }
+
+            
 
             return new Cube(newData);
         }

@@ -64,9 +64,9 @@ namespace Rubinator3000 {
 #else
             Cube = new Cube();
 #endif
-            System.Threading.Thread.Sleep(1000);
+            //System.Threading.Thread.Sleep(1000);
 
-            cube.DoMoves(LLSolver.PllPatterns[5].algorithm);
+            //cube.DoMoves(LLSolver.PllPatterns[5].algorithm);
                
                 
         }
@@ -95,9 +95,7 @@ namespace Rubinator3000 {
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
                         cube.Shuffle(10);
                     else {
-                        MoveCollection solvingMoves = CubeSolver.SolveCube(cube, typeof(CubeSolverFridrich));
-                        moveHistoryOutput.Clear();
-                        moveHistoryOutput.AppendText(string.Join(" ", solvingMoves.Select(m => m.ToString())));
+                        SolveCube();                        
                     }
                     break;
 
@@ -257,6 +255,12 @@ namespace Rubinator3000 {
         private void AllowPosEdit_Click(object sender, RoutedEventArgs e) {
 
             PositionEditingAllowed = allowPosEdit.IsChecked.Value;
+        }
+    
+        private async void SolveCube() {
+            CubeSolver solver = new CubeSolverFridrich(cube);
+
+            await solver.SolveCubeAsync();            
         }
     }
 }
