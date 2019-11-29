@@ -96,6 +96,9 @@
     <Compile Include="CubeViewer\FlatTransformations.cs" />
     <Compile Include="Cube\Position.cs" />
     <Compile Include="Cube\Stones.cs" />
+    <Compile Include="DebugWindows\OllDebugWindow.xaml.cs">
+      <DependentUpon>OllDebugWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Log.cs" />
     <Compile Include="MainWindowMenu.cs" />
     <Compile Include="Settings.cs" />
@@ -110,6 +113,10 @@
     <Compile Include="Solving\LLSolver.cs" />
     <Compile Include="Solving\SolvingUtility.cs" />
     <Page Include="ColorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DebugWindows\OllDebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

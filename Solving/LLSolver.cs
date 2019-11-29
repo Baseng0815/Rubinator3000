@@ -36,30 +36,41 @@ namespace Rubinator3000.Solving {
             MoveCollection algorithm;
 
             int c = 0;
-            if (!OllSolved()) {
-                while (c < 4 && !OllPatterns.Any(p => p.pattern.IsMatch(cube))) {
-                    cube.DoMove(CubeFace.DOWN);
-                    c++;
+            try {
+                if (!OllSolved()) {
+                    while (c < 4 && !OllPatterns.Any(p => p.pattern.IsMatch(cube))) {
+                        cube.DoMove(CubeFace.DOWN);
+                        c++;
+                    }
+
+                    algorithm = OllPatterns.First(p => p.pattern.IsMatch(cube)).algorithm;
+                    cube.DoMoves(algorithm);
                 }
 
-                algorithm = OllPatterns.First(p => p.pattern.IsMatch(cube)).algorithm;
-                cube.DoMoves(algorithm);
-            }
+                if (!GetCubeSolved()) {
+                    c = 0;
+                    while (c < 4 && !PllPatterns.Any(p => p.pattern.IsMatch(cube))) {
+                        cube.DoMove(CubeFace.DOWN);
+                        c++;
+                    }
 
-            if (!GetCubeSolved()) {
+                    algorithm = PllPatterns.First(p => p.pattern.IsMatch(cube)).algorithm;
+                    cube.DoMoves(algorithm);
+                }
+
                 c = 0;
-                while (c < 4 && !PllPatterns.Any(p => p.pattern.IsMatch(cube))) {
+                while (!GetCubeSolved() && c < 4) {
                     cube.DoMove(CubeFace.DOWN);
                     c++;
                 }
 
-                algorithm = PllPatterns.First(p => p.pattern.IsMatch(cube)).algorithm;
-                cube.DoMoves(algorithm);
+                //if (!GetCubeSolved()) {
+                //    throw new InvalidProgramException();
+                //}
             }
+            catch {
 
-            //if (!GetCubeSolved()) {
-            //    throw new InvalidProgramException();
-            //}
+            }
         }
 
         protected bool OllSolved() {
@@ -77,8 +88,11 @@ namespace Rubinator3000.Solving {
         public static (PllPattern pattern, MoveCollection algorithm)[] PllPatterns;
 
         public override bool Solved => throw new NotImplementedException();
-
+#if DEBUG
+        internal static void LoadOllPatterns() {
+#else
         private static void LoadOllPatterns() {
+#endif
             XDocument doc = XDocument.Load(@".\Resources\ollSolving.xml");
 
             Func<XElement, (OllPattern, MoveCollection)> getPattern = e => {
@@ -122,9 +136,12 @@ namespace Rubinator3000.Solving {
 
             OllPatterns = patterns.ToArray();
         }
-
-        private static void LoadPllPatterns() {
-            XDocument doc = XDocument.Load(@".\Resources\pllSolving.xml");
+#if DEBUG
+        internal static void LoadPllPatterns() {
+#else
+        private static void LoatPllPatterns() { 
+#endif
+        XDocument doc = XDocument.Load(@".\Resources\pllSolving.xml");
             CubeOrientation orientation = new CubeOrientation(CubeFace.LEFT, CubeFace.DOWN);
             List<(PllPattern, MoveCollection)> patternMoves = new List<(PllPattern, MoveCollection)>();
 
@@ -162,6 +179,6 @@ namespace Rubinator3000.Solving {
             LoadPllPatterns();
         }
 
-        #endregion
+#endregion
     }
 }

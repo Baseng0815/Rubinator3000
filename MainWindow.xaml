@@ -32,7 +32,7 @@
             <Setter Property="FontFamily" Value="{StaticResource Font}" />
             <Setter Property="Foreground" Value="{StaticResource ForegroundColor}" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
-            
+
         </Style>
 
         <!--  Camera Preview Context Menu Template  -->
@@ -84,7 +84,7 @@
             <Setter Property="Foreground" Value="{StaticResource ForegroundColor}"/>
         </Style>
     </Window.Resources>
-    
+
     <Grid Background="{StaticResource BackgroundColor}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width=".5*" />
@@ -115,6 +115,11 @@
                 <MenuItem Click="MenuItemResetCube_Click" Header="_Zurücksetzen" />
                 <MenuItem Click="MenuItemSuffle_Click" Header="_Verdrehen" InputGestureText="Shift+S" />
                 <MenuItem Click="MenuItemSolveCube_Click" Header="_Lösen" InputGestureText="S" />
+            </MenuItem>
+
+            <MenuItem Header="Debug">
+                <MenuItem Click="MenuItemOllDebug_Click" Header="Oll Debug"/>
+                <MenuItem Click="MenuItemPllDebug_Click" Header="Pll Debug"/>
             </MenuItem>
 
             <!--  Index Tab "Ansicht"  -->

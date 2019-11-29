@@ -13,14 +13,17 @@ namespace Rubinator3000.Solving {
         }
 
         public override void SolveCube() {
+            Log.LogStuff("Solve white cross");
             // Das weiße Kreuz lösen
             CrossSolver cross = new CrossSolver(cube);
             cross.SolveCube();
 
+            Log.LogStuff("Solve F2L");
             // F2L
             FTLSolver ftl = new FTLSolver(cube);
             ftl.SolveCube();
 
+            Log.LogStuff("Solve last Layer");
             // OLL and PLL
             LLSolver llSolver = new LLSolver(cube);
             llSolver.SolveCube();

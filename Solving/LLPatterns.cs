@@ -19,6 +19,14 @@ namespace Rubinator3000.Solving {
 
         public int Number { get; }
 
+        public bool[] Face {
+            get => face;
+        }
+
+        public bool[][] Sides {
+            get => sides;
+        }
+
         public OllPattern(int number, bool[] face, bool[][] sides) {
             if (face.Length != 9)
                 throw new ArgumentOutOfRangeException(nameof(face));
@@ -32,7 +40,7 @@ namespace Rubinator3000.Solving {
         }
 
         public bool IsMatch(Cube cube) {
-            for (int t = 0; t < 6; t++) {
+            for (int t = 0; t < 9; t++) {
                 if ((cube.At(DOWN, t) == YELLOW) != face[t])
                     return false;
             }

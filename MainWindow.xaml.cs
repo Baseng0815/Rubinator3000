@@ -63,12 +63,7 @@ namespace Rubinator3000 {
             Cube = new Cube(isRenderCube: true);
 #else
             Cube = new Cube();
-#endif
-            //System.Threading.Thread.Sleep(1000);
-
-            //cube.DoMoves(LLSolver.PllPatterns[5].algorithm);
-               
-                
+#endif                                          
         }
 
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
@@ -260,17 +255,13 @@ namespace Rubinator3000 {
         private async void SolveCube() {
             CubeSolver solver = new CubeSolverFridrich(cube);
 
-            solver.SolveCubeAsync().RunSynchronously();            
+            solver.SolveCube();
         }
 
         private void ShuffleCube() {
-            //Random rnd = new Random();
+            Random rnd = new Random();
 
-            //Cube.Shuffle(rnd.Next(5, 20));
-
-            for (int i = 0; i < 2; i++) {
-                cube.DoMoves(LLSolver.OllPatterns[2].algorithm);
-            }
-        }
+            Cube.Shuffle(rnd.Next(5, 20));
+        }        
     }
 }

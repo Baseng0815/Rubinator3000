@@ -1,4 +1,5 @@
-﻿using Rubinator3000.Solving;
+﻿using Rubinator3000.DebugWindows;
+using Rubinator3000.Solving;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -24,11 +25,23 @@ namespace Rubinator3000 {
 
         private void MenuItemSolveCube_Click(object sender, RoutedEventArgs e) {
             SolveCube();
-        }        
+        }
+
+        private void MenuItemOllDebug_Click(object sender, RoutedEventArgs e) {
+            OllDebugWindow ollDebug = new OllDebugWindow() {
+                mainWindow = this
+            };
+
+            ollDebug.Show();
+        }
+
+        private void MenuItemPllDebug_Click(object sender, RoutedEventArgs e) {
+
+        }
 
         // View
         private void MenuItemChangeView_Click(object sender, RoutedEventArgs e) {
-            if(sender is MenuItem menuItem){
+            if (sender is MenuItem menuItem) {
                 switch (menuItem.Tag as string) {
                     case "2D":
                         DrawCube.DisplayMode = CubeDisplayMode.FLAT;

@@ -45,7 +45,7 @@ namespace Rubinator3000 {
         public static TRSTransformation Transformation;
         public static bool AnimateMoves = true;
 
-        public static CubeDisplayMode DisplayMode = CubeDisplayMode.CUBE;
+        public static CubeDisplayMode DisplayMode = CubeDisplayMode.FLAT;
 
         // set absolute face rotation
         private static void SetFaceRotation(CubeFace face, float amount) {
@@ -79,7 +79,7 @@ namespace Rubinator3000 {
         // do animated moves
         private static void AnimateMovesTask() {
             while (moveQueue.Count > 0) {
-                Log.LogStuff("Animated move executing in animated move task");
+                //Log.LogStuff("Animated move executing in animated move task");
                 AnimatedMove move = moveQueue.Dequeue();
 
                 if (move.TurnDuration > 0) {

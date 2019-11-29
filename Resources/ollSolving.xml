@@ -1,61 +1,61 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <OllSolving>
   <ollPattern number="0" face="511" side0="0" side1="0" side2="0" side3="0" algorithm="" />
-  <ollPattern number="1" face="501" side0="2" side1="0" side2="0" side3="2" algorithm="LWDLiDiMiDLDiLi" />
+  <ollPattern number="1" face="501" side0="2" side1="2" side2="0" side3="0" algorithm="LWDLiDiMiDLDiLi" />
   <ollPattern number="2" face="381" side0="0" side1="2" side2="0" side3="2" algorithm="LDLiDiMDLDiLWi" />
   <ollPattern number="3" face="341" side0="2" side1="2" side2="2" side3="2" algorithm="LWiLDLDLiDiLWLWLiLiDLDiLWi" />
-  <ollPattern number="4" face="191" side0="0" side1="5" side2="0" side3="0" algorithm="LiLiULiDDLUiLiDDLi" />
+  <ollPattern number="4" face="506" side0="0" side1="5" side2="0" side3="0" algorithm="LiLiULiDDLUiLiDDLi" />
   <ollPattern number="5" face="446" side0="0" side1="1" side2="0" side3="4" algorithm="LWDLiDiRiDLDi" />
-  <ollPattern number="6" face="443" side0="0" side1="1" side2="4" side3="0" algorithm="FiLWDLiDiRiDL" />
-  <ollPattern number="7" face="250" side0="0" side1="4" side2="4" side3="4" algorithm="LDLiDLDiDiLi" />
-  <ollPattern number="8" face="442" side0="1" side1="1" side2="0" side3="1" algorithm="RiDiRDiRiDDR" />
-  <ollPattern number="9" face="186" side0="5" side1="4" side2="0" side3="1" algorithm="LDiDiLiLiDiLLDiLiLiDiDiL" />
+  <ollPattern number="6" face="254" side0="0" side1="1" side2="4" side3="0" algorithm="FiLWDLiDiRiDL" />
+  <ollPattern number="7" face="190" side0="1" side1="1" side2="0" side3="1" algorithm="LDLiDLDiDiLi" />
+  <ollPattern number="8" face="187" side0="0" side1="4" side2="4" side3="4" algorithm="RiDiRDiRiDDR" />
+  <ollPattern number="9" face="186" side0="0" side1="1" side2="5" side3="4" algorithm="LDiDiLiLiDiLLDiLiLiDiDiL" />
   <ollPattern number="10" face="186" side0="0" side1="5" side2="0" side3="5" algorithm="FLDLiDiLDLiDiLDLiDiFi" />
-  <ollPattern number="11" face="272" side0="6" side1="2" side2="6" side3="6" algorithm="FWLDLiDiFWiDiFLDLiDiFi" />
-  <ollPattern number="12" face="20" side0="3" side1="3" side2="3" side3="2" algorithm="FWLDLiDiFWiDFLDLiDiFi" />
-  <ollPattern number="13" face="273" side0="6" side1="2" side2="2" side3="3" algorithm="LDLiDLiFLFiDDLiFLFi" />
-  <ollPattern number="14" face="21" side0="6" side1="2" side2="3" side3="2" algorithm="MiDLDLiDiLWLLFLFi" />
-  <ollPattern number="15" face="336" side0="2" side1="2" side2="2" side3="7" algorithm="LWDLiDLDDLWiLWiDiLDiLiDDLW" />
-  <ollPattern number="16" face="16" side0="7" side1="6" side2="2" side3="3" algorithm="FLDLiDiFiFWLDLiDiFWi" />
+  <ollPattern number="11" face="17" side0="3" side1="2" side2="3" side3="3" algorithm="FWLDLiDiFWiDiFLDLiDiFi" />
+  <ollPattern number="12" face="80" side0="6" side1="6" side2="6" side3="2" algorithm="FWLDLiDiFWiDFLDLiDiFi" />
+  <ollPattern number="13" face="273" side0="2" side1="2" side2="3" side3="6" algorithm="LDLiDLiFLFiDDLiFLFi" />
+  <ollPattern number="14" face="336" side0="6" side1="2" side2="3" side3="2" algorithm="MiDLDLiDiLWLLFLFi" />
+  <ollPattern number="15" face="336" side0="2" side1="7" side2="2" side3="2" algorithm="LWDLiDLDDLWiLWiDiLDiLiDDLW" />
+  <ollPattern number="16" face="16" side0="2" side1="3" side2="7" side3="6" algorithm="FLDLiDiFiFWLDLiDiFWi" />
   <ollPattern number="17" face="16" side0="7" side1="2" side2="7" side3="2" algorithm="LDDLLFLFiDDLiFLFi" />
-  <ollPattern number="18" face="316" side0="0" side1="3" side2="0" side3="6" algorithm="LDLiDiLiFLFi" />
-  <ollPattern number="19" face="316" side0="5" side1="2" side2="0" side3="2" algorithm="FLDLiDiFi" />
-  <ollPattern number="20" face="436" side0="7" side1="0" side2="0" side3="2" algorithm="FWLDLiDiFWi" />
-  <ollPattern number="21" face="217" side0="0" side1="0" side2="7" side3="2" algorithm="FWiRiDiRDFW" />
-  <ollPattern number="22" face="436" side0="2" side1="1" side2="0" side3="6" algorithm="LUWRiUWiLiDRWDRWi" />
-  <ollPattern number="23" face="217" side0="0" side1="4" side2="2" side3="3" algorithm="RiUWiLUWRDiLWiDiLW" />
-  <ollPattern number="24" face="94" side0="0" side1="2" side2="3" side3="4" algorithm="LDLiDLDiLiDiLiFLFi" />
-  <ollPattern number="25" face="307" side0="6" side1="2" side2="0" side3="1" algorithm="RiDiRDiRiDRDRFiRiF" />
-  <ollPattern number="26" face="50" side0="7" side1="2" side2="5" side3="0" algorithm="LWDLiDLDiLiDLDiDiLWi" />
-  <ollPattern number="27" face="176" side0="7" side1="0" side2="5" side3="2" algorithm="LWiDiLDiLiDLDiLiDDLW" />
-  <ollPattern number="28" face="176" side0="7" side1="4" side2="0" side3="3" algorithm="LBiLBLiLiDDFLiFiL" />
-  <ollPattern number="29" face="50" side0="7" side1="6" side2="0" side3="1" algorithm="LiFLiFiLLDDyiLiFLFi" />
-  <ollPattern number="30" face="26" side0="5" side1="6" side2="2" side3="1" algorithm="FLDLiDiLDLiDiFi" />
-  <ollPattern number="31" face="50" side0="2" side1="3" side2="5" side3="4" algorithm="FiRiDiRDRiDiRDF" />
-  <ollPattern number="32" face="124" side0="1" side1="6" side2="0" side3="2" algorithm="LDLiFiDiFDLDDLi" />
-  <ollPattern number="33" face="313" side0="0" side1="3" side2="4" side3="2" algorithm="LiFLDLiDiFiDL" />
-  <ollPattern number="34" face="376" side0="1" side1="2" side2="4" side3="2" algorithm="LDLiLiDiLiFLDLDiFi" />
-  <ollPattern number="35" face="376" side0="0" side1="2" side2="0" side3="7" algorithm="LiDiLiFLFiDL" />
-  <ollPattern number="36" face="216" side0="0" side1="4" side2="6" side3="6" algorithm="LWiDDLDLiDLW" />
-  <ollPattern number="37" face="216" side0="1" side1="0" side2="3" side3="3" algorithm="LWDDLiDiLDiLWi" />
-  <ollPattern number="38" face="180" side0="6" side1="4" side2="0" side3="6" algorithm="LWDLiDLDDLWi" />
-  <ollPattern number="39" face="180" side0="3" side1="1" side2="1" side3="2" algorithm="LWLLDiLDiLiDDLDiLWiL" />
-  <ollPattern number="40" face="153" side0="0" side1="1" side2="3" side3="3" algorithm="LWiDiLDiLiDDLW" />
-  <ollPattern number="41" face="153" side0="4" side1="4" side2="6" side3="2" algorithm="LWiLLDLiDLDDLiDM" />
-  <ollPattern number="42" face="283" side0="0" side1="3" side2="6" side3="0" algorithm="FLDiLiDiLDLiFi" />
-  <ollPattern number="43" face="283" side0="4" side1="2" side2="2" side3="1" algorithm="LDDLLFLFiLDDLi" />
-  <ollPattern number="44" face="114" side0="2" side1="6" side2="4" side3="4" algorithm="LDLiDLiFLFiLDDLi" />
-  <ollPattern number="45" face="282" side0="1" side1="3" side2="2" side3="1" algorithm="FWLDLiDiLDLiDiFWi" />
-  <ollPattern number="46" face="56" side0="5" side1="6" side2="0" side3="3" algorithm="FWLDLiDiLDLiDiFWi" />
-  <ollPattern number="47" face="146" side0="2" side1="1" side2="7" side3="4" algorithm="LDLiDLUWiLDiLiFi" />
+  <ollPattern number="18" face="121" side0="0" side1="6" side2="0" side3="3" algorithm="LDLiDiLiFLFi" />
+  <ollPattern number="19" face="121" side0="0" side1="2" side2="5" side3="2" algorithm="FLDLiDiFi" />
+  <ollPattern number="20" face="91" side0="0" side1="0" side2="7" side3="2" algorithm="FWLDLiDiFWi" />
+  <ollPattern number="21" face="310" side0="7" side1="0" side2="0" side3="2" algorithm="FWiRiDiRDFW" />
+  <ollPattern number="22" face="91" side0="0" side1="4" side2="2" side3="3" algorithm="LUWRiUWiLiDRWDRWi" />
+  <ollPattern number="23" face="310" side0="2" side1="1" side2="0" side3="6" algorithm="RiUWiLUWRDiLWiDiLW" />
+  <ollPattern number="24" face="244" side0="6" side1="2" side2="0" side3="1" algorithm="LDLiDLDiLiDiLiFLFi" />
+  <ollPattern number="25" face="409" side0="0" side1="2" side2="3" side3="4" algorithm="RiDiRDiRiDRDRFiRiF" />
+  <ollPattern number="26" face="152" side0="5" side1="2" side2="7" side3="0" algorithm="LWDLiDLDiLiDLDiDiLWi" />
+  <ollPattern number="27" face="26" side0="5" side1="0" side2="7" side3="2" algorithm="LWiDiLDiLiDLDiLiDDLW" />
+  <ollPattern number="28" face="26" side0="0" side1="1" side2="7" side3="6" algorithm="LBiLBLiLiDDFLiFiL" />
+  <ollPattern number="29" face="152" side0="0" side1="3" side2="7" side3="4" algorithm="LiFLiFiLLDDyiLiFLFi" />
+  <ollPattern number="30" face="176" side0="2" side1="3" side2="5" side3="4" algorithm="FLDLiDiLDLiDiFi" />
+  <ollPattern number="31" face="152" side0="5" side1="6" side2="2" side3="1" algorithm="FiRiDiRDRiDiRDF" />
+  <ollPattern number="32" face="124" side0="0" side1="3" side2="4" side3="2" algorithm="LDLiFiDiFDLDDLi" />
+  <ollPattern number="33" face="313" side0="0" side1="2" side2="1" side3="6" algorithm="LiFLDLiDiFiDL" />
+  <ollPattern number="34" face="61" side0="1" side1="2" side2="4" side3="2" algorithm="LDLiLiDiLiFLDLDiFi" />
+  <ollPattern number="35" face="406" side0="7" side1="0" side2="2" side3="0" algorithm="LiDiLiFLFiDL" />
+  <ollPattern number="36" face="27" side0="1" side1="0" side2="3" side3="3" algorithm="LWiDDLDLiDLW" />
+  <ollPattern number="37" face="216" side0="4" side1="6" side2="6" side3="0" algorithm="LWDDLiDiLDiLWi" />
+  <ollPattern number="38" face="180" side0="3" side1="3" side2="0" side3="1" algorithm="LWDLiDLDDLWi" />
+  <ollPattern number="39" face="408" side0="4" side1="6" side2="2" side3="4" algorithm="LWLLDiLDiLiDDLDiLWiL" />
+  <ollPattern number="40" face="306" side0="6" side1="4" side2="0" side3="6" algorithm="LWiDiLDiLiDDLW" />
+  <ollPattern number="41" face="30" side0="1" side1="1" side2="2" side3="3" algorithm="LWiLLDLiDLDDLiDM" />
+  <ollPattern number="42" face="433" side0="3" side1="6" side2="0" side3="0" algorithm="FLDiLiDiLDLiFi" />
+  <ollPattern number="43" face="283" side0="1" side1="4" side2="2" side3="2" algorithm="LDDLLFLFiLDDLi" />
+  <ollPattern number="44" face="114" side0="2" side1="1" side2="1" side3="3" algorithm="LDLiDLiFLFiLDDLi" />
+  <ollPattern number="45" face="177" side0="2" side1="6" side2="4" side3="4" algorithm="LDLiDiLiFLLDLiDiFi" />
+  <ollPattern number="46" face="56" side0="0" side1="3" side2="5" side3="6" algorithm="FWLDLiDiLDLiDiFWi" />
+  <ollPattern number="47" face="146" side0="7" side1="4" side2="2" side3="1" algorithm="LDLiDLUWiLDiLiFi" />
   <ollPattern number="48" face="56" side0="5" side1="2" side2="5" side3="2" algorithm="FLDLiDiLyLiFLBiLiFi" />
   <ollPattern number="49" face="146" side0="7" side1="0" side2="7" side3="0" algorithm="LiDDLiLiDLiDLDiDixDiLiD" />
-  <ollPattern number="50" face="60" side0="4" side1="6" side2="0" side3="6" algorithm="xLDiLiFiLDLixiyiLiDL" />
-  <ollPattern number="51" face="60" side0="1" side1="3" side2="1" side3="2" algorithm="LWDLWiLDLiDiLWDiLWi" />
-  <ollPattern number="52" face="57" side0="0" side1="3" side2="1" side3="3" algorithm="xRiDRFRiDiRxiyRDiRi" />
-  <ollPattern number="53" face="57" side0="4" side1="6" side2="4" side3="2" algorithm="RWiDiRWRiDiRDRWiDRW" />
-  <ollPattern number="54" face="181" side0="2" side1="5" side2="0" side3="2" algorithm="LDiLiDDLDyiLDiLiDiFi" />
-  <ollPattern number="55" face="181" side0="6" side1="0" side2="1" side3="2" algorithm="LiLiDLiBiLDiLiLiDRWDRWi" />
-  <ollPattern number="56" face="157" side0="0" side1="5" side2="2" side3="2" algorithm="RiDRDiDiRiDiyRiDRDF" />
-  <ollPattern number="56" face="370" side0="5" side1="2" side2="2" side3="0" algorithm="RRDiRBRiDRRDiLWiDiLW" />
+  <ollPattern number="50" face="120" side0="0" side1="3" side2="1" side3="3" algorithm="xLDiLiFiLDLixiyiLiDL" />
+  <ollPattern number="51" face="120" side0="4" side1="6" side2="4" side3="2" algorithm="LWDLWiLDLiDiLWDiLWi" />
+  <ollPattern number="52" face="312" side0="4" side1="6" side2="0" side3="6" algorithm="xRiDRFRiDiRxiyRDiRi" />
+  <ollPattern number="53" face="312" side0="1" side1="3" side2="1" side3="2" algorithm="RWiDiRWRiDiRDRWiDRW" />
+  <ollPattern number="54" face="346" side0="0" side1="5" side2="2" side3="2" algorithm="LDiLiDDLDyiLDiLiDiFi" />
+  <ollPattern number="55" face="346" side0="4" side1="0" side2="3" side3="2" algorithm="LiLiDLiBiLDiLiLiDRWDRWi" />
+  <ollPattern number="56" face="370" side0="2" side1="5" side2="0" side3="2" algorithm="RiDRDiDiRiDiyRiDRDF" />
+  <ollPattern number="57" face="370" side0="6" side1="0" side2="1" side3="2" algorithm="RRDiRBRiDRRDiLWiDiLW" />
 </OllSolving>
