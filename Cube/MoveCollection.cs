@@ -47,6 +47,7 @@ namespace Rubinator3000 {
                 // wenn der vorherige Move die gleiche Seite hatte, wird die Anzahl der Vierteldrehugen zum vorherigen Addiert
                 if (last.Face == move.Face) {
                     last.Count += move.Count;
+                    last.Count = SolvingUtility.NormalizeCount(last.Count);
 
                     // sollten sich der neue und der vorherige Move aufheben, so wird der vorherige entfernt
                     if (last.Count == 0) {
@@ -58,6 +59,7 @@ namespace Rubinator3000 {
                 else if(moves.Count > 2 && last.Face == Cube.GetOpponentFace(move.Face) && moves.ElementAt(moves.Count - 2).Face == move.Face) {
                     Move m = moves.ElementAt(moves.Count - 2);
                     m.Count += move.Count;
+                    m.Count = SolvingUtility.NormalizeCount(m.Count);
 
                     if(m.Count == 0) {
                         moves.RemoveAt(moves.Count - 2);

@@ -137,10 +137,14 @@ namespace Rubinator3000 {
         }
 
         private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
+            Dispatcher.Invoke(() => {
+                if (sender is Cube c && c.Equals(cube)) {
+                    if (moveHistoryOutput.Text.Length > 0)
+                        moveHistoryOutput.AppendText(", ");
 
-            if (sender is Cube c && c.Equals(cube)) {
-
-            }
+                    moveHistoryOutput.AppendText(e.Move.ToString());
+                }
+            });
         }
 
         internal void LogStuff(string message) {
@@ -251,17 +255,19 @@ namespace Rubinator3000 {
 
             PositionEditingAllowed = allowPosEdit.IsChecked.Value;
         }
-    
+
         private async void SolveCube() {
             CubeSolver solver = new CubeSolverFridrich(cube);
+            moveHistoryOutput.Clear();
 
-            solver.SolveCube();
+            await solver.SolveCubeAsync();
         }
 
         private void ShuffleCube() {
+            moveHistoryOutput.Clear();
             Random rnd = new Random();
 
             Cube.Shuffle(rnd.Next(5, 20));
-        }        
+        }
     }
 }
