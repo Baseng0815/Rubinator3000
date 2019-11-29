@@ -15,9 +15,7 @@ namespace Rubinator3000 {
         }
 
         private void MenuItemSuffle_Click(object sender, RoutedEventArgs e) {
-            Random rnd = new Random();
-
-            Cube.Shuffle(rnd.Next(5, 20));
+            ShuffleCube();
         }
 
         private void MenuItemResetCube_Click(object sender, RoutedEventArgs e) {

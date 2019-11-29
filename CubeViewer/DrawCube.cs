@@ -151,7 +151,7 @@ namespace Rubinator3000 {
         /// <p>Acts like state set when no move and no duration is given</p>
         /// </summary>
         public static void AddMove(Cube endState, Move move = null, int duration = 0) {
-            // deep copy because otherwise, the arrays would refer to the same memory
+            // deep copy because otherwise, the arrays would refer to the same memory            
             moveQueue.Enqueue(new AnimatedMove { Move = move, EndState = (Cube)endState.Clone(), TurnDuration = Settings.MoveAnimatedTime });
 
             bool makeNewTask = false;
@@ -159,7 +159,8 @@ namespace Rubinator3000 {
                 if (task.Status != TaskStatus.Running) {
                     makeNewTask = true;
                 }
-            } else makeNewTask = true;
+            }
+            else makeNewTask = true;
 
             if (makeNewTask)
                 task = Task.Factory.StartNew(() => AnimateMovesTask());
@@ -223,15 +224,14 @@ namespace Rubinator3000 {
                     GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, (int)6);
                 }
 
-            // draw flat
-            } else if (DisplayMode == CubeDisplayMode.FLAT) {
+                // draw flat
+            }
+            else if (DisplayMode == CubeDisplayMode.FLAT) {
                 var data = currentState.GetData();
 
                 flatShader.Bind();
-                for (CubeFace face = 0; (int)face < 6; face++)
-                {
-                    for (int tile = 0; tile < 9; tile++)
-                    {
+                for (CubeFace face = 0; (int)face < 6; face++) {
+                    for (int tile = 0; tile < 9; tile++) {
                         int ind = (int)face * 9 + tile;
                         flatShader.Upload(string.Format("modelMatrix[{0}]", ind), FlatTransformations.Transformations[(int)face, tile].GetMatrix());
 

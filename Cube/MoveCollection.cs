@@ -133,7 +133,7 @@ namespace Rubinator3000 {
                     CubeFace face = cubeOrientation[Array.IndexOf(faceMappings, moveChar)];                    
 
                     // W move
-                    if (postfix.StartsWith("w")) {
+                    if (postfix.StartsWith("w", StringComparison.OrdinalIgnoreCase)) {
                         switch (face) {
                             // Lw
                             case CubeFace.LEFT:     ChangeOrientation(OrientationMove.X, -count); break;

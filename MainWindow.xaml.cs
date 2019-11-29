@@ -93,9 +93,9 @@ namespace Rubinator3000 {
                     break;
                 case Key.S:
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-                        cube.Shuffle(10);
+                        ShuffleCube();
                     else {
-                        SolveCube();                        
+                        SolveCube();
                     }
                     break;
 
@@ -260,7 +260,17 @@ namespace Rubinator3000 {
         private async void SolveCube() {
             CubeSolver solver = new CubeSolverFridrich(cube);
 
-            await solver.SolveCubeAsync();            
+            solver.SolveCubeAsync().RunSynchronously();            
+        }
+
+        private void ShuffleCube() {
+            //Random rnd = new Random();
+
+            //Cube.Shuffle(rnd.Next(5, 20));
+
+            for (int i = 0; i < 2; i++) {
+                cube.DoMoves(LLSolver.OllPatterns[2].algorithm);
+            }
         }
     }
 }

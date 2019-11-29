@@ -57,9 +57,9 @@ namespace Rubinator3000.Solving {
                 cube.DoMoves(algorithm);
             }
 
-            if (!GetCubeSolved()) {
-                throw new InvalidProgramException();
-            }
+            //if (!GetCubeSolved()) {
+            //    throw new InvalidProgramException();
+            //}
         }
 
         protected bool OllSolved() {
