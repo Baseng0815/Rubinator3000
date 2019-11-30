@@ -32,6 +32,7 @@ namespace Rubinator3000 {
 
         private Queue<string> messages = new Queue<string>();
         public static volatile Cube cube;
+        private MoveCollection moves = new MoveCollection();
 
         private const int cameraCount = 4;
         private readonly Image[] cameraPreviews = new Image[cameraCount];
@@ -147,14 +148,7 @@ namespace Rubinator3000 {
         }
 
         private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
-            Dispatcher.Invoke(() => {
-                if (sender is Cube c && c.Equals(cube)) {
-                    if (moveHistoryOutput.Text.Length > 0)
-                        moveHistoryOutput.AppendText(", ");
-
-                    moveHistoryOutput.AppendText(e.Move.ToString());
-                }
-            });
+            moves.Add(e.Move);
         }
 
         internal void LogStuff(string message) {
@@ -267,14 +261,17 @@ namespace Rubinator3000 {
         }
 
         private async void SolveCube() {
-            CubeSolver solver = new CubeSolverFridrich(cube);
-            moveHistoryOutput.Clear();
+            CubeSolver solver = new CubeSolverFridrich(cube);            
 
             await solver.SolveCubeAsync();
+
+            moveHistoryOutput.Clear();
+            moveHistoryOutput.Text = string.Join(", ", solver.SolvingMoves.Select(m => m.ToString()));
+            cube.DoMoves(solver.SolvingMoves);
         }
 
         private void ShuffleCube() {
-            moveHistoryOutput.Clear();
+            
             Random rnd = new Random();
 
             Cube.Shuffle(rnd.Next(5, 20));

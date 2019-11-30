@@ -25,7 +25,7 @@ namespace CubeLibrary.Solving {
 
         public CrossSolver(Cube cube) : base(cube) {
             whiteEdges = cube.Edges.Where(e => e.HasColor(WHITE));
-            cube.OnMoveDone += Cube_OnMoveDone;
+            //cube.OnMoveDone += Cube_OnMoveDone;
         }
 
         private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
@@ -44,6 +44,8 @@ namespace CubeLibrary.Solving {
         }
 
         public override void SolveCube() {
+
+
             // check white cross solved
             if (Solved)
                 return;

@@ -53,7 +53,7 @@ namespace CubeLibrary.Solving {
                         minMoves = pairMoves;
                 }
 
-                cube.DoMoves(minMoves);                
+                DoMoves(minMoves);                
             }            
         }
 
@@ -86,7 +86,7 @@ namespace CubeLibrary.Solving {
                         tasks.RemoveAt(0);
                     }
 
-                    cube.DoMoves(minMoves);                    
+                    DoMoves(minMoves);                    
                 }                
 
             }).Unwrap();

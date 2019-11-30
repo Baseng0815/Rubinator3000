@@ -10,8 +10,8 @@ using static CubeLibrary.CubeFace;
 namespace CubeLibrary.Solving {
     public abstract class CubeSolver {
 
-        protected readonly Cube cube;  
-        
+        protected readonly Cube cube;
+
         public MoveCollection SolvingMoves { get; private set; }
 
         /// <summary>
@@ -24,13 +24,8 @@ namespace CubeLibrary.Solving {
             }
 
             this.cube = cube;
-            SolvingMoves = new MoveCollection();
-            this.cube.OnMoveDone += Cube_OnMoveDone;
-        }
-
-        private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
-            SolvingMoves.Add(e.Move);
-        }
+            SolvingMoves = new MoveCollection();            
+        }        
 
         /// <summary>
         /// Brechnet in einer abgleiteten Klasse, die Züge zum lösen des Würfels
@@ -53,7 +48,14 @@ namespace CubeLibrary.Solving {
             if (count == 0)
                 return;
 
-            cube.DoMove(face, count);            
+            cube.DoMove(face, count);
+            SolvingMoves.Add(face, count);
+        }
+
+        protected void DoMoves(IEnumerable<Move> moves) {
+            foreach (var move in moves) {
+                DoMove(move.Face, move.Count);
+            }
         }
 
         /// <summary>
@@ -70,9 +72,9 @@ namespace CubeLibrary.Solving {
             }
 
             return true;
-        }        
-        
-        public static readonly CubeFace[] MiddleLayerFaces = { CubeFace.LEFT, CubeFace.FRONT, CubeFace.RIGHT, CubeFace.BACK };      
+        }
+
+        public static readonly CubeFace[] MiddleLayerFaces = { CubeFace.LEFT, CubeFace.FRONT, CubeFace.RIGHT, CubeFace.BACK };
         public static readonly Tuple<CubeColor, CubeColor>[] MiddleLayerEdgesColors = new Tuple<CubeColor, CubeColor>[4] {
             new Tuple<CubeColor, CubeColor>(ORANGE, GREEN),
             new Tuple<CubeColor, CubeColor>(GREEN, RED),

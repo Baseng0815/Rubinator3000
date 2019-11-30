@@ -39,28 +39,28 @@ namespace CubeLibrary.Solving {
             try {
                 if (!OllSolved()) {
                     while (c < 4 && !OllPatterns.Any(p => p.pattern.IsMatch(cube))) {
-                        cube.DoMove(CubeFace.DOWN);
+                        DoMove(CubeFace.DOWN);
                         c++;
                     }
 
                     algorithm = OllPatterns.First(p => p.pattern.IsMatch(cube)).algorithm;
-                    cube.DoMoves(algorithm);
+                    DoMoves(algorithm);                    
                 }
 
                 if (!GetCubeSolved()) {
                     c = 0;
                     while (c < 4 && !PllPatterns.Any(p => p.pattern.IsMatch(cube))) {
-                        cube.DoMove(CubeFace.DOWN);
+                        DoMove(CubeFace.DOWN);
                         c++;
                     }
 
                     algorithm = PllPatterns.First(p => p.pattern.IsMatch(cube)).algorithm;
-                    cube.DoMoves(algorithm);
+                    DoMoves(algorithm);                    
                 }
 
                 c = 0;
                 while (!GetCubeSolved() && c < 4) {
-                    cube.DoMove(CubeFace.DOWN);
+                    DoMove(CubeFace.DOWN);
                     c++;
                 }
 
