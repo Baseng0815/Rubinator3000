@@ -20,6 +20,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MenuItem = System.Windows.Controls.MenuItem;
+using System.Threading;
 
 namespace Rubinator3000 {
 
@@ -31,7 +33,7 @@ namespace Rubinator3000 {
         public static bool PositionEditingAllowed = false;
 
         private Queue<string> messages = new Queue<string>();
-        public static volatile Cube cube;
+        public volatile Cube cube;
         private MoveCollection moves = new MoveCollection();
 
         private const int cameraCount = 4;
@@ -42,6 +44,8 @@ namespace Rubinator3000 {
         private CubeColor[,] scanData = new CubeColor[6, 9];
 
         private ColorDialog colorDialog;
+        private bool logging;
+        private Thread logThread;
 
         public Cube Cube {
             get => cube;
@@ -64,13 +68,27 @@ namespace Rubinator3000 {
 
             KeyDown += MainWindow_KeyDown;
 
-#if DEBUG
             Cube = new Cube(isRenderCube: true);
-#else
-            Cube = new Cube();
-#endif
 
-            Log.Init(LogStuff);
+            // init Log
+            Log.Init(messages.Enqueue);
+            logging = true;
+            logThread = new Thread(new ThreadStart(LogStuff));
+            logThread.Start();
+
+#if DEBUG
+            MenuItem debugMenu = new MenuItem() {
+                Header = "Debug"
+            };
+
+            MenuItem ollDebug = new MenuItem() {
+                Header = "Oll Debug"
+            };
+            ollDebug.Click += MenuItemOllDebug_Click;
+
+            debugMenu.Items.Add(ollDebug);
+            menu.Items.Add(debugMenu);
+#endif
         }
 
         private void WebCamControl_OnCubeScanned(object sender, CubeScanEventArgs e) {
@@ -151,33 +169,24 @@ namespace Rubinator3000 {
             moves.Add(e.Move);
         }
 
-        internal void LogStuff(string message) {
-            Dispatcher.Invoke(() => {
-                if (textBoxLog != null)
-                    textBoxLog.Text += $"{message}\r\n";
-                else
-                    messages.Enqueue(message);
+        internal void LogStuff() {
+            while (logging) {
+                while (messages.Count == 0) ;
+                    
+                string message = messages.Dequeue();
+                Dispatcher.Invoke(() => {
+                    if (textBoxLog != null)
+                        textBoxLog.Text += $"{message}\r\n";
 
-                // Auto Scroll Implementation
-                if (winFormsHost.Child != null) {
-                    textBoxLog.Focus();
-                    textBoxLog.CaretIndex = textBoxLog.Text.Length;
-                    //textBoxLog.ScrollToEnd();
-                }
-            });
-        }
-
-        private void TextBoxLog_Initialized(object sender, EventArgs e) {
-
-            if (sender == textBoxLog) {
-
-                while (messages.Count > 0) {
-
-                    // Append message to textBoxLog-Control
-                    textBoxLog.Text += $"{messages.Dequeue()}\r\n";
-                }
+                    // Auto Scroll Implementation
+                    if (winFormsHost.Child != null) {
+                        textBoxLog.Focus();
+                        textBoxLog.CaretIndex = textBoxLog.Text.Length;
+                        textBoxLog.ScrollToEnd();
+                    }
+                });
             }
-        }
+        }     
 
         private void CameraPreview_MouseDown(object sender, MouseButtonEventArgs e) {
 #if Camera
@@ -244,6 +253,8 @@ namespace Rubinator3000 {
 
             System.Windows.Application.Current.Shutdown();
 #endif
+            logging = false;
+            logThread.Join();
         }
 
         private void CameraPreviewMenuItem_Click(object sender, RoutedEventArgs e) {

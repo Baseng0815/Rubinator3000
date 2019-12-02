@@ -154,19 +154,23 @@ namespace Rubinator3000.DebugWindows {
 
 
         private void buttonDoMoves_Click(object sender, RoutedEventArgs e) {
-            mainWindow.Cube.DoMoves(selectedPattern.algorithm);
-            
+            const int max = 10;
+            if (!selectedPattern.pattern.IsMatch(cube)) {
+                int i = 0;
+                do {
+                    cube.DoMoves(selectedPattern.algorithm, false);
+                    i++;
+                } while (!selectedPattern.pattern.IsMatch(cube) && i < max);
 
-            if (selectedPattern.pattern.IsMatch(cube)) {
-                textBoxPatternMatches.Text = "Pattern erkannt!";
+                DisplayCube();
+
+                buttonDoMoves.Content = "Muster lösen";
             }
             else {
-                textBoxPatternMatches.Clear();
-            }
-        }
+                cube.DoMoves(selectedPattern.algorithm);
 
-        private void buttonSavePattern_Click(object sender, RoutedEventArgs e) {
-            
+                buttonDoMoves.Content = "Muster erzeugen";
+            }
         }
 
         private void buttonCorrectPattern_Click(object sender, RoutedEventArgs e) {

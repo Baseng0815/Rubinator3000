@@ -97,6 +97,7 @@
 
         <!--  Menu  -->
         <Menu
+            x:Name="menu"
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="2"
@@ -115,11 +116,6 @@
                 <MenuItem Click="MenuItemResetCube_Click" Header="_Zurücksetzen" />
                 <MenuItem Click="MenuItemSuffle_Click" Header="_Verdrehen" InputGestureText="Shift+S" />
                 <MenuItem Click="MenuItemSolveCube_Click" Header="_Lösen" InputGestureText="S" />
-            </MenuItem>
-
-            <MenuItem Header="Debug">
-                <MenuItem Click="MenuItemOllDebug_Click" Header="Oll Debug"/>
-                <MenuItem Click="MenuItemPllDebug_Click" Header="Pll Debug"/>
             </MenuItem>
 
             <!--  Index Tab "Ansicht"  -->
@@ -149,7 +145,7 @@
 
             <!--  Console Output  -->
             <Border Grid.Row="1">
-                <TextBox x:Name="textBoxLog" TextBlock.LineHeight="16" />
+                <TextBox x:Name="textBoxLog" TextBlock.LineHeight="16"  />
             </Border>
         </Grid>
 

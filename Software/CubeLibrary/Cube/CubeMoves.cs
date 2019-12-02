@@ -66,17 +66,17 @@ namespace CubeLibrary {
             }
         }
 
-        public void DoMoves(IEnumerable<Move> moves) {
+        public void DoMoves(IEnumerable<Move> moves, bool renderMoves = true) {
             foreach (var move in moves) {
-                DoMove(move);
+                DoMove(move, renderMoves);
             }
         }
-        public void DoMove(CubeFace face, int count = 1) => DoMove(new Move(face, count));
+        public void DoMove(CubeFace face, int count = 1, bool renderMove = true) => DoMove(new Move(face, count), renderMove);
 
         /// <summary>
         /// does a move
         /// </summary>
-        public virtual void DoMove(Move move) {
+        public virtual void DoMove(Move move, bool renderMove = true) {
             CubeSide side = sides.First(e => e.Face == move.Face);
 
             for (int c = 0; c < move.Count; c++) {
@@ -85,7 +85,7 @@ namespace CubeLibrary {
 
             OnMoveDone?.Invoke(this, new MoveEventArgs(move));
 
-            if (this.isRenderCube) {
+            if (this.isRenderCube && renderMove) {
                 DrawCube.AddMove(this, move, 1000);
             }
 
