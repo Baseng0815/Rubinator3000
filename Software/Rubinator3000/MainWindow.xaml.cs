@@ -46,6 +46,7 @@ namespace Rubinator3000 {
         private ColorDialog colorDialog;
         private bool logging;
         private Thread logThread;
+        private Arduino arduino;
 
         public Cube Cube {
             get => cube;
@@ -279,6 +280,9 @@ namespace Rubinator3000 {
             moveHistoryOutput.Clear();
             moveHistoryOutput.Text = string.Join(", ", solver.SolvingMoves.Select(m => m.ToString()));
             cube.DoMoves(solver.SolvingMoves);
+
+            if (arduino != null)
+                arduino.SendMoves(solver.SolvingMoves);
         }
 
         private void ShuffleCube() {

@@ -1,3 +1,5 @@
+#include "stepper.h"
+
 int steppers[6][4] = {
   { 25, 24, 23, 22 }, //l
   { 31, 30, 29, 28 }, //u

@@ -56,7 +56,7 @@ namespace Rubinator3000 {
         }
 
         public override void Dispose() {
-            throw new NotImplementedException();
+            serial.Close();
         }
 
         public override void SendMove(Move move) {
@@ -71,6 +71,18 @@ namespace Rubinator3000 {
             string moveStr = move.ToString();
 
             serial.WriteLine(moveStr);                       
+        }
+
+        public override void SendMoves(IEnumerable<Move> moves) {
+            if (serial == null || !serial.IsOpen)
+                throw new InvalidOperationException("Der Port ist nicht geöffnet!");
+
+            if (!connected)
+                throw new InvalidOperationException("Der Arduino ist nicht verbunden!");
+
+            string data = string.Join("\r\n", moves.Select(m => m.ToString()));
+
+            serial.WriteLine(data);
         }
     }
 }

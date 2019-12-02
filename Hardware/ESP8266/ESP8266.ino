@@ -4,7 +4,7 @@
 #define SSID "Rubinator3000"
 #define PASS "4059_9045_9208_3409"
 
-unsigned int localPort = 8000;
+unsigned int localPort = 3000;
 
 char packetBuffer[UDP_TX_PACKET_MAX_SIZE + 1];
 char replyBuffer[UDP_TX_PACKET_MAX_SIZE + 1];
@@ -20,8 +20,8 @@ void setup() {
 }
 
 void loop() {
-    int packetSize = Udp.parsePacket();
-    if(packetSize > 0) {
+    int udpPacketSize = Udp.parsePacket();
+    if(udpPacketSize > 0) {
         int n = Udp.read(packetBuffer, UDP_TX_PACKET_MAX_SIZE);
         packetBuffer[n] = 0;
         Serial.println(packetBuffer);
@@ -35,5 +35,5 @@ void loop() {
         Udp.beginPacket(Udp.remoteIP(), Udp.remotePort());
         Udp.write(replyBuffer);
         Udp.endPacket();
-    }
+    }    
 }

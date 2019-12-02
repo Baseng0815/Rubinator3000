@@ -12,6 +12,7 @@ namespace Rubinator3000 {
         public event MoveEventHandler OnMoveDone;
 
         public abstract void SendMove(Move move);
+        public abstract void SendMoves(IEnumerable<Move> moves);
 
         public abstract void Dispose();
 
