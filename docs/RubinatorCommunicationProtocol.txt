@@ -1,0 +1,28 @@
+byte		meaning
+
+connection:
+0xA0		disconnect
+0xA1		connect
+0xF0		disconnected
+0xF1		connected
+
+errors:
+0xB0		error
+0xB1		error not connected
+0xB2		error move not valid
+
+moves:
+0x02		Move 'L'
+0x03		Move 'Li'
+0x04		Move 'U'
+0x05		Move 'Ui'
+0x08		Move 'F'
+0x09		Move 'Fi'
+0x10		Move 'D'
+0x11		Move 'Di'
+0x20		Move 'R'
+0x21		Move 'Ri'
+0x40		Move 'B'
+0x41		Move 'Bi'
+
+0x80 + "Move"	Move "Move" done
