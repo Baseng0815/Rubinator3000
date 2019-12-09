@@ -4,10 +4,12 @@
  * Created: 09.12.2019 17:45:37
  *  Author: Philipp Geil
  */ 
+#ifndef __PINS_H__
+#define  __PINS_H__
 
 #include "avr/io.h"
 
-#ifdef __cplusplus
+#if __cplusplus
 extern "C" {
 #endif
 
@@ -53,21 +55,21 @@ extern "C" {
 #define PIN_D6 0x36
 #define PIN_D7 0x37
 
-const uint8_t* dataDirRegs[4] = {
+volatile uint8_t* dataDirRegs[4] = {
 	&DDRA,
 	&DDRB,
 	&DDRC,
 	&DDRD
 };
 
-const uint8_t* portOutRegs[4] = {
+volatile uint8_t* portOutRegs[4] = {
 	&PORTA,
 	&PORTB,	
 	&PORTC,
 	&PORTD
 };
 
-const uint8_t* portInRegs[4] = {
+volatile uint8_t* portInRegs[4] = {
 	&PINA,
 	&PINB,
 	&PINC,
@@ -108,10 +110,12 @@ int digitalRead(uint8_t pin) {
 	uint8_t port = pin & (0x10);
 	uint8_t bit =  pin & (0x0F);
 	
-	if(portInRegs[port] & (1 << bit)) return HIGH;
+	if(*portInRegs[port] & (1 << bit)) return HIGH;
 	else return LOW;
 }
 
 #if __cplusplus
 };
+#endif
+
 #endif
