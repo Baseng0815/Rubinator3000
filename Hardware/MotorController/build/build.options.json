@@ -1,0 +1,11 @@
+{
+  "additionalFiles": "..,..",
+  "builtInLibrariesFolders": "C:\\Program Files (x86)\\Arduino\\libraries",
+  "customBuildProperties": "programmer=arduino:arduinoasisp,build.path=d:\\Repos\\Rubinator3000\\Hardware\\MotorController\\build,build.warn_data_percentage=75",
+  "fqbn": "MightyCore:avr:16:bootloader=uart0,pinout=standard,BOD=2v7,LTO=Os,clock=8MHz_internal",
+  "hardwareFolders": "C:\\Program Files (x86)\\Arduino\\hardware,C:\\Users\\Philipp\\AppData\\Local\\Arduino15\\packages,C:\\Users\\Philipp\\Documents\\Arduino\\hardware",
+  "otherLibrariesFolders": "C:\\Users\\Philipp\\Documents\\Arduino\\libraries",
+  "runtime.ide.version": "10810",
+  "sketchLocation": "d:\\Repos\\Rubinator3000\\Hardware\\MotorController\\MotorController.ino",
+  "toolsFolders": "C:\\Program Files (x86)\\Arduino\\tools-builder,C:\\Program Files (x86)\\Arduino\\hardware\\tools\\avr,C:\\Users\\Philipp\\AppData\\Local\\Arduino15\\packages"
+}

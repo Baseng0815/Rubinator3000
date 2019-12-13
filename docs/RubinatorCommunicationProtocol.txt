@@ -1,4 +1,4 @@
-byte		meaning
+A0xbyte		meaning
 
 connection:
 0xA0		disconnect
@@ -26,3 +26,7 @@ moves:
 0x41		Move 'Bi'
 
 0x80 + "Move"	Move "Move" done
+
+states:
+0xA2		solve
+0xF2		sBolved
