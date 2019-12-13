@@ -12,5 +12,5 @@ d:\Repos\Rubinator3000\Hardware\MotorController\build\sketch\MotorController.ino
  C:\Users\Philipp\AppData\Local\Arduino15\packages\MightyCore\hardware\avr\2.0.3\cores\MCUdude_corefiles/Arduino.h \
  C:\Users\Philipp\AppData\Local\Arduino15\packages\MightyCore\hardware\avr\2.0.3\cores\MCUdude_corefiles/wiring_extras.h \
  C:\Users\Philipp\AppData\Local\Arduino15\packages\MightyCore\hardware\avr\2.0.3\variants\standard/pins_arduino.h \
- d:\Repos\Rubinator3000\Hardware\MotorController\build\sketch\pin.h \
- d:\Repos\Rubinator3000\Hardware\MotorController\build\sketch\Serial.h
+ d:\Repos\Rubinator3000\Hardware\MotorController\build\sketch\Serial.h \
+ d:\Repos\Rubinator3000\Hardware\MotorController\build\sketch\stepper.h

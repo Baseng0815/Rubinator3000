@@ -3,8 +3,6 @@
 
 extern "C" {
 
-#define F_CPU 8000000UL
-
 #include <stdint.h>
 #include <avr/io.h>
 
@@ -36,11 +34,10 @@ unsigned char serial_receive() {
 	return (UDR);
 }
 
+int serial_available() {
+	return (UCSRA & (1 << RXC));
+}
+
 };
-
-
-//void serial_init(uint16_t baud);
-//void serial_transmit(uint8_t data);
-//uint8_t serial_receive();
 
 #endif /* SERIAL_H_ */

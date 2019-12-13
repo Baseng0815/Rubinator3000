@@ -90,7 +90,4 @@ extern "C" {
 	}	
 };
 
-//void digitalWrite(uint8_t pin, uint8_t mode);
-//void pinMode(uint8_t pin, uint8_t mode);
-
 #endif //__PIN_H__
