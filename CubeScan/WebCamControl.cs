@@ -30,7 +30,7 @@ namespace Rubinator3000.CubeScan {
         public static int ReadRadius = 6;
 
         public const int MAXPOSITIONSTOREAD = 48;
-        public const int MAXPOSITIONSPERCAMERA = 12;
+        public const int MAXPOSITIONSPERCAMERA = 20;
 
         // This list stores the rgb colors at all tiles of the cube. Its used to differentiate between the 6 different colors
         private static readonly ReadPosition[,] PositionsToReadAt = new ReadPosition[4, MAXPOSITIONSPERCAMERA];
@@ -199,11 +199,11 @@ namespace Rubinator3000.CubeScan {
             videoCapture.Read(mat);
             Bitmap readBitmap = mat.Bitmap;
             DisplayOnWpfImageControl(readBitmap, previewBitmap);
-
+            /*
             if (frameToDisplay != null) {
                 frameToDisplay.Dispose();
                 frameToDisplay = null;
-            }
+            }*/
             frameToDisplay = new Bitmap(readBitmap);
             readBitmap.Dispose();
         }
