@@ -22,7 +22,7 @@ namespace Rubinator3000.CubeScan {
         [DllImport("Kernel32.dll", EntryPoint = "RtlMoveMemory")]
         public static extern void CopyMemory(IntPtr Destination, IntPtr Source, int Length);
 
-        #region Static Members
+        #region Static Member Variables
 
         // This list is to prevent, that multiple "WebCamControl"-Objects access the same usb camera
         private static List<int> cameraIndexesInUse = new List<int>();
@@ -48,7 +48,7 @@ namespace Rubinator3000.CubeScan {
 
         #endregion
 
-        #region Members
+        #region Member Variables
         // Capture-object to retrieve bitmaps from usb camera
         private VideoCapture videoCapture;
 
@@ -68,6 +68,7 @@ namespace Rubinator3000.CubeScan {
         private Thread thread;
         private readonly int ticksPerSecond;
         private bool threadShouldStop = true;
+        private bool threadStarted = false;
         public bool Initialized { get; set; } = false;
 
         // This Bitmap holds only the current update of the camera-stream for color identification, not for gui camera stream
@@ -103,7 +104,7 @@ namespace Rubinator3000.CubeScan {
                 // if setup was unsuccessful (if no camera connected at "CameraIndex")
                 if (!videoCapture.IsOpened) {
 
-                    Log.LogStuff(String.Format("Initialization of Camera {0} failed", cameraIndex));
+                    Log.LogStuff(string.Format("Initialization of Camera {0} failed - (No camera connected at index \"{0}\")", cameraIndex));
                 }
                 else {
 
@@ -117,100 +118,109 @@ namespace Rubinator3000.CubeScan {
 
                     Log.LogStuff(string.Format("Initialization of Camera {0} finished", cameraIndex));
 
-                    Initialized = true;
                     return true;
                 }
             }
-            Initialized = false;
             return false;
         }
 
         private void Run() {
 
-            while (!threadShouldStop) {
+            try {
 
-                long loopStart = Helper.CurrentTimeMillis();
-                long loopEnd = loopStart + 1000 / ticksPerSecond;
+                threadStarted = true;
 
-                // Code in while loop  
+                while (!threadShouldStop) {
 
-                // Handle all frameUpdates
-                if (frameToDisplay != null) {
+                    long loopStart = Helper.CurrentTimeMillis();
+                    long loopEnd = loopStart + 1000 / ticksPerSecond;
 
-                    currentFABitmap.SetBitmap(new Bitmap(frameToDisplay));
-                    frameToDisplay.Dispose();
-                    frameToDisplay = null;
-                }
+                    // Code in while loop  
 
-                // Add all pendingPositions to PositionsToReadAt and draw their circles
-                while (pendingPositions[cameraIndex].Count > 0) {
+                    // Handle all frameUpdates
+                    if (frameToDisplay != null) {
 
-                    ReadPosition pos = pendingPositions[cameraIndex].Dequeue();
+                        currentFABitmap.SetBitmap(frameToDisplay);
+                        frameToDisplay.Dispose();
+                        frameToDisplay = null;
+                    }
 
+                    // Add all pendingPositions to PositionsToReadAt and draw their circles
+                    while (pendingPositions[cameraIndex].Count > 0) {
+
+                        ReadPosition pos = pendingPositions[cameraIndex].Dequeue();
+
+                        for (int i = 0; i < PositionsToReadAt.GetLength(1); i++) {
+
+                            if (PositionsToReadAt[cameraIndex, i] == null) {
+
+                                pos.Circle = DrawCircleAtPosition(pos, drawingCanvas);
+                                PositionsToReadAt[cameraIndex, i] = pos;
+                                TotalPositionCount++;
+                                break;
+                            }
+                        }
+                    }
+
+                    // Read all colors from positions in readPositions
                     for (int i = 0; i < PositionsToReadAt.GetLength(1); i++) {
 
                         if (PositionsToReadAt[cameraIndex, i] == null) {
-
-                            pos.Circle = DrawCircleAtPosition(pos, drawingCanvas);
-                            PositionsToReadAt[cameraIndex, i] = pos;
-                            TotalPositionCount++;
-                            break;
+                            continue;
                         }
+                        PositionsToReadAt[cameraIndex, i].Color = ReadColorAtPosition(PositionsToReadAt[cameraIndex, i]);
                     }
-                }
 
-                // Read all colors from positions in readPositions
-                for (int i = 0; i < PositionsToReadAt.GetLength(1); i++) {
+                    // This block will be only executed by the primary webcamcontrol
+                    if (cameraIndex == 0) {
 
-                    if (PositionsToReadAt[cameraIndex, i] == null) {
-                        continue;
+                        // If the whole cube is scanned, send the cube-configuration to the cube solver
+                        if (CubeIsFullyScanned()) {
+
+                            SortAndValidateColors();
+                        }
+                        lastCubeGeneration = Helper.CurrentTimeMillis();
                     }
-                    PositionsToReadAt[cameraIndex, i].Color = ReadColorAtPosition(PositionsToReadAt[cameraIndex, i]);
-                }
 
-                // This block will be only executed by the primary webcamcontrol
-                if (cameraIndex == 0) {
+                    // Code in while loop  
 
-                    // If the whole cube is scanned, send the cube-configuration to the cube solver
-                    if (CubeIsFullyScanned()) {
+                    // Garbage Collection
+                    if (GC.GetTotalMemory(true) > 500 * Math.Pow(10, 6)) {
 
-                        SortAndValidateColors();
+                        GC.Collect();
                     }
-                    lastCubeGeneration = Helper.CurrentTimeMillis();
-                }
 
-                // Code in while loop  
+                    while (Helper.CurrentTimeMillis() < loopEnd) {
 
-                if (GC.GetTotalMemory(true) > 500 * Math.Pow(10, 6)) {
-
-                    GC.Collect();
-                }
-
-                while (Helper.CurrentTimeMillis() < loopEnd) {
-
-                    Thread.Sleep(Convert.ToInt32(loopEnd - Helper.CurrentTimeMillis()));
+                        Thread.Sleep(Convert.ToInt32(loopEnd - Helper.CurrentTimeMillis()));
+                    }
                 }
             }
+            catch (Exception) {
+
+                Log.LogStuff(string.Format("Camera {0} crashed", cameraIndex));
+            }
+            threadStarted = false;
         }
 
         private void ProcessCapturedFrame(object sender, EventArgs e) {
 
+            // VideoCapture-objects return frames as Mat-objects, which contain the bitmap
+
+            // Retrieve the frame from "videoCapture" and store it in "readBitmap"
             Mat mat = new Mat();
             videoCapture.Read(mat);
             Bitmap readBitmap = mat.Bitmap;
-            DisplayOnWpfImageControl(readBitmap, previewBitmap);
-            /*
-            if (frameToDisplay != null) {
-                frameToDisplay.Dispose();
-                frameToDisplay = null;
-            }*/
+
+            // Display the received frame-update on gui
+            DisplayOnWpfImageControl(bitmapToDisplay: readBitmap, displayWriteableBitmap: previewBitmap);
             frameToDisplay = new Bitmap(readBitmap);
             readBitmap.Dispose();
         }
 
         private Color ReadColorAtPosition(ReadPosition pos) {
 
-            if (currentFABitmap.BitmapIsValid()) {
+            if (currentFABitmap.HasValidBitmap()) {
 
                 int absoluteX = Convert.ToInt32(pos.RelativeX * currentFABitmap.Width);
                 int absoluteY = Convert.ToInt32(pos.RelativeY * currentFABitmap.Height);
@@ -237,7 +247,7 @@ namespace Rubinator3000.CubeScan {
                
                 StopThread();
 
-                if (InitCameraCapture()) {
+                if (Initialized = InitCameraCapture()) {
                     StartThread();
                 }
             });
@@ -245,8 +255,9 @@ namespace Rubinator3000.CubeScan {
 
         public void StopThread() {
 
-            // wait for thread stop
             threadShouldStop = true;
+
+            // wait for thread to stop
 
             if (videoCapture != null) {
                 // Disable video stream
@@ -436,7 +447,7 @@ namespace Rubinator3000.CubeScan {
         }
 
         public static void SaveAllPositionsToXml() {
-
+            
             List<ReadPosition> allPositions = new List<ReadPosition>();
             allPositions.AddRange(GetSlice(0));
             allPositions.AddRange(GetSlice(1));
@@ -487,6 +498,7 @@ namespace Rubinator3000.CubeScan {
             }
 
             docToSave.Save(PathToXml);
+            Log.LogStuff(string.Format("All ReadPositions were stored at \"{0}\"", PathToXml));
         }
 
         public static void LoadAllPositionsFromXml() {
@@ -519,6 +531,8 @@ namespace Rubinator3000.CubeScan {
                     );
                 }
             }
+
+            Log.LogStuff(string.Format("All ReadPositions were loaded from \"{0}\"", PathToXml));
         }
 
         private static Ellipse DrawCircleAtPosition(ReadPosition pos, Canvas canvas) {
@@ -528,7 +542,11 @@ namespace Rubinator3000.CubeScan {
             Application.Current.Dispatcher.Invoke(() => {
 
                 circle = GenerateCircle(pos.AssumedCubeColor);
+
+                // When you hover over the circle on the gui, you can see, which position is being read out at this position
                 circle.ToolTip = string.Format("{0}[{1},{2}]", (CubeColor)pos.FaceIndex, pos.RowIndex, pos.ColIndex);
+
+                // Add click-eventhandling for circle
                 circle.MouseUp += Circle_MouseUp;
 
                 // Set position of circle on canvas
@@ -556,6 +574,7 @@ namespace Rubinator3000.CubeScan {
 
             if (!MainWindow.PositionEditingAllowed || e.ChangedButton != System.Windows.Input.MouseButton.Right) {
 
+                // If left-clicked, or position-adding is disabled via the gui, dont proceed
                 return;
             }
 
@@ -571,7 +590,6 @@ namespace Rubinator3000.CubeScan {
             ((Canvas)circle.Parent).Children.Remove(circle);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0066:Convert switch statement to expression", Justification = "Current C# Version 7.3 is too low")]
         public static CubeColor CubeColorByString(string cubeColorString) {
 
             switch (cubeColorString) {
@@ -585,25 +603,28 @@ namespace Rubinator3000.CubeScan {
             }
         }
 
-        public static void DisplayOnWpfImageControl(Bitmap bitmap, WriteableBitmap writeableBitmap) {
+        public static void DisplayOnWpfImageControl(Bitmap bitmapToDisplay, WriteableBitmap displayWriteableBitmap) {
 
             Application.Current.Dispatcher.Invoke(() => {
-                // Reserve the backBuffer of writeableBitmap for updates
-                writeableBitmap.Lock();
 
-                BitmapData tempData = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                // Reserve the backBuffer of writeableBitmap for updates
+                displayWriteableBitmap.Lock();
+
+                // Lock "bitmapToDisplay" to be able to fast-copy the bits to the gui-image-backbuffer
+                BitmapData tempData = bitmapToDisplay.LockBits(new System.Drawing.Rectangle(0, 0, bitmapToDisplay.Width, bitmapToDisplay.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
 
                 // CopyMemory(destPointer, sourcePointer, byteLength to copy);
-                CopyMemory(writeableBitmap.BackBuffer, tempData.Scan0, writeableBitmap.BackBufferStride * bitmap.Height);
+                CopyMemory(displayWriteableBitmap.BackBuffer, tempData.Scan0, displayWriteableBitmap.BackBufferStride * bitmapToDisplay.Height);
 
-                bitmap.UnlockBits(tempData);
+                // Unlock bitmapToDisplay for further processing
+                bitmapToDisplay.UnlockBits(tempData);
                 tempData = null;
 
                 // Specify the area of the bitmap, that changed (in this case, the whole bitmap)
-                writeableBitmap.AddDirtyRect(new Int32Rect(0, 0, bitmap.Width, bitmap.Height));
+                displayWriteableBitmap.AddDirtyRect(new Int32Rect(0, 0, bitmapToDisplay.Width, bitmapToDisplay.Height));
 
                 // Release the backBuffer of writeableBitmap and make it available for display
-                writeableBitmap.Unlock();
+                displayWriteableBitmap.Unlock();
             });
         }
 
