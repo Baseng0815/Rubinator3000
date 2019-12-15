@@ -15,9 +15,9 @@ namespace Rubinator3000.CubeScan {
             return (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
         }
 
-        public static System.Windows.Media.SolidColorBrush ColorBrush(CubeColor cc) {
+        public static System.Windows.Media.SolidColorBrush ColorBrush(CubeColor cubeColor) {
 
-            switch (cc) {
+            switch (cubeColor) {
 
                 case CubeColor.ORANGE: return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.Orange);
                 case CubeColor.WHITE: return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Colors.White);
