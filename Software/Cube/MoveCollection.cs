@@ -1,4 +1,4 @@
-﻿using CubeLibrary.Solving;
+﻿using Rubinator3000.Solving;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace CubeLibrary {
+namespace Rubinator3000 {
     public class MoveCollection : IEnumerable<Move> {
         private List<Move> moves;
 

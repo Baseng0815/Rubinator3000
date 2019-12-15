@@ -1,11 +1,11 @@
-﻿using CubeLibrary.Solving;
+﻿using Rubinator3000.Solving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CubeLibrary
+namespace Rubinator3000
 {
     public class Move {
         private int count;

@@ -15,9 +15,9 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml.Linq;
-using static CubeLibrary.CubeScan.XmlDesignations;
+using static Rubinator3000.CubeScan.XmlDesignations;
 
-namespace CubeLibrary.CubeScan {
+namespace Rubinator3000.CubeScan {
 
     public class WebCamControl {
         [DllImport("Kernel32.dll", EntryPoint = "RtlMoveMemory")]

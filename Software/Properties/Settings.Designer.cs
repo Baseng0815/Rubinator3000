@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CubeLibrary.Properties {
+namespace Rubinator3000.Properties {
 
 
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

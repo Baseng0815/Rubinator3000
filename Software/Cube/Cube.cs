@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static CubeLibrary.CubeFace;
+using static Rubinator3000.CubeFace;
 
-namespace CubeLibrary {
+namespace Rubinator3000 {
 
     [Serializable]
     public partial class Cube : ICloneable {

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace CubeLibrary.CubeScan {
+namespace Rubinator3000.CubeScan {
     class FastAccessBitmap {
 
         public int Width { get; set; }

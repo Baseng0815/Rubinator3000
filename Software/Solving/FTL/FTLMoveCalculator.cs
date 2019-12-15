@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using static CubeLibrary.CubeColor;
-using static CubeLibrary.CubeFace;
+using static Rubinator3000.CubeColor;
+using static Rubinator3000.CubeFace;
 
-namespace CubeLibrary.Solving {
+namespace Rubinator3000.Solving {
     internal partial class FTLMoveCalculator {
         private Cube cube;
         private IEnumerable<FTLPair> pairs;

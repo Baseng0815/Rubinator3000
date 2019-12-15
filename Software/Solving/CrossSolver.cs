@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static CubeLibrary.CubeFace;
-using static CubeLibrary.CubeColor;
+using static Rubinator3000.CubeFace;
+using static Rubinator3000.CubeColor;
 
-namespace CubeLibrary.Solving {
+namespace Rubinator3000.Solving {
 
     public class CrossSolver : CubeSolver {
         #region CubeSolvered

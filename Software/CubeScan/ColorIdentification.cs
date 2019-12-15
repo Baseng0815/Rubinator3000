@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace CubeLibrary.CubeScan {
+namespace Rubinator3000.CubeScan {
     static class ColorIdentification {
 
         // "color" is the rgb color, that should be identified

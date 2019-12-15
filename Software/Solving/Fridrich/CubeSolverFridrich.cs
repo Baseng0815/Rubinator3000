@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CubeLibrary.Solving {
+namespace Rubinator3000.Solving {
     public partial class CubeSolverFridrich : CubeSolver {
         public override bool Solved => GetCubeSolved();        
 

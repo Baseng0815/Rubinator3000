@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CubeLibrary {
+namespace Rubinator3000 {
     public interface IStone {
         Position GetColorPosition(CubeColor color);
         Position GetColorPosition(Func<CubeColor, bool> colorPredicate);

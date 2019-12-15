@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using System.Configuration;
 
-namespace CubeLibrary
+namespace Rubinator3000
 {
     /// <summary>
     /// Transformations used for cubedrawing

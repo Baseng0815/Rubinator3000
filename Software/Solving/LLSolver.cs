@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace CubeLibrary.Solving {
+namespace Rubinator3000.Solving {
     public class LLSolver : CubeSolver {
         public LLSolver(Cube cube) : base(cube) {
 

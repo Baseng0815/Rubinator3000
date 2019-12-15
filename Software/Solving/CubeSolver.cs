@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using static CubeLibrary.CubeColor;
-using static CubeLibrary.CubeFace;
+using static Rubinator3000.CubeColor;
+using static Rubinator3000.CubeFace;
 
-namespace CubeLibrary.Solving {
+namespace Rubinator3000.Solving {
     public abstract class CubeSolver {
 
         protected readonly Cube cube;

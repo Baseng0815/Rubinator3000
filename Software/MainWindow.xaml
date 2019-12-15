@@ -124,14 +124,11 @@
                     InputGestureText="S" />
             </MenuItem>
 
-<<<<<<< HEAD:Software/Rubinator3000/MainWindow.xaml
-=======
             <MenuItem Header="Debug">
                 <MenuItem Click="MenuItemOllDebug_Click" Header="Oll Debug" />
                 <MenuItem Click="MenuItemPllDebug_Click" Header="Pll Debug" />
             </MenuItem>
 
->>>>>>> rollback:Software/MainWindow.xaml
             <!--  Index Tab "Ansicht"  -->
             <MenuItem Header="Ansicht">
                 <MenuItem

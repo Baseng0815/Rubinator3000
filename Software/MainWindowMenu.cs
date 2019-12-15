@@ -1,11 +1,11 @@
 ﻿using Rubinator3000.DebugWindows;
-using CubeLibrary.Solving;
+using Rubinator3000.Solving;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using CubeLibrary;
+using Rubinator3000;
 
 namespace Rubinator3000 {
     partial class MainWindow {

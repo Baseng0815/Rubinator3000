@@ -1,5 +1,5 @@
-﻿using CubeLibrary;
-using CubeLibrary.Solving;
+﻿using Rubinator3000;
+using Rubinator3000.Solving;
 using System;
 using System.Collections.Generic;
 using System.Linq;

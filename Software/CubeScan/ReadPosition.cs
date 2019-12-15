@@ -3,7 +3,7 @@ using System;
 using System.Drawing;
 using System.Windows.Shapes;
 
-namespace CubeLibrary.CubeScan {
+namespace Rubinator3000.CubeScan {
     public class ReadPosition {
 
         // The Relative Coordinates are holding the percentages of the width/height and not the absolute values

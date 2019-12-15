@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace CubeLibrary
+namespace Rubinator3000
 {
     /// <summary>
     /// This class contains event handling
@@ -64,11 +64,11 @@ namespace CubeLibrary
                     // X ^= pitch
                     // Y ^= yaw
                     if (cubeRot.X % 360 < 90 || cubeRot.X % 360 < -90)
-                        cubeRot.Y += dx * CubeLibrary.MouseSensitivity;
+                        cubeRot.Y += dx * Settings.MouseSensitivity;
                     else
-                        cubeRot.Y -= dx * CubeLibrary.MouseSensitivity;
+                        cubeRot.Y -= dx * Settings.MouseSensitivity;
 
-                    cubeRot.X += dy * CubeLibrary.MouseSensitivity;
+                    cubeRot.X += dy * Settings.MouseSensitivity;
 
                     DrawCube.Transformation.Rotation = cubeRot;
                     Window.Invalidate();
@@ -86,7 +86,7 @@ namespace CubeLibrary
         {
             int delta = -args.Delta / SystemInformation.MouseWheelScrollDelta;
 
-            view.ChangeFov(delta * CubeLibrary.ScrollSensitivity);
+            view.ChangeFov(delta * Settings.ScrollSensitivity);
             Window.Invalidate();
         }
 

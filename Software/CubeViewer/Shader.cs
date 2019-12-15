@@ -8,7 +8,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK;
 using System.IO;
 
-namespace CubeLibrary
+namespace Rubinator3000
 {
     public class Shader
     {

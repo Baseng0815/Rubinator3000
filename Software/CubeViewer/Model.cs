@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CubeLibrary
+namespace Rubinator3000
 {
     public class Model
     {

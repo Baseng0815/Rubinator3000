@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static CubeLibrary.CubeFace;
-using static CubeLibrary.CubeColor;
+using static Rubinator3000.CubeFace;
+using static Rubinator3000.CubeColor;
 using System.Threading;
 
-namespace CubeLibrary.Solving {
+namespace Rubinator3000.Solving {
     public partial class FTLSolver : CubeSolver {
         public override bool Solved {
             get {

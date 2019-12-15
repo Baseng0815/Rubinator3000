@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CubeLibrary
+namespace Rubinator3000
 {
     /// <summary>
     /// Translation - rotation - scale - transformation

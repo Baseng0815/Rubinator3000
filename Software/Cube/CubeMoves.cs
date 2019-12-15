@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CubeLibrary {
+namespace Rubinator3000 {
     public class MoveEventArgs : EventArgs {
         public Move Move { get; }
 

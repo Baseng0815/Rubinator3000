@@ -9,7 +9,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK;
 using System.Drawing;
 
-namespace CubeLibrary
+namespace Rubinator3000
 {
 
     public static partial class CubeViewer
@@ -54,7 +54,7 @@ namespace CubeLibrary
             DrawCube.Init(renderColors);
 
             view = new View(Window.Width, Window.Height,
-                CubeLibrary.CameraFov, CubeLibrary.CameraDistance);
+                Settings.CameraFov, Settings.CameraDistance);
 
             Log.LogStuff("Window and view initialized.");
 

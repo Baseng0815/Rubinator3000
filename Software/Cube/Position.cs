@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CubeLibrary {
+namespace Rubinator3000 {
     public enum CubeColor : int {
         ORANGE,
         WHITE,

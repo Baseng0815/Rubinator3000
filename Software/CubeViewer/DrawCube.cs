@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace CubeLibrary {
+namespace Rubinator3000 {
     // State change between the internal cube representation and the draw cube
     // will take place through animated moves containing the move, endstate and animated time
     public struct AnimatedMove {
@@ -152,7 +152,7 @@ namespace CubeLibrary {
         /// </summary>
         public static void AddMove(Cube endState, Move move = null, int duration = 0) {
             // deep copy because otherwise, the arrays would refer to the same memory            
-            moveQueue.Enqueue(new AnimatedMove { Move = move, EndState = (Cube)endState.Clone(), TurnDuration = CubeLibrary.MoveAnimatedTime });
+            moveQueue.Enqueue(new AnimatedMove { Move = move, EndState = (Cube)endState.Clone(), TurnDuration = Settings.MoveAnimatedTime });
 
             bool makeNewTask = false;
             if (task != null) {

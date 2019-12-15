@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using OpenTK;
 
-namespace CubeLibrary
+namespace Rubinator3000
 {
     public struct Vertex
     {

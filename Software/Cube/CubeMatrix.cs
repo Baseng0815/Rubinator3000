@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CubeLibrary {
+namespace Rubinator3000 {
     [Serializable]
     public class CubeMatrix {
         private int[,] arr;

@@ -1,9 +1,9 @@
 ﻿#define Camera
 
-using CubeLibrary;
+using Rubinator3000;
 using OpenTK;
-using CubeLibrary.CubeScan;
-using CubeLibrary.Solving;
+using Rubinator3000.CubeScan;
+using Rubinator3000.Solving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +72,7 @@ namespace Rubinator3000 {
             Cube = new Cube(isRenderCube: true);
 
             // init Log
-            Log.Init(messages.Enqueue);
+            Log.OnLogging += Log_OnLogging;
             logging = true;
             logThread = new Thread(new ThreadStart(LogStuff));
             logThread.Start();
@@ -90,6 +90,10 @@ namespace Rubinator3000 {
             debugMenu.Items.Add(ollDebug);
             menu.Items.Add(debugMenu);
 #endif
+        }
+
+        private void Log_OnLogging(LoggingEventArgs e) {
+            messages.Enqueue(e.Message);
         }
 
         private void WebCamControl_OnCubeScanned(object sender, CubeScanEventArgs e) {

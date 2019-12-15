@@ -1,4 +1,4 @@
-﻿namespace CubeLibrary.CubeScan {
+﻿namespace Rubinator3000.CubeScan {
     static class XmlDesignations {
 
         public static string XmlCameraReadPositions => "CameraReadPositions";

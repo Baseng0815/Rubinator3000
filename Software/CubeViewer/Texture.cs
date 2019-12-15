@@ -8,7 +8,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL;
 
-namespace CubeLibrary
+namespace Rubinator3000
 {
     public class Texture
     {
