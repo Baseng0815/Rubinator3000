@@ -24,6 +24,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+<<<<<<< HEAD:Software/CubeLibrary/CubeLibrary.csproj
+=======
+    <IntermediateOutputPath>C:\Users\Philipp\AppData\Local\Temp\vs126C.tmp\Debug\</IntermediateOutputPath>
+>>>>>>> rollback:Software/Rubinator3000.csproj
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +36,11 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+<<<<<<< HEAD:Software/CubeLibrary/CubeLibrary.csproj
+=======
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IntermediateOutputPath>C:\Users\Philipp\AppData\Local\Temp\vs126C.tmp\Release\</IntermediateOutputPath>
+>>>>>>> rollback:Software/Rubinator3000.csproj
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV.UI, Version=4.1.1.3497, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">

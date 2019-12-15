@@ -4,10 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Rubinator3000"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"    
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Rubinator 3000"
     Background="{StaticResource BackgroundColor}"
-    Closing="Window_Closing" 
+    Closing="Window_Closing"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Window.Resources>
@@ -59,29 +59,29 @@
             <Setter Property="TextWrapping" Value="WrapWithOverflow" />
         </Style>
 
-        <!-- Menu -->
+        <!--  Menu  -->
         <Style TargetType="Menu">
-            <Setter Property="Background" Value="{StaticResource BackgroundColor}"/>
-            <Setter Property="FontFamily" Value="{StaticResource Font}"/>
-            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}"/>
+            <Setter Property="Background" Value="{StaticResource BackgroundColor}" />
+            <Setter Property="FontFamily" Value="{StaticResource Font}" />
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}" />
         </Style>
 
         <Style TargetType="MenuItem">
-            <Setter Property="Background" Value="{StaticResource BackgroundColor}"/>
-            <Setter Property="FontFamily" Value="{StaticResource Font}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
-            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}"/>
-            <Setter Property="Template" Value="{StaticResource MenuItemTemplate}"/>
+            <Setter Property="Background" Value="{StaticResource BackgroundColor}" />
+            <Setter Property="FontFamily" Value="{StaticResource Font}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}" />
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}" />
+            <Setter Property="Template" Value="{StaticResource MenuItemTemplate}" />
         </Style>
 
         <Style TargetType="Popup">
-            <Setter Property="StaysOpen" Value="True"/>
+            <Setter Property="StaysOpen" Value="True" />
         </Style>
 
         <Style TargetType="Window">
-            <Setter Property="Background" Value="{StaticResource BackgroundColor}"/>
-            <Setter Property="FontFamily" Value="{StaticResource Font}"/>
-            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}"/>
+            <Setter Property="Background" Value="{StaticResource BackgroundColor}" />
+            <Setter Property="FontFamily" Value="{StaticResource Font}" />
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}" />
         </Style>
     </Window.Resources>
 
@@ -102,22 +102,36 @@
             Grid.Column="0"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" >
+            VerticalAlignment="Stretch">
             <!--  Index Tab "Datei"  -->
-            <MenuItem Header="Datei" Height="20">
+            <MenuItem Height="20" Header="Datei">
                 <MenuItem Header="_Neu" InputGestureText="Strg+N" />
                 <MenuItem Header="_Öffnen" InputGestureText="Strg+O" />
-                <Separator Margin="0,3,0,3" Template="{StaticResource SeparatorTemplate}"/>
+                <Separator Margin="0,3,0,3" Template="{StaticResource SeparatorTemplate}" />
                 <MenuItem Header="_Züge" />
                 <MenuItem Click="MenuItemClose_Click" Header="_Beenden" />
             </MenuItem>
-            <!--  Index Tab "Würfel"-->
+            <!--  Index Tab "Würfel"  -->
             <MenuItem Header="Würfel">
                 <MenuItem Click="MenuItemResetCube_Click" Header="_Zurücksetzen" />
-                <MenuItem Click="MenuItemSuffle_Click" Header="_Verdrehen" InputGestureText="Shift+S" />
-                <MenuItem Click="MenuItemSolveCube_Click" Header="_Lösen" InputGestureText="S" />
+                <MenuItem
+                    Click="MenuItemSuffle_Click"
+                    Header="_Verdrehen"
+                    InputGestureText="Shift+S" />
+                <MenuItem
+                    Click="MenuItemSolveCube_Click"
+                    Header="_Lösen"
+                    InputGestureText="S" />
             </MenuItem>
 
+<<<<<<< HEAD:Software/Rubinator3000/MainWindow.xaml
+=======
+            <MenuItem Header="Debug">
+                <MenuItem Click="MenuItemOllDebug_Click" Header="Oll Debug" />
+                <MenuItem Click="MenuItemPllDebug_Click" Header="Pll Debug" />
+            </MenuItem>
+
+>>>>>>> rollback:Software/MainWindow.xaml
             <!--  Index Tab "Ansicht"  -->
             <MenuItem Header="Ansicht">
                 <MenuItem
@@ -167,8 +181,8 @@
             </Border>
 
             <!--  Move History Output  -->
-            <Border Grid.Row="1" Grid.Column="0" >
-                <TextBox x:Name="moveHistoryOutput" Margin="0"/>
+            <Border Grid.Row="1" Grid.Column="0">
+                <TextBox x:Name="moveHistoryOutput" Margin="0" />
             </Border>
 
             <!--  Checkboxes  -->

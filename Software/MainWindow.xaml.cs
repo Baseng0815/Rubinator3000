@@ -1,4 +1,4 @@
-﻿#undef Camera
+﻿#define Camera
 
 using CubeLibrary;
 using OpenTK;
@@ -157,7 +157,6 @@ namespace Rubinator3000 {
 
             // Initialize all webcam-controls
             for (int i = 0; i < cameraCount; i++) {
-
                 webCamControls[i] = new WebCamControl(i, /*ref*/ canvases[i], ref previewBitmaps[i]);
             }
 
@@ -227,7 +226,7 @@ namespace Rubinator3000 {
                     indicies[0], // faceIndex
                     indicies[1], // rowIndex
                     indicies[2], // colIndex
-                    cameraIndex 
+                    cameraIndex
                 );
 
             Log.LogStuff(WebCamControl.AddPosition(tempPos, cameraIndex));

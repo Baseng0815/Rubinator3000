@@ -24,11 +24,13 @@ namespace CubeLibrary.CubeScan {
 
             double percentageSum = 0;
 
-            // Very high if r is far away from b and r*(11/17) is close to g
+            // Very high if r is far away from b and r*(106/255) is close to g
             percentageSum += 1 - (color.B / (double)color.R);
 
-            double orangeValue = (color.R * (106 / (double)255));
-            percentageSum += orangeValue > color.G ? color.G / orangeValue : orangeValue / color.G;
+            // Calculating the ideal green value for an orange-color according to the red value
+            double orangeGValue = (color.R * (106 / (double)255));
+
+            percentageSum += orangeGValue > color.G ? color.G / orangeGValue : orangeGValue / color.G;
 
             double percentage = percentageSum / 2;
 
@@ -39,8 +41,7 @@ namespace CubeLibrary.CubeScan {
 
             double percentageSum = 0;
 
-            // Very high if r, g and b are very close together
-
+            // Very high if r, g and b are very close together (This would not distinguish between black, grey and white)
             percentageSum += color.R > color.G ? (color.G / (double)color.R) : (color.R / (double)color.G);
             percentageSum += color.R > color.B ? (color.B / (double)color.R) : (color.R / (double)color.B);
             percentageSum += color.G > color.B ? (color.B / (double)color.G) : (color.G / (double)color.B);
@@ -54,7 +55,7 @@ namespace CubeLibrary.CubeScan {
 
             double percentageSum = 0;
 
-            // Very if difference between "b and g" and "r and g" is very big
+            // Very high if difference between "b and g" and "r and g" is very big
             percentageSum += 1 - (color.B / (double)color.G);
             percentageSum += 1 - (color.R / (double)color.G);
 
@@ -105,6 +106,8 @@ namespace CubeLibrary.CubeScan {
 
         public static int[] Max8Indicies(CubeColor cubeColor, List<ReadPosition> ctc) {
 
+            // cubeColor = max 8 indicies of this color
+            // ctc = colors to compare
             if (ctc.Count == 8) {
 
                 return new int[] { 0, 1, 2, 3, 4, 5, 6, 7 };
@@ -115,13 +118,14 @@ namespace CubeLibrary.CubeScan {
 
             for (int i = 0; i < ctc.Count; i++) {
 
+                // write the indicies with the according color-percentage of the "cubeColor" with indicies in a dictionary
                 probableIndicies.Add(i, ctc[i].Percentages[(int)cubeColor]);
             }
 
+            // sort by highest percentage (highest percentage is at the highest index)
             probableIndicies = probableIndicies.OrderBy(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
-            List<ReadPosition> lrp = ctc;
-
+            // return a list of the last 8 indicies (indicies of the highest percentages)
             return probableIndicies.Keys.ToList().GetRange(probableIndicies.Count - 8, 8).ToArray();
         }   
     }
