@@ -1,11 +1,17 @@
-#pragma once
+#ifndef __STEPPER_H
+#define __STEPPER_H
 
 class Stepper {
-private: 
-    int count = 500;
+private:
     int pins[4];
+    int count;
 
+    void writeState(int p0, int p1, int p2, int p3) const;
 public:
-    Stepper(int pin1, int pin2, int pin3, int pin4);
-    void Move(int steps, bool reverse);
+    Stepper(int *pins);
+    Stepper();
+
+    void doMove(int steps);
 };
+
+#endif //__STEPPER_H

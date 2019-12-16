@@ -124,6 +124,17 @@
                     InputGestureText="S" />
             </MenuItem>
 
+            <MenuItem Header="Hardware">
+                <Border>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Text="COM Port" VerticalAlignment="Center" />
+                        <ComboBox x:Name="menuItemCOMPort" Width="70"/>
+                    </StackPanel>
+                </Border>
+                <MenuItem Header="Verbinden" Click="MenuItemConnect_Click" />
+            </MenuItem>
+            
+
             <MenuItem Header="Debug">
                 <MenuItem Click="MenuItemOllDebug_Click" Header="Oll Debug" />
                 <MenuItem Click="MenuItemPllDebug_Click" Header="Pll Debug" />

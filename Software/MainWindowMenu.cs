@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Rubinator3000;
+using System.Linq;
 
 namespace Rubinator3000 {
     partial class MainWindow {
@@ -58,6 +59,19 @@ namespace Rubinator3000 {
                         break;
                 }
             }
+        }
+
+        private void MenuItemConnect_Click(object sender, RoutedEventArgs e) {
+            string serialPort = menuItemCOMPort.Text;
+            if (!System.IO.Ports.SerialPort.GetPortNames().Contains(serialPort)) {
+                MessageBox.Show("Bitte einen gültigen Port auswählen!");
+            }
+
+            arduino = new ArduinoUSB(serialPort);
+            arduino.Connect();
+
+            // only debug
+            arduino.SendMove(new Move(CubeFace.UP, 3));
         }
     }
 }

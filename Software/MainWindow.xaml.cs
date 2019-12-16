@@ -61,10 +61,11 @@ namespace Rubinator3000 {
         }
 
         public MainWindow() {                                    
-            InitializeComponent();            
+            InitializeComponent();                          
 
             InitalizeCameraPreviews();
 
+            menuItemCOMPort.ItemsSource = System.IO.Ports.SerialPort.GetPortNames();
             WebCamControl.OnCubeScanned += WebCamControl_OnCubeScanned;            
 
             KeyDown += MainWindow_KeyDown;
@@ -293,6 +294,6 @@ namespace Rubinator3000 {
             Random rnd = new Random();
 
             Cube.Shuffle(rnd.Next(5, 20));
-        }
+        }        
     }
 }
