@@ -80,13 +80,13 @@ namespace Rubinator3000 {
             CubeSide side = sides.First(e => e.Face == move.Face);
 
             for (int c = 0; c < move.Count; c++) {
-                RotateSide(side);                                
+                RotateSide(side);
             }
 
             OnMoveDone?.Invoke(this, new MoveEventArgs(move));
 
             if (this.isRenderCube && renderMove) {
-                DrawCube.AddMove(this, move, 1000);
+                DrawCube.AddMove(this, move);
             }
 
             Log.LogStuff("Move done: " + move.ToString());
