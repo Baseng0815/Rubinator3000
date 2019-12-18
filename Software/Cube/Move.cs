@@ -8,16 +8,9 @@ using System.Threading.Tasks;
 namespace Rubinator3000
 {
     public class Move {
-        private int count;
-
-        public CubeFace Face { get; internal set; }
-        public int Count {
-            get => count;
-            set {
-                count = SolvingUtility.NormalizeCount(value);
-            }
-        }
-        public bool IsPrime => Count == 3;
+        public CubeFace Face;
+        public int Count;
+        public bool IsPrime;
 
         // used for mapping Faces to strings (e.g. 0 to L)
         private static readonly string[] mappings = new string[]
@@ -25,13 +18,19 @@ namespace Rubinator3000
             "L", "U", "F", "D", "R", "B"
         };
 
-        public Move(CubeFace Face, int count = 1)
+        public Move(CubeFace Face, int count = 1, bool isPrime = false)
         {
             this.Face = Face;
-            this.Count = count;
+            this.IsPrime = isPrime;
 
-            if (Count == 0)
-                throw new ArgumentOutOfRangeException();
+            // @TODO: handle count == 0 cases (handle normally? throw exception?)
+
+            // in case count is 3, optimize it to use an inverted turn
+            if (Count == 3 || Count == -1) {
+                Count = 1;
+                IsPrime = true;
+            } else
+                this.Count = count % 4;
         }
 
         public override bool Equals(object obj)
@@ -41,11 +40,6 @@ namespace Rubinator3000
 
             var move = (Move)obj;
             return Face == move.Face && IsPrime == move.IsPrime;
-        }
-
-        internal static bool TryParse(string str, out Move move)
-        {
-            throw new NotImplementedException();
         }
 
         public override int GetHashCode()
@@ -60,7 +54,7 @@ namespace Rubinator3000
         {
             string str = mappings[(int)Face];
             if (IsPrime) str += "i";
-            else if (count == 2)
+            else if (Count == 2)
                 str += "2";
 
             return str;
@@ -70,12 +64,6 @@ namespace Rubinator3000
 
         public static bool operator !=(Move left, Move right) => !(left == right);
 
-        public Move GetInverted() => new Move(Face, -Count);
-
-        internal void Print()
-        {
-            // not implemented
-            System.Diagnostics.Debug.WriteLine(this.ToString());
-        }
+        public Move GetInverted() => new Move(Face, Count, !IsPrime);
     }
 }

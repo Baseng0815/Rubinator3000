@@ -13,7 +13,7 @@ namespace Rubinator3000 {
         public delegate void OnLoggingEventHandler(LoggingEventArgs e);
         public static event OnLoggingEventHandler OnLogging;
 
-        public static void LogStuff(string message) {
+        public static void LogMessage(string message) {
             TimeSpan time = DateTime.Now.TimeOfDay;
 
             string logMessage = string.Format("{0}:\t{1}", time.ToString(@"hh\:mm\:ss\.ff"), message);
@@ -21,7 +21,7 @@ namespace Rubinator3000 {
             OnLogging?.Invoke(new LoggingEventArgs(logMessage));
 #if DEBUG
             System.Diagnostics.Debug.WriteLine($"Log:\t{logMessage}");
-#endif            
+#endif
         }
     }
 

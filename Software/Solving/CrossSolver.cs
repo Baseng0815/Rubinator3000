@@ -55,7 +55,7 @@ namespace Rubinator3000.Solving {
                 // select pivot stone
                 int orientation = GetWhiteFaceOrientation();
 
-                DoMove(UP, orientation);
+                DoMove(new Move(UP, orientation));
                 pivotStone = whiteEdges.First(e => e.InRightPosition());
             }
             else {
@@ -85,7 +85,7 @@ namespace Rubinator3000.Solving {
                 HandleStone(edgeToSolve);
             }
 
-            DoMove(UP, -WhiteFaceOrientation);
+            DoMove(new Move(UP, -WhiteFaceOrientation));
         }
         #endregion
 
@@ -128,13 +128,13 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentException("Die weiße Fläche des Kantensteins muss sich auf der weißen Seite befinden", nameof(edge));
 
 #if DEBUG
-            Log.LogStuff("Handle stone white face\r\n\t" + edge.ToString());
+            Log.LogMessage("Handle stone white face\r\n\t" + edge.ToString());
 #endif
 
             CubeFace faceToRot = edge.GetColorPosition(c => c != WHITE).Face;
 
             // bring stone to middle Layer
-            DoMove(faceToRot);
+            DoMove(new Move(faceToRot));
 
             // handle stone on middle Layer
             HandleStoneMiddleLayer(edge);
@@ -148,17 +148,18 @@ namespace Rubinator3000.Solving {
             if (Array.TrueForAll(MiddleLayerFaces, f => edge.GetColorPosition(WHITE).Face != f) || edge.GetColorPosition(WHITE).Tile == 1 || edge.GetColorPosition(WHITE).Tile == 7)
                 throw new ArgumentException("Der weiße Kantenstein muss sich auf der mittleren Ebene befinden", nameof(edge));
 
+            // @TODO: fix endless loop
 #if DEBUG
-            Log.LogStuff("Handle stone middle layer\r\n\t" + edge.ToString());
+            Log.LogMessage("Handle stone middle layer\r\n\t" + edge.ToString());
 #endif
 
             int delta = SolvingUtility.GetDelta(GetSecondColor(edge), edge.GetColorPosition(c => c != WHITE).Face, UP);
 
             // rotate the white face to insert the stone right to pivot
-            DoMove(UP, delta - WhiteFaceOrientation);
+            DoMove(new Move(UP, delta - WhiteFaceOrientation));
 
             Position secondPos = edge.GetColorPosition(c => c != WHITE);
-            DoMove(secondPos.Face, secondPos.Tile == 3 ? 1 : -1);
+            DoMove(new Move(secondPos.Face, secondPos.Tile == 3 ? 1 : -1));
         }
 
         /// <summary>
@@ -170,7 +171,7 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentOutOfRangeException("Der weiße Kantenstein muss sich in der oberen oder unteren Ebene befinden und die weiße Fläche muss auf einer der seitlichen Seiten (Orange, Grün, Rot, Blau) sein", nameof(edge));
 
 #if DEBUG
-            Log.LogStuff("Handle false orientated stone\r\n\t" + edge.ToString());
+            Log.LogMessage("Handle false orientated stone\r\n\t" + edge.ToString());
 #endif
 
             // get edge information
@@ -191,10 +192,10 @@ namespace Rubinator3000.Solving {
             if (whitePos.Tile == 1) {
                 // move edge to middle layer
                 if (leftDelta < rightDelta) {
-                    DoMove(whitePos.Face, -1);
+                    DoMove(new Move(whitePos.Face, -1));
                 }
                 else {
-                    DoMove(whitePos.Face);
+                    DoMove(new Move(whitePos.Face));
                 }
                 HandleStoneMiddleLayer(edge);
             }
@@ -205,12 +206,12 @@ namespace Rubinator3000.Solving {
 
                 // move edge to middle layer
                 int direction = leftDelta > rightDelta ? 1 : -1;
-                DoMove(whitePos.Face, direction);
+                DoMove(new Move(whitePos.Face, direction));
 
                 HandleStoneMiddleLayer(edge);
 
                 if (rotBack)
-                    DoMove(whitePos.Face, -direction);
+                    DoMove(new Move(whitePos.Face, -direction));
             }
         }
 
@@ -223,16 +224,16 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentException("Die weiße Fläche des Kantensteins muss sich auf der gelben Seite befinden", nameof(edge));
 
 #if DEBUG
-            Log.LogStuff("Handle stone yellow face\r\n\t" + edge.ToString());
+            Log.LogMessage("Handle stone yellow face\r\n\t" + edge.ToString());
 #endif
 
             int delta = SolvingUtility.GetDelta(GetSecondColor(edge), edge.GetColorPosition(c => c != WHITE).Face, UP);
 
             // rotate the white face to insert the stone right to pivot
-            DoMove(UP, delta - WhiteFaceOrientation);
+            DoMove(new Move(UP, delta - WhiteFaceOrientation));
 
             CubeFace faceToRot = edge.GetColorPosition(c => c != WHITE).Face;
-            DoMove(faceToRot, 2);
+            DoMove(new Move(faceToRot, 2));
         }
         #endregion
 
@@ -254,7 +255,7 @@ namespace Rubinator3000.Solving {
             int[] count = new int[4];
             for (int i = 0; i < 4; i++) {
                 count[i] = whiteEdges.Count(e => e.InRightPosition());
-                DoMove(UP);
+                DoMove(new Move(UP));
             }
 
             int maxCount = count.Max();

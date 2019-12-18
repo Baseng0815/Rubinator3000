@@ -77,8 +77,8 @@ namespace Rubinator3000
                             new Vector3(x - 1, 1 - y, 1 - z),
                             new Vector3(0, 0, 0));
 
-                        Log.LogStuff(x + "  " + y + "  " + z);
-                        Log.LogStuff((y * 9 + z * 3 + x).ToString());
+                        Log.LogMessage(x + "  " + y + "  " + z);
+                        Log.LogMessage((y * 9 + z * 3 + x).ToString());
 
                         lineIndex++;
                     }

@@ -22,6 +22,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MenuItem = System.Windows.Controls.MenuItem;
 using System.Threading;
+using Rubinator3000.Communication;
 
 namespace Rubinator3000 {
 
@@ -33,49 +34,36 @@ namespace Rubinator3000 {
         public static bool PositionEditingAllowed = false;
 
         private Queue<string> messages = new Queue<string>();
-        public volatile Cube cube;
-        private MoveCollection moves = new MoveCollection();
+
+        // cube only used for scanning and passing to solver
+        // @TODO: make public
+        public Cube cube = new Cube();
+        private Arduino arduino;
 
         private const int cameraCount = 4;
         private readonly Image[] cameraPreviews = new Image[cameraCount];
         private readonly WriteableBitmap[] previewBitmaps = new WriteableBitmap[cameraCount];
         private readonly WebCamControl[] webCamControls = new WebCamControl[cameraCount];
         private readonly Canvas[] canvases = new Canvas[cameraCount];
-        private CubeColor[,] scanData = new CubeColor[6, 9];
 
         private ColorDialog colorDialog;
         private bool logging;
         private Thread logThread;
-        private Arduino arduino;
 
-        public Cube Cube {
-            get => cube;
-            set {
-                if (cube != null)
-                    cube.OnMoveDone -= Cube_OnMoveDone;
-
-                cube = value;
-                value.OnMoveDone += Cube_OnMoveDone;
-                DrawCube.AddMove(value);
-            }
-        }
-
-        public MainWindow() {                                    
-            InitializeComponent();                          
+        public MainWindow() {
+            InitializeComponent();
 
             InitalizeCameraPreviews();
 
             menuItemCOMPort.ItemsSource = System.IO.Ports.SerialPort.GetPortNames();
-            WebCamControl.OnCubeScanned += WebCamControl_OnCubeScanned;            
+            WebCamControl.OnCubeScanned += WebCamControl_OnCubeScanned;
 
             KeyDown += MainWindow_KeyDown;
-
-            Cube = new Cube(isRenderCube: true);
 
             // init Log
             Log.OnLogging += Log_OnLogging;
             logging = true;
-            logThread = new Thread(new ThreadStart(LogStuff));
+            logThread = new Thread(new ThreadStart(LoggingLoop));
             logThread.Start();
 
 #if DEBUG
@@ -104,22 +92,22 @@ namespace Rubinator3000 {
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
             switch (e.Key) {
                 case Key.L:
-                    cube.DoMove(CubeFace.LEFT, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    cube.DoMove(new Move(CubeFace.LEFT, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
                     break;
                 case Key.U:
-                    cube.DoMove(CubeFace.UP, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    cube.DoMove(new Move(CubeFace.UP, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
                     break;
                 case Key.F:
-                    cube.DoMove(CubeFace.FRONT, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    cube.DoMove(new Move(CubeFace.FRONT, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
                     break;
                 case Key.D:
-                    cube.DoMove(CubeFace.DOWN, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    cube.DoMove(new Move(CubeFace.DOWN, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
                     break;
                 case Key.R:
-                    cube.DoMove(CubeFace.RIGHT, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    cube.DoMove(new Move(CubeFace.RIGHT, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
                     break;
                 case Key.B:
-                    cube.DoMove(CubeFace.BACK, Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift) ? -1 : 1);
+                    cube.DoMove(new Move(CubeFace.BACK, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
                     break;
                 case Key.S:
                     if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
@@ -128,7 +116,6 @@ namespace Rubinator3000 {
                         SolveCube();
                     }
                     break;
-
             }
         }
 
@@ -170,14 +157,14 @@ namespace Rubinator3000 {
 #endif
         }
 
-        private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
-            moves.Add(e.Move);
-        }
 
-        internal void LogStuff() {
+        // @TODO: put logging loop into Log.cs
+        internal void LoggingLoop() {
             while (logging) {
-                while (messages.Count == 0) ;
-                    
+                while (messages.Count == 0) {
+                    Thread.Sleep(20);
+                };
+
                 string message = messages.Dequeue();
                 Dispatcher.Invoke(() => {
                     if (textBoxLog != null)
@@ -191,7 +178,7 @@ namespace Rubinator3000 {
                     }
                 });
             }
-        }     
+        }
 
         private void CameraPreview_MouseDown(object sender, MouseButtonEventArgs e) {
 #if Camera
@@ -234,7 +221,7 @@ namespace Rubinator3000 {
                     cameraIndex
                 );
 
-            Log.LogStuff(WebCamControl.AddPosition(tempPos, cameraIndex));
+            Log.LogMessage(WebCamControl.AddPosition(tempPos, cameraIndex));
 #endif
         }
 
@@ -277,27 +264,23 @@ namespace Rubinator3000 {
         }
 
         private async void SolveCube() {
-            CubeSolver solver = new CubeSolverFridrich(cube);            
+            CubeSolver solver = new CubeSolverFridrich(cube);
 
-            await solver.SolveCubeAsync();
+            solver.SolveCube();
 
-            moveHistoryOutput.Clear();
-            moveHistoryOutput.Text = string.Join(", ", solver.SolvingMoves.Select(m => m.ToString()));
-            cube.DoMoves(solver.SolvingMoves);
+            MoveCollection solvingMoves = solver.SolvingMoves;
 
-            if (arduino != null)
-                arduino.SendMoves(solver.SolvingMoves);
+            MoveSynchronizer synchronizer = new MoveSynchronizer(solvingMoves, arduino, moveHistoryOutput);
+            await Task.Run(synchronizer.Run);
         }
 
         private async void ShuffleCube() {
-            
             Random rnd = new Random();
 
-            MoveCollection shuffleMoves = Cube.Shuffle(rnd.Next(5, 20));
+            MoveCollection shuffleMoves = cube.Shuffle(rnd.Next(5, 20));
 
-            
-
-            await Task.Factory.StartNew(() => arduino.SendMoves(shuffleMoves));
-        }        
+            MoveSynchronizer synchronizer = new MoveSynchronizer(shuffleMoves, arduino, moveHistoryOutput);
+            await Task.Run(synchronizer.Run);
+        }
     }
 }

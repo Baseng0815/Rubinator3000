@@ -33,7 +33,7 @@ namespace Rubinator3000.Solving {
         public abstract void SolveCube();
 
         public virtual Task SolveCubeAsync() {
-            return Task.Factory.StartNew(SolveCube);
+            return Task.Run(SolveCube);
         }
 
         protected abstract bool CheckCube(Cube cube);
@@ -44,17 +44,17 @@ namespace Rubinator3000.Solving {
         public abstract bool Solved { get; }
 
 
-        protected void DoMove(CubeFace face, int count = 1) {
-            if (count == 0)
+        protected void DoMove(Move move) {
+            if (move.Count == 0)
                 return;
 
-            cube.DoMove(face, count);
-            SolvingMoves.Add(face, count);
+            cube.DoMove(move);
+            SolvingMoves.Add(move);
         }
 
         protected void DoMoves(IEnumerable<Move> moves) {
             foreach (var move in moves) {
-                DoMove(move.Face, move.Count);
+                DoMove(move);
             }
         }
 

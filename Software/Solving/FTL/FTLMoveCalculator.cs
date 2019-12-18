@@ -9,13 +9,13 @@ namespace Rubinator3000.Solving {
         private Cube cube;
         private IEnumerable<FTLPair> pairs;
         private FTLPair pair;
-                                                    
+
 
         private delegate void DoMoveEventHandler(CubeFace face, int count = 1);
         private event DoMoveEventHandler DoMove;
 
         public FTLMoveCalculator(FTLPair pair, Cube cube) {
-            this.cube = (Cube)cube.Clone();            
+            this.cube = (Cube)cube.Clone();
 
             pairs = from corner in this.cube.Corners
                     where corner.HasColor(WHITE)
@@ -25,7 +25,7 @@ namespace Rubinator3000.Solving {
         }
 
         public MoveCollection CalcMoves() {
-            MoveCollection moves = new MoveCollection();                        
+            MoveCollection moves = new MoveCollection();
 
             void DoMove(CubeFace face, int count) {
                 if (count == 0)
@@ -47,7 +47,7 @@ namespace Rubinator3000.Solving {
             this.DoMove -= DoMove;
 
             return moves;
-        }        
+        }
 
         private void CalcPairMoves() {
             CubeFace faceToRot;

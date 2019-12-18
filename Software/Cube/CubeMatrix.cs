@@ -7,29 +7,29 @@ using System.Threading.Tasks;
 namespace Rubinator3000 {
     [Serializable]
     public class CubeMatrix {
-        private int[,] arr;
+        private CubeColor[,] arr;
 
         public CubeColor this[int tile] {
             get {
                 if (tile < 0 || tile >= arr.Length)
                     throw new IndexOutOfRangeException();
 
-                return (CubeColor)arr[tile / 3, tile % 3];
+                return arr[tile / 3, tile % 3];
             }
             set {
                 if (tile < 0 || tile >= arr.Length)
                     throw new IndexOutOfRangeException();
 
-                arr[tile / 3, tile % 3] = (int)value;
+                arr[tile / 3, tile % 3] = value;
             }
         }
 
         public CubeMatrix(CubeColor color) {
-            arr = new int[3, 3];
+            arr = new CubeColor[3, 3];
 
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
-                    arr[i, j] = (int)color;
+                    arr[i, j] = color;
                 }
             }
         }
@@ -49,7 +49,7 @@ namespace Rubinator3000 {
             if (index < 0 || index >= 3)
                 throw new IndexOutOfRangeException();
 
-            int[] row = new int[3];
+            CubeColor[] row = new CubeColor[3];
             for (int i = 0; i < 3; i++) {
                 row[i] = arr[index, i];
             }
@@ -67,7 +67,7 @@ namespace Rubinator3000 {
             if (index < 0 || index >= 3)
                 throw new IndexOutOfRangeException();
 
-            int[] column = new int[3];
+            CubeColor[] column = new CubeColor[3];
             for (int i = 0; i < 3; i++) {
                 column[i] = arr[i, index];
             }
@@ -126,8 +126,8 @@ namespace Rubinator3000 {
     }
 
     public struct RowMatrix : ISubmatrix {
-        private int[] row;
-        public int this[int i] {
+        private CubeColor[] row;
+        public CubeColor this[int i] {
             get {
                 if (i < 0 || row.Length <= i)
                     throw new IndexOutOfRangeException();
@@ -142,7 +142,7 @@ namespace Rubinator3000 {
             }
         }
 
-        public RowMatrix(int[] row) {
+        public RowMatrix(CubeColor[] row) {
             this.row = row;
         }
 
@@ -154,12 +154,12 @@ namespace Rubinator3000 {
             return new RowMatrix(row.Reverse().ToArray());
         }
 
-        public static implicit operator RowMatrix(int[] row) => new RowMatrix(row);
+        public static implicit operator RowMatrix(CubeColor[] row) => new RowMatrix(row);
     }
 
     public struct ColumnMatrix : ISubmatrix {
-        private int[] column;
-        public int this[int i] {
+        private CubeColor[] column;
+        public CubeColor this[int i] {
             get {
                 if (i < 0 || column.Length <= i)
                     throw new IndexOutOfRangeException();
@@ -174,7 +174,7 @@ namespace Rubinator3000 {
             }
         }
 
-        public ColumnMatrix(int[] column) {
+        public ColumnMatrix(CubeColor[] column) {
             this.column = column;
         }
 
@@ -186,6 +186,6 @@ namespace Rubinator3000 {
             return new ColumnMatrix(column.Reverse().ToArray());
         }
 
-        public static implicit operator ColumnMatrix(int[] column) => new ColumnMatrix(column);
+        public static implicit operator ColumnMatrix(CubeColor[] column) => new ColumnMatrix(column);
     }
 }

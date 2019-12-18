@@ -30,7 +30,7 @@ namespace Rubinator3000
         {
             OpenTK.Toolkit.Init();
 
-            Log.LogStuff("OpenTK initialized.");
+            Log.LogMessage("OpenTK initialized.");
 
             Vector3[] renderColors = new Vector3[]
             {
@@ -45,7 +45,7 @@ namespace Rubinator3000
             for (int i = 0; i < renderColors.Length; i++)
                 renderColors[i] /= 255f;
 
-            Log.LogStuff("DrawCube initialized.");
+            Log.LogMessage("DrawCube initialized.");
 
             Window = new GLControl();
             Window.MakeCurrent();
@@ -56,7 +56,7 @@ namespace Rubinator3000
             view = new View(Window.Width, Window.Height,
                 Settings.CameraFov, Settings.CameraDistance);
 
-            Log.LogStuff("Window and view initialized.");
+            Log.LogMessage("Window and view initialized.");
 
             GL.Enable(EnableCap.DepthTest);
             GL.ClearColor(Color.Black);

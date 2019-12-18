@@ -22,9 +22,7 @@ namespace Rubinator3000.DebugWindows {
     /// Interaction logic for OllDebugWindow.xaml
     /// </summary>
     public partial class OllDebugWindow : Window {
-        public MainWindow mainWindow;
-
-        private Cube cube => mainWindow.Cube;
+        private Cube cube;
         private (OllPattern pattern, MoveCollection algorithm) selectedPattern = LLSolver.OllPatterns[0];
         private (int r, int c)[] sides = {
                 (3, 0), (2, 0), (1, 0),
@@ -34,8 +32,10 @@ namespace Rubinator3000.DebugWindows {
 
             };
 
-        public OllDebugWindow() {
+        public OllDebugWindow(Cube cube) {
             InitializeComponent();
+
+            this.cube = cube;
 
             IEnumerable<int> ollPatterns = GetPatterns();
 
@@ -158,7 +158,7 @@ namespace Rubinator3000.DebugWindows {
             if (!selectedPattern.pattern.IsMatch(cube)) {
                 int i = 0;
                 do {
-                    cube.DoMoves(selectedPattern.algorithm, false);
+                    cube.DoMoves(selectedPattern.algorithm);
                     i++;
                 } while (!selectedPattern.pattern.IsMatch(cube) && i < max);
 

@@ -26,9 +26,6 @@ namespace Rubinator3000 {
             new CubeSide(CubeFace.BACK, (0, 0, true, 1), (3, 2, false, 1), (4, 2, true, -1), (1, 0, false, -1))
         };
 
-        public delegate void MoveEventHandler(object sender, MoveEventArgs e);
-        public event MoveEventHandler OnMoveDone;
-
         protected void RotateSide(CubeSide side) {
             CubeMatrix matrix = data[(int)side.Face];
             matrix.Rotate();
@@ -66,30 +63,23 @@ namespace Rubinator3000 {
             }
         }
 
-        public void DoMoves(IEnumerable<Move> moves, bool renderMoves = true) {
+        public void DoMoves(IEnumerable<Move> moves) {
             foreach (var move in moves) {
-                DoMove(move, renderMoves);
+                DoMove(move);
             }
         }
-        public void DoMove(CubeFace face, int count = 1, bool renderMove = true) => DoMove(new Move(face, count), renderMove);
 
         /// <summary>
         /// does a move
         /// </summary>
-        public virtual void DoMove(Move move, bool renderMove = true) {
+        public virtual void DoMove(Move move) {
             CubeSide side = sides.First(e => e.Face == move.Face);
 
             for (int c = 0; c < move.Count; c++) {
                 RotateSide(side);
             }
 
-            OnMoveDone?.Invoke(this, new MoveEventArgs(move));
-
-            if (this.isRenderCube && renderMove) {
-                DrawCube.AddMove(this, move);
-            }
-
-            Log.LogStuff("Move done: " + move.ToString());
+            Log.LogMessage("Move done: " + move.ToString());
         }
     }
 

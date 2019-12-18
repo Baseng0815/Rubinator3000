@@ -103,13 +103,10 @@ namespace Rubinator3000 {
                 throw new InvalidOperationException("Der Port ist nicht geöffnet!");
 
             if (!connected)
-                throw new InvalidOperationException("Der Arduino ist nicht verbunden!");                        
+                throw new InvalidOperationException("Der Arduino ist nicht verbunden!");
 
-            foreach (Move move in moves) {
+            foreach (Move move in moves)
                 SendMove(move);
-
-                MessageBox.Show("Move Korrekt?" + $"\r\n{move.ToString()}");
-            }            
         }
     }
 }

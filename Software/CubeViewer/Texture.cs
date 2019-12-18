@@ -16,7 +16,7 @@ namespace Rubinator3000
 
         public Texture(string filePath)
         {
-            Log.LogStuff(string.Format("Loading texture {0}.", filePath));
+            Log.LogMessage(string.Format("Loading texture {0}.", filePath));
 
             Bitmap bitmap = new Bitmap(filePath);
 

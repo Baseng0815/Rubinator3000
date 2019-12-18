@@ -12,10 +12,6 @@ namespace Rubinator3000 {
         private CubeMatrix[] data = new CubeMatrix[6];
         internal readonly bool isRenderCube;
 
-        internal CubeMatrix[] Data {
-            get => data;
-        }
-
         public EdgeStone[] Edges { get; }
         public CornerStone[] Corners { get; }
 
@@ -27,7 +23,7 @@ namespace Rubinator3000 {
             }
             else {
                 if (matrices.Length != 6)
-                    throw new ArgumentOutOfRangeException(nameof(matrices));
+                    throw new ArgumentOutOfRangeException(nameof(matrices), "value has to equal 6");
 
                 data = matrices;
             }
@@ -64,12 +60,12 @@ namespace Rubinator3000 {
             MoveCollection moves = new MoveCollection();
 
             while (moves.Count() < numberOfMoves)
-                moves.Add(new Move((CubeFace)rand.Next(5), rand.Next(1, 3)));
+                moves.Add(new Move((CubeFace)rand.Next(5), rand.Next(1, 2), Convert.ToBoolean(rand.Next(0, 1))));
 
-            Log.LogStuff(string.Format("Shuffle Cube {0} Times: {1}", numberOfMoves, moves.ToString()));
+            Log.LogMessage(string.Format("Shuffle Cube {0} Times: {1}", numberOfMoves, moves.ToString()));
 #if DEBUG
             foreach (var move in moves)
-                move.Print();
+                System.Diagnostics.Debug.WriteLine(move.ToString());
 #endif
             DoMoves(moves);
 
@@ -187,8 +183,6 @@ namespace Rubinator3000 {
                     newData[i][t] = data[i][t];
 
             }
-
-            
 
             return new Cube(newData);
         }

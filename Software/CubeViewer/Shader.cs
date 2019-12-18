@@ -20,7 +20,7 @@ namespace Rubinator3000
         {
             int shader = GL.CreateShader(type);
             string shaderSource = File.ReadAllText(file);
-            Log.LogStuff(string.Format("Shader type {0} source: {1}", type, shaderSource));
+            Log.LogMessage(string.Format("Shader type {0} source: {1}", type, shaderSource));
             GL.ShaderSource(shader, File.ReadAllText(file));
             GL.CompileShader(shader);
             var info = GL.GetShaderInfoLog(shader);
@@ -32,7 +32,7 @@ namespace Rubinator3000
 
         public Shader(string file)
         {
-            Log.LogStuff(string.Format("Loading shader {0}.", file));
+            Log.LogMessage(string.Format("Loading shader {0}.", file));
 
             ShaderProgram = GL.CreateProgram();
 
@@ -43,11 +43,11 @@ namespace Rubinator3000
             GL.AttachShader(ShaderProgram, fs);
             GL.LinkProgram(ShaderProgram);
 
-            Log.LogStuff("Shaders attached and program linked.");
+            Log.LogMessage("Shaders attached and program linked.");
 
             var info = GL.GetProgramInfoLog(ShaderProgram);
             if (!string.IsNullOrWhiteSpace(info))
-                Log.LogStuff(info);
+                Log.LogMessage(info);
 
             GL.DetachShader(ShaderProgram, vs);
             GL.DetachShader(ShaderProgram, fs);

@@ -22,7 +22,7 @@ namespace Rubinator3000 {
         }
 
         private void MenuItemResetCube_Click(object sender, RoutedEventArgs e) {
-            Cube = new Cube();
+            cube = new Cube();
         }
 
         private void MenuItemSolveCube_Click(object sender, RoutedEventArgs e) {
@@ -30,9 +30,7 @@ namespace Rubinator3000 {
         }
 
         private void MenuItemOllDebug_Click(object sender, RoutedEventArgs e) {
-            OllDebugWindow ollDebug = new OllDebugWindow() {
-                mainWindow = this
-            };
+            OllDebugWindow ollDebug = new OllDebugWindow(cube);
 
             ollDebug.Show();
         }
@@ -69,9 +67,6 @@ namespace Rubinator3000 {
 
             arduino = new ArduinoUSB(serialPort);
             arduino.Connect();
-
-            // only debug
-            arduino.SendMove(new Move(CubeFace.UP, 3));
         }
     }
 }
