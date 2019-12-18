@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rubinator3000.Solving;
 
 namespace Rubinator3000 {
     public abstract class Arduino : IDisposable {
@@ -23,14 +24,14 @@ namespace Rubinator3000 {
         }
 
         protected byte[] MoveToByte(Move move) {
-            bool isPrime = move.IsPrime;
+            //bool isPrime = move.IsPrime;
             int face = (int)move.Face;
                         
             byte moveData = (byte)((face + 1) << 1);
 
-            if(isPrime){
-                moveData |= 0x01;
-            }
+            //if(isPrime){
+            //    moveData |= 0x01;
+            //}
 
             return Enumerable.Repeat(moveData, Math.Abs(move.Count)).ToArray();
         }

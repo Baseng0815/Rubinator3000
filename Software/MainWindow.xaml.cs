@@ -289,11 +289,15 @@ namespace Rubinator3000 {
                 arduino.SendMoves(solver.SolvingMoves);
         }
 
-        private void ShuffleCube() {
+        private async void ShuffleCube() {
             
             Random rnd = new Random();
 
-            Cube.Shuffle(rnd.Next(5, 20));
+            MoveCollection shuffleMoves = Cube.Shuffle(rnd.Next(5, 20));
+
+            
+
+            await Task.Factory.StartNew(() => arduino.SendMoves(shuffleMoves));
         }        
     }
 }

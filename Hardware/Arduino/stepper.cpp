@@ -44,4 +44,5 @@ void Stepper::doMove(int steps) {
 
         delay(10);
     }
+    writeState(0,0,0,0);
 }

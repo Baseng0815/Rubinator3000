@@ -24,11 +24,11 @@ namespace Rubinator3000.CubeScan {
 
             double percentageSum = 0;
 
-            // Very high if r is far away from b and r*(106/255) is close to g
+            // Very high if r is far away from b and r*(165/255) is close to g
             percentageSum += 1 - (color.B / (double)color.R);
 
             // Calculating the ideal green value for an orange-color according to the red value
-            double orangeGValue = (color.R * (106 / (double)255));
+            double orangeGValue = (color.R * (165 / (double)255));
 
             percentageSum += orangeGValue > color.G ? color.G / orangeGValue : orangeGValue / color.G;
 
@@ -45,8 +45,9 @@ namespace Rubinator3000.CubeScan {
             percentageSum += color.R > color.G ? (color.G / (double)color.R) : (color.R / (double)color.G);
             percentageSum += color.R > color.B ? (color.B / (double)color.R) : (color.R / (double)color.B);
             percentageSum += color.G > color.B ? (color.B / (double)color.G) : (color.G / (double)color.B);
+            percentageSum += ((color.R + color.G + color.B) / (255 * 3))*10;
 
-            double percentage = percentageSum / 3;
+            double percentage = percentageSum / 4;
 
             return percentage;
         }

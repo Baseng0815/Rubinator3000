@@ -1,6 +1,6 @@
 #include "stepper.h"
 
-#define ARDUINO_UNO true
+#define ARDUINO_UNO false
 
 #define STATE_DISCONNECT 0x00
 #define STATE_CONNECT 0x01
@@ -17,12 +17,12 @@ int stepperPins[6][4] = {
 };
 #else
 int stepperPins[6][4] = {
-    { 22, 24, 26, 28 },
+    { 26, 28, 22, 24 },
     { 23, 25, 27, 29 },
-    { 32, 34, 36, 38 },
+    { 36, 38, 32, 34 },
     { 33, 35, 37, 39 },
     { 42, 44, 46, 48 },
-    { 43, 45, 47, 49 }
+    { 47, 49, 43, 45 }
 };
 #endif
 

@@ -18,7 +18,7 @@ namespace Rubinator3000
 
         private void recalculateProjectionMatrix()
         {
-            ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView((float)Utility.ToRad(fov), width / height, .001f, 10000f);
+            ProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView((float)Utility.ToRad(fov), width / height, .1f, 100f);
         }
 
         public View(int width, int height, float fov, float distance)

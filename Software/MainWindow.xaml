@@ -16,7 +16,7 @@
         <Style TargetType="{x:Type Border}">
             <Setter Property="Background" Value="{StaticResource BackgroundColor}" />
             <Setter Property="BorderBrush" Value="{StaticResource BorderColor}" />
-            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderThickness" Value="3" />
             <Setter Property="Margin" Value="2,2,2,2" />
             <Setter Property="Padding" Value="2,2,2,2" />
         </Style>

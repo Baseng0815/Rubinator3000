@@ -61,7 +61,7 @@ namespace Rubinator3000.CubeScan {
 
                 for (int i = y; i < y + deltaY; i++) {
                     for (int j = x; j < x + deltaX; j++) {
-                        int offset = y * _bitmapData.Stride + x * _bytesPerPixel;
+                        int offset = i * _bitmapData.Stride + j * _bytesPerPixel;
                         blue += ptrFirstPixel[offset];
                         green += ptrFirstPixel[offset + 1];
                         red += ptrFirstPixel[offset + 2];

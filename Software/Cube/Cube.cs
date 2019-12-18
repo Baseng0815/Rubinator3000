@@ -59,7 +59,7 @@ namespace Rubinator3000 {
         /// <summary>
         /// Randomly shuffle the cube numberOfMoves amount of times
         /// </summary>
-        public void Shuffle(int numberOfMoves) {
+        public MoveCollection Shuffle(int numberOfMoves) {
             Random rand = new Random();
             MoveCollection moves = new MoveCollection();
 
@@ -72,6 +72,8 @@ namespace Rubinator3000 {
                 move.Print();
 #endif
             DoMoves(moves);
+
+            return moves;
         }
 
         internal CubeColor At(int face, int tile) {

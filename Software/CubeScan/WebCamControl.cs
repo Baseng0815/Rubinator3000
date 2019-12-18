@@ -215,13 +215,35 @@ namespace Rubinator3000.CubeScan {
             Mat mat = new Mat();
             videoCapture.Read(mat);
             Bitmap readBitmap = mat.Bitmap;
+            /*
+            int threshold = 100;
+            var contrast = Math.Pow((100.0 + threshold) / 100.0, 2);
 
+            Bitmap contrasted = SetContrast(readBitmap, 120);
+            */
             // Display the received frame-update on gui
             DisplayOnWpfImageControl(bitmapToDisplay: readBitmap, displayWriteableBitmap: previewBitmap);
             frameToDisplay = new Bitmap(readBitmap);
             readBitmap.Dispose();
         }
+        /*
+        private static Bitmap SetContrast(Bitmap bmp, int threshold) {
 
+            Bitmap procBit = new Bitmap(bmp);
+            BitmapData bitmapData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+
+            for (int i = 0; i < y + deltaY; i++) {
+                for (int j = 0; j < x + deltaX; j++) {
+                    int offset = y * _bitmapData.Stride + x * _bytesPerPixel;
+                    blue += ptrFirstPixel[offset];
+                    green += ptrFirstPixel[offset + 1];
+                    red += ptrFirstPixel[offset + 2];
+
+                    pixelCount++;
+                }
+            }
+        }
+        */
         private Color ReadColorAtPosition(ReadPosition pos) {
 
             if (currentFABitmap.HasValidBitmap()) {
@@ -326,7 +348,8 @@ namespace Rubinator3000.CubeScan {
                     Application.Current.Dispatcher.Invoke(() => {
 
                         // Change circle color of the current position on the gui
-                        CircleByIndicies(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush(currentCubeColor);
+                        //CircleByIndicies(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush(currentCubeColor);
+                        CircleByIndicies(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush(((MainWindow)Application.Current.MainWindow).Cube.At(new Position(((CubeFace)currentPosition.FaceIndex), currentPosition.RowIndex*3+currentPosition.ColIndex)));
                     });
                 }
 
@@ -425,11 +448,14 @@ namespace Rubinator3000.CubeScan {
 
                 for (int j = 0; j < PositionsToReadAt.GetLength(1); j++) {
 
-                    ReadPosition tempPosition = PositionsToReadAt[i, j];
+                        ReadPosition tempPosition = PositionsToReadAt[i, j];
+                    
+                    if (tempPosition != null) {
 
-                    if (tempPosition.RowIndex == rowIndex && tempPosition.ColIndex == colIndex && tempPosition.FaceIndex == faceIndex) {
+                        if (tempPosition.RowIndex == rowIndex && tempPosition.ColIndex == colIndex && tempPosition.FaceIndex == faceIndex) {
 
-                        return tempPosition.Circle;
+                            return tempPosition.Circle;
+                        }
                     }
                 }
             }
@@ -549,7 +575,8 @@ namespace Rubinator3000.CubeScan {
 
             Application.Current.Dispatcher.Invoke(() => {
 
-                circle = GenerateCircle(pos.AssumedCubeColor);
+                //circle = GenerateCircle(pos.AssumedCubeColor);
+                circle = GenerateCircle(((MainWindow)Application.Current.MainWindow).Cube.At(new Position((CubeFace)pos.FaceIndex, pos.RowIndex*3+pos.ColIndex)));
 
                 // When you hover over the circle on the gui, you can see, which position is being read out at this position
                 circle.ToolTip = string.Format("{0}[{1},{2}]", (CubeColor)pos.FaceIndex, pos.RowIndex, pos.ColIndex);
@@ -612,6 +639,10 @@ namespace Rubinator3000.CubeScan {
         }
 
         public static void DisplayOnWpfImageControl(Bitmap bitmapToDisplay, WriteableBitmap displayWriteableBitmap) {
+
+            if (bitmapToDisplay == null) {
+                return;
+            }
 
             Application.Current.Dispatcher.Invoke(() => {
 
