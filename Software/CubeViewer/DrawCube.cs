@@ -78,24 +78,33 @@ namespace Rubinator3000 {
             }
         }
 
+        private static void KeepTaskAlive() {
+            bool makeNewTask = false;
+            if (task != null) {
+                if (task.Status != TaskStatus.Running) {
+                    makeNewTask = true;
+                }
+            }
+            else makeNewTask = true;
+
+            if (makeNewTask)
+                task = Task.Factory.StartNew(() => AnimateMovesTask());
+        }
+
         // do animated moves
         private static void AnimateMovesTask() {
             while (moveQueue.Count > 0) {
                 //Log.LogMessage("Animated move executing in animated move task");
                 AnimatedMove animMove;
 
-                lock (moveQueue) {
-                    animMove = moveQueue.Dequeue();
-                }
+                animMove = moveQueue.Dequeue();
 
                 // do animation if move is given
                 if (animMove.Move != null) {
                     Stopwatch watch = new Stopwatch();
 
                     float anglePerMillisecond = 90 / (float)Settings.MoveAnimatedTime;
-                    // if move is null, skip animation and directly set state
-                    if (animMove.Move.IsPrime)
-                        anglePerMillisecond *= -1;
+                    anglePerMillisecond *= animMove.Move.Direction;
 
                     Debug.WriteLine(anglePerMillisecond);
 
@@ -103,30 +112,26 @@ namespace Rubinator3000 {
 
                     // rotate until 90 degrees is hit, then reset rotation and copy cube
                     // also, issue a redraw
-                    while (Math.Abs(faceRotations[(int)animMove.Move.Face]) < 90 * animMove.Move.Count) {
+                    while (Math.Abs(faceRotations[(int)animMove.Move.Face]) < 90 * Math.Abs(animMove.Move.Count)) {
                         SetFaceRotation(animMove.Move.Face, (float)(watch.ElapsedMilliseconds * anglePerMillisecond));
                         CubeViewer.Window.Invalidate();
                     }
 
                     // set new state and reset rotation
-                    lock (currentState) {
-                        currentState.DoMove(animMove.Move);
-                    }
+                    currentState.DoMove(animMove.Move);
                     SetFaceRotation(animMove.Move.Face, 0);
 
                 // skip animation and directly set end state
                 } else {
-                    lock (currentState) {
-                        currentState = animMove.EndState;
-                    }
+                    //currentState = animMove.EndState;
                     CubeViewer.Window.Invalidate();
                 }
             }
         }
 
-        public static void Init(Vector3[] _renderColors, Cube cube = null) {
-            cubeShader = new Shader("Resources/CubeShader");
-            flatShader = new Shader("Resources/FlatShader");
+        public static void Init(Vector3[] _renderColors) {
+            cubeShader = new Shader("Resources/Shaders/CubeShader");
+            flatShader = new Shader("Resources/Shaders/FlatShader");
 
             cubeShader.Bind();
 
@@ -134,10 +139,7 @@ namespace Rubinator3000 {
             for (int i = 0; i < 2; i++)
                 cubeShader.Upload(string.Format("texture{0}", i.ToString()), i);
 
-            if (cube != null)
-                currentState = cube;
-            else
-                currentState = new Cube();
+            currentState = new Cube();
 
             renderColors = _renderColors;
 
@@ -163,34 +165,20 @@ namespace Rubinator3000 {
         }
 
         /// <summary>
-        /// Adds the move to the queue
-        /// <p>Acts like state set when no move is given</p>
-        /// <p>Acts like a normal move when no end state is given</p>
+        /// Adds the end state to the queue
         /// </summary>
-        public static void AddMove(Cube endState = null, Move move = null) {
-            if (endState == null && move == null) {
-                throw new ArgumentException("endState and move cannot both be null");
-                return;
-            }
+        /// <param name="endState"></param>
+        public static void AddState(Cube endState) {
+            moveQueue.Enqueue(new AnimatedMove(null, (Cube)endState.Clone()));
+            KeepTaskAlive();
+        }
 
-            // deep copy because otherwise, the arrays would refer to the same memory
-            lock (moveQueue) {
-                if (endState != null)
-                    moveQueue.Enqueue(new AnimatedMove(move, (Cube)endState.Clone()));
-                else
-                    moveQueue.Enqueue(new AnimatedMove(move, null));
-            }
-
-            bool makeNewTask = false;
-            if (task != null) {
-                if (task.Status != TaskStatus.Running) {
-                    makeNewTask = true;
-                }
-            }
-            else makeNewTask = true;
-
-            if (makeNewTask)
-                task = Task.Factory.StartNew(() => AnimateMovesTask());
+        /// <summary>
+        /// Adds the move to the queue
+        /// </summary>
+        public static void AddMove(Move move) {
+            moveQueue.Enqueue(new AnimatedMove(move, null));
+            KeepTaskAlive();
         }
 
         public static void Draw(View view) {
@@ -221,32 +209,30 @@ namespace Rubinator3000 {
                             new Vector3(.1f));
 
                     // cube color data (matrix array)
-                    lock (currentState) {
-                        var data = currentState.GetData();
+                    var data = currentState.GetData();
 
-                        // each tile
-                        for (CubeFace face = 0; (int)face < 6; face++) {
-                            // select positions relevant for current tile face
-                            foreach (Position pos in CuboidTransformations.CuboidMappings[transform.Position].Where(x => x.Face == face)) {
-                                CubeColor color = data[(int)pos.Face][pos.Tile];
-                                cubeShader.Upload(string.Format("color[{0}]", ((int)pos.Face).ToString()),
-                                    renderColors[(int)color]);
-                            }
-
-                            var rotMat = cuboidFace != null ? faceRotationMatrices[(int)cuboidFace] : Matrix4.Identity;
-                            var model = CubeTransformations.Transformations[(int)face].GetMatrix() * cuboidMat * rotMat;
-
-                            cubeShader.Upload(string.Format("modelMatrix[{0}]", ((int)face).ToString()), model);
-                            cubeShader.Upload("cubeModelMatrix", Transformation.GetMatrix());
+                    // each tile
+                    for (CubeFace face = 0; (int)face < 6; face++) {
+                        // select positions relevant for current tile face
+                        foreach (Position pos in CuboidTransformations.CuboidMappings[transform.Position].Where(x => x.Face == face)) {
+                            CubeColor color = data[(int)pos.Face][pos.Tile];
+                            cubeShader.Upload(string.Format("color[{0}]", ((int)pos.Face).ToString()),
+                                renderColors[(int)color]);
                         }
 
-                        // access time for a dict is close to O(1), so no significant performance loss
-                        ResourceManager.LoadedModels["cubePlane"].BindVao();
-                        ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
-                        ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
+                        var rotMat = cuboidFace != null ? faceRotationMatrices[(int)cuboidFace] : Matrix4.Identity;
+                        var model = CubeTransformations.Transformations[(int)face].GetMatrix() * cuboidMat * rotMat;
 
-                        GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, (int)6);
+                        cubeShader.Upload(string.Format("modelMatrix[{0}]", ((int)face).ToString()), model);
+                        cubeShader.Upload("cubeModelMatrix", Transformation.GetMatrix());
                     }
+
+                    // access time for a dict is close to O(1), so no significant performance loss
+                    ResourceManager.LoadedModels["cubePlane"].BindVao();
+                    ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
+                    ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
+
+                    GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, (int)6);
                 }
 
                 // draw flat

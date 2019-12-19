@@ -21,11 +21,18 @@ namespace Rubinator3000.Communication {
         }
 
         public void Run() {
+            bool confirmationNeeded = true;
             Application.Current.Dispatcher.Invoke(moveHistory.Clear);
             foreach (Move move in moves) {
-                //MessageBox.Show("Next move: " + move.ToString());
+                if (confirmationNeeded) {
+                    var result = MessageBox.Show("Next move: " + move.ToString() + "\nContinue stepping?", "Confirm", MessageBoxButton.YesNoCancel, MessageBoxImage.Information,MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly);
+                    if (result == MessageBoxResult.No)
+                        confirmationNeeded = false;
+                    else if (result == MessageBoxResult.Cancel)
+                        return;
+                }
                 //arduino.SendMove(move);
-                DrawCube.AddMove(move: move);
+                DrawCube.AddMove(move);
                 Application.Current.Dispatcher.Invoke( delegate { moveHistory.AppendText(move.ToString()); });
             }
         }

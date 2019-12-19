@@ -10,12 +10,11 @@ namespace Rubinator3000 {
     [Serializable]
     public partial class Cube : ICloneable {
         private CubeMatrix[] data = new CubeMatrix[6];
-        internal readonly bool isRenderCube;
 
         public EdgeStone[] Edges { get; }
         public CornerStone[] Corners { get; }
 
-        public Cube(CubeMatrix[] matrices = null, bool isRenderCube = false) {
+        public Cube(CubeMatrix[] matrices = null) {
             if (matrices == null) {
                 data = new CubeMatrix[6];
                 for (int face = 0; face < 6; face++)
@@ -27,8 +26,6 @@ namespace Rubinator3000 {
 
                 data = matrices;
             }
-
-            this.isRenderCube = isRenderCube;
 
             Edges = EdgeStonePositions.Select(p => new EdgeStone(new Tuple<CubeColor, CubeColor>(At(p.Item1), At(p.Item2)), this)).ToArray();
             Corners = CornerStonePositions.Select(p => new CornerStone(new Tuple<CubeColor, CubeColor, CubeColor>(At(p.Item1), At(p.Item2), At(p.Item3)), this)).ToArray();
@@ -47,9 +44,6 @@ namespace Rubinator3000 {
         /// </summary>
         public void SetTile(CubeFace face, int tile, CubeColor color) {
             data[(int)face][tile] = color;
-            if (isRenderCube) {
-                DrawCube.AddMove(this);
-            }
         }
 
         /// <summary>
@@ -59,8 +53,12 @@ namespace Rubinator3000 {
             Random rand = new Random();
             MoveCollection moves = new MoveCollection();
 
+            int[] counts = new int[] {
+                -1, 1, 2
+            };
+
             while (moves.Count() < numberOfMoves)
-                moves.Add(new Move((CubeFace)rand.Next(5), rand.Next(1, 2), Convert.ToBoolean(rand.Next(0, 1))));
+                moves.Add(new Move((CubeFace)rand.Next(5), counts[rand.Next(counts.Length)]));
 
             Log.LogMessage(string.Format("Shuffle Cube {0} Times: {1}", numberOfMoves, moves.ToString()));
 #if DEBUG
@@ -85,7 +83,7 @@ namespace Rubinator3000 {
         }
 
         /// <summary>
-        /// Returns 
+        /// Returns the cube data
         /// </summary>
         /// <returns></returns>
         public CubeMatrix[] GetData() {

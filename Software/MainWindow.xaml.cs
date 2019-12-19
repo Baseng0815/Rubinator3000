@@ -90,32 +90,40 @@ namespace Rubinator3000 {
         }
 
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
+            int direction = Keyboard.IsKeyDown(Key.LeftShift) ? -1 : 1;
+            Move move = null;
+
             switch (e.Key) {
                 case Key.L:
-                    cube.DoMove(new Move(CubeFace.LEFT, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
+                    move = new Move(CubeFace.LEFT, direction);
                     break;
                 case Key.U:
-                    cube.DoMove(new Move(CubeFace.UP, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
+                    move = new Move(CubeFace.UP, direction);
                     break;
                 case Key.F:
-                    cube.DoMove(new Move(CubeFace.FRONT, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
+                    move = new Move(CubeFace.FRONT, direction);
                     break;
                 case Key.D:
-                    cube.DoMove(new Move(CubeFace.DOWN, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
+                    move = new Move(CubeFace.DOWN, direction);
                     break;
                 case Key.R:
-                    cube.DoMove(new Move(CubeFace.RIGHT, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
+                    move = new Move(CubeFace.RIGHT, direction);
                     break;
                 case Key.B:
-                    cube.DoMove(new Move(CubeFace.BACK, isPrime: Keyboard.IsKeyDown(Key.LeftShift)));
+                    move = new Move(CubeFace.BACK, direction);
                     break;
                 case Key.S:
-                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                    if (Keyboard.IsKeyDown(Key.LeftShift))
                         ShuffleCube();
                     else {
                         SolveCube();
                     }
                     break;
+            }
+
+            if (move != null) {
+                cube.DoMove(move);
+                DrawCube.AddMove(move);
             }
         }
 
@@ -272,6 +280,7 @@ namespace Rubinator3000 {
 
             MoveSynchronizer synchronizer = new MoveSynchronizer(solvingMoves, arduino, moveHistoryOutput);
             await Task.Run(synchronizer.Run);
+            DrawCube.AddState(cube);
         }
 
         private async void ShuffleCube() {

@@ -9,8 +9,32 @@ namespace Rubinator3000
 {
     public class Move {
         public CubeFace Face;
-        public int Count;
-        public bool IsPrime;
+
+        private int count;
+        public int Count {
+            get => count;
+
+            // guarantee that count always stays in the [-2;2] interval
+            set {
+                count = value % 4;
+                if      (count == 3)  count = -1;
+                else if (count == -3) count = 1;
+            }
+        }
+
+        // returns count in positive only range (e.g. -1 becomes 3)
+        public int CountPositive {
+            get {
+                return (count + 4) % 4;
+            }
+        }
+
+        // -1 on prime, 1 on non-prime moves
+        public int Direction {
+            get {
+                return Count / Math.Abs(Count);
+            }
+        }
 
         // used for mapping Faces to strings (e.g. 0 to L)
         private static readonly string[] mappings = new string[]
@@ -18,19 +42,10 @@ namespace Rubinator3000
             "L", "U", "F", "D", "R", "B"
         };
 
-        public Move(CubeFace Face, int count = 1, bool isPrime = false)
+        public Move(CubeFace Face, int Count = 1)
         {
             this.Face = Face;
-            this.IsPrime = isPrime;
-
-            // @TODO: handle count == 0 cases (handle normally? throw exception?)
-
-            // in case count is 3, optimize it to use an inverted turn
-            if (Count == 3 || Count == -1) {
-                Count = 1;
-                IsPrime = true;
-            } else
-                this.Count = count % 4;
+            this.Count = Count;
         }
 
         public override bool Equals(object obj)
@@ -39,21 +54,21 @@ namespace Rubinator3000
                 return false;
 
             var move = (Move)obj;
-            return Face == move.Face && IsPrime == move.IsPrime;
+            return Face == move.Face && Count == move.Count;
         }
 
         public override int GetHashCode()
         {
             var hashCode = 1804491660;
             hashCode = hashCode * -1521134295 + Face.GetHashCode();
-            hashCode = hashCode * -1521134295 + IsPrime.GetHashCode();
+            hashCode = hashCode * -1521134295 + Count.GetHashCode();
             return hashCode;
         }
 
         public override string ToString()
         {
             string str = mappings[(int)Face];
-            if (IsPrime) str += "i";
+            if (Direction == -1) str += "i";
             else if (Count == 2)
                 str += "2";
 
@@ -64,6 +79,6 @@ namespace Rubinator3000
 
         public static bool operator !=(Move left, Move right) => !(left == right);
 
-        public Move GetInverted() => new Move(Face, Count, !IsPrime);
+        public Move GetInverted() => new Move(Face, -Count);
     }
 }

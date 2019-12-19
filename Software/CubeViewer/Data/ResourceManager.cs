@@ -14,8 +14,8 @@ namespace Rubinator3000
 
         private static void InitCubeData()
         {
-            LoadedTextures.Add("cubeBlendFrame", new Texture("Resources/BlendFrame.png"));
-            LoadedTextures.Add("cubeBumpMap", new Texture("Resources/NormalMap1.png"));
+            LoadedTextures.Add("cubeBlendFrame", new Texture("Resources/Textures/BlendFrame.png"));
+            LoadedTextures.Add("cubeBumpMap", new Texture("Resources/Textures/NormalMap1.png"));
             Log.LogMessage("Texture loading finished.");
 
             // geometry
@@ -38,6 +38,7 @@ namespace Rubinator3000
             Vector3 normal = new Vector3(0, 1, 0);
 
             // calculate tangent/bitangent vectors of both triangles
+            // taken from https://learnopengl.com/Advanced-Lighting/Normal-Mapping
             Vector3 tangent1, bitangent1;
             Vector3 tangent2, bitangent2;
 
@@ -115,7 +116,7 @@ namespace Rubinator3000
             };
 
             LoadedModels.Add("flatPlane", new Model(vertices, false, indices));
-            LoadedTextures.Add("flatBlendFrame", new Texture("Resources/BlendFrameThick.png"));
+            LoadedTextures.Add("flatBlendFrame", new Texture("Resources/Textures/BlendFrameThick.png"));
         }
 
         static ResourceManager()

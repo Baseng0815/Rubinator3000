@@ -63,6 +63,10 @@ namespace Rubinator3000 {
             }
         }
 
+        /// <summary>
+        /// Execute a collection of moves
+        /// </summary>
+        /// <param name="moves"></param>
         public void DoMoves(IEnumerable<Move> moves) {
             foreach (var move in moves) {
                 DoMove(move);
@@ -70,16 +74,14 @@ namespace Rubinator3000 {
         }
 
         /// <summary>
-        /// does a move
+        /// Execute a move
         /// </summary>
         public virtual void DoMove(Move move) {
             CubeSide side = sides.First(e => e.Face == move.Face);
 
-            for (int c = 0; c < move.Count; c++) {
+            for (int c = 0; c < move.CountPositive; c++) {
                 RotateSide(side);
             }
-
-            Log.LogMessage("Move done: " + move.ToString());
         }
     }
 

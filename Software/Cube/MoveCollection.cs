@@ -77,7 +77,7 @@ namespace Rubinator3000 {
             MoveCollection newMoves = new MoveCollection();
             for (IEnumerator<Move> e = GetEnumerator(); e.MoveNext(); ) {
                 Move m = e.Current;
-                newMoves.Add(new Move(orientation.TransformFace(m.Face), m.Count, m.IsPrime));
+                newMoves.Add(new Move(orientation.TransformFace(m.Face), m.Count));
             }
 
             return newMoves;
@@ -108,9 +108,11 @@ namespace Rubinator3000 {
                     !(faceMappings.Contains(c) || orientationMoveChars.Contains(c) || middleMoves.Contains(c))).ToArray());
                 i += postfix.Length;
 
-                // get rotations count and direction
-                bool isPrime = postfix.EndsWith("i");
-                int count = postfix.EndsWith("2") ? 2 : 1;
+                // get rotation count and direction
+                int direction   = postfix.EndsWith("i") ? -1 : 1;
+                int count       = postfix.EndsWith("2") ? 2 : 1;
+
+                count *= direction;
 
                 // normal face move
                 if (faceMappings.Contains(moveChar)) {
@@ -137,24 +139,24 @@ namespace Rubinator3000 {
                         face = Cube.GetOpponentFace(face);
                     }
 
-                    moves.Add(new Move(face, count, isPrime));
+                    moves.Add(new Move(face, count * direction));
                 }
                 else if (middleMoves.Contains(moveChar)) {
                     switch (char.ToLower(moveChar)) {
                         case 'm':
                             ChangeOrientation(OrientationMove.X, -count);
-                            moves.Add(new Move(cubeOrientation[(int)CubeFace.RIGHT], count, isPrime));
-                            moves.Add(new Move(cubeOrientation[(int)CubeFace.LEFT], count, !isPrime));
+                            moves.Add(new Move(cubeOrientation[(int)CubeFace.RIGHT], count));
+                            moves.Add(new Move(cubeOrientation[(int)CubeFace.LEFT], -count));
                             break;
                         case 'e':
                             ChangeOrientation(OrientationMove.Y, -count);
-                            moves.Add(new Move(cubeOrientation[(int)CubeFace.UP], count, isPrime));
-                            moves.Add(new Move(cubeOrientation[(int)CubeFace.DOWN], -count, !isPrime));
+                            moves.Add(new Move(cubeOrientation[(int)CubeFace.UP], count));
+                            moves.Add(new Move(cubeOrientation[(int)CubeFace.DOWN], -count));
                             break;
                         case 's':
                             ChangeOrientation(OrientationMove.Z, count);
-                            moves.Add(new Move(cubeOrientation[(int)CubeFace.FRONT], count, !isPrime));
-                            moves.Add(new Move(cubeOrientation[(int)CubeFace.BACK], count, isPrime));
+                            moves.Add(new Move(cubeOrientation[(int)CubeFace.FRONT], -count));
+                            moves.Add(new Move(cubeOrientation[(int)CubeFace.BACK], count));
                             break;
                     }
                 }
