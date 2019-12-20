@@ -65,8 +65,7 @@ namespace Rubinator3000 {
                 MessageBox.Show("Bitte einen gültigen Port auswählen!");
             }
 
-            arduino = new ArduinoUSB(serialPort);
-            arduino.Connect();
+            moveSynchronizer.SetArduino(serialPort);
         }
     }
 }

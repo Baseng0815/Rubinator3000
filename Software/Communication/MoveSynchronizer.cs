@@ -9,32 +9,55 @@ using System.Windows.Controls;
 
 namespace Rubinator3000.Communication {
     // synchronizes sending moves to the arduino and redrawing the cube
+    // wraps arduino
     public class MoveSynchronizer {
-        private MoveCollection moves;
-        private Arduino arduino;
+        private Arduino arduino = null;
         private TextBox moveHistory;
 
-        public MoveSynchronizer(MoveCollection moves, Arduino arduino, TextBox moveHistory) {
-            this.moves = moves;
-            this.arduino = arduino;
+        public MoveSynchronizer(TextBox moveHistory) {
             this.moveHistory = moveHistory;
         }
 
-        public void Run() {
-            bool confirmationNeeded = true;
-            Application.Current.Dispatcher.Invoke(moveHistory.Clear);
-            foreach (Move move in moves) {
-                if (confirmationNeeded) {
-                    var result = MessageBox.Show("Next move: " + move.ToString() + "\nContinue stepping?", "Confirm", MessageBoxButton.YesNoCancel, MessageBoxImage.Information,MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly);
-                    if (result == MessageBoxResult.No)
-                        confirmationNeeded = false;
-                    else if (result == MessageBoxResult.Cancel)
-                        return;
+        public void SetArduino(string portName) {
+            arduino = new ArduinoUSB(portName);
+            arduino.Connect();
+        }
+
+        public Task RunAsync(Move move) {
+            return Task.Run(delegate {
+                if (arduino == null) {
+                    Log.LogMessage("Arduino not connected");
+                    return;
                 }
-                //arduino.SendMove(move);
+
+                Application.Current.Dispatcher.Invoke(moveHistory.Clear);
                 DrawCube.AddMove(move);
-                Application.Current.Dispatcher.Invoke( delegate { moveHistory.AppendText(move.ToString()); });
-            }
+                arduino.SendMove(move);
+                Application.Current.Dispatcher.Invoke(delegate { moveHistory.AppendText(move.ToString()); });
+            });
+        }
+
+        public Task RunAsync(MoveCollection moves) {
+            return Task.Run(delegate {
+                if (arduino == null) {
+                    Log.LogMessage("Arduino not connected");
+                    return;
+                }
+
+                bool confirmationNeeded = true;
+                foreach (Move move in moves) {
+                    if (confirmationNeeded) {
+                        var result = MessageBox.Show("Next move: " + move.ToString() + "\nContinue stepping?", "Confirm", MessageBoxButton.YesNoCancel, MessageBoxImage.Information, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly);
+                        if (result == MessageBoxResult.No)
+                            confirmationNeeded = false;
+                        else if (result == MessageBoxResult.Cancel)
+                            return;
+                    }
+                    DrawCube.AddMove(move);
+                    arduino.SendMove(move);
+                    Application.Current.Dispatcher.Invoke(delegate { moveHistory.AppendText(move.ToString()); });
+                }
+            });
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Rubinator3000 {
                 throw new ArgumentException($"Der Port\"{portName}\" wurde nicht gefunden!", nameof(portName));
 
             serial = new SerialPort(portName, baudRate);
+            serial.ReadTimeout = Settings.ArduinoTimeout;
 
             // open serial port
             try {
@@ -35,9 +36,16 @@ namespace Rubinator3000 {
         public override void Connect() {
             serial.Write(new byte[] { 0xA1 }, 0, 1);
 
-            byte response = (byte)serial.ReadByte();
+            byte response;
+            try {
+                response = (byte)serial.ReadByte();
+            } catch (TimeoutException e) {
+                Log.LogMessage(e.ToString());
+                return;
+            }
+
             if (response != 0xF1) {
-                throw new InvalidProgramException("Aduinoprogramm ist nicht korrekt");
+                throw new InvalidProgramException("Arduinoprogramm ist nicht korrekt");
             }
             else {
                 connected = true;
@@ -86,7 +94,7 @@ namespace Rubinator3000 {
                     byte response = await getResponse;
 
                     if (response != expectedResonse) {
-                        throw new Exception();
+                        throw new ArgumentException("Wrong response. Expected: " + expectedResonse + ", but got " + response);
                     }
                     else {
                         responseCount++;

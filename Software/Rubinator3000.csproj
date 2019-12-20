@@ -101,6 +101,7 @@
       <DependentUpon>OllDebugWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Log.cs" />
+    <Compile Include="MainWindowEvents.cs" />
     <Compile Include="MainWindowMenu.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Solving\CrossSolver.cs" />
