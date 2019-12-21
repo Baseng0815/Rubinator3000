@@ -15,15 +15,15 @@ namespace Rubinator3000 {
         public abstract void Connect();
         public abstract void Disconnect();
 
-        protected byte[] MoveToByte(Move move) {
+        protected static byte[] MoveToByte(Move move) {
             //bool isPrime = move.IsPrime;
             int face = (int)move.Face;
-                        
+
             byte moveData = (byte)((face + 1) << 1);
 
-            //if(isPrime){
-            //    moveData |= 0x01;
-            //}
+            if(move.Direction == -1){
+                moveData |= 0x01;
+            }
 
             return Enumerable.Repeat(moveData, Math.Abs(move.Count)).ToArray();
         }

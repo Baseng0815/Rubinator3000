@@ -88,7 +88,7 @@ namespace Rubinator3000 {
             else makeNewTask = true;
 
             if (makeNewTask)
-                task = Task.Factory.StartNew(() => AnimateMovesTask());
+                task = Task.Run(AnimateMovesTask);
         }
 
         // do animated moves
@@ -106,24 +106,23 @@ namespace Rubinator3000 {
                     float anglePerMillisecond = 90 / (float)Settings.MoveAnimatedTime;
                     anglePerMillisecond *= animMove.Move.Direction;
 
-                    Debug.WriteLine(anglePerMillisecond);
-
                     watch.Start();
 
-                    // rotate until 90 degrees is hit, then reset rotation and copy cube
+                    // rotate until wanted angle is hit, then reset rotation and update internal state
                     // also, issue a redraw
                     while (Math.Abs(faceRotations[(int)animMove.Move.Face]) < 90 * Math.Abs(animMove.Move.Count)) {
-                        SetFaceRotation(animMove.Move.Face, (float)(watch.ElapsedMilliseconds * anglePerMillisecond));
+                        SetFaceRotation(animMove.Move.Face, watch.ElapsedMilliseconds * anglePerMillisecond);
                         CubeViewer.Window.Invalidate();
                     }
 
                     // set new state and reset rotation
                     currentState.DoMove(animMove.Move);
+                    Log.LogMessage(animMove.Move.CountPositive + " - " + animMove.Move.Count);
                     SetFaceRotation(animMove.Move.Face, 0);
 
                 // skip animation and directly set end state
                 } else {
-                    //currentState = animMove.EndState;
+                    currentState = animMove.EndState;
                     CubeViewer.Window.Invalidate();
                 }
             }

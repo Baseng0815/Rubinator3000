@@ -18,32 +18,33 @@ namespace Rubinator3000.Communication {
             this.moveHistory = moveHistory;
         }
 
-        public void SetArduino(string portName) {
+        public void ConnectArduino(string portName) {
+            if (arduino != null)
+                arduino.Disconnect();
             arduino = new ArduinoUSB(portName);
             arduino.Connect();
         }
 
+        public void DisconnectArduino() {
+            arduino.Disconnect();
+        }
+
         public Task RunAsync(Move move) {
             return Task.Run(delegate {
-                if (arduino == null) {
-                    Log.LogMessage("Arduino not connected");
-                    return;
-                }
-
                 Application.Current.Dispatcher.Invoke(moveHistory.Clear);
                 DrawCube.AddMove(move);
-                arduino.SendMove(move);
+
+                if (arduino == null)
+                    Log.LogMessage("Arduino not connected");
+                else
+                    arduino.SendMove(move);
+
                 Application.Current.Dispatcher.Invoke(delegate { moveHistory.AppendText(move.ToString()); });
             });
         }
 
         public Task RunAsync(MoveCollection moves) {
             return Task.Run(delegate {
-                if (arduino == null) {
-                    Log.LogMessage("Arduino not connected");
-                    return;
-                }
-
                 bool confirmationNeeded = true;
                 foreach (Move move in moves) {
                     if (confirmationNeeded) {
@@ -53,15 +54,20 @@ namespace Rubinator3000.Communication {
                         else if (result == MessageBoxResult.Cancel)
                             return;
                     }
+
                     DrawCube.AddMove(move);
-                    arduino.SendMove(move);
+
+                    if (arduino == null)
+                        Log.LogMessage("Arduino not connected");
+                    else
+                        arduino.SendMove(move);
+
                     Application.Current.Dispatcher.Invoke( delegate {
-                    if (moveHistory.Text.Length == 0) {
+
+                    if (moveHistory.Text.Length == 0)
                         moveHistory.AppendText(move.ToString());
-                    }
-                    else {
+                    else
                         moveHistory.AppendText(", " + move.ToString());
-                    }
                 });
                 }
             });

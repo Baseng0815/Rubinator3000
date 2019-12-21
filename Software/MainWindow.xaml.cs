@@ -88,6 +88,8 @@ namespace Rubinator3000 {
             while (logging) {
                 while (messages.Count == 0) {
                     Thread.Sleep(20);
+                    if (!logging)
+                        return;
                 };
 
                 string message = messages.Dequeue();

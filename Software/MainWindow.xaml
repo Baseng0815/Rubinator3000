@@ -132,6 +132,7 @@
                     </StackPanel>
                 </Border>
                 <MenuItem Header="Verbinden" Click="MenuItemConnect_Click" />
+                <MenuItem Header="Trennen" Click="MenuItemDisconnect_Click" />
             </MenuItem>
             
 

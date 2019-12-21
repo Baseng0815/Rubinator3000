@@ -15,9 +15,10 @@ namespace Rubinator3000 {
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
-#if Camera
+            Log.LogMessage("Shutting down..");
             DrawCube.StopDrawing();
 
+#if Camera
             for (int i = 0; i < webCamControls.Length; i++) {
 
                 webCamControls[i].StopThread();
@@ -106,8 +107,7 @@ namespace Rubinator3000 {
             }
 
             if (move != null) {
-                cube.DoMove(move);
-                DrawCube.AddMove(move);
+                moveSynchronizer.RunAsync(move);
             }
         }
 

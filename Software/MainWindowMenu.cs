@@ -59,13 +59,19 @@ namespace Rubinator3000 {
             }
         }
 
+        // Hardware
+
         private void MenuItemConnect_Click(object sender, RoutedEventArgs e) {
             string serialPort = menuItemCOMPort.Text;
             if (!System.IO.Ports.SerialPort.GetPortNames().Contains(serialPort)) {
                 MessageBox.Show("Bitte einen gültigen Port auswählen!");
             }
 
-            moveSynchronizer.SetArduino(serialPort);
+            moveSynchronizer.ConnectArduino(serialPort);
+        }
+
+        private void MenuItemDisconnect_Click(object sender, RoutedEventArgs e) {
+            moveSynchronizer.DisconnectArduino();
         }
     }
 }
