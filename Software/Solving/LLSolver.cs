@@ -43,8 +43,9 @@ namespace Rubinator3000.Solving {
                         c++;
                     }
 
-                    algorithm = OllPatterns.First(p => p.pattern.IsMatch(cube)).algorithm;
-                    DoMoves(algorithm);
+                    (OllPattern p, MoveCollection a) pattern = OllPatterns.First(p => p.pattern.IsMatch(cube));
+                    Log.LogMessage($"OLL Pattern {pattern.p.Number}");
+                    DoMoves(pattern.a);
                 }
 
                 if (!GetCubeSolved()) {
@@ -54,19 +55,16 @@ namespace Rubinator3000.Solving {
                         c++;
                     }
 
-                    algorithm = PllPatterns.First(p => p.pattern.IsMatch(cube)).algorithm;
-                    DoMoves(algorithm);                    
+                    (PllPattern p, MoveCollection a) pattern = PllPatterns.First(p => p.pattern.IsMatch(cube));
+                    Log.LogMessage($"PLL Pattern {pattern.p.Number}");
+                    DoMoves(pattern.a);
                 }
 
                 c = 0;
                 while (!GetCubeSolved() && c < 4) {
                     DoMove(new Move(CubeFace.DOWN));
                     c++;
-                }
-
-                //if (!GetCubeSolved()) {
-                //    throw new InvalidProgramException();
-                //}
+                }                
             }
             catch {
 
@@ -163,7 +161,7 @@ namespace Rubinator3000.Solving {
                     MoveCollection moves = MoveCollection.Parse(e.Attribute("algorithm").Value);
                     patternMoves.Add((new PllPattern(number, patternData), moves.TransformMoves(orientation)));
                 }
-                catch (FormatException ex) {
+                catch (FormatException) {
                     string message = $"Error:\tParsing Pll algorithm {number}";
                     Log.LogMessage(message);
                 }

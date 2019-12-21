@@ -275,6 +275,11 @@ namespace Rubinator3000 {
             CubeSolver solver = new CubeSolverFridrich(cube);
 
             solver.SolveCube();
+#if DEBUG
+            if (!solver.GetCubeSolved()) {
+                System.Windows.MessageBox.Show("Cube wurde nicht gesolved");
+            }
+#endif
 
             MoveCollection solvingMoves = solver.SolvingMoves;
 

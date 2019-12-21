@@ -139,7 +139,7 @@ namespace Rubinator3000 {
                         face = Cube.GetOpponentFace(face);
                     }
 
-                    moves.Add(new Move(face, count * direction));
+                    moves.Add(new Move(face, count));
                 }
                 else if (middleMoves.Contains(moveChar)) {
                     switch (char.ToLower(moveChar)) {

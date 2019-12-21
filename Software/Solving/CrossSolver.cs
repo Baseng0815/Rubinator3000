@@ -24,12 +24,7 @@ namespace Rubinator3000.Solving {
         }
 
         public CrossSolver(Cube cube) : base(cube) {
-            whiteEdges = cube.Edges.Where(e => e.HasColor(WHITE));
-            //cube.OnMoveDone += Cube_OnMoveDone;
-        }
-
-        private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
-            whiteEdges = cube.Edges.Where(edge => edge.HasColor(WHITE));
+            whiteEdges = cube.Edges.Where(e => e.HasColor(WHITE));            
         }
 
         public override bool Solved {
@@ -86,6 +81,8 @@ namespace Rubinator3000.Solving {
             }
 
             DoMove(new Move(UP, -WhiteFaceOrientation));
+
+            Log.LogMessage(Solved ? "Weißes Kreuz gelöst" : "Weißes Kreuz nicht gelöst");
         }
         #endregion
 
@@ -185,8 +182,8 @@ namespace Rubinator3000.Solving {
             // face in clockwise roation of white position face
             CubeFace rightFace = MiddleLayerFaces[(middleLayerFaceID + 1) % 4];
 
-            int leftDelta = Math.Abs(SolvingUtility.NormalizeCount(SolvingUtility.GetDelta(secndColor, leftFace, UP), -1));
-            int rightDelta = Math.Abs(SolvingUtility.NormalizeCount(SolvingUtility.GetDelta(secndColor, rightFace, UP), -1));
+            int leftDelta = Math.Abs(SolvingUtility.GetDelta(secndColor, leftFace, UP));
+            int rightDelta = Math.Abs(SolvingUtility.GetDelta(secndColor, rightFace, UP));
 
             // on up layer
             if (whitePos.Tile == 1) {
@@ -269,7 +266,7 @@ namespace Rubinator3000.Solving {
         /// <returns></returns>
         protected int GetDelta(EdgeStone edge) {
             CubeColor edgeColor = edge.GetColors().First(c => c != WHITE);
-            CubeFace face = edge.GetColorPosition(c => c != WHITE).Face;
+            CubeFace face = edge.GetColorPosition(edgeColor).Face;
 
             return SolvingUtility.GetDelta(edgeColor, face, UP);
         }
@@ -336,7 +333,7 @@ namespace Rubinator3000.Solving {
                 }
 
                 // return 2 + moves white face count                                
-                int sortingMoves = Math.Abs(SolvingUtility.NormalizeCount(edgeDelta - WhiteFaceOrientation, -1));
+                int sortingMoves = Math.Abs(SolvingUtility.NormalizeCount(edgeDelta - WhiteFaceOrientation));
                 return 2 + sortingMoves;
             }
             // on middle layer
@@ -362,7 +359,7 @@ namespace Rubinator3000.Solving {
                             edge.GetColors().First(c => c != WHITE),    // second color
                             edge.GetColorPosition(c => c != WHITE).Face,    // second color face color
                             UP);    // face to rotate
-                        int sortingMoves = Math.Abs(SolvingUtility.NormalizeCount(edgeDelta - WhiteFaceOrientation, -1));
+                        int sortingMoves = Math.Abs(SolvingUtility.NormalizeCount(edgeDelta - WhiteFaceOrientation));
                         return 1 + sortingMoves;
                 }
 

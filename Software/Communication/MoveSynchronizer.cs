@@ -33,7 +33,14 @@ namespace Rubinator3000.Communication {
                 }
                 //arduino.SendMove(move);
                 DrawCube.AddMove(move);
-                Application.Current.Dispatcher.Invoke( delegate { moveHistory.AppendText(move.ToString()); });
+                Application.Current.Dispatcher.Invoke( delegate {
+                    if (moveHistory.Text.Length == 0) {
+                        moveHistory.AppendText(move.ToString());
+                    }
+                    else {
+                        moveHistory.AppendText(", " + move.ToString());
+                    }
+                });
             }
         }
     }

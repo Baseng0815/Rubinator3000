@@ -54,7 +54,9 @@ namespace Rubinator3000.Solving {
                 }
 
                 DoMoves(minMoves);                
-            }            
+            }
+
+            Log.LogMessage(Solved ? "F2L gelöst" : "F2L nicht gelöst");
         }
 
         public override Task SolveCubeAsync() {
@@ -87,8 +89,9 @@ namespace Rubinator3000.Solving {
                     }
 
                     DoMoves(minMoves);                    
-                }                
+                }
 
+                Log.LogMessage(Solved ? "F2L gelöst" : "F2L nicht gelöst");
             }).Unwrap();
         }        
 
