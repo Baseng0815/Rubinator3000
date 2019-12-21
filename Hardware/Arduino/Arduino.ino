@@ -49,7 +49,7 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:      
+  // put your main code here, to run repeatedly:
 
   if(Serial.available()) {
     uint8_t data = Serial.read();
