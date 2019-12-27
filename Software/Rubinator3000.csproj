@@ -95,6 +95,7 @@
     <Compile Include="CubeScan\WebCamControl.cs" />
     <Compile Include="CubeScan\XmlElementDesignations.cs" />
     <Compile Include="CubeViewer\Data\FlatTransformations.cs" />
+    <Compile Include="Cube\FaceRelation.cs" />
     <Compile Include="Cube\Position.cs" />
     <Compile Include="Cube\Stones.cs" />
     <Compile Include="DebugWindows\OllDebugWindow.xaml.cs">
@@ -146,7 +147,6 @@
     <Compile Include="Cube\Cube.cs" />
     <Compile Include="Cube\CubeMatrix.cs" />
     <Compile Include="Cube\CubeMoves.cs" />
-    <Compile Include="Cube\CubeSide.cs" />
     <Compile Include="Cube\Move.cs" />
     <Compile Include="Cube\MoveCollection.cs" />
     <Compile Include="MainWindow.xaml.cs">

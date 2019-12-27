@@ -9,22 +9,24 @@ namespace Rubinator3000 {
 
     [Serializable]
     public partial class Cube : ICloneable {
-        private CubeMatrix[] data = new CubeMatrix[6];
+        private CubeColor[][] data = new CubeColor[6][];
 
         public EdgeStone[] Edges { get; }
         public CornerStone[] Corners { get; }
 
-        public Cube(CubeMatrix[] matrices = null) {
-            if (matrices == null) {
-                data = new CubeMatrix[6];
+        public Cube(CubeColor[][] faces = null) {
+            if (faces == null) {
+                data = new CubeColor[6][];
                 for (int face = 0; face < 6; face++)
-                    data[face] = new CubeMatrix((CubeColor)face);
+                    data[face] = Enumerable.Repeat((CubeColor)face, 9).ToArray();
             }
             else {
-                if (matrices.Length != 6)
-                    throw new ArgumentOutOfRangeException(nameof(matrices), "value has to equal 6");
+                if (faces.Length != 6)
+                    throw new ArgumentOutOfRangeException(nameof(faces), "value has to equal 6");
+                if (faces.Any(f => f.Length != 9))
+                    throw new ArgumentOutOfRangeException(nameof(faces), "each face should have 9 tiles");
 
-                data = matrices;
+                data = faces;
             }
 
             Edges = EdgeStonePositions.Select(p => new EdgeStone(new Tuple<CubeColor, CubeColor>(At(p.Item1), At(p.Item2)), this)).ToArray();
@@ -80,15 +82,7 @@ namespace Rubinator3000 {
 
         public CubeColor At(Position position) {
             return data[(int)position.Face][position.Tile];
-        }
-
-        /// <summary>
-        /// Returns the cube data
-        /// </summary>
-        /// <returns></returns>
-        public CubeMatrix[] GetData() {
-            return data;
-        }
+        }        
 
         public IEnumerable<T> GetStonesOnFace<T>(CubeFace face) where T : IStone {
             if (typeof(T) == typeof(EdgeStone)) {
@@ -171,11 +165,15 @@ namespace Rubinator3000 {
             return (CubeFace)(int)color;
         }
 
+        public CubeColor[][] GetData() {
+            return data;
+        }
+
         public object Clone() {
-            CubeMatrix[] newData = new CubeMatrix[6];
+            CubeColor[][] newData = new CubeColor[6][];
 
             for (int i = 0; i < 6; i++) {
-                newData[i] = new CubeMatrix();
+                newData[i] = new CubeColor[9];
 
                 for (int t = 0; t < 9; t++)
                     newData[i][t] = data[i][t];
