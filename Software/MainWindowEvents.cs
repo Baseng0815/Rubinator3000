@@ -49,11 +49,15 @@ namespace Rubinator3000 {
         }
 
         private async void SolveCube() {
+#if DEBUG_MOVES
             Log.EnableMoveLogging();
+#endif
             CubeSolver solver = new CubeSolverFridrich(cube);
 
             solver.SolveCube();
+#if DEBUG_MOVES
             Log.DisableMoveLogging();
+#endif
 
             MoveCollection solvingMoves = solver.SolvingMoves;
             moveHistoryOutput.Clear();

@@ -40,6 +40,16 @@ namespace Rubinator3000 {
             enableMoveLogging = false;
             writer.Close();
         }
+        
+        public static void MoveLogLogging(string message) {
+            if (!enableMoveLogging)
+                return;
+
+            TimeSpan time = DateTime.Now.TimeOfDay;
+
+            string logMessage = string.Format("{0}:\t{1}", time.ToString(@"hh\:mm\:ss\.ff"), message);
+            writer.WriteLine(logMessage);
+        }
 
         public static void LogMove(Move move, in Cube cubeState) {
             if (!enableMoveLogging)

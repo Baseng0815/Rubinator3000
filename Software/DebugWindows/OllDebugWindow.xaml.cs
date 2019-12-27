@@ -154,7 +154,7 @@ namespace Rubinator3000.DebugWindows {
 
 
         private void buttonDoMoves_Click(object sender, RoutedEventArgs e) {
-            const int max = 10;
+            const int max = 20;
             if (!selectedPattern.pattern.IsMatch(cube)) {
                 int i = 0;
                 do {
@@ -168,6 +168,7 @@ namespace Rubinator3000.DebugWindows {
             }
             else {
                 cube.DoMoves(selectedPattern.algorithm);
+                DisplayCube();
 
                 buttonDoMoves.Content = "Muster erzeugen";
             }

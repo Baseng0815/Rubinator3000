@@ -30,8 +30,7 @@ namespace Rubinator3000.Communication {
         }
 
         public Task RunAsync(Move move) {
-            return Task.Run(delegate {
-                Application.Current.Dispatcher.Invoke(moveHistory.Clear);
+            return Task.Run(delegate {                
                 DrawCube.AddMove(move);
 
                 if (arduino == null)
@@ -39,7 +38,14 @@ namespace Rubinator3000.Communication {
                 else
                     arduino.SendMove(move);
 
-                Application.Current.Dispatcher.Invoke(delegate { moveHistory.AppendText(move.ToString()); });
+                Application.Current.Dispatcher.Invoke(delegate {
+                    ((MainWindow)Application.Current.MainWindow).cube.DoMove(move);
+
+                    if (moveHistory.Text.Length == 0)
+                        moveHistory.AppendText(move.ToString());
+                    else
+                        moveHistory.AppendText(", " + move.ToString());
+                });
             });
         }
 
@@ -62,13 +68,14 @@ namespace Rubinator3000.Communication {
                     else
                         arduino.SendMove(move);
 
-                    Application.Current.Dispatcher.Invoke( delegate {
+                    Application.Current.Dispatcher.Invoke(delegate {
+                        ((MainWindow)Application.Current.MainWindow).cube.DoMove(move);
 
-                    if (moveHistory.Text.Length == 0)
-                        moveHistory.AppendText(move.ToString());
-                    else
-                        moveHistory.AppendText(", " + move.ToString());
-                });
+                        if (moveHistory.Text.Length == 0)
+                            moveHistory.AppendText(move.ToString());
+                        else
+                            moveHistory.AppendText(", " + move.ToString());
+                    });
                 }
             });
         }
