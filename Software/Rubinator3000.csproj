@@ -23,7 +23,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DEBUG_MOVES</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>1</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -145,7 +145,6 @@
     <Compile Include="CubeViewer\Data\Vertex.cs" />
     <Compile Include="CubeViewer\View.cs" />
     <Compile Include="Cube\Cube.cs" />
-    <Compile Include="Cube\CubeMatrix.cs" />
     <Compile Include="Cube\CubeMoves.cs" />
     <Compile Include="Cube\Move.cs" />
     <Compile Include="Cube\MoveCollection.cs" />

@@ -23,6 +23,8 @@ namespace Rubinator3000 {
 
         private void MenuItemResetCube_Click(object sender, RoutedEventArgs e) {
             cube = new Cube();
+
+            DrawCube.AddState(cube);
         }
 
         private void MenuItemSolveCube_Click(object sender, RoutedEventArgs e) {

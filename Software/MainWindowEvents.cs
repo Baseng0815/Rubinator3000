@@ -49,11 +49,14 @@ namespace Rubinator3000 {
         }
 
         private async void SolveCube() {
+            Log.EnableMoveLogging();
             CubeSolver solver = new CubeSolverFridrich(cube);
 
             solver.SolveCube();
+            Log.DisableMoveLogging();
 
             MoveCollection solvingMoves = solver.SolvingMoves;
+            moveHistoryOutput.Clear();
 
             await moveSynchronizer.RunAsync(solvingMoves);
         }
@@ -62,6 +65,7 @@ namespace Rubinator3000 {
             Random rnd = new Random();
 
             MoveCollection shuffleMoves = cube.Shuffle(rnd.Next(5, 20));
+            moveHistoryOutput.Clear();
 
             await moveSynchronizer.RunAsync(shuffleMoves);
         }

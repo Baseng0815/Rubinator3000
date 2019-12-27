@@ -7,25 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using static Rubinator3000.CubeFace;
 
-namespace Rubinator3000 {
-    public class MoveEventArgs : EventArgs {
-        public Move Move { get; }
+namespace Rubinator3000 {    
 
-        public MoveEventArgs(Move move) {
-            Move = move ?? throw new ArgumentNullException(nameof(move));
-        }
-    }
-
-    //[DebuggerNonUserCode]
-    partial class Cube {
-        //private static readonly IEnumerable<CubeSide> sides = new CubeSide[] {
-        //    new CubeSide(CubeFace.LEFT, (1, 0, true, 1), (2, 0, true, 1), (3, 0, true, 1), (5, 2, true, -1)),
-        //    new CubeSide(CubeFace.UP, (0, 0, false, -1), (5, 0, false, -1), (4, 0, false, -1), (2, 0, false, -1)),
-        //    new CubeSide(CubeFace.FRONT, (0, 2, true, -1), (1, 2, false, 1), (4, 0, true, 1), (3, 0, false, -1)),
-        //    new CubeSide(CubeFace.DOWN, (0, 2, false, 1), (2, 2, false, 1), (4, 2, false, 1), (5, 2, false, 1)),
-        //    new CubeSide(CubeFace.RIGHT, (1, 2, true, -1), (5, 0, true, 1), (3, 2, true, -1), (2, 2, true, -1)),
-        //    new CubeSide(CubeFace.BACK, (0, 0, true, 1), (3, 2, false, 1), (4, 2, true, -1), (1, 0, false, -1))
-        //};
+    [DebuggerNonUserCode]
+    partial class Cube {        
         private static readonly FaceRelation[][] faceRelations = new FaceRelation[6][];
 
         protected void RotateFace(CubeFace face) {
@@ -82,6 +67,10 @@ namespace Rubinator3000 {
             for (int c = 0; c < move.CountPositive; c++) {
                 RotateFace(move.Face);
             }
+
+#if DEBUG_MOVES
+            Log.LogMove(move, this);
+#endif
         }
 
         static Cube() {

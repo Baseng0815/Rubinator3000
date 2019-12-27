@@ -78,6 +78,12 @@ namespace Rubinator3000.Solving {
                 EdgeStone edgeToSolve = stoneRating.First().First();
 
                 HandleStone(edgeToSolve);
+#if DEBUG
+                if (IsEdgeRight(edgeToSolve))
+                    Log.LogMessage($"{edgeToSolve.ToString()} solved");
+                else
+                    Log.LogMessage($"{edgeToSolve.ToString()} not solved");
+#endif
             }
 
             DoMove(new Move(UP, -WhiteFaceOrientation));
@@ -125,7 +131,7 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentException("Die weiße Fläche des Kantensteins muss sich auf der weißen Seite befinden", nameof(edge));
 
 #if DEBUG
-            Log.LogMessage("Handle stone white face\r\n\t" + edge.ToString());
+            Log.LogMessage($"Handle stone white face\r\n\t{edge.ToString()}\r\n\t({string.Join(", ", edge.Positions)})");
 #endif
 
             CubeFace faceToRot = edge.GetColorPosition(c => c != WHITE).Face;
@@ -147,7 +153,7 @@ namespace Rubinator3000.Solving {
 
             // @TODO: fix endless loop
 #if DEBUG
-            Log.LogMessage("Handle stone middle layer\r\n\t" + edge.ToString());
+            Log.LogMessage($"Handle stone middle layer\r\n\t{edge.ToString()}\r\n\t({string.Join(", ", edge.Positions)})");
 #endif
 
             int delta = SolvingUtility.GetDelta(GetSecondColor(edge), edge.GetColorPosition(c => c != WHITE).Face, UP);
@@ -168,7 +174,7 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentOutOfRangeException("Der weiße Kantenstein muss sich in der oberen oder unteren Ebene befinden und die weiße Fläche muss auf einer der seitlichen Seiten (Orange, Grün, Rot, Blau) sein", nameof(edge));
 
 #if DEBUG
-            Log.LogMessage("Handle false orientated stone\r\n\t" + edge.ToString());
+            Log.LogMessage($"Handle false orientated stone\r\n\t{edge.ToString()}\r\n\t({string.Join(", ", edge.Positions)})");
 #endif
 
             // get edge information
@@ -221,7 +227,7 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentException("Die weiße Fläche des Kantensteins muss sich auf der gelben Seite befinden", nameof(edge));
 
 #if DEBUG
-            Log.LogMessage("Handle stone yellow face\r\n\t" + edge.ToString());
+            Log.LogMessage($"Handle stone yellow face\r\n\t{edge.ToString()}\r\n\t({string.Join(", ", edge.Positions)})");
 #endif
 
             int delta = SolvingUtility.GetDelta(GetSecondColor(edge), edge.GetColorPosition(c => c != WHITE).Face, UP);

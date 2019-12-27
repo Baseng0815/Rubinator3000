@@ -20,17 +20,17 @@ namespace Rubinator3000.Solving {
             cross.SolveCube();
             SolvingMoves.AddRange(cross.SolvingMoves);
 
-            Log.LogMessage("Solve F2L");
-            // F2L
-            FTLSolver ftl = new FTLSolver(cube);
-            ftl.SolveCube();
-            SolvingMoves.AddRange(ftl.SolvingMoves);
+            //Log.LogMessage("Solve F2L");
+            //// F2L
+            //FTLSolver ftl = new FTLSolver(cube);
+            //ftl.SolveCube();
+            //SolvingMoves.AddRange(ftl.SolvingMoves);
 
-            Log.LogMessage("Solve last Layer");
-            // OLL and PLL
-            LLSolver llSolver = new LLSolver(cube);
-            llSolver.SolveCube();
-            SolvingMoves.AddRange(llSolver.SolvingMoves);
+            //Log.LogMessage("Solve last Layer");
+            //// OLL and PLL
+            //LLSolver llSolver = new LLSolver(cube);
+            //llSolver.SolveCube();
+            //SolvingMoves.AddRange(llSolver.SolvingMoves);
         }
 
         protected override bool CheckCube(Cube cube) {
