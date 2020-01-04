@@ -17,8 +17,8 @@ namespace Rubinator3000 {
             // rotate face
             CubeColor[] newFaceColors = new CubeColor[9];
 
-            for(int t = 0; t < 9; t++) {
-                newFaceColors[3 * (t % 3) + 2 - (t / 3)] = data[(int)face][t];
+            for(int t = 0; t < 9; t++) {                
+                newFaceColors[2 + 3 * t - 10 * (t / 3)] = data[(int)face][t];
             }
             data[(int)face] = newFaceColors;
 
