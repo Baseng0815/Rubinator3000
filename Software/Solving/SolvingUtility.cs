@@ -22,24 +22,10 @@ namespace Rubinator3000.Solving {
         };
 
         public static int NormalizeCount(int count) {
-            return NormalizeNumber(count, 0, 3);
-        }
+            while (count < -1) count += 4;
 
-        public static int NormalizeCount(int count, int minCount) {
-            return NormalizeNumber(count, minCount, minCount + 3);
-        }
-
-        public static int NormalizeNumber(int number, int minValue, int maxValue) {
-            if (minValue >= maxValue)
-                throw new ArgumentOutOfRangeException(nameof(minValue), "Die untere Grenze muss kleiner als die obere sein");
-
-            int l = maxValue - minValue + 1;
-            while (number < minValue) number += l;
-            if (number < 0)
-                return -(Math.Abs(number) % l);
-            else
-                return number % l;
-        }
+            return (count + 1) % 4 - 1;
+        }      
 
         #region Extension Methodes
         /// <summary>

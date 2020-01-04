@@ -100,7 +100,7 @@ namespace Rubinator3000.CubeScan {
                 throw new Exception("Camera in use already");
             }
             else {
-                Log.LogStuff(string.Format("Initialization of Camera {0} started", cameraIndex));
+                Log.LogMessage(string.Format("Initialization of Camera {0} started", cameraIndex));
 
                 // try to setup videoCapture
                 videoCapture = new VideoCapture(cameraIndex);
@@ -108,7 +108,7 @@ namespace Rubinator3000.CubeScan {
                 // if setup was unsuccessful (if no camera connected at "CameraIndex")
                 if (!videoCapture.IsOpened) {
 
-                    Log.LogStuff(string.Format("Initialization of Camera {0} failed - (No camera connected at index \"{0}\")", cameraIndex));
+                    Log.LogMessage(string.Format("Initialization of Camera {0} failed - (No camera connected at index \"{0}\")", cameraIndex));
                 }
                 else {
 
@@ -120,7 +120,7 @@ namespace Rubinator3000.CubeScan {
                     // start the video apture
                     videoCapture.Start();
 
-                    Log.LogStuff(string.Format("Initialization of Camera {0} finished", cameraIndex));
+                    Log.LogMessage(string.Format("Initialization of Camera {0} finished", cameraIndex));
 
                     return true;
                 }
@@ -202,7 +202,7 @@ namespace Rubinator3000.CubeScan {
             }
             catch (Exception) {
 
-                Log.LogStuff(string.Format("Camera {0} crashed", cameraIndex));
+                Log.LogMessage(string.Format("Camera {0} crashed", cameraIndex));
             }
             threadStarted = false;
         }
@@ -349,7 +349,11 @@ namespace Rubinator3000.CubeScan {
 
                         // Change circle color of the current position on the gui
                         //CircleByIndicies(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush(currentCubeColor);
-                        CircleByIndicies(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush(((MainWindow)Application.Current.MainWindow).Cube.At(new Position(((CubeFace)currentPosition.FaceIndex), currentPosition.RowIndex*3+currentPosition.ColIndex)));
+
+                        // @TODO: fix color recognition and change this back again
+                        CircleByIndices(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush((
+                            (MainWindow)Application.Current.MainWindow).cube.At(new Position(((CubeFace)currentPosition.FaceIndex),
+                            currentPosition.RowIndex*3+currentPosition.ColIndex)));
                     });
                 }
 
@@ -442,7 +446,7 @@ namespace Rubinator3000.CubeScan {
             return false;
         }
 
-        public static Ellipse CircleByIndicies(int faceIndex, int rowIndex, int colIndex) {
+        public static Ellipse CircleByIndices(int faceIndex, int rowIndex, int colIndex) {
 
             for (int i = 0; i < PositionsToReadAt.GetLength(0); i++) {
 
@@ -532,7 +536,7 @@ namespace Rubinator3000.CubeScan {
             }
 
             docToSave.Save(PathToXml);
-            Log.LogStuff(string.Format("All ReadPositions were stored at \"{0}\"", PathToXml));
+            Log.LogMessage(string.Format("All ReadPositions were stored at \"{0}\"", PathToXml));
         }
 
         public static void LoadAllPositionsFromXml() {
@@ -551,7 +555,7 @@ namespace Rubinator3000.CubeScan {
 
                     var d = double.Parse(readPositionElement.Attribute(XmlRelativeX).Value, NumberStyles.AllowDecimalPoint, CultureInfo.GetCultureInfo("en-us"));
 
-                    Log.LogStuff(
+                    Log.LogMessage(
                         AddPosition(new ReadPosition(
                             double.Parse(readPositionElement.Attribute(XmlRelativeX).Value, NumberStyles.AllowDecimalPoint, CultureInfo.GetCultureInfo("en-us")),
                             double.Parse(readPositionElement.Attribute(XmlRelativeY).Value, NumberStyles.AllowDecimalPoint, CultureInfo.GetCultureInfo("en-us")),
@@ -566,7 +570,7 @@ namespace Rubinator3000.CubeScan {
                 }
             }
 
-            Log.LogStuff(string.Format("All ReadPositions were loaded from \"{0}\"", PathToXml));
+            Log.LogMessage(string.Format("All ReadPositions were loaded from \"{0}\"", PathToXml));
         }
 
         private static Ellipse DrawCircleAtPosition(ReadPosition pos, Canvas canvas) {
@@ -576,7 +580,8 @@ namespace Rubinator3000.CubeScan {
             Application.Current.Dispatcher.Invoke(() => {
 
                 //circle = GenerateCircle(pos.AssumedCubeColor);
-                circle = GenerateCircle(((MainWindow)Application.Current.MainWindow).Cube.At(new Position((CubeFace)pos.FaceIndex, pos.RowIndex*3+pos.ColIndex)));
+                // @TODO fix color recognition and change this back again
+                circle = GenerateCircle(((MainWindow)Application.Current.MainWindow).cube.At(new Position((CubeFace)pos.FaceIndex, pos.RowIndex*3+pos.ColIndex)));
 
                 // When you hover over the circle on the gui, you can see, which position is being read out at this position
                 circle.ToolTip = string.Format("{0}[{1},{2}]", (CubeColor)pos.FaceIndex, pos.RowIndex, pos.ColIndex);

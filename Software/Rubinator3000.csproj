@@ -23,11 +23,11 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DEBUG_MOVES</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>1</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <IntermediateOutputPath>C:\Users\Philipp\AppData\Local\Temp\vsCC8A.tmp\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>$(USERPROFILE)\AppData\Local\Temp\vs218E.tmp\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,7 +38,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <IntermediateOutputPath>C:\Users\Philipp\AppData\Local\Temp\vsCC8A.tmp\Release\</IntermediateOutputPath>
+    <IntermediateOutputPath>$(USERPROFILE)\AppData\Local\Temp\vs218E.tmp\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV.UI, Version=4.1.1.3497, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
@@ -87,19 +87,22 @@
     </Compile>
     <Compile Include="Communication\Arduino.cs" />
     <Compile Include="Communication\ArduinoUSB.cs" />
+    <Compile Include="Communication\MoveSynchronizer.cs" />
     <Compile Include="CubeScan\ColorIdentification.cs" />
     <Compile Include="CubeScan\ReadPosition.cs" />
     <Compile Include="CubeScan\FastAccessBitmap.cs" />
     <Compile Include="CubeScan\Helper.cs" />
     <Compile Include="CubeScan\WebCamControl.cs" />
     <Compile Include="CubeScan\XmlElementDesignations.cs" />
-    <Compile Include="CubeViewer\FlatTransformations.cs" />
+    <Compile Include="CubeViewer\Data\FlatTransformations.cs" />
+    <Compile Include="Cube\FaceRelation.cs" />
     <Compile Include="Cube\Position.cs" />
     <Compile Include="Cube\Stones.cs" />
     <Compile Include="DebugWindows\OllDebugWindow.xaml.cs">
       <DependentUpon>OllDebugWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Log.cs" />
+    <Compile Include="MainWindowEvents.cs" />
     <Compile Include="MainWindowMenu.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Solving\CrossSolver.cs" />
@@ -130,21 +133,19 @@
     </Compile>
     <Compile Include="CubeViewer\CubeViewer.cs" />
     <Compile Include="CubeViewer\CubeViewerEvents.cs" />
-    <Compile Include="CubeViewer\CuboidTransformations.cs" />
+    <Compile Include="CubeViewer\Data\CuboidTransformations.cs" />
     <Compile Include="CubeViewer\DrawCube.cs" />
-    <Compile Include="CubeViewer\Model.cs" />
-    <Compile Include="CubeViewer\CubeTransformations.cs" />
-    <Compile Include="CubeViewer\ResourceManager.cs" />
-    <Compile Include="CubeViewer\Shader.cs" />
-    <Compile Include="CubeViewer\Texture.cs" />
-    <Compile Include="CubeViewer\TRSTransformation.cs" />
+    <Compile Include="CubeViewer\Data\Model.cs" />
+    <Compile Include="CubeViewer\Data\CubeTransformations.cs" />
+    <Compile Include="CubeViewer\Data\ResourceManager.cs" />
+    <Compile Include="CubeViewer\Data\Shader.cs" />
+    <Compile Include="CubeViewer\Data\Texture.cs" />
+    <Compile Include="CubeViewer\Data\TRSTransformation.cs" />
     <Compile Include="CubeViewer\Utility.cs" />
-    <Compile Include="CubeViewer\Vertex.cs" />
+    <Compile Include="CubeViewer\Data\Vertex.cs" />
     <Compile Include="CubeViewer\View.cs" />
     <Compile Include="Cube\Cube.cs" />
-    <Compile Include="Cube\CubeMatrix.cs" />
     <Compile Include="Cube\CubeMoves.cs" />
-    <Compile Include="Cube\CubeSide.cs" />
     <Compile Include="Cube\Move.cs" />
     <Compile Include="Cube\MoveCollection.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -177,39 +178,39 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <Resource Include="License-LGPL.txt" />
-    <Content Include="Resources\BlendFrameThick.png">
+    <Content Include="Resources\Textures\BlendFrameThick.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FlatShader.frag">
+    <Content Include="Resources\Shaders\FlatShader.frag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\FlatShader.vert">
+    <Content Include="Resources\Shaders\FlatShader.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Resources\arial.ttf" />
-    <Resource Include="Resources\arialbd.ttf" />
-    <Resource Include="Resources\arialbi.ttf" />
-    <Resource Include="Resources\ariali.ttf" />
-    <Resource Include="Resources\ariblk.ttf" />
-    <Content Include="Resources\CubeShader.frag">
+    <Resource Include="Resources\Fonts\arial.ttf" />
+    <Resource Include="Resources\Fonts\arialbd.ttf" />
+    <Resource Include="Resources\Fonts\arialbi.ttf" />
+    <Resource Include="Resources\Fonts\ariali.ttf" />
+    <Resource Include="Resources\Fonts\ariblk.ttf" />
+    <Content Include="Resources\Shaders\CubeShader.frag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\CubeShader.vert">
+    <Content Include="Resources\Shaders\CubeShader.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\DebugShader.frag">
+    <Content Include="Resources\Shaders\DebugShader.frag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\DebugShader.vert">
+    <Content Include="Resources\Shaders\DebugShader.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\pllSolving.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\TQShader.frag">
+    <Content Include="Resources\Shaders\TQShader.frag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\TQShader.vert">
+    <Content Include="Resources\Shaders\TQShader.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -217,22 +218,22 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\BlendFrame.bmp">
+    <Content Include="Resources\Textures\BlendFrame.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\BlendFrame.png">
+    <Content Include="Resources\Textures\BlendFrame.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\CuboidTileMappings.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\NormalMap.png">
+    <Content Include="Resources\Textures\NormalMap.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\NormalMap1.png">
+    <Content Include="Resources\Textures\NormalMap1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\NormalMap2.png">
+    <Content Include="Resources\Textures\NormalMap2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\ollSolving.xml">

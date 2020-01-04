@@ -24,12 +24,7 @@ namespace Rubinator3000.Solving {
         }
 
         public CrossSolver(Cube cube) : base(cube) {
-            whiteEdges = cube.Edges.Where(e => e.HasColor(WHITE));
-            //cube.OnMoveDone += Cube_OnMoveDone;
-        }
-
-        private void Cube_OnMoveDone(object sender, MoveEventArgs e) {
-            whiteEdges = cube.Edges.Where(edge => edge.HasColor(WHITE));
+            whiteEdges = cube.Edges.Where(e => e.HasColor(WHITE));            
         }
 
         public override bool Solved {
@@ -55,7 +50,7 @@ namespace Rubinator3000.Solving {
                 // select pivot stone
                 int orientation = GetWhiteFaceOrientation();
 
-                DoMove(UP, orientation);
+                DoMove(new Move(UP, orientation));
                 pivotStone = whiteEdges.First(e => e.InRightPosition());
             }
             else {
@@ -83,9 +78,17 @@ namespace Rubinator3000.Solving {
                 EdgeStone edgeToSolve = stoneRating.First().First();
 
                 HandleStone(edgeToSolve);
+#if DEBUG
+                if (IsEdgeRight(edgeToSolve))
+                    Log.LogMessage($"{edgeToSolve.ToString()} solved");
+                else
+                    Log.LogMessage($"{edgeToSolve.ToString()} not solved");
+#endif
             }
 
-            DoMove(UP, -WhiteFaceOrientation);
+            DoMove(new Move(UP, -WhiteFaceOrientation));
+
+            Log.LogMessage(Solved ? "Weißes Kreuz gelöst" : "Weißes Kreuz nicht gelöst");
         }
         #endregion
 
@@ -128,13 +131,13 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentException("Die weiße Fläche des Kantensteins muss sich auf der weißen Seite befinden", nameof(edge));
 
 #if DEBUG
-            Log.LogStuff("Handle stone white face\r\n\t" + edge.ToString());
+            Log.LogMessage($"Handle stone white face\r\n\t{edge.ToString()}\r\n\t({string.Join(", ", edge.Positions)})");
 #endif
 
             CubeFace faceToRot = edge.GetColorPosition(c => c != WHITE).Face;
 
             // bring stone to middle Layer
-            DoMove(faceToRot);
+            DoMove(new Move(faceToRot));
 
             // handle stone on middle Layer
             HandleStoneMiddleLayer(edge);
@@ -148,17 +151,18 @@ namespace Rubinator3000.Solving {
             if (Array.TrueForAll(MiddleLayerFaces, f => edge.GetColorPosition(WHITE).Face != f) || edge.GetColorPosition(WHITE).Tile == 1 || edge.GetColorPosition(WHITE).Tile == 7)
                 throw new ArgumentException("Der weiße Kantenstein muss sich auf der mittleren Ebene befinden", nameof(edge));
 
+            // @TODO: fix endless loop
 #if DEBUG
-            Log.LogStuff("Handle stone middle layer\r\n\t" + edge.ToString());
+            Log.LogMessage($"Handle stone middle layer\r\n\t{edge.ToString()}\r\n\t({string.Join(", ", edge.Positions)})");
 #endif
 
             int delta = SolvingUtility.GetDelta(GetSecondColor(edge), edge.GetColorPosition(c => c != WHITE).Face, UP);
 
             // rotate the white face to insert the stone right to pivot
-            DoMove(UP, delta - WhiteFaceOrientation);
+            DoMove(new Move(UP, delta - WhiteFaceOrientation));
 
             Position secondPos = edge.GetColorPosition(c => c != WHITE);
-            DoMove(secondPos.Face, secondPos.Tile == 3 ? 1 : -1);
+            DoMove(new Move(secondPos.Face, secondPos.Tile == 3 ? 1 : -1));
         }
 
         /// <summary>
@@ -170,7 +174,7 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentOutOfRangeException("Der weiße Kantenstein muss sich in der oberen oder unteren Ebene befinden und die weiße Fläche muss auf einer der seitlichen Seiten (Orange, Grün, Rot, Blau) sein", nameof(edge));
 
 #if DEBUG
-            Log.LogStuff("Handle false orientated stone\r\n\t" + edge.ToString());
+            Log.LogMessage($"Handle false orientated stone\r\n\t{edge.ToString()}\r\n\t({string.Join(", ", edge.Positions)})");
 #endif
 
             // get edge information
@@ -184,17 +188,17 @@ namespace Rubinator3000.Solving {
             // face in clockwise roation of white position face
             CubeFace rightFace = MiddleLayerFaces[(middleLayerFaceID + 1) % 4];
 
-            int leftDelta = Math.Abs(SolvingUtility.NormalizeCount(SolvingUtility.GetDelta(secndColor, leftFace, UP), -1));
-            int rightDelta = Math.Abs(SolvingUtility.NormalizeCount(SolvingUtility.GetDelta(secndColor, rightFace, UP), -1));
+            int leftDelta = Math.Abs(SolvingUtility.GetDelta(secndColor, leftFace, UP));
+            int rightDelta = Math.Abs(SolvingUtility.GetDelta(secndColor, rightFace, UP));
 
             // on up layer
             if (whitePos.Tile == 1) {
                 // move edge to middle layer
                 if (leftDelta < rightDelta) {
-                    DoMove(whitePos.Face, -1);
+                    DoMove(new Move(whitePos.Face, -1));
                 }
                 else {
-                    DoMove(whitePos.Face);
+                    DoMove(new Move(whitePos.Face));
                 }
                 HandleStoneMiddleLayer(edge);
             }
@@ -205,12 +209,12 @@ namespace Rubinator3000.Solving {
 
                 // move edge to middle layer
                 int direction = leftDelta > rightDelta ? 1 : -1;
-                DoMove(whitePos.Face, direction);
+                DoMove(new Move(whitePos.Face, direction));
 
                 HandleStoneMiddleLayer(edge);
 
                 if (rotBack)
-                    DoMove(whitePos.Face, -direction);
+                    DoMove(new Move(whitePos.Face, -direction));
             }
         }
 
@@ -223,16 +227,16 @@ namespace Rubinator3000.Solving {
                 throw new ArgumentException("Die weiße Fläche des Kantensteins muss sich auf der gelben Seite befinden", nameof(edge));
 
 #if DEBUG
-            Log.LogStuff("Handle stone yellow face\r\n\t" + edge.ToString());
+            Log.LogMessage($"Handle stone yellow face\r\n\t{edge.ToString()}\r\n\t({string.Join(", ", edge.Positions)})");
 #endif
 
             int delta = SolvingUtility.GetDelta(GetSecondColor(edge), edge.GetColorPosition(c => c != WHITE).Face, UP);
 
             // rotate the white face to insert the stone right to pivot
-            DoMove(UP, delta - WhiteFaceOrientation);
+            DoMove(new Move(UP, delta - WhiteFaceOrientation));
 
             CubeFace faceToRot = edge.GetColorPosition(c => c != WHITE).Face;
-            DoMove(faceToRot, 2);
+            DoMove(new Move(faceToRot, 2));
         }
         #endregion
 
@@ -254,7 +258,7 @@ namespace Rubinator3000.Solving {
             int[] count = new int[4];
             for (int i = 0; i < 4; i++) {
                 count[i] = whiteEdges.Count(e => e.InRightPosition());
-                DoMove(UP);
+                DoMove(new Move(UP));
             }
 
             int maxCount = count.Max();
@@ -268,7 +272,7 @@ namespace Rubinator3000.Solving {
         /// <returns></returns>
         protected int GetDelta(EdgeStone edge) {
             CubeColor edgeColor = edge.GetColors().First(c => c != WHITE);
-            CubeFace face = edge.GetColorPosition(c => c != WHITE).Face;
+            CubeFace face = edge.GetColorPosition(edgeColor).Face;
 
             return SolvingUtility.GetDelta(edgeColor, face, UP);
         }
@@ -335,7 +339,7 @@ namespace Rubinator3000.Solving {
                 }
 
                 // return 2 + moves white face count                                
-                int sortingMoves = Math.Abs(SolvingUtility.NormalizeCount(edgeDelta - WhiteFaceOrientation, -1));
+                int sortingMoves = Math.Abs(SolvingUtility.NormalizeCount(edgeDelta - WhiteFaceOrientation));
                 return 2 + sortingMoves;
             }
             // on middle layer
@@ -361,7 +365,7 @@ namespace Rubinator3000.Solving {
                             edge.GetColors().First(c => c != WHITE),    // second color
                             edge.GetColorPosition(c => c != WHITE).Face,    // second color face color
                             UP);    // face to rotate
-                        int sortingMoves = Math.Abs(SolvingUtility.NormalizeCount(edgeDelta - WhiteFaceOrientation, -1));
+                        int sortingMoves = Math.Abs(SolvingUtility.NormalizeCount(edgeDelta - WhiteFaceOrientation));
                         return 1 + sortingMoves;
                 }
 

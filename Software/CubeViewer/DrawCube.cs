@@ -15,8 +15,10 @@ namespace Rubinator3000 {
         public Move Move;
         public Cube EndState;
 
-        // in milliseconds
-        public float TurnDuration;
+        public AnimatedMove(Move move = null, Cube endState = null) {
+            this.Move = move;
+            this.EndState = endState;
+        }
 
         public override string ToString() {
             return Move.ToString();
@@ -76,61 +78,59 @@ namespace Rubinator3000 {
             }
         }
 
+        private static void KeepTaskAlive() {
+            bool makeNewTask = false;
+            if (task != null) {
+                if (task.Status != TaskStatus.Running) {
+                    makeNewTask = true;
+                }
+            }
+            else makeNewTask = true;
+
+            if (makeNewTask)
+                task = Task.Run(AnimateMovesTask);
+        }
+
         // do animated moves
         private static void AnimateMovesTask() {
             while (moveQueue.Count > 0) {
-                //Log.LogStuff("Animated move executing in animated move task");
-                AnimatedMove move;
+                //Log.LogMessage("Animated move executing in animated move task");
+                AnimatedMove animMove;
 
-                lock (moveQueue) {
-                    move = moveQueue.Dequeue();
-                }
+                animMove = moveQueue.Dequeue();
 
                 // do animation if move is given
-                if (move.Move != null) {
-                    // @TODO
-                    // fix isPrime and count system
-                    bool isPrime = move.Move.IsPrime;
-                    if (move.Move.IsPrime)
-                        move.Move.Count = 4 - move.Move.Count;
-
+                if (animMove.Move != null) {
                     Stopwatch watch = new Stopwatch();
 
                     float anglePerMillisecond = 90 / (float)Settings.MoveAnimatedTime;
-                    // if move is null, skip animation and directly set state
-                    if (isPrime)
-                        anglePerMillisecond *= -1;
-
-                    Debug.WriteLine(anglePerMillisecond);
+                    anglePerMillisecond *= animMove.Move.Direction;
 
                     watch.Start();
 
-                    // rotate until 90 degrees is hit, then reset rotation and copy cube
+                    // rotate until wanted angle is hit, then reset rotation and update internal state
                     // also, issue a redraw
-                    while (Math.Abs(faceRotations[(int)move.Move.Face]) < 90 * move.Move.Count) {
-                        SetFaceRotation(move.Move.Face, (float)(watch.ElapsedMilliseconds * anglePerMillisecond));
+                    while (Math.Abs(faceRotations[(int)animMove.Move.Face]) < 90 * Math.Abs(animMove.Move.Count)) {
+                        SetFaceRotation(animMove.Move.Face, watch.ElapsedMilliseconds * anglePerMillisecond);
                         CubeViewer.Window.Invalidate();
                     }
 
                     // set new state and reset rotation
-                    lock (currentState) {
-                        currentState = move.EndState;
-                    }
-                    SetFaceRotation(move.Move.Face, 0);
+                    currentState.DoMove(animMove.Move);
+                    Log.LogMessage(animMove.Move.CountPositive + " - " + animMove.Move.Count);
+                    SetFaceRotation(animMove.Move.Face, 0);
 
                 // skip animation and directly set end state
                 } else {
-                    lock (currentState) {
-                        currentState = move.EndState;
-                    }
+                    currentState = animMove.EndState;
                     CubeViewer.Window.Invalidate();
                 }
             }
         }
 
-        public static void Init(Vector3[] _renderColors, Cube cube = null) {
-            cubeShader = new Shader("Resources/CubeShader");
-            flatShader = new Shader("Resources/FlatShader");
+        public static void Init(Vector3[] _renderColors) {
+            cubeShader = new Shader("Resources/Shaders/CubeShader");
+            flatShader = new Shader("Resources/Shaders/FlatShader");
 
             cubeShader.Bind();
 
@@ -138,10 +138,7 @@ namespace Rubinator3000 {
             for (int i = 0; i < 2; i++)
                 cubeShader.Upload(string.Format("texture{0}", i.ToString()), i);
 
-            if (cube != null)
-                currentState = cube;
-            else
-                currentState = new Cube();
+            currentState = new Cube();
 
             renderColors = _renderColors;
 
@@ -156,39 +153,31 @@ namespace Rubinator3000 {
 
             moveQueue = new Queue<AnimatedMove>();
 
-            Log.LogStuff("Animation Thread Start");
+            Log.LogMessage("Animation Thread Start");
         }
 
         public static void StopDrawing() {
-            task.Wait();
+            if (task != null)
+                task.Wait();
 
-            Log.LogStuff("Animation Thread Stop");
+            Log.LogMessage("Animation Thread Stop");
+        }
+
+        /// <summary>
+        /// Adds the end state to the queue
+        /// </summary>
+        /// <param name="endState"></param>
+        public static void AddState(Cube endState) {
+            moveQueue.Enqueue(new AnimatedMove(null, (Cube)endState.Clone()));
+            KeepTaskAlive();
         }
 
         /// <summary>
         /// Adds the move to the queue
-        /// <p>Acts like state set when no move and no duration is given</p>
         /// </summary>
-        public static void AddMove(Cube endState, Move move = null) {
-            // deep copy because otherwise, the arrays would refer to the same memory
-            lock (moveQueue) {
-                moveQueue.Enqueue(new AnimatedMove { Move = move, EndState = (Cube)endState.Clone(), TurnDuration = Settings.MoveAnimatedTime });
-            }
-
-            bool makeNewTask = false;
-            if (task != null) {
-                if (task.Status != TaskStatus.Running) {
-                    makeNewTask = true;
-                }
-            }
-            else makeNewTask = true;
-
-            if (makeNewTask)
-                task = Task.Factory.StartNew(() => AnimateMovesTask());
-
-
-            if (move != null)
-                Log.LogStuff($"Animate Move: {move.ToString()}");
+        public static void AddMove(Move move) {
+            moveQueue.Enqueue(new AnimatedMove(move, null));
+            KeepTaskAlive();
         }
 
         public static void Draw(View view) {
@@ -219,32 +208,30 @@ namespace Rubinator3000 {
                             new Vector3(.1f));
 
                     // cube color data (matrix array)
-                    lock (currentState) {
-                        var data = currentState.GetData();
+                    var data = currentState.GetData();
 
-                        // each tile
-                        for (CubeFace face = 0; (int)face < 6; face++) {
-                            // select positions relevant for current tile face
-                            foreach (Position pos in CuboidTransformations.CuboidMappings[transform.Position].Where(x => x.Face == face)) {
-                                CubeColor color = data[(int)pos.Face][pos.Tile];
-                                cubeShader.Upload(string.Format("color[{0}]", ((int)pos.Face).ToString()),
-                                    renderColors[(int)color]);
-                            }
-
-                            var rotMat = cuboidFace != null ? faceRotationMatrices[(int)cuboidFace] : Matrix4.Identity;
-                            var model = CubeTransformations.Transformations[(int)face].GetMatrix() * cuboidMat * rotMat;
-
-                            cubeShader.Upload(string.Format("modelMatrix[{0}]", ((int)face).ToString()), model);
-                            cubeShader.Upload("cubeModelMatrix", Transformation.GetMatrix());
+                    // each tile
+                    for (CubeFace face = 0; (int)face < 6; face++) {
+                        // select positions relevant for current tile face
+                        foreach (Position pos in CuboidTransformations.CuboidMappings[transform.Position].Where(x => x.Face == face)) {
+                            CubeColor color = data[(int)pos.Face][pos.Tile];
+                            cubeShader.Upload(string.Format("color[{0}]", ((int)pos.Face).ToString()),
+                                renderColors[(int)color]);
                         }
 
-                        // access time for a dict is close to O(1), so no significant performance loss
-                        ResourceManager.LoadedModels["cubePlane"].BindVao();
-                        ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
-                        ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
+                        var rotMat = cuboidFace != null ? faceRotationMatrices[(int)cuboidFace] : Matrix4.Identity;
+                        var model = CubeTransformations.Transformations[(int)face].GetMatrix() * cuboidMat * rotMat;
 
-                        GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, (int)6);
+                        cubeShader.Upload(string.Format("modelMatrix[{0}]", ((int)face).ToString()), model);
+                        cubeShader.Upload("cubeModelMatrix", Transformation.GetMatrix());
                     }
+
+                    // access time for a dict is close to O(1), so no significant performance loss
+                    ResourceManager.LoadedModels["cubePlane"].BindVao();
+                    ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
+                    ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
+
+                    GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, (int)6);
                 }
 
                 // draw flat

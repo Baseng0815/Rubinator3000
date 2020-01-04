@@ -9,30 +9,25 @@ namespace Rubinator3000 {
 
     [Serializable]
     public partial class Cube : ICloneable {
-        private CubeMatrix[] data = new CubeMatrix[6];
-        internal readonly bool isRenderCube;
-
-        internal CubeMatrix[] Data {
-            get => data;
-        }
+        private CubeColor[][] data = new CubeColor[6][];
 
         public EdgeStone[] Edges { get; }
         public CornerStone[] Corners { get; }
 
-        public Cube(CubeMatrix[] matrices = null, bool isRenderCube = false) {
-            if (matrices == null) {
-                data = new CubeMatrix[6];
+        public Cube(CubeColor[][] faces = null) {
+            if (faces == null) {
+                data = new CubeColor[6][];
                 for (int face = 0; face < 6; face++)
-                    data[face] = new CubeMatrix((CubeColor)face);
+                    data[face] = Enumerable.Repeat((CubeColor)face, 9).ToArray();
             }
             else {
-                if (matrices.Length != 6)
-                    throw new ArgumentOutOfRangeException(nameof(matrices));
+                if (faces.Length != 6)
+                    throw new ArgumentOutOfRangeException(nameof(faces), "value has to equal 6");
+                if (faces.Any(f => f.Length != 9))
+                    throw new ArgumentOutOfRangeException(nameof(faces), "each face should have 9 tiles");
 
-                data = matrices;
+                data = faces;
             }
-
-            this.isRenderCube = isRenderCube;
 
             Edges = EdgeStonePositions.Select(p => new EdgeStone(new Tuple<CubeColor, CubeColor>(At(p.Item1), At(p.Item2)), this)).ToArray();
             Corners = CornerStonePositions.Select(p => new CornerStone(new Tuple<CubeColor, CubeColor, CubeColor>(At(p.Item1), At(p.Item2), At(p.Item3)), this)).ToArray();
@@ -51,9 +46,6 @@ namespace Rubinator3000 {
         /// </summary>
         public void SetTile(CubeFace face, int tile, CubeColor color) {
             data[(int)face][tile] = color;
-            if (isRenderCube) {
-                DrawCube.AddMove(this);
-            }
         }
 
         /// <summary>
@@ -63,13 +55,17 @@ namespace Rubinator3000 {
             Random rand = new Random();
             MoveCollection moves = new MoveCollection();
 
-            while (moves.Count() < numberOfMoves)
-                moves.Add(new Move((CubeFace)rand.Next(5), rand.Next(1, 3)));
+            int[] counts = new int[] {
+                -1, 1, 2
+            };
 
-            Log.LogStuff(string.Format("Shuffle Cube {0} Times: {1}", numberOfMoves, moves.ToString()));
+            while (moves.Count() < numberOfMoves)
+                moves.Add(new Move((CubeFace)rand.Next(5), counts[rand.Next(counts.Length)]));
+
+            Log.LogMessage(string.Format("Shuffle Cube {0} Times: {1}", numberOfMoves, moves.ToString()));
 #if DEBUG
             foreach (var move in moves)
-                move.Print();
+                System.Diagnostics.Debug.WriteLine(move.ToString());
 #endif
             DoMoves(moves);
 
@@ -86,15 +82,7 @@ namespace Rubinator3000 {
 
         public CubeColor At(Position position) {
             return data[(int)position.Face][position.Tile];
-        }
-
-        /// <summary>
-        /// Returns 
-        /// </summary>
-        /// <returns></returns>
-        public CubeMatrix[] GetData() {
-            return data;
-        }
+        }        
 
         public IEnumerable<T> GetStonesOnFace<T>(CubeFace face) where T : IStone {
             if (typeof(T) == typeof(EdgeStone)) {
@@ -177,18 +165,20 @@ namespace Rubinator3000 {
             return (CubeFace)(int)color;
         }
 
+        public CubeColor[][] GetData() {
+            return data;
+        }
+
         public object Clone() {
-            CubeMatrix[] newData = new CubeMatrix[6];
+            CubeColor[][] newData = new CubeColor[6][];
 
             for (int i = 0; i < 6; i++) {
-                newData[i] = new CubeMatrix();
+                newData[i] = new CubeColor[9];
 
                 for (int t = 0; t < 9; t++)
                     newData[i][t] = data[i][t];
 
             }
-
-            
 
             return new Cube(newData);
         }

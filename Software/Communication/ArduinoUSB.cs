@@ -18,26 +18,43 @@ namespace Rubinator3000 {
         public ArduinoUSB(string portName, int baudRate = 9600) {
             string[] portNames = SerialPort.GetPortNames();
 
-            if (!portNames.Contains(portName))
-                throw new ArgumentException($"Der Port\"{portName}\" wurde nicht gefunden!", nameof(portName));
+            if (!portNames.Contains(portName)) {
+                Log.LogMessage($"Der Port\"{portName}\" wurde nicht gefunden!");
+                return;
+            }
 
             serial = new SerialPort(portName, baudRate);
+            serial.ReadTimeout = Settings.ArduinoTimeout;
 
             // open serial port
             try {
                 serial.Open();
             }
             catch (Exception e) {
-                throw new InvalidOperationException("Der Port kann nicht geöffnet werden.", e);
+                Log.LogMessage("Der Port kann nicht geöffnet werden:" + e.Message);
+                return;
             }
         }
 
         public override void Connect() {
+            if (!serial.IsOpen) {
+                Log.LogMessage("Failed to write data, port is not open.");
+                return;
+            }
+
             serial.Write(new byte[] { 0xA1 }, 0, 1);
 
-            byte response = (byte)serial.ReadByte();
+            byte response;
+            try {
+                response = (byte)serial.ReadByte();
+            } catch (TimeoutException e) {
+                Log.LogMessage(e.ToString());
+                return;
+            }
+
             if (response != 0xF1) {
-                throw new InvalidProgramException("Aduinoprogramm ist nicht korrekt");
+                Log.LogMessage("Arduinoprogramm ist nicht korrekt. Response: " + response);
+                return;
             }
             else {
                 connected = true;
@@ -45,26 +62,34 @@ namespace Rubinator3000 {
         }
 
         public override void Disconnect() {
-            serial.Write(new byte[] { 0xA0 }, 0, 1);
+            if (serial.IsOpen) {
+                serial.Write(new byte[] { 0xA0 }, 0, 1);
 
-            if (serial.ReadByte() != 0xF0) {
-                throw new InvalidProgramException("Aduinoprogramm ist nicht korrekt");
-            }
-            else {
-                connected = false;
+                if (serial.ReadByte() != 0xF0) {
+                    Log.LogMessage("Aduinoprogramm ist nicht korrekt");
+                    return;
+                } else {
+                    connected = false;
+                }
+
+                serial.Close();
             }
         }
 
         public override void Dispose() {
-            serial.Close();
+            Disconnect();
         }
 
         public override async void SendMove(Move move) {
-            if (serial == null || !serial.IsOpen)
-                throw new InvalidOperationException("Der Port ist nicht geöffnet!");
+            if (serial == null || !serial.IsOpen) {
+                Log.LogMessage("Der Port ist nicht geöffnet!");
+                return;
+            }
 
-            if (!connected)
-                throw new InvalidOperationException("Der Arduino ist nicht verbunden!");
+            if (!connected) {
+                Log.LogMessage("Der Arduino ist nicht verbunden!");
+                return;
+            }
 
             byte[] moveData = MoveToByte(move);
 
@@ -86,30 +111,33 @@ namespace Rubinator3000 {
                     byte response = await getResponse;
 
                     if (response != expectedResonse) {
-                        throw new Exception();
+                        Log.LogMessage("Wrong response. Expected " + expectedResonse + ", but got " + response);
+                        return;
                     }
                     else {
                         responseCount++;
                     }
                 }
                 else {
-                    throw new TimeoutException("Arduino is not resposing");
+                    Log.LogMessage("Arduino is not resposing");
+                    return;
                 }
             } while (responseCount != moveData.Length);
         }
 
         public override void SendMoves(IEnumerable<Move> moves) {
-            if (serial == null || !serial.IsOpen)
-                throw new InvalidOperationException("Der Port ist nicht geöffnet!");
+            if (serial == null || !serial.IsOpen) {
+                Log.LogMessage("Der Port ist nicht geöffnet!");
+                return;
+            }
 
-            if (!connected)
-                throw new InvalidOperationException("Der Arduino ist nicht verbunden!");                        
+            if (!connected) {
+                Log.LogMessage("Der Arduino ist nicht verbunden!");
+                return;
+            }
 
-            foreach (Move move in moves) {
+            foreach (Move move in moves)
                 SendMove(move);
-
-                MessageBox.Show("Move Korrekt?" + $"\r\n{move.ToString()}");
-            }            
         }
     }
 }

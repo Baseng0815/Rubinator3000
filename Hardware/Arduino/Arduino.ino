@@ -46,13 +46,23 @@ void setup() {
     pinMode(ledRed, OUTPUT);
 
     Serial.begin(9600);
+
+	// 2 minutes timeout
+	Serial.setTimeout(120000);
+	digitalWrite(ledRed, HIGH);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:      
+  // put your main code here, to run repeatedly:
 
-  if(Serial.available()) {
-    uint8_t data = Serial.read();
+	if (Serial.available()) {
+	uint8_t data = Serial.read();
+
+	// disconnected
+	if (data == -1) {
+		setState(STATE_DISCONNECT);
+		return;
+	}
 
     switch (data) {
       case 0xA1:  // connect
@@ -71,8 +81,8 @@ void loop() {
   }
 }
 
-void setState(uint8_t newState) {  
-  if(state != newState) {      
+void setState(uint8_t newState) {
+  if(state != newState) {
 
     switch(newState) {
       case STATE_DISCONNECT:

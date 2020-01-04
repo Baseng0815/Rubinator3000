@@ -22,7 +22,9 @@ namespace Rubinator3000 {
         }
 
         private void MenuItemResetCube_Click(object sender, RoutedEventArgs e) {
-            Cube = new Cube();
+            cube = new Cube();
+
+            DrawCube.AddState(cube);
         }
 
         private void MenuItemSolveCube_Click(object sender, RoutedEventArgs e) {
@@ -30,9 +32,7 @@ namespace Rubinator3000 {
         }
 
         private void MenuItemOllDebug_Click(object sender, RoutedEventArgs e) {
-            OllDebugWindow ollDebug = new OllDebugWindow() {
-                mainWindow = this
-            };
+            OllDebugWindow ollDebug = new OllDebugWindow(cube);
 
             ollDebug.Show();
         }
@@ -61,17 +61,19 @@ namespace Rubinator3000 {
             }
         }
 
+        // Hardware
+
         private void MenuItemConnect_Click(object sender, RoutedEventArgs e) {
             string serialPort = menuItemCOMPort.Text;
             if (!System.IO.Ports.SerialPort.GetPortNames().Contains(serialPort)) {
                 MessageBox.Show("Bitte einen gültigen Port auswählen!");
             }
 
-            arduino = new ArduinoUSB(serialPort);
-            arduino.Connect();
+            moveSynchronizer.ConnectArduino(serialPort);
+        }
 
-            // only debug
-            arduino.SendMove(new Move(CubeFace.UP, 3));
+        private void MenuItemDisconnect_Click(object sender, RoutedEventArgs e) {
+            moveSynchronizer.DisconnectArduino();
         }
     }
 }

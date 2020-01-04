@@ -5,92 +5,116 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static Rubinator3000.CubeFace;
 
-namespace Rubinator3000 {
-    public class MoveEventArgs : EventArgs {
-        public Move Move { get; }
-
-        public MoveEventArgs(Move move) {
-            Move = move ?? throw new ArgumentNullException(nameof(move));
-        }
-    }
+namespace Rubinator3000 {    
 
     [DebuggerNonUserCode]
-    partial class Cube {
-        private static readonly IEnumerable<CubeSide> sides = new CubeSide[] {
-            new CubeSide(CubeFace.LEFT, (1, 0, true, 1), (2, 0, true, 1), (3, 0, true, 1), (5, 2, true, -1)),
-            new CubeSide(CubeFace.UP, (0, 0, false, -1), (5, 0, false, -1), (4, 0, false, -1), (2, 0, false, -1)),
-            new CubeSide(CubeFace.FRONT, (0, 2, true, -1), (1, 2, false, 1), (4, 0, true, 1), (3, 0, false, -1)),
-            new CubeSide(CubeFace.DOWN, (0, 2, false, 1), (2, 2, false, 1), (4, 2, false, 1), (5, 2, false, 1)),
-            new CubeSide(CubeFace.RIGHT, (1, 2, true, -1), (5, 0, true, 1), (3, 2, true, -1), (2, 2, true, -1)),
-            new CubeSide(CubeFace.BACK, (0, 0, true, 1), (3, 2, false, 1), (4, 2, true, -1), (1, 0, false, -1))
-        };
+    partial class Cube {        
+        private static readonly FaceRelation[][] faceRelations = new FaceRelation[6][];
 
-        public delegate void MoveEventHandler(object sender, MoveEventArgs e);
-        public event MoveEventHandler OnMoveDone;
+        protected void RotateFace(CubeFace face) {
+            // rotate face
+            CubeColor[] newFaceColors = new CubeColor[9];
 
-        protected void RotateSide(CubeSide side) {
-            CubeMatrix matrix = data[(int)side.Face];
-            matrix.Rotate();
+            for(int t = 0; t < 9; t++) {                
+                newFaceColors[2 + 3 * t - 10 * (t / 3)] = data[(int)face][t];
+            }
+            data[(int)face] = newFaceColors;
 
-            ISubmatrix tmp;
-            ISubmatrix submatrix;
-            CubeMatrix currentMatrix;
-            (int face, int index, bool column, int direction) current, next;
-            int nextIndex;
+            // swap side faces
+            // load last destination in buffer to save data
+            FaceRelation lastRelation = faceRelations[(int)face][3];
+            (int tile, CubeColor color)[] buffer = new (int, CubeColor)[3];
+            for(int i = 0;  i < 3; i++) {
+                int tile = lastRelation.relation[i].destination; 
+                CubeColor color = data[(int)lastRelation.destination][lastRelation.relation[i].destination];
+                buffer[i] = (tile, color);
+            }
+            
 
-            tmp = side.GetSubmatrix(data[side.Submatices[3].Face], 3);
+            for(int f = 3; f >= 0; f--) {
+                FaceRelation relation = faceRelations[(int)face][f];
 
-            for (int i = 4 - 1; i >= 0; i--) {
-                nextIndex = (i + 3) % 4;
+                for (int i = 0; i < 3; i++) {
+                    CubeColor color;
+                    if (f == 0) {
+                        color = buffer.First(e => e.tile == relation.relation[i].departure).color;
+                    }
+                    else {
+                        color = data[(int)relation.departure][relation.relation[i].departure];
+                    }
 
-                current = side.Submatices[i];
-                next = side.Submatices[nextIndex];
-
-                // get the next submatrix                
-                submatrix = i == 0 ? tmp : side.GetSubmatrix(data[next.face], nextIndex);
-
-                // transform the matrix
-                if (current.column ^ next.column)
-                    submatrix = submatrix.GetTranspose();
-
-                if (current.direction != next.direction)
-                    submatrix = submatrix.GetReverse();
-
-                // set the matrix to the current face
-                currentMatrix = data[current.face];
-                if (submatrix is RowMatrix)
-                    currentMatrix.SetRow(current.index, (RowMatrix)submatrix);
-                else if (submatrix is ColumnMatrix)
-                    currentMatrix.SetColumn(current.index, (ColumnMatrix)submatrix);
+                    data[(int)relation.destination][relation.relation[i].destination] = color;
+                }
             }
         }
-
-        public void DoMoves(IEnumerable<Move> moves, bool renderMoves = true) {
-            foreach (var move in moves) {
-                DoMove(move, renderMoves);
-            }
-        }
-        public void DoMove(CubeFace face, int count = 1, bool renderMove = true) => DoMove(new Move(face, count), renderMove);
 
         /// <summary>
-        /// does a move
+        /// Execute a collection of moves
         /// </summary>
-        public virtual void DoMove(Move move, bool renderMove = true) {
-            CubeSide side = sides.First(e => e.Face == move.Face);
+        /// <param name="moves"></param>
+        public void DoMoves(IEnumerable<Move> moves) {
+            foreach (var move in moves) {
+                DoMove(move);
+            }
+        }
 
-            for (int c = 0; c < move.Count; c++) {
-                RotateSide(side);
+        /// <summary>
+        /// Execute a move
+        /// </summary>
+        public virtual void DoMove(Move move) {
+            for (int c = 0; c < move.CountPositive; c++) {
+                RotateFace(move.Face);
             }
 
-            OnMoveDone?.Invoke(this, new MoveEventArgs(move));
+#if DEBUG_MOVES
+            Log.LogMove(move, this);
+#endif
+        }
 
-            if (this.isRenderCube && renderMove) {
-                DrawCube.AddMove(this, move);
-            }
+        static Cube() {
+            faceRelations[(int)LEFT] = new FaceRelation[4] {
+                new FaceRelation(UP,    FRONT,  (0, 0), (3, 3), (6, 6)),
+                new FaceRelation(FRONT, DOWN,   (0, 0), (3, 3), (6, 6)),
+                new FaceRelation(DOWN,  BACK,   (0, 8), (3, 5), (6, 2)),
+                new FaceRelation(BACK,  UP,     (2, 6), (5, 3), (8, 0))
+            };
 
-            Log.LogStuff("Move done: " + move.ToString());
+            faceRelations[(int)UP] = new FaceRelation[4] {
+                new FaceRelation(LEFT,  BACK,   (0, 0), (1, 1), (2, 2)),
+                new FaceRelation(BACK,  RIGHT,  (0, 0), (1, 1), (2, 2)),
+                new FaceRelation(RIGHT, FRONT,  (0, 0), (1, 1), (2, 2)),
+                new FaceRelation(FRONT, LEFT,   (0, 0), (1, 1), (2, 2))
+            };
+
+            faceRelations[(int)FRONT] = new FaceRelation[4] {
+                new FaceRelation(LEFT,  UP,     (8, 6), (5, 7), (2, 8)),
+                new FaceRelation(UP,    RIGHT,  (6, 0), (7, 3), (8, 6)),
+                new FaceRelation(RIGHT, DOWN,   (0, 2), (3, 1), (6, 0)),
+                new FaceRelation(DOWN,  LEFT,   (2, 8), (1, 5), (0, 2))
+            };
+
+            faceRelations[(int)DOWN] = new FaceRelation[4] {
+                new FaceRelation(LEFT,  FRONT,  (6, 6), (7, 7), (8, 8)),
+                new FaceRelation(FRONT, RIGHT,  (6, 6), (7, 7), (8, 8)),
+                new FaceRelation(RIGHT, BACK,   (6, 6), (7, 7), (8, 8)),
+                new FaceRelation(BACK,  LEFT,   (6, 6), (7, 7), (8, 8))
+            };
+
+            faceRelations[(int)RIGHT] = new FaceRelation[4] {
+                new FaceRelation(UP,    BACK,   (2, 6), (5, 3), (8, 0)),
+                new FaceRelation(BACK,  DOWN,   (0, 8), (3, 5), (6, 2)),
+                new FaceRelation(DOWN,  FRONT,  (2, 2), (5, 5), (8, 8)),
+                new FaceRelation(FRONT, UP,     (2, 2), (5, 5), (8, 8))
+            };
+
+            faceRelations[(int)BACK] = new FaceRelation[4] {
+                new FaceRelation(LEFT,  DOWN,   (0, 6), (3, 7), (6, 8)),
+                new FaceRelation(DOWN,  RIGHT,  (6, 8), (7, 5), (8, 2)),
+                new FaceRelation(RIGHT, UP,     (2, 0), (5, 1), (8, 2)),
+                new FaceRelation(UP,    LEFT,   (0, 6), (1, 3), (2, 0))
+            };
         }
     }
-
 }
