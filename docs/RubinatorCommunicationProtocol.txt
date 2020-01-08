@@ -25,6 +25,20 @@ moves:
 0x0C		Move 'B'
 0x0D		Move 'Bi'
 
+parallel moves:
+0x10        Move 'LR'       0b0001_0000
+0x11        Move 'LRi'      0b0001_0001 
+0x12        Move 'LiR'      0b0001_0010
+0x13        Move 'LiRi'     0b0001_0011
+0x14        Move 'UD'       0b0001_0100
+0x15        Move 'UDi'      0b0001_0101
+0x16        Move 'UiD'      0b0001_0110
+0x17        Move 'UiDi'     0b0001_0111
+0x18        Move 'FB'       0b0001_1000
+0x19        Move 'FBi'      0b0001_1001
+0x1A        Move 'FiB'      0b0001_1010
+0x1B        Move 'FiBi'     0b0001_1011
+
 0x10 + "Move"	Move "Move" done
 
 states:

@@ -23,7 +23,7 @@ void Stepper::writeState(int p0, int p1, int p2, int p3) const {
     digitalWrite(pins[3], p3);
 }
 
-void Stepper::doMove(int steps) {
+void Stepper::doMove(int steps, const int stepDelay) {
     int dir = steps < 0 ? -1 : 1;
     steps = abs(steps);
 
@@ -42,7 +42,27 @@ void Stepper::doMove(int steps) {
         else if(count > 1000)
             count %= 4;
 
-        delay(10);
+        delay(stepDelay);
     }
-    writeState(0,0,0,0);
+    writeState(0, 0, 0, 0);
+}
+
+void Stepper::doStep(int direction, int timeout = 0) {
+    count += direction; 
+
+    switch(count % 4) {
+        case 0:     writeState(0, 1, 1, 0); break;
+        case 1:     writeState(0, 1, 0, 1); break;
+        case 2:     writeState(1, 0, 0, 1); break;
+        case 3:     writeState(1, 0, 1, 0); break;
+    }
+
+    if(count < 10)
+        count += 100;
+    else if(count > 1000)
+        count %= 4;
+
+    delay(timeout);
+
+    writeState(0, 0, 0, 0);
 }

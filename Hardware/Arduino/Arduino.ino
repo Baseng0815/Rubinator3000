@@ -109,9 +109,15 @@ void setState(uint8_t newState) {
   Serial.write(0xF0 + state);
 }
 
-void handleMove(uint8_t move) {
+void handleMove(uint8_t move) {  
   if(state != STATE_CONNECT) {
     Serial.write(0xB1);  // send not connected
+    return;
+  }
+
+  //handle parallel move
+  if((move & 0x10) == 0x10) {
+    handleParallelMove(move);
     return;
   }
 
@@ -120,11 +126,28 @@ void handleMove(uint8_t move) {
 
   if(face < 6) {
     int steps = (1 + (-2 * isPrime)) * 50;
-    steppers[face].doMove(steps);
+    steppers[face].doMove(steps, 10);
 
     Serial.write(0x10 + move);
   }
   else {
     Serial.write(0xB2);  // send move not valid
+  }
+}
+
+void handleParallelMove(uint8_t parallelMove) {
+    int axis = parallelMove & (1 << 3 | 1 << 2);
+
+    int leftDir = parallelMove & (1 << 1);
+    int rightDir = parallelMove & (1 << 10);
+
+    doParallelMove(axis, leftDir, rightDir, 10);
+}
+
+void doParallelMove(int axis, int leftDir, int rightDir, int stepDelay) {    
+  for(int i = 0; i < 50; i++) {
+    steppers[axis].doStep(leftDir, 0);
+    steppers[axis+3].doStep(rightDir, 0);
+    delay(stepDelay);
   }
 }
