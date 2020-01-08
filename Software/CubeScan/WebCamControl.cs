@@ -584,7 +584,7 @@ namespace Rubinator3000.CubeScan {
                 circle = GenerateCircle(((MainWindow)Application.Current.MainWindow).cube.At(new Position((CubeFace)pos.FaceIndex, pos.RowIndex*3+pos.ColIndex)));
 
                 // When you hover over the circle on the gui, you can see, which position is being read out at this position
-                circle.ToolTip = string.Format("{0}[{1},{2}]", (CubeColor)pos.FaceIndex, pos.RowIndex, pos.ColIndex);
+                circle.ToolTip = new PieChart(pos);
 
                 // Add click-eventhandling for circle
                 circle.MouseUp += Circle_MouseUp;

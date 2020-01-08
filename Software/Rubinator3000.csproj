@@ -59,6 +59,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\System.Windows.Controls.DataVisualization.Toolkit.4.0.0.0\lib\net40-Client\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -89,6 +92,8 @@
     <Compile Include="Communication\ArduinoUSB.cs" />
     <Compile Include="Communication\MoveSynchronizer.cs" />
     <Compile Include="CubeScan\ColorIdentification.cs" />
+    <Compile Include="CubeScan\PieChart.cs" />
+    <Compile Include="CubeScan\PieSlice.cs" />
     <Compile Include="CubeScan\ReadPosition.cs" />
     <Compile Include="CubeScan\FastAccessBitmap.cs" />
     <Compile Include="CubeScan\Helper.cs" />
