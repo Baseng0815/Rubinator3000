@@ -304,7 +304,6 @@ namespace Rubinator3000.CubeScan {
 
             List<ReadPosition> allPositions = AllReadPositions();
 
-
             foreach (ReadPosition tempPos in allPositions) {
 
                 if (tempPos.Color == Color.Empty) {
@@ -318,7 +317,6 @@ namespace Rubinator3000.CubeScan {
         private static void SortAndValidateColors() {
 
             List<ReadPosition> allPositions = AllReadPositions();
-
             // Positions left to assign
             List<ReadPosition> positions = new List<ReadPosition>(allPositions);
 
@@ -348,12 +346,16 @@ namespace Rubinator3000.CubeScan {
                     Application.Current.Dispatcher.Invoke(() => {
 
                         // Change circle color of the current position on the gui
-                        //CircleByIndicies(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush(currentCubeColor);
+                        CircleByIndices(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush(currentCubeColor);
+
+                        /* Notlösung
 
                         // @TODO: fix color recognition and change this back again
                         CircleByIndices(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush((
                             (MainWindow)Application.Current.MainWindow).cube.At(new Position(((CubeFace)currentPosition.FaceIndex),
                             currentPosition.RowIndex*3+currentPosition.ColIndex)));
+
+                        */
                     });
                 }
 
@@ -585,6 +587,7 @@ namespace Rubinator3000.CubeScan {
 
                 // When you hover over the circle on the gui, you can see, which position is being read out at this position
                 circle.ToolTip = new PieChart(pos);
+                circle.ToolTipOpening += Circle_Tooltip;
 
                 // Add click-eventhandling for circle
                 circle.MouseUp += Circle_MouseUp;
@@ -598,6 +601,12 @@ namespace Rubinator3000.CubeScan {
             });
 
             return circle;
+        }
+
+        private static void Circle_Tooltip(object sender, ToolTipEventArgs e) {
+
+            PieChart pieChart = (PieChart)((Ellipse)sender).ToolTip;
+            pieChart.Invalidate();
         }
 
         private static Ellipse GenerateCircle(CubeColor cc) {
@@ -619,14 +628,11 @@ namespace Rubinator3000.CubeScan {
             }
 
             Ellipse circle = (Ellipse)sender;
-            string tooltipText = circle.ToolTip.ToString();
+            ReadPosition pos = ((PieChart)circle.ToolTip).ReadPosition;
 
             // Tooltip of circle looks like that: "CubeColor[RowIndex, FaceIndex]"
-            int faceIndex = (int)CubeColorByString(tooltipText.Substring(0, tooltipText.IndexOf('[')));
-            int rowIndex = Convert.ToInt32(char.GetNumericValue(tooltipText[tooltipText.IndexOf('[') + 1]));
-            int colIndex = Convert.ToInt32(char.GetNumericValue(tooltipText[tooltipText.IndexOf(']') - 1]));
-
-            RemovePosition(faceIndex, rowIndex, colIndex);
+            
+            RemovePosition(pos.FaceIndex, pos.RowIndex, pos.ColIndex);
             ((Canvas)circle.Parent).Children.Remove(circle);
         }
 
