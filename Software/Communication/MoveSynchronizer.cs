@@ -21,6 +21,7 @@ namespace Rubinator3000.Communication {
         public void ConnectArduino(string portName) {
             if (arduino != null)
                 arduino.Disconnect();
+
             arduino = new ArduinoUSB(portName);
             arduino.Connect();
         }
@@ -30,7 +31,7 @@ namespace Rubinator3000.Communication {
         }
 
         public Task RunAsync(Move move) {
-            return Task.Run(delegate {                
+            return Task.Run(delegate {
                 DrawCube.AddMove(move);
 
                 if (arduino == null)

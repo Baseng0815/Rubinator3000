@@ -122,6 +122,9 @@
                     Click="MenuItemSolveCube_Click"
                     Header="_Lösen"
                     InputGestureText="S" />
+                <Border>
+                    <CheckBox Content="MultiTurn"/>
+                </Border>
             </MenuItem>
 
             <MenuItem Header="Hardware">
