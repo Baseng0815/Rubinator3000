@@ -93,17 +93,19 @@ namespace Rubinator3000 {
                 };
 
                 string message = messages.Dequeue();
-                Dispatcher.Invoke(() => {
-                    if (textBoxLog != null)
-                        textBoxLog.Text += $"{message}\r\n";
+                if (logging) {
+                    Dispatcher.Invoke(() => {
+                        if (textBoxLog != null)
+                            textBoxLog.Text += $"{message}\r\n";
 
-                    // Auto Scroll Implementation
-                    if (winFormsHost.Child != null) {
-                        textBoxLog.Focus();
-                        textBoxLog.CaretIndex = textBoxLog.Text.Length;
-                        textBoxLog.ScrollToEnd();
-                    }
-                });
+                        // Auto Scroll Implementation
+                        if (winFormsHost.Child != null) {
+                            textBoxLog.Focus();
+                            textBoxLog.CaretIndex = textBoxLog.Text.Length;
+                            textBoxLog.ScrollToEnd();
+                        }
+                    });
+                }
             }
         }
     }

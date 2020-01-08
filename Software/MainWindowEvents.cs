@@ -53,6 +53,8 @@ namespace Rubinator3000 {
         }
 
         private async void SolveCube() {
+            Log.LogMessage(Settings.UseMultiTurn.ToString());
+            return;
 #if DEBUG_MOVES
             Log.EnableMoveLogging();
 #endif
@@ -72,7 +74,7 @@ namespace Rubinator3000 {
         private async void ShuffleCube() {
             Random rnd = new Random();
 
-            MoveCollection shuffleMoves = cube.Shuffle(rnd.Next(5, 20));
+            MoveCollection shuffleMoves = cube.Shuffle(rnd.Next(5, 10));
             moveHistoryOutput.Clear();
 
             await moveSynchronizer.RunAsync(shuffleMoves);
@@ -204,6 +206,13 @@ namespace Rubinator3000 {
 
             Log.LogMessage(WebCamControl.AddPosition(tempPos, cameraIndex));
 #endif
+        }
+        private void CheckBox_Checked(object sender, RoutedEventArgs e) {
+            Settings.UseMultiTurn = true;
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e) {
+            Settings.UseMultiTurn = false;
         }
     }
 }

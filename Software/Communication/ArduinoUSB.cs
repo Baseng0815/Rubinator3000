@@ -37,27 +37,19 @@ namespace Rubinator3000 {
         }
 
         public override void Connect() {
-            if (!serial.IsOpen) {
-                Log.LogMessage("Failed to write data, port is not open.");
-                return;
-            }
-
-            serial.Write(new byte[] { 0xA1 }, 0, 1);
-
-            byte response;
             try {
+                serial.Write(new byte[] { 0xA1 }, 0, 1);
+
+                byte response;
                 response = (byte)serial.ReadByte();
-            } catch (TimeoutException e) {
+                if (response != 0xF1) {
+                    Log.LogMessage("Arduinoprogramm ist nicht korrekt. Response: " + response);
+                    return;
+                } else
+                    connected = true;
+            } catch (Exception e) {
                 Log.LogMessage(e.ToString());
                 return;
-            }
-
-            if (response != 0xF1) {
-                Log.LogMessage("Arduinoprogramm ist nicht korrekt. Response: " + response);
-                return;
-            }
-            else {
-                connected = true;
             }
         }
 
@@ -65,14 +57,24 @@ namespace Rubinator3000 {
             if (serial.IsOpen) {
                 serial.Write(new byte[] { 0xA0 }, 0, 1);
 
-                if (serial.ReadByte() != 0xF0) {
-                    Log.LogMessage("Aduinoprogramm ist nicht korrekt");
-                    return;
-                } else {
-                    connected = false;
+                try
+                {
+                    if (serial.ReadByte() != 0xF0)
+                    {
+                        Log.LogMessage("Aduinoprogramm ist nicht korrekt");
+                        return;
+                    }
+                    else
+                    {
+                        connected = false;
+                    }
+
+                    serial.Close();
+                } catch (Exception e)
+                {
+                    Log.LogMessage(e.Message);
                 }
 
-                serial.Close();
             }
         }
 

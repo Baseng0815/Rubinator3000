@@ -95,34 +95,52 @@ namespace Rubinator3000 {
         private static void AnimateMovesTask() {
             while (moveQueue.Count > 0) {
                 //Log.LogMessage("Animated move executing in animated move task");
-                AnimatedMove animMove;
+                AnimatedMove animMove = moveQueue.Dequeue();
+                AnimatedMove? nextMove = null;
 
-                animMove = moveQueue.Dequeue();
+                if (Settings.UseMultiTurn) {
+                    if (moveQueue.Count > 0) {
+                        AnimatedMove nm = moveQueue.ElementAt(0);
+                        if (Utility.Axis(animMove.Move.Face) == Utility.Axis(nm.Move.Face)) {
+                            nextMove = nm;
+                            moveQueue.Dequeue();
+                        }
+                    }
+                }
 
                 // do animation if move is given
-                if (animMove.Move != null) {
+                if (animMove.Move != null || (nextMove.HasValue ? nextMove.Value.Move != null : false)) {
                     Stopwatch watch = new Stopwatch();
 
                     float anglePerMillisecond = 90 / (float)Settings.MoveAnimatedTime;
-                    anglePerMillisecond *= animMove.Move.Direction;
 
                     watch.Start();
 
                     // rotate until wanted angle is hit, then reset rotation and update internal state
                     // also, issue a redraw
                     while (Math.Abs(faceRotations[(int)animMove.Move.Face]) < 90 * Math.Abs(animMove.Move.Count)) {
-                        SetFaceRotation(animMove.Move.Face, watch.ElapsedMilliseconds * anglePerMillisecond);
+                        SetFaceRotation(animMove.Move.Face, watch.ElapsedMilliseconds * anglePerMillisecond * animMove.Move.Direction);
+                        if (nextMove.HasValue)
+                            SetFaceRotation(nextMove.Value.Move.Face, watch.ElapsedMilliseconds * anglePerMillisecond * nextMove.Value.Move.Direction);
                         CubeViewer.Window.Invalidate();
                     }
 
                     // set new state and reset rotation
                     currentState.DoMove(animMove.Move);
-                    Log.LogMessage(animMove.Move.CountPositive + " - " + animMove.Move.Count);
                     SetFaceRotation(animMove.Move.Face, 0);
+
+                    if (nextMove.HasValue)
+                    {
+                        currentState.DoMove(nextMove.Value.Move);
+                        SetFaceRotation(nextMove.Value.Move.Face, 0);
+                    }
 
                 // skip animation and directly set end state
                 } else {
-                    currentState = animMove.EndState;
+                    if (nextMove.HasValue)
+                        currentState = nextMove.Value.EndState;
+                    else
+                        currentState = animMove.EndState;
                     CubeViewer.Window.Invalidate();
                 }
             }

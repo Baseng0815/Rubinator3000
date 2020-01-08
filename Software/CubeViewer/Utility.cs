@@ -53,5 +53,17 @@ namespace Rubinator3000
         {
             return (float)Math.Sin(ToRad(angle));
         }
+
+        /// <summary>
+        /// Return 0 on x-axis, 1 on y-axis and 2 on z-axis
+        /// </summary>
+        public static int Axis(CubeFace face)
+        {
+            if (face == CubeFace.LEFT || face == CubeFace.RIGHT)
+                return 0;
+            else if (face == CubeFace.UP || face == CubeFace.DOWN)
+                return 1;
+            else return 2;
+        }
     }
 }
