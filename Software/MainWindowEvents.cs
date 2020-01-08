@@ -1,4 +1,6 @@
-﻿using Rubinator3000.CubeScan;
+﻿#define Camera
+
+using Rubinator3000.CubeScan;
 using Rubinator3000.Solving;
 using System;
 using System.Collections.Generic;
@@ -7,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Rubinator3000 {
     public partial class MainWindow {
@@ -36,7 +40,7 @@ namespace Rubinator3000 {
 
         private void CameraPreviewMenuItem_Click(object sender, RoutedEventArgs e) {
 #if Camera
-            Image cameraPreivew = (Image)(((System.Windows.Controls.ContextMenu)((System.Windows.Controls.MenuItem)sender).Parent).PlacementTarget);
+            System.Windows.Controls.Image cameraPreivew = (System.Windows.Controls.Image)(((System.Windows.Controls.ContextMenu)((System.Windows.Controls.MenuItem)sender).Parent).PlacementTarget);
 
             int cameraIndex = Array.IndexOf(cameraPreviews, cameraPreivew);
             webCamControls[cameraIndex].TryInitializeAndStart();
@@ -165,7 +169,7 @@ namespace Rubinator3000 {
                 return;
             }
 
-            Image clickedImage = (Image)sender;
+           System.Windows.Controls.Image clickedImage = (System.Windows.Controls.Image)sender;
             Point clickPosition = e.GetPosition(clickedImage);
 
             colorDialog = new ColorDialog();
