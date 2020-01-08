@@ -98,12 +98,13 @@ namespace Rubinator3000 {
                 AnimatedMove animMove = moveQueue.Dequeue();
                 AnimatedMove? nextMove = null;
 
-                if (moveQueue.Count > 0) {
-                    AnimatedMove nm = moveQueue.ElementAt(0);
-                    if (Utility.Axis(animMove.Move.Face) == Utility.Axis(nm.Move.Face))
-                    {
-                        nextMove = nm;
-                        moveQueue.Dequeue();
+                if (Settings.UseMultiTurn) {
+                    if (moveQueue.Count > 0) {
+                        AnimatedMove nm = moveQueue.ElementAt(0);
+                        if (Utility.Axis(animMove.Move.Face) == Utility.Axis(nm.Move.Face)) {
+                            nextMove = nm;
+                            moveQueue.Dequeue();
+                        }
                     }
                 }
 
