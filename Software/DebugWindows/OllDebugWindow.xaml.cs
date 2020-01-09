@@ -32,10 +32,10 @@ namespace Rubinator3000.DebugWindows {
 
             };
 
-        public OllDebugWindow(Cube cube) {
+        public OllDebugWindow() {
             InitializeComponent();
 
-            this.cube = cube;
+            cube = new Cube();
 
             IEnumerable<int> ollPatterns = GetPatterns();
 

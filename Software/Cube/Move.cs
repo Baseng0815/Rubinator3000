@@ -5,8 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubinator3000
-{
+namespace Rubinator3000 {
     public class Move {
         public CubeFace Face;
 
@@ -17,7 +16,7 @@ namespace Rubinator3000
             // guarantee that count always stays in the [-2;2] interval
             set {
                 count = value % 4;
-                if      (count == 3)  count = -1;
+                if (count == 3) count = -1;
                 else if (count == -3) count = 1;
             }
         }
@@ -32,7 +31,7 @@ namespace Rubinator3000
         // -1 on prime, 1 on non-prime moves
         public int Direction {
             get {
-                return Count / Math.Abs(Count);
+                return Count == 0 ? 0 : Count / Math.Abs(Count);
             }
         }
 
@@ -42,14 +41,12 @@ namespace Rubinator3000
             "L", "U", "F", "D", "R", "B"
         };
 
-        public Move(CubeFace Face, int Count = 1)
-        {
+        public Move(CubeFace Face, int Count = 1) {
             this.Face = Face;
             this.Count = Count;
         }
 
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             if (!(obj is Move))
                 return false;
 
@@ -57,16 +54,14 @@ namespace Rubinator3000
             return Face == move.Face && Count == move.Count;
         }
 
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             var hashCode = 1804491660;
             hashCode = hashCode * -1521134295 + Face.GetHashCode();
             hashCode = hashCode * -1521134295 + Count.GetHashCode();
             return hashCode;
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             string str = mappings[(int)Face];
             if (Direction == -1) str += "i";
             else if (Count == 2)

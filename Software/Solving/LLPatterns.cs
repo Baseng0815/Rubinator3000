@@ -62,6 +62,10 @@ namespace Rubinator3000.Solving {
 
         private byte[][] patternData;
 
+        public byte[][] PatternData {
+            get => patternData;
+        }
+
         private static readonly Dictionary<CubeColor, int> middleLayerColors;
 
         static PllPattern() {

@@ -101,6 +101,9 @@
     <Compile Include="DebugWindows\OllDebugWindow.xaml.cs">
       <DependentUpon>OllDebugWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DebugWindows\PllDebugWindow.xaml.cs">
+      <DependentUpon>PllDebugWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Log.cs" />
     <Compile Include="MainWindowEvents.cs" />
     <Compile Include="MainWindowMenu.cs" />
@@ -120,6 +123,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DebugWindows\OllDebugWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DebugWindows\PllDebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

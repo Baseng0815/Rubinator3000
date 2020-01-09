@@ -54,7 +54,7 @@ namespace Rubinator3000.Communication {
             return Task.Run(delegate {
                 bool confirmationNeeded = true;
                 foreach (Move move in moves) {
-                    if (confirmationNeeded) {
+                    if (confirmationNeeded && arduino != null) {
                         var result = MessageBox.Show("Next move: " + move.ToString() + "\nContinue stepping?", "Confirm", MessageBoxButton.YesNoCancel, MessageBoxImage.Information, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly);
                         if (result == MessageBoxResult.No)
                             confirmationNeeded = false;
@@ -66,8 +66,9 @@ namespace Rubinator3000.Communication {
 
                     if (arduino == null)
                         Log.LogMessage("Arduino not connected");
-                    else
+                    else {                        
                         arduino.SendMove(move);
+                    }
 
                     Application.Current.Dispatcher.Invoke(delegate {
                         ((MainWindow)Application.Current.MainWindow).cube.DoMove(move);
