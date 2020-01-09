@@ -39,7 +39,7 @@ parallel moves:
 0x1A        Move 'FiB'      0b0001_1010
 0x1B        Move 'FiBi'     0b0001_1011
 
-0x10 + "Move"	Move "Move" done
+0x20 + "Move"	Move "Move" done
 
 states:
 0xA2		solve

@@ -128,7 +128,7 @@ void handleMove(uint8_t move) {
     int steps = (1 + (-2 * isPrime)) * 50;
     steppers[face].doMove(steps, 10);
 
-    Serial.write(0x10 + move);
+    Serial.write(0x20 + move);
   }
   else {
     Serial.write(0xB2);  // send move not valid
