@@ -53,8 +53,6 @@ namespace Rubinator3000 {
         }
 
         private async void SolveCube() {
-            Log.LogMessage(Settings.UseMultiTurn.ToString());
-            return;
 #if DEBUG_MOVES
             Log.EnableMoveLogging();
 #endif

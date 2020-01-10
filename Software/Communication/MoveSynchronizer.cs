@@ -51,6 +51,10 @@ namespace Rubinator3000.Communication {
         }
 
         public Task RunAsync(MoveCollection moves) {
+            foreach (Move m in moves)
+                DrawCube.AddMove(m);
+            return Task.Factory.StartNew(delegate { });
+
             return Task.Run(delegate {
                 bool confirmationNeeded = true;
                 //foreach (Move move in moves) {
@@ -72,9 +76,9 @@ namespace Rubinator3000.Communication {
                     CubeFace currentFace = moves[i].Face;
                     CubeFace nextFace = i < moves.Count - 1 ? moves[i + 1].Face : CubeFace.NONE;
 
-                    if (Cube.IsOpponentFace(currentFace, nextFace)) {
+                    if (nextFace != CubeFace.NONE && Cube.IsOpponentFace(currentFace, nextFace) && Settings.UseMultiTurn) {
                         // multi turn
-                        if (confirmationNeeded && arduino != null) {
+                        if (confirmationNeeded) {
                             var result = MessageBox.Show("Next multi turn move: " + moves[i].ToString() + " " + moves[i + 1].ToString() + "\nContinue stepping?", "Confirm", MessageBoxButton.YesNoCancel, MessageBoxImage.Information, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly);
                             if (result == MessageBoxResult.No)
                                 confirmationNeeded = false;
@@ -89,7 +93,7 @@ namespace Rubinator3000.Communication {
                     }
                     else {
                         // normal move
-                        if (confirmationNeeded && arduino != null) {
+                        if (confirmationNeeded) {
                             var result = MessageBox.Show("Next move: " + moves[i].ToString() + "\nContinue stepping?", "Confirm", MessageBoxButton.YesNoCancel, MessageBoxImage.Information, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly);
                             if (result == MessageBoxResult.No)
                                 confirmationNeeded = false;

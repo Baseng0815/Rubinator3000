@@ -95,7 +95,8 @@ namespace Rubinator3000 {
 
             byte[] moveData = MoveToByte(move);
 
-            serial.Write(moveData, 0, moveData.Length);            
+            Debug.WriteLine(BitConverter.ToString(moveData));
+            serial.Write(moveData, 0, moveData.Length);
         }
         
         public override void SendMultiTurnMove(Move move1, Move move2) {

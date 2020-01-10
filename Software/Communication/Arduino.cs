@@ -25,7 +25,7 @@ namespace Rubinator3000 {
                 moveData |= 0x01;
             }
 
-            return Enumerable.Repeat(moveData, Math.Abs(move.CountPositive)).ToArray();
+            return Enumerable.Repeat(moveData, Math.Abs(move.Count)).ToArray();
         }
 
         protected static byte[] MulitTurnMoveToByte(Move move1, Move move2) {
@@ -39,10 +39,11 @@ namespace Rubinator3000 {
             byte moveByte = 0;
             moveByte |= (byte)((int)leftMove.Face << 2);
 
-            byte leftDir = (byte)(leftMove.Direction > 0 ? 0x01 : 0x00);
-            byte rightDir = (byte)(rightMove.Direction > 0 ? 0x01 : 0x00);
+            byte leftDir = (byte)(leftMove.Direction > 0 ? 0x00 : 0x01);
+            byte rightDir = (byte)(rightMove.Direction > 0 ? 0x00 : 0x01);
             moveByte |= (byte)(leftDir << 1);
             moveByte |= (byte)(rightDir << 0);
+            moveByte |= 0x10;
 
             // create data array
             int minCount = Math.Min(leftMove.CountPositive, rightMove.CountPositive);
