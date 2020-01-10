@@ -32,13 +32,15 @@ namespace Rubinator3000 {
         }
 
         private void MenuItemOllDebug_Click(object sender, RoutedEventArgs e) {
-            OllDebugWindow ollDebug = new OllDebugWindow(cube);
+            OllDebugWindow ollDebug = new OllDebugWindow();
 
             ollDebug.Show();
         }
 
         private void MenuItemPllDebug_Click(object sender, RoutedEventArgs e) {
+            PllDebugWindow pllDebug = new PllDebugWindow();
 
+            pllDebug.Show();
         }
 
         // View

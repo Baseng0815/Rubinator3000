@@ -11,6 +11,15 @@ namespace Rubinator3000 {
     public class MoveCollection : IEnumerable<Move> {
         private List<Move> moves;
 
+        public Move this[int index] {
+            get {
+                if (index < 0 || index >= moves.Count)
+                    throw new IndexOutOfRangeException();
+
+                return moves[index];
+            }
+        }
+
         public int Count => moves.Count;
 
         public MoveCollection() {

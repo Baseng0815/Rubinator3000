@@ -51,23 +51,14 @@ namespace Rubinator3000 {
         /// <summary>
         /// Randomly shuffle the cube numberOfMoves amount of times
         /// </summary>
-        public MoveCollection Shuffle(int numberOfMoves) {
+        public MoveCollection GetShuffleMoves(int numberOfMoves) {
             Random rand = new Random();
-            MoveCollection moves = new MoveCollection();
-
-            int[] counts = new int[] {
-                -1, 1, 2
-            };
+            MoveCollection moves = new MoveCollection();            
 
             while (moves.Count() < numberOfMoves)
-                moves.Add(new Move((CubeFace)rand.Next(5), counts[rand.Next(counts.Length)]));
+                moves.Add(new Move((CubeFace)rand.Next(5), rand.Next(3)));
 
             Log.LogMessage(string.Format("Shuffle Cube {0} Times: {1}", numberOfMoves, moves.ToString()));
-#if DEBUG
-            foreach (var move in moves)
-                System.Diagnostics.Debug.WriteLine(move.ToString());
-#endif
-            DoMoves(moves);
 
             return moves;
         }

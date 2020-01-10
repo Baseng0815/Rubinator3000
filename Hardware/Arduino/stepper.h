@@ -11,7 +11,8 @@ public:
     Stepper(int *pins);
     Stepper();
 
-    void doMove(int steps);
+    void doMove(int steps, const int timeout);
+    void doStep(const int direction, const int timeout);
 };
 
 #endif //__STEPPER_H

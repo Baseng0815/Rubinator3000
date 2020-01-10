@@ -82,7 +82,7 @@ namespace Rubinator3000 {
             Disconnect();
         }
 
-        public override async void SendMove(Move move) {
+        public override void SendMove(Move move) {
             if (serial == null || !serial.IsOpen) {
                 Log.LogMessage("Der Port ist nicht geöffnet!");
                 return;
@@ -95,39 +95,10 @@ namespace Rubinator3000 {
 
             byte[] moveData = MoveToByte(move);
 
-            serial.Write(moveData, 0, moveData.Length);
-
-            int responseCount = 0;
-            byte expectedResonse = (byte)(0x10 | moveData[0]);
-            int timeout = 5000;
-            Stopwatch stopwatch = new Stopwatch();
-
-            do {
-                stopwatch.Start();
-
-                var getResponse = Task.Factory.StartNew(() => (byte)serial.ReadByte());
-
-                while (stopwatch.ElapsedMilliseconds < timeout && !getResponse.IsCompleted) ;
-
-                if (getResponse.IsCompleted) {
-                    byte response = await getResponse;
-
-                    if (response != expectedResonse) {
-                        Log.LogMessage("Wrong response. Expected " + expectedResonse + ", but got " + response);
-                        return;
-                    }
-                    else {
-                        responseCount++;
-                    }
-                }
-                else {
-                    Log.LogMessage("Arduino is not resposing");
-                    return;
-                }
-            } while (responseCount != moveData.Length);
+            serial.Write(moveData, 0, moveData.Length);            
         }
-
-        public override void SendMoves(IEnumerable<Move> moves) {
+        
+        public override void SendMultiTurnMove(Move move1, Move move2) {
             if (serial == null || !serial.IsOpen) {
                 Log.LogMessage("Der Port ist nicht geöffnet!");
                 return;
@@ -138,8 +109,9 @@ namespace Rubinator3000 {
                 return;
             }
 
-            foreach (Move move in moves)
-                SendMove(move);
+            byte[] moveData = MulitTurnMoveToByte(move1, move2);
+
+            serial.Write(moveData, 0, moveData.Length);
         }
     }
 }
