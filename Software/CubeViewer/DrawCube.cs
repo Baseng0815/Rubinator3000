@@ -117,8 +117,7 @@ namespace Rubinator3000 {
                         if (nextMove.HasValue)
                             SetFaceRotation(nextMove.Value.Move.Face, watch.ElapsedMilliseconds * anglePerMillisecond * nextMove.Value.Move.Direction);
                         CubeViewer.Window.Invalidate();
-                    }
-                    Log.LogMessage($"Move done {animMove.Move.Face}, {animMove.Move.Count}");
+                    }                    
 
                     // set new state and reset rotation
                     currentState.DoMove(animMove.Move);
@@ -126,9 +125,7 @@ namespace Rubinator3000 {
 
                     if (nextMove.HasValue) {
                         currentState.DoMove(nextMove.Value.Move);
-                        SetFaceRotation(nextMove.Value.Move.Face, 0);
-
-                        Log.LogMessage($"Move done {nextMove.Value.Move.Face}, {nextMove.Value.Move.Count}");
+                        SetFaceRotation(nextMove.Value.Move.Face, 0);                     
                     }
 
                     // skip animation and directly set end state
@@ -196,9 +193,7 @@ namespace Rubinator3000 {
             KeepThreadAlive();
         }
 
-        private static void KeepThreadAlive() {
-            Log.LogMessage($"Thread state {running}");
-
+        private static void KeepThreadAlive() {            
             if (!running) {
                 running = true;
                 animateMovesThread = new Thread(AnimateMovesThread);

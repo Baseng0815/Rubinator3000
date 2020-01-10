@@ -152,6 +152,10 @@ namespace Rubinator3000.Solving {
             return hashCode;
         }
 
+        public override string ToString() {
+            return Edge.ToString();
+        }
+
         public static bool operator ==(FTLPair left, FTLPair right) {
             return left.Corner.GetColors().All(c => right.Corner.GetColors().Contains(c));
         }

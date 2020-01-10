@@ -12,9 +12,10 @@ namespace Rubinator3000.Solving {
         public override bool Solved {
             get {
                 for (int f = 0; f < 4; f++) {
+                    int face = (int)MiddleLayerFaces[f];
                     CubeColor faceColor = MiddleLayerFaces[f].GetFaceColor();
                     for (int t = 0; t < 6; t++) {
-                        if (!(cube.At(f, t) == faceColor)) {
+                        if (!(cube.At(face, t) == faceColor)) {
                             return false;
                         }
                     }
@@ -42,18 +43,21 @@ namespace Rubinator3000.Solving {
         public override void SolveCube() {
             while (pairs.Any(pair => !pair.Solved)) {
                 FTLPair[] unsolvedPairs = pairs.Where(pair => !pair.Solved).ToArray();
-                int pairsCount = unsolvedPairs.Length;
+                int pairIndex  = - 1;
 
                 MoveCollection minMoves = null;
-                for (int i = 0; i < pairsCount; i++) {
+                for (int i = 0; i < unsolvedPairs.Length; i++) {
                     FTLMoveCalculator moveCalculator = new FTLMoveCalculator(unsolvedPairs[i], cube);
                     MoveCollection pairMoves = moveCalculator.CalcMoves();
 
-                    if (minMoves == null || pairMoves.Count < minMoves.Count)
+                    if (minMoves == null || pairMoves.Count < minMoves.Count) {
                         minMoves = pairMoves;
+                        pairIndex = i;
+                    }
                 }
 
-                DoMoves(minMoves);                
+                DoMoves(minMoves);
+                Log.LogMessage($"Pair {unsolvedPairs[pairIndex].Edge.ToString()} " + (unsolvedPairs[pairIndex].Solved ? "solved" : "not Solved"));
             }
 
             Log.LogMessage(Solved ? "F2L gelöst" : "F2L nicht gelöst");
