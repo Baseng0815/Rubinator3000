@@ -51,25 +51,8 @@ namespace Rubinator3000.Communication {
         }
 
         public Task RunAsync(MoveCollection moves) {
-            foreach (Move m in moves)
-                DrawCube.AddMove(m);
-            return Task.Factory.StartNew(delegate { });
-
             return Task.Run(delegate {
-                bool confirmationNeeded = true;
-                //foreach (Move move in moves) {
-
-
-                //    DrawCube.AddMove(move);
-
-                //    if (arduino == null)
-                //        Log.LogMessage("Arduino not connected");
-                //    else {                        
-                //        arduino.SendMove(move);
-                //    }
-
-
-                //}
+                bool confirmationNeeded = true;                
 
                 for (int i = 0; i < moves.Count; i++) {
                     bool multiTurn = false;
@@ -119,7 +102,7 @@ namespace Rubinator3000.Communication {
                         else
                             moveHistory.AppendText(", " + moves[i].ToString());
 
-                        if(multiTurn)
+                        if (multiTurn)
                             moveHistory.AppendText(", " + moves[i + 1].ToString());
                     });
 

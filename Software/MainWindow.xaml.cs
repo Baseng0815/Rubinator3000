@@ -1,4 +1,4 @@
-﻿#define Camera
+﻿//#define Camera
 
 using Rubinator3000;
 using OpenTK;

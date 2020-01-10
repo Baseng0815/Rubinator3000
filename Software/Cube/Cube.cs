@@ -56,7 +56,7 @@ namespace Rubinator3000 {
             MoveCollection moves = new MoveCollection();            
 
             while (moves.Count() < numberOfMoves)
-                moves.Add(new Move((CubeFace)rand.Next(5), rand.Next(3)));
+                moves.Add(new Move((CubeFace)rand.Next(5), rand.Next(1, 3)));
 
             Log.LogMessage(string.Format("Shuffle Cube {0} Times: {1}", numberOfMoves, moves.ToString()));
 

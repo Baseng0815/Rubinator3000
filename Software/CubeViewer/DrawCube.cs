@@ -43,7 +43,7 @@ namespace Rubinator3000 {
         private static Vector3[] renderColors;
 
         private static Thread animateMovesThread;
-        private static bool running = true;
+        private static bool running = false;
 
         public static TRSTransformation Transformation;
         public static bool AnimateMoves = true;
@@ -81,65 +81,68 @@ namespace Rubinator3000 {
 
         // do animated moves
         private static void AnimateMovesThread() {
-            while (running) {
-                while (moveQueue.Count == 0 && running)
-                    Thread.Sleep(10);
+            Log.LogMessage("Animated Thread start");
 
-                while (moveQueue.Count > 0) {
-                    //Log.LogMessage("Animated move executing in animated move task");
-                    AnimatedMove animMove;
-                    lock (moveQueue)
-                        animMove = moveQueue.Dequeue();
+            while (moveQueue.Count > 0 && running) {
+                //Log.LogMessage("Animated move executing in animated move task");
+                AnimatedMove animMove;
 
-                    AnimatedMove? nextMove = null;
+                animMove = moveQueue.Dequeue();
 
-                    if (Settings.UseMultiTurn) {
-                        if (moveQueue.Count > 0) {
-                            AnimatedMove nm = moveQueue.ElementAt(0);
-                            if (Utility.Axis(animMove.Move.Face) == Utility.Axis(nm.Move.Face)) {
-                                nextMove = nm;
-                                lock (moveQueue)
-                                    moveQueue.Dequeue();
-                            }
+                AnimatedMove? nextMove = null;
+
+                if (Settings.UseMultiTurn) {
+                    if (moveQueue.Count > 0) {
+                        AnimatedMove nm = moveQueue.ElementAt(0);
+                        if (Cube.IsOpponentFace(animMove.Move.Face, nm.Move.Face)) {
+                            nextMove = nm;
+
+                            moveQueue.Dequeue();
                         }
-                    }
-
-                    // do animation if move is given
-                    if (animMove.Move != null || (nextMove.HasValue ? nextMove.Value.Move != null : false)) {
-                        Stopwatch watch = new Stopwatch();
-
-                        float anglePerMillisecond = 90 / (float)Settings.MoveAnimatedTime;
-
-                        watch.Start();
-
-                        // rotate until wanted angle is hit, then reset rotation and update internal state
-                        // also, issue a redraw
-                        while (Math.Abs(faceRotations[(int)animMove.Move.Face]) < 90 * Math.Abs(animMove.Move.Count)) {
-                            SetFaceRotation(animMove.Move.Face, watch.ElapsedMilliseconds * anglePerMillisecond * animMove.Move.Direction);
-                            if (nextMove.HasValue)
-                                SetFaceRotation(nextMove.Value.Move.Face, watch.ElapsedMilliseconds * anglePerMillisecond * nextMove.Value.Move.Direction);
-                            CubeViewer.Window.Invalidate();
-                        }
-
-                        // set new state and reset rotation
-                        currentState.DoMove(animMove.Move);
-                        SetFaceRotation(animMove.Move.Face, 0);
-
-                        if (nextMove.HasValue) {
-                            currentState.DoMove(nextMove.Value.Move);
-                            SetFaceRotation(nextMove.Value.Move.Face, 0);
-                        }
-
-                        // skip animation and directly set end state
-                    } else {
-                        if (nextMove.HasValue)
-                            currentState = nextMove.Value.EndState;
-                        else
-                            currentState = animMove.EndState;
-                        CubeViewer.Window.Invalidate();
                     }
                 }
+
+                // do animation if move is given
+                if (animMove.Move != null || (nextMove.HasValue ? nextMove.Value.Move != null : false)) {
+                    Stopwatch watch = new Stopwatch();
+
+                    float anglePerMillisecond = 90 / (float)Settings.MoveAnimatedTime;
+
+                    watch.Start();
+
+                    // rotate until wanted angle is hit, then reset rotation and update internal state
+                    // also, issue a redraw
+                    while (Math.Abs(faceRotations[(int)animMove.Move.Face]) < 90 * Math.Abs(animMove.Move.Count)) {
+                        SetFaceRotation(animMove.Move.Face, watch.ElapsedMilliseconds * anglePerMillisecond * animMove.Move.Direction);
+                        if (nextMove.HasValue)
+                            SetFaceRotation(nextMove.Value.Move.Face, watch.ElapsedMilliseconds * anglePerMillisecond * nextMove.Value.Move.Direction);
+                        CubeViewer.Window.Invalidate();
+                    }
+                    Log.LogMessage($"Move done {animMove.Move.Face}, {animMove.Move.Count}");
+
+                    // set new state and reset rotation
+                    currentState.DoMove(animMove.Move);
+                    SetFaceRotation(animMove.Move.Face, 0);
+
+                    if (nextMove.HasValue) {
+                        currentState.DoMove(nextMove.Value.Move);
+                        SetFaceRotation(nextMove.Value.Move.Face, 0);
+
+                        Log.LogMessage($"Move done {nextMove.Value.Move.Face}, {nextMove.Value.Move.Count}");
+                    }
+
+                    // skip animation and directly set end state
+                }
+                else {
+                    if (nextMove.HasValue)
+                        currentState = nextMove.Value.EndState;
+                    else
+                        currentState = animMove.EndState;
+                    CubeViewer.Window.Invalidate();
+                }
             }
+
+            running = false;
         }
 
         public static void Init(Vector3[] _renderColors) {
@@ -167,15 +170,12 @@ namespace Rubinator3000 {
 
             moveQueue = new Queue<AnimatedMove>();
 
-            animateMovesThread = new Thread(AnimateMovesThread);
-            animateMovesThread.Start();
-            Log.LogMessage("Animation Thread Start");
+            //Log.LogMessage("Animation Thread Start");
         }
 
         public static void StopDrawing() {
             running = false;
             animateMovesThread.Join();
-            Log.LogMessage("Animation Thread Stop");
         }
 
         /// <summary>
@@ -191,8 +191,19 @@ namespace Rubinator3000 {
         /// Adds the move to the queue
         /// </summary>
         public static void AddMove(Move move) {
-            lock (moveQueue)
-                moveQueue.Enqueue(new AnimatedMove(move, null));
+            moveQueue.Enqueue(new AnimatedMove(move, null));
+
+            KeepThreadAlive();
+        }
+
+        private static void KeepThreadAlive() {
+            Log.LogMessage($"Thread state {running}");
+
+            if (!running) {
+                running = true;
+                animateMovesThread = new Thread(AnimateMovesThread);
+                animateMovesThread.Start();
+            }
         }
 
         public static void Draw(View view) {
