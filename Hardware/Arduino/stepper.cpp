@@ -62,7 +62,5 @@ void Stepper::doStep(int direction, int timeout = 0) {
     else if(count > 1000)
         count %= 4;
 
-    delay(timeout);
-
-    writeState(0, 0, 0, 0);
+    delay(timeout);    
 }

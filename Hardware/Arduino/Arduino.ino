@@ -136,18 +136,32 @@ void handleMove(uint8_t move) {
 }
 
 void handleParallelMove(uint8_t parallelMove) {
-    int axis = parallelMove & (1 << 3 | 1 << 2);
+    int axis = (parallelMove & (1 << 3 | 1 << 2)) >> 2;
 
-    int leftDir = parallelMove & (1 << 1);
-    int rightDir = parallelMove & (1 << 10);
+    Serial.write(axis);
+
+    int leftDir = (parallelMove & (1 << 1)) >> 1;
+    int rightDir = parallelMove & (1 << 0);
+
+    leftDir = leftDir == 0 ? 1 : -1;
+    rightDir = rightDir == 0 ? 1 : -1;
+
+    Serial.write(leftDir);
+    Serial.write(rightDir);
 
     doParallelMove(axis, leftDir, rightDir, 10);
+
+    Serial.write(0x20 + parallelMove);
 }
 
-void doParallelMove(int axis, int leftDir, int rightDir, int stepDelay) {    
+void doParallelMove(int axis, int leftDir, int rightDir, int stepDelay) {
+  int rightSteppers[] = {4, 3, 5};
+  int rightStepper = rightSteppers[axis];
+
   for(int i = 0; i < 50; i++) {
     steppers[axis].doStep(leftDir, 0);
-    steppers[axis+3].doStep(rightDir, 0);
+    steppers[rightStepper].doStep(rightDir, 0);    
+
     delay(stepDelay);
   }
 }
