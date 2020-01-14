@@ -150,12 +150,6 @@
                 <MenuItem Click="MenuItem_Disconnect_Click" Header="Trennen" />
             </MenuItem>
 
-
-            <MenuItem Header="Debug">
-                <MenuItem Click="MenuItem_OllDebug_Click" Header="Oll Debug" />
-                <MenuItem Click="MenuItem_PllDebug_Click" Header="Pll Debug" />
-            </MenuItem>
-
             <!--  Index Tab "Ansicht"  -->
             <MenuItem Header="Ansicht">
                 <MenuItem

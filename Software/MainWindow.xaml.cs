@@ -74,11 +74,17 @@ namespace Rubinator3000 {
             };
 
             MenuItem ollDebug = new MenuItem() {
-                Header = "Oll Debug"
+                Header = "OLL Debug"
             };
             ollDebug.Click += MenuItem_OllDebug_Click;
-
             debugMenu.Items.Add(ollDebug);
+
+            MenuItem pllDebug = new MenuItem() {
+                Header = "PLL Debug"
+            };
+            pllDebug.Click += MenuItem_PllDebug_Click;
+            debugMenu.Items.Add(pllDebug);
+
             Menu_MenuBar.Items.Add(debugMenu);
 #endif
         }
