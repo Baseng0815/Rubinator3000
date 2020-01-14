@@ -74,7 +74,7 @@ namespace Rubinator3000.CubeScan {
             for (int i = 0; i < 6; i++) {
 
                 CubeColor cubeColor = (CubeColor)i;
-                Slices.Add(new PieSlice(cubeColor.ToString(), ReadPosition.Percentages[i], Helper.ColorBrush(cubeColor)));
+                Slices.Add(new PieSlice(cubeColor.ToString(), ReadPosition.Percentages[i], ReadUtility.ColorBrush(cubeColor)));
             }
         }
     }

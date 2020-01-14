@@ -7,7 +7,13 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace Rubinator3000.CubeScan {
-    class Helper {
+    public class ReadUtility {
+
+        public enum ReadoutRequsted : int {
+            DISABLED = 0,
+            SINGLE_READOUT = 1,
+            AUTO_READOUT = 2
+        }
 
         private static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 

@@ -55,9 +55,9 @@ namespace Rubinator3000 {
 
             InitalizeCameraPreviews();
 
-            moveSynchronizer = new MoveSynchronizer(moveHistoryOutput);
+            moveSynchronizer = new MoveSynchronizer(TextBox_MoveHistoryOutput);
 
-            menuItemCOMPort.ItemsSource = System.IO.Ports.SerialPort.GetPortNames();
+            ComboBox_COMPort.ItemsSource = System.IO.Ports.SerialPort.GetPortNames();
             WebCamControl.OnCubeScanned += WebCamControl_OnCubeScanned;
 
             KeyDown += MainWindow_KeyDown;
@@ -76,10 +76,10 @@ namespace Rubinator3000 {
             MenuItem ollDebug = new MenuItem() {
                 Header = "Oll Debug"
             };
-            ollDebug.Click += MenuItemOllDebug_Click;
+            ollDebug.Click += MenuItem_OllDebug_Click;
 
             debugMenu.Items.Add(ollDebug);
-            menu.Items.Add(debugMenu);
+            Menu_MenuBar.Items.Add(debugMenu);
 #endif
         }
 
@@ -95,14 +95,14 @@ namespace Rubinator3000 {
                 string message = messages.Dequeue();
                 if (logging) {
                     Dispatcher.Invoke(() => {
-                        if (textBoxLog != null)
-                            textBoxLog.Text += $"{message}\r\n";
+                        if (TextBox_Log != null)
+                            TextBox_Log.Text += $"{message}\r\n";
 
                         // Auto Scroll Implementation
-                        if (winFormsHost.Child != null) {
-                            textBoxLog.Focus();
-                            textBoxLog.CaretIndex = textBoxLog.Text.Length;
-                            textBoxLog.ScrollToEnd();
+                        if (WindowsFormsHost_CubePreview.Child != null) {
+                            TextBox_Log.Focus();
+                            TextBox_Log.CaretIndex = TextBox_Log.Text.Length;
+                            TextBox_Log.ScrollToEnd();
                         }
                     });
                 }

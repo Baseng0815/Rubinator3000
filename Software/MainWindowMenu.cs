@@ -13,38 +13,38 @@ namespace Rubinator3000 {
         // File
 
 
-        private void MenuItemClose_Click(object sender, RoutedEventArgs e) {
+        private void MenuItem_Close_Click(object sender, RoutedEventArgs e) {
             Close();
         }
 
-        private void MenuItemSuffle_Click(object sender, RoutedEventArgs e) {
+        private void MenuItem_Suffle_Click(object sender, RoutedEventArgs e) {
             ShuffleCube();
         }
 
-        private void MenuItemResetCube_Click(object sender, RoutedEventArgs e) {
+        private void MenuItem_ResetCube_Click(object sender, RoutedEventArgs e) {
             cube = new Cube();
 
             DrawCube.AddState(cube);
         }
 
-        private void MenuItemSolveCube_Click(object sender, RoutedEventArgs e) {
+        private void MenuItem_SolveCube_Click(object sender, RoutedEventArgs e) {
             SolveCube();
         }
 
-        private void MenuItemOllDebug_Click(object sender, RoutedEventArgs e) {
+        private void MenuItem_OllDebug_Click(object sender, RoutedEventArgs e) {
             OllDebugWindow ollDebug = new OllDebugWindow();
 
             ollDebug.Show();
         }
 
-        private void MenuItemPllDebug_Click(object sender, RoutedEventArgs e) {
+        private void MenuItem_PllDebug_Click(object sender, RoutedEventArgs e) {
             PllDebugWindow pllDebug = new PllDebugWindow();
 
             pllDebug.Show();
         }
 
         // View
-        private void MenuItemChangeView_Click(object sender, RoutedEventArgs e) {
+        private void MenuItem_ChangeView_Click(object sender, RoutedEventArgs e) {
             if (sender is MenuItem menuItem) {
                 switch (menuItem.Tag as string) {
                     case "2D":
@@ -65,8 +65,8 @@ namespace Rubinator3000 {
 
         // Hardware
 
-        private void MenuItemConnect_Click(object sender, RoutedEventArgs e) {
-            string serialPort = menuItemCOMPort.Text;
+        private void MenuItem_Connect_Click(object sender, RoutedEventArgs e) {
+            string serialPort = ComboBox_COMPort.Text;
             if (!System.IO.Ports.SerialPort.GetPortNames().Contains(serialPort)) {
                 MessageBox.Show("Bitte einen gültigen Port auswählen!");
             }
@@ -74,7 +74,7 @@ namespace Rubinator3000 {
             moveSynchronizer.ConnectArduino(serialPort);
         }
 
-        private void MenuItemDisconnect_Click(object sender, RoutedEventArgs e) {
+        private void MenuItem_Disconnect_Click(object sender, RoutedEventArgs e) {
             moveSynchronizer.DisconnectArduino();
         }
     }

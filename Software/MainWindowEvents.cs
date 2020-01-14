@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 namespace Rubinator3000 {
     public partial class MainWindow {
         private void WinFormsHost_Initialized(object sender, EventArgs e) {
-            winFormsHost.Child = CubeViewer.Window;
+            WindowsFormsHost_CubePreview.Child = CubeViewer.Window;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
@@ -38,7 +38,7 @@ namespace Rubinator3000 {
             logThread.Join();
         }
 
-        private void CameraPreviewMenuItem_Click(object sender, RoutedEventArgs e) {
+        private void MenuItem_CameraPreview_Click(object sender, RoutedEventArgs e) {
 #if Camera
             System.Windows.Controls.Image cameraPreivew = (System.Windows.Controls.Image)(((System.Windows.Controls.ContextMenu)((System.Windows.Controls.MenuItem)sender).Parent).PlacementTarget);
 
@@ -47,9 +47,9 @@ namespace Rubinator3000 {
 #endif
         }
         
-        private void AllowPosEdit_Click(object sender, RoutedEventArgs e) {
+        private void CheckBox_AllowPosEdit_Click(object sender, RoutedEventArgs e) {
 
-            PositionEditingAllowed = allowPosEdit.IsChecked.Value;
+            PositionEditingAllowed = CheckBox_AllowPosEdit.IsChecked.Value;
         }
 
         private async void SolveCube() {
@@ -64,7 +64,7 @@ namespace Rubinator3000 {
 #endif
 
             MoveCollection solvingMoves = solver.SolvingMoves;
-            moveHistoryOutput.Clear();
+            TextBox_MoveHistoryOutput.Clear();
 
             await moveSynchronizer.RunAsync(solvingMoves);
         }
@@ -73,7 +73,7 @@ namespace Rubinator3000 {
             Random rnd = new Random();
 
             MoveCollection shuffleMoves = cube.GetShuffleMoves(rnd.Next(5, 10));
-            moveHistoryOutput.Clear();
+            TextBox_MoveHistoryOutput.Clear();
 
             await moveSynchronizer.RunAsync(shuffleMoves);
         }
@@ -161,7 +161,7 @@ namespace Rubinator3000 {
 #endif
         }
 
-        private void CameraPreview_MouseDown(object sender, MouseButtonEventArgs e) {
+        private void Image_CameraPreview_MouseDown(object sender, MouseButtonEventArgs e) {
 #if Camera
             // Manual Position Adding
 
@@ -205,12 +205,27 @@ namespace Rubinator3000 {
             Log.LogMessage(WebCamControl.AddPosition(tempPos, cameraIndex));
 #endif
         }
-        private void CheckBox_Checked(object sender, RoutedEventArgs e) {
-            Settings.UseMultiTurn = true;
+
+        private void CheckBox_MultiTurn_Click(object sender, RoutedEventArgs e) {
+
+            Settings.UseMultiTurn = CheckBox_MultiTurn.IsChecked.Value;
         }
 
-        private void CheckBox_Unchecked(object sender, RoutedEventArgs e) {
-            Settings.UseMultiTurn = false;
+        private void CheckBox_AutoReadout_Click(object sender, RoutedEventArgs e) {
+
+            if (CheckBox_AutoReadout.IsChecked.Value) {
+
+                WebCamControl.PositionReadingRequested = ReadUtility.ReadoutRequsted.AUTO_READOUT;
+            }
+            else {
+
+                WebCamControl.PositionReadingRequested = ReadUtility.ReadoutRequsted.DISABLED;
+            }
+        }
+
+        private void Button_ManualReadout_Click(object sender, RoutedEventArgs e) {
+
+            WebCamControl.PositionReadingRequested = ReadUtility.ReadoutRequsted.SINGLE_READOUT;
         }
     }
 }

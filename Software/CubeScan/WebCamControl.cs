@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using static Rubinator3000.CubeScan.ReadUtility;
 using static Rubinator3000.CubeScan.XmlDesignations;
 
 namespace Rubinator3000.CubeScan {
@@ -43,7 +44,11 @@ namespace Rubinator3000.CubeScan {
             new Queue<ReadPosition>()
         };
 
-        private static long lastCubeGeneration = Helper.CurrentTimeMillis();
+        /* 0: Do not automatically read positions
+         * 1: Read positions once
+         * 2: Automatically read positions
+         */
+        public static ReadoutRequsted PositionReadingRequested = ReadoutRequsted.DISABLED;
 
         private static string PathToXml => "./Resources/ReadPositions.xml";
 
@@ -136,7 +141,7 @@ namespace Rubinator3000.CubeScan {
 
                 while (!threadShouldStop) {
 
-                    long loopStart = Helper.CurrentTimeMillis();
+                    long loopStart = ReadUtility.CurrentTimeMillis();
                     long loopEnd = loopStart + 1000 / ticksPerSecond;
 
                     // Code in while loop  
@@ -166,37 +171,46 @@ namespace Rubinator3000.CubeScan {
                         }
                     }
 
-                    // Read all colors from positions in readPositions
-                    for (int i = 0; i < PositionsToReadAt.GetLength(1); i++) {
+                    // If position reading is requested
+                    if ((int)PositionReadingRequested > 0) {
 
-                        if (PositionsToReadAt[cameraIndex, i] == null) {
-                            continue;
+                        // Read all colors from positions in readPositions
+                        for (int i = 0; i < PositionsToReadAt.GetLength(1); i++) {
+
+                            if (PositionsToReadAt[cameraIndex, i] == null) {
+                                continue;
+                            }
+                            PositionsToReadAt[cameraIndex, i].Color = ReadColorAtPosition(PositionsToReadAt[cameraIndex, i]);
                         }
-                        PositionsToReadAt[cameraIndex, i].Color = ReadColorAtPosition(PositionsToReadAt[cameraIndex, i]);
-                    }
 
-                    // This block will be only executed by the primary webcamcontrol
-                    if (cameraIndex == 0) {
+                        // This block will be only executed by the primary webcamcontrol
+                        if (cameraIndex == 0) {
 
-                        // If the whole cube is scanned, send the cube-configuration to the cube solver
-                        if (CubeIsFullyScanned()) {
+                            // If the whole cube is scanned, send the cube-configuration to the cube solver
+                            if (CubeIsFullyScanned()) {
 
-                            SortAndValidateColors();
+                                SortAndValidateColors();
+
+                                // If single readout was requested only
+                                if (PositionReadingRequested == ReadoutRequsted.SINGLE_READOUT) {
+
+                                    PositionReadingRequested = ReadoutRequsted.DISABLED;
+                                }
+                            }
                         }
-                        lastCubeGeneration = Helper.CurrentTimeMillis();
                     }
 
                     // Code in while loop  
 
-                    // Garbage Collection
+                    // Garbage Collection if RAM Usage is above 500 MB
                     if (GC.GetTotalMemory(true) > 500 * Math.Pow(10, 6)) {
 
                         GC.Collect();
                     }
 
-                    while (Helper.CurrentTimeMillis() < loopEnd) {
+                    while (CurrentTimeMillis() < loopEnd) {
 
-                        Thread.Sleep(Convert.ToInt32(loopEnd - Helper.CurrentTimeMillis()));
+                        Thread.Sleep(Convert.ToInt32(loopEnd - CurrentTimeMillis()));
                     }
                 }
             }
@@ -346,7 +360,7 @@ namespace Rubinator3000.CubeScan {
                     Application.Current.Dispatcher.Invoke(() => {
 
                         // Change circle color of the current position on the gui
-                        CircleByIndices(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush(currentCubeColor);
+                        CircleByIndices(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = ReadUtility.ColorBrush(currentCubeColor);
 
                         /* Notlösung
 
@@ -615,7 +629,7 @@ namespace Rubinator3000.CubeScan {
             return new Ellipse {
                 Width = ReadRadius * 2 + 1,
                 Height = ReadRadius * 2 + 1,
-                Fill = Helper.ColorBrush(cc),
+                Fill = ReadUtility.ColorBrush(cc),
             };
         }
 

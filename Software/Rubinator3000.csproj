@@ -96,7 +96,7 @@
     <Compile Include="CubeScan\PieSlice.cs" />
     <Compile Include="CubeScan\ReadPosition.cs" />
     <Compile Include="CubeScan\FastAccessBitmap.cs" />
-    <Compile Include="CubeScan\Helper.cs" />
+    <Compile Include="CubeScan\ReadUtility.cs" />
     <Compile Include="CubeScan\WebCamControl.cs" />
     <Compile Include="CubeScan\XmlElementDesignations.cs" />
     <Compile Include="CubeViewer\Data\FlatTransformations.cs" />

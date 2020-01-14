@@ -37,7 +37,7 @@
 
         <!--  Camera Preview Context Menu Template  -->
         <ContextMenu x:Key="cameraPreviewContextMenu">
-            <MenuItem Click="CameraPreviewMenuItem_Click" Header="Reinitialize" />
+            <MenuItem Click="MenuItem_CameraPreview_Click" Header="Reinitialize" />
         </ContextMenu>
 
         <!--  Image Preset  -->
@@ -57,6 +57,15 @@
             <Setter Property="FontSize" Value="11" />
             <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
             <Setter Property="TextWrapping" Value="WrapWithOverflow" />
+        </Style>
+
+        <!--  Button Preset  -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource BackgroundColor}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="{StaticResource Font}" />
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}" />
+            <Setter Property="FontSize" Value="12" />
         </Style>
 
         <!--  Menu  -->
@@ -97,7 +106,7 @@
 
         <!--  Menu  -->
         <Menu
-            x:Name="menu"
+            x:Name="Menu_MenuBar"
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="2"
@@ -109,49 +118,54 @@
                 <MenuItem Header="_Öffnen" InputGestureText="Strg+O" />
                 <Separator Margin="0,3,0,3" Template="{StaticResource SeparatorTemplate}" />
                 <MenuItem Header="_Züge" />
-                <MenuItem Click="MenuItemClose_Click" Header="_Beenden" />
+                <MenuItem Click="MenuItem_Close_Click" Header="_Beenden" />
             </MenuItem>
             <!--  Index Tab "Würfel"  -->
             <MenuItem Header="Würfel">
-                <MenuItem Click="MenuItemResetCube_Click" Header="_Zurücksetzen" />
+                <MenuItem Click="MenuItem_ResetCube_Click" Header="_Zurücksetzen" />
                 <MenuItem
-                    Click="MenuItemSuffle_Click"
+                    Click="MenuItem_Suffle_Click"
                     Header="_Verdrehen"
                     InputGestureText="Shift+S" />
                 <MenuItem
-                    Click="MenuItemSolveCube_Click"
+                    Click="MenuItem_SolveCube_Click"
                     Header="_Lösen"
                     InputGestureText="S" />
                 <Border>
-                    <CheckBox Content="MultiTurn" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                    <CheckBox
+                        x:Name="CheckBox_MultiTurn"
+                        Click="CheckBox_MultiTurn_Click"
+                        Content="MultiTurn" />
                 </Border>
             </MenuItem>
 
             <MenuItem Header="Hardware">
                 <Border>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox Text="COM Port" VerticalAlignment="Center" />
-                        <ComboBox x:Name="menuItemCOMPort" Width="70"/>
+                        <TextBox VerticalAlignment="Center" Text="COM Port" />
+                        <ComboBox x:Name="ComboBox_COMPort" Width="70" />
                     </StackPanel>
                 </Border>
-                <MenuItem Header="Verbinden" Click="MenuItemConnect_Click" />
-                <MenuItem Header="Trennen" Click="MenuItemDisconnect_Click" />
+                <MenuItem Click="MenuItem_Connect_Click" Header="Verbinden" />
+                <MenuItem Click="MenuItem_Disconnect_Click" Header="Trennen" />
             </MenuItem>
-            
+
 
             <MenuItem Header="Debug">
-                <MenuItem Click="MenuItemOllDebug_Click" Header="Oll Debug" />
-                <MenuItem Click="MenuItemPllDebug_Click" Header="Pll Debug" />
+                <MenuItem Click="MenuItem_OllDebug_Click" Header="Oll Debug" />
+                <MenuItem Click="MenuItem_PllDebug_Click" Header="Pll Debug" />
             </MenuItem>
 
             <!--  Index Tab "Ansicht"  -->
             <MenuItem Header="Ansicht">
                 <MenuItem
-                    Click="MenuItemChangeView_Click"
+                    x:Name="MenuItem_ChangeView2D"
+                    Click="MenuItem_ChangeView_Click"
                     Header="_2D Ansicht"
                     Tag="2D" />
                 <MenuItem
-                    Click="MenuItemChangeView_Click"
+                    x:Name="MenuItem_ChangeView3D"
+                    Click="MenuItem_ChangeView_Click"
                     Header="_3D Ansicht"
                     Tag="3D" />
             </MenuItem>
@@ -166,12 +180,12 @@
 
             <!--  Cube Preview  -->
             <Border Grid.Row="0">
-                <WindowsFormsHost x:Name="winFormsHost" Initialized="WinFormsHost_Initialized" />
+                <WindowsFormsHost x:Name="WindowsFormsHost_CubePreview" Initialized="WinFormsHost_Initialized" />
             </Border>
 
             <!--  Console Output  -->
             <Border Grid.Row="1">
-                <TextBox x:Name="textBoxLog" TextBlock.LineHeight="16"  />
+                <TextBox x:Name="TextBox_Log" TextBlock.LineHeight="16" />
             </Border>
         </Grid>
 
@@ -194,7 +208,7 @@
 
             <!--  Move History Output  -->
             <Border Grid.Row="1" Grid.Column="0">
-                <TextBox x:Name="moveHistoryOutput" Margin="0" />
+                <TextBox x:Name="TextBox_MoveHistoryOutput" Margin="0" />
             </Border>
 
             <!--  Checkboxes  -->
@@ -204,15 +218,34 @@
                 Grid.Column="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width=".7*" />
+                        <ColumnDefinition Width=".3*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="1*" />
+                        <RowDefinition Height=".5*" />
+                        <RowDefinition Height=".5*" />
                     </Grid.RowDefinitions>
-                    <CheckBox
-                        x:Name="allowPosEdit"
-                        Click="AllowPosEdit_Click"
-                        Content="Allow Position Adding" />
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2">
+                        <CheckBox
+                            x:Name="CheckBox_AllowPosEdit"
+                            Click="CheckBox_AllowPosEdit_Click"
+                            Content="Allow Position Adding" />
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="0">
+                        <CheckBox
+                            x:Name="CheckBox_AutoReadout"
+                            Click="CheckBox_AutoReadout_Click"
+                            Content="Auto Readout" />
+                    </Border>
+                    <Border Grid.Row="1" Grid.Column="1">
+                        <Button
+                            x:Name="Button_ManualReadout"
+                            Click="Button_ManualReadout_Click"
+                            Content="Read" />
+                    </Border>
                 </Grid>
             </Border>
 
@@ -234,7 +267,7 @@
                     <!--  Camera Preview 0  -->
                     <Border Grid.Row="0" Grid.Column="0">
                         <Grid>
-                            <Image x:Name="cameraPreview0" MouseDown="CameraPreview_MouseDown" />
+                            <Image x:Name="Image_CameraPreview0" MouseDown="Image_CameraPreview_MouseDown" />
                             <TextBox
                                 Grid.Row="0"
                                 Grid.Column="1"
@@ -244,14 +277,14 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
                                 Text="Camera 0" />
-                            <Canvas x:Name="cameraCanvas0" />
+                            <Canvas x:Name="Canvas_CameraPreview0" />
                         </Grid>
                     </Border>
 
                     <!--  Camera Preview 1  -->
                     <Border Grid.Row="0" Grid.Column="1">
                         <Grid>
-                            <Image x:Name="cameraPreview1" MouseDown="CameraPreview_MouseDown" />
+                            <Image x:Name="Image_CameraPreview1" MouseDown="Image_CameraPreview_MouseDown" />
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"
@@ -259,14 +292,14 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
                                 Text="Camera 1" />
-                            <Canvas x:Name="cameraCanvas1" />
+                            <Canvas x:Name="Canvas_CameraPreview1" />
                         </Grid>
                     </Border>
 
                     <!--  Camera Preview 2  -->
                     <Border Grid.Row="1" Grid.Column="0">
                         <Grid>
-                            <Image x:Name="cameraPreview2" MouseDown="CameraPreview_MouseDown" />
+                            <Image x:Name="Image_CameraPreview2" MouseDown="Image_CameraPreview_MouseDown" />
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"
@@ -274,14 +307,14 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
                                 Text="Camera 2" />
-                            <Canvas x:Name="cameraCanvas2" />
+                            <Canvas x:Name="Canvas_CameraPreview2" />
                         </Grid>
                     </Border>
 
                     <!--  Camera Preview 3  -->
                     <Border Grid.Row="1" Grid.Column="1">
                         <Grid>
-                            <Image x:Name="cameraPreview3" MouseDown="CameraPreview_MouseDown" />
+                            <Image x:Name="Image_CameraPreview3" MouseDown="Image_CameraPreview_MouseDown" />
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"
@@ -289,7 +322,7 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
                                 Text="Camera 3" />
-                            <Canvas x:Name="cameraCanvas3" />
+                            <Canvas x:Name="Canvas_CameraPreview3" />
                         </Grid>
                     </Border>
                 </Grid>
