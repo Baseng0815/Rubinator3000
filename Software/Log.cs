@@ -6,31 +6,48 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.IO;
+using System.Threading;
 
 namespace Rubinator3000 {
     //[System.Diagnostics.DebuggerNonUserCode]
     public static class Log {
+        private static bool stopRequested = false;
 
-        public delegate void OnLoggingEventHandler(LoggingEventArgs e);
-        public static event OnLoggingEventHandler OnLogging;
+        private static bool logging;
+        private static Thread loggingThread;
+
+        private static Queue<string> messages = new Queue<string>();
 
 #if DEBUG_MOVES
         private static StreamWriter writer;
         private static volatile bool enableMoveLogging = false;
 #endif
 
+        public static void StopLogging() {
+            stopRequested = true;
+            if (logging && loggingThread != null)
+                loggingThread.Join();
+        }
+
         public static void LogMessage(string message) {
             TimeSpan time = DateTime.Now.TimeOfDay;
 
             string logMessage = string.Format("{0}:\t{1}", time.ToString(@"hh\:mm\:ss\.ff"), message);
 
-            OnLogging?.Invoke(new LoggingEventArgs(logMessage));
+            messages.Enqueue(logMessage);
+
+            //invoke logging thread
+            if (!logging && !stopRequested) {
+                loggingThread = new Thread(LoggingThread);
+                loggingThread.Start();
+            }
 #if DEBUG
             System.Diagnostics.Debug.WriteLine($"Log:\t{logMessage}");
 #endif
         }
 
-#if DEBUG_MOVES        
+#if DEBUG_MOVES
+        #region DebugMoves
         public static void EnableMoveLogging() {
             writer = new StreamWriter("moveLog.txt", false);
             enableMoveLogging = true;
@@ -40,7 +57,7 @@ namespace Rubinator3000 {
             enableMoveLogging = false;
             writer.Close();
         }
-        
+
         public static void MoveLogLogging(string message) {
             if (!enableMoveLogging)
                 return;
@@ -84,14 +101,29 @@ namespace Rubinator3000 {
             writer.Write(text);
             writer.Flush();
         }
+        #endregion
 #endif
-    }
 
-    public class LoggingEventArgs : EventArgs {
-        public string Message { get; }
+        private static void LoggingThread() {
+            logging = true;
+            if (messages.Count > 0 && !stopRequested) {
+                string message = messages.Dequeue();
+                
+                    Application.Current.Dispatcher.Invoke(() => {
+                        MainWindow window = (MainWindow)Application.Current.MainWindow;
+                        if (window.TextBox_Log != null)
+                            window.TextBox_Log.Text += $"{message}\r\n";
 
-        public LoggingEventArgs(string message) {
-            Message = message ?? throw new ArgumentNullException(nameof(message));
+                        // Auto Scroll Implementation
+                        if (window.WindowsFormsHost_CubePreview.Child != null) {
+                            window.TextBox_Log.Focus();
+                            window.TextBox_Log.CaretIndex = window.TextBox_Log.Text.Length;
+                            window.TextBox_Log.ScrollToEnd();
+                        }
+                    });
+            }
+
+            logging = false;
         }
     }
 }

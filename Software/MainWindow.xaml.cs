@@ -31,9 +31,7 @@ namespace Rubinator3000 {
     /// </summary>
     public partial class MainWindow : Window {
 
-        public static bool PositionEditingAllowed = false;
-
-        private Queue<string> messages = new Queue<string>();
+        public static bool PositionEditingAllowed = false;        
 
         // cube only used for scanning and passing to solver
         // @TODO: make public
@@ -46,9 +44,7 @@ namespace Rubinator3000 {
         private readonly WebCamControl[] webCamControls = new WebCamControl[cameraCount];
         private readonly Canvas[] canvases = new Canvas[cameraCount];
 
-        private ColorDialog colorDialog;
-        private bool logging;
-        private Thread logThread;
+        private ColorDialog colorDialog;        
 
         public MainWindow() {
             InitializeComponent();
@@ -63,10 +59,7 @@ namespace Rubinator3000 {
             KeyDown += MainWindow_KeyDown;
 
             // init Log
-            Log.OnLogging += Log_OnLogging;
-            logging = true;
-            logThread = new Thread(new ThreadStart(LoggingLoop));
-            logThread.Start();
+            Log.LogMessage("Init Log");
 
 #if DEBUG
             MenuItem debugMenu = new MenuItem() {
@@ -87,32 +80,6 @@ namespace Rubinator3000 {
 
             Menu_MenuBar.Items.Add(debugMenu);
 #endif
-        }
-
-        // @TODO: put logging loop into Log.cs
-        internal void LoggingLoop() {
-            while (logging) {
-                while (messages.Count == 0) {
-                    Thread.Sleep(20);
-                    if (!logging)
-                        return;
-                };
-
-                string message = messages.Dequeue();
-                if (logging) {
-                    Dispatcher.Invoke(() => {
-                        if (TextBox_Log != null)
-                            TextBox_Log.Text += $"{message}\r\n";
-
-                        // Auto Scroll Implementation
-                        if (WindowsFormsHost_CubePreview.Child != null) {
-                            TextBox_Log.Focus();
-                            TextBox_Log.CaretIndex = TextBox_Log.Text.Length;
-                            TextBox_Log.ScrollToEnd();
-                        }
-                    });
-                }
-            }
-        }
+        }        
     }
 }

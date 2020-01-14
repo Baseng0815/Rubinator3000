@@ -34,8 +34,7 @@ namespace Rubinator3000 {
 
             System.Windows.Application.Current.Shutdown();
 #endif
-            logging = false;
-            logThread.Join();
+            Log.StopLogging();
         }
 
         private void MenuItem_CameraPreview_Click(object sender, RoutedEventArgs e) {
@@ -76,11 +75,7 @@ namespace Rubinator3000 {
             TextBox_MoveHistoryOutput.Clear();
 
             await moveSynchronizer.RunAsync(shuffleMoves);
-        }
-
-        private void Log_OnLogging(LoggingEventArgs e) {
-            messages.Enqueue(e.Message);
-        }
+        }        
 
         private void WebCamControl_OnCubeScanned(object sender, CubeScanEventArgs e) {
             
