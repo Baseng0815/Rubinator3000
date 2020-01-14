@@ -26,8 +26,7 @@ namespace Rubinator3000
         /// <summary>
         /// Initialize CubeViewer
         /// </summary>
-        static CubeViewer()
-        {
+        static CubeViewer() {
             OpenTK.Toolkit.Init();
 
             Log.LogMessage("OpenTK initialized.");

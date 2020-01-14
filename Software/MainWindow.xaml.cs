@@ -30,11 +30,6 @@ namespace Rubinator3000 {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-
-        private Queue<string> messages = new Queue<string>();
-
-        // cube only used for scanning and passing to solver
-        // @TODO: make public
         public Cube cube = new Cube();
         private MoveSynchronizer moveSynchronizer;
 
@@ -61,26 +56,6 @@ namespace Rubinator3000 {
 
             // init Log
             Log.LogMessage("Init Log");
-
-#if DEBUG
-            MenuItem debugMenu = new MenuItem() {
-                Header = "Debug"
-            };
-
-            MenuItem ollDebug = new MenuItem() {
-                Header = "OLL Debug"
-            };
-            ollDebug.Click += MenuItem_OllDebug_Click;
-            debugMenu.Items.Add(ollDebug);
-
-            MenuItem pllDebug = new MenuItem() {
-                Header = "PLL Debug"
-            };
-            pllDebug.Click += MenuItem_PllDebug_Click;
-            debugMenu.Items.Add(pllDebug);
-
-            Menu_MenuBar.Items.Add(debugMenu);
-#endif
-        }        
+        }
     }
 }

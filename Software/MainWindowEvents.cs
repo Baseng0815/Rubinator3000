@@ -53,15 +53,9 @@ namespace Rubinator3000 {
         }
 
         private async void SolveCube() {
-#if DEBUG_MOVES
-            Log.EnableMoveLogging();
-#endif
             CubeSolver solver = new CubeSolverFridrich(cube);
 
             solver.SolveCube();
-#if DEBUG_MOVES
-            Log.DisableMoveLogging();
-#endif
 
             MoveCollection solvingMoves = solver.SolvingMoves;
             TextBox_MoveHistoryOutput.Clear();
@@ -79,7 +73,7 @@ namespace Rubinator3000 {
         }        
 
         private void WebCamControl_OnCubeScanned(object sender, CubeScanEventArgs e) {
-
+            //TODO: add code
         }
 
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {

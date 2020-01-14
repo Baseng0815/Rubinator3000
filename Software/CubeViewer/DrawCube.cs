@@ -194,7 +194,7 @@ namespace Rubinator3000 {
             KeepThreadAlive();
         }
 
-        private static void KeepThreadAlive() {            
+        private static void KeepThreadAlive() {
             if (!running) {
                 running = true;
                 animateMovesThread = new Thread(AnimateMovesThread);

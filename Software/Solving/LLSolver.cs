@@ -45,9 +45,6 @@ namespace Rubinator3000.Solving {
 
                     (OllPattern p, MoveCollection a) pattern = OllPatterns.First(p => p.pattern.IsMatch(cube));
                     Log.LogMessage($"OLL Pattern {pattern.p.Number}");
-#if DEBUG_MOVES
-                    Log.MoveLogLogging($"OLL Pattern {pattern.p.Number}");
-#endif
                     DoMoves(pattern.a);
                 }
 
@@ -60,9 +57,6 @@ namespace Rubinator3000.Solving {
 
                     (PllPattern p, MoveCollection a) pattern = PllPatterns.First(p => p.pattern.IsMatch(cube));
                     Log.LogMessage($"PLL Pattern {pattern.p.Number}");
-#if DEBUG_MOVES
-                    Log.MoveLogLogging($"PLL Pattern {pattern.p.Number}");
-#endif
                     DoMoves(pattern.a);
                 }
 

@@ -22,7 +22,6 @@ namespace Rubinator3000
             Log.LogMessage("Input events detached");
             Window.MouseMove -= MouseMoveEvent;
             Window.MouseUp -= MouseButtonUpEvent;
-            Window.KeyDown -= KeyDownEvent;
             Window.MouseWheel -= MouseWheelEvent;
         }
 
@@ -32,7 +31,6 @@ namespace Rubinator3000
             Log.LogMessage("Input events attached");
             Window.MouseMove += MouseMoveEvent;
             Window.MouseUp += MouseButtonUpEvent;
-            Window.KeyDown += KeyDownEvent;
             Window.MouseWheel += MouseWheelEvent;
         }
 
@@ -88,36 +86,6 @@ namespace Rubinator3000
 
             view.ChangeFov(delta * Settings.ScrollSensitivity);
             Window.Invalidate();
-        }
-
-        // map keyboard to face moves
-        private static Dictionary<Keys, CubeFace> keyFaceMappings = new Dictionary<Keys, CubeFace>()
-        {
-            { Keys.F, CubeFace.FRONT },
-            { Keys.U, CubeFace.UP },
-            { Keys.B, CubeFace.BACK },
-            { Keys.R, CubeFace.RIGHT },
-            { Keys.L, CubeFace.LEFT },
-            { Keys.D, CubeFace.DOWN }
-        };
-
-        private static void KeyDownEvent(object sender, KeyEventArgs args)
-        {
-            switch (args.KeyCode)
-            {
-                case Keys.Escape:
-                    // @TODO
-                    // EXIT PROGRAM
-                    break;
-            }
-
-            bool isPrime = args.Shift;
-            if (keyFaceMappings.ContainsKey(args.KeyCode))
-            {
-                // @TODO
-                // Implement manual move
-                //((MainWindow)Application.Current.MainWindow).Cube.DoMove(new Move(keyFaceMappings[args.KeyCode], isPrime));
-            }
         }
 
         private static void RenderFrameEvent(object sender, EventArgs args)

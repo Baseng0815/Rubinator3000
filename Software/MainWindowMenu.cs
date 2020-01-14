@@ -55,6 +55,9 @@ namespace Rubinator3000 {
                         CubeViewer.Window.Invalidate();
                         CubeViewer.AttachInputEvents();
                         break;
+                    case "HistoryClear":
+                        TextBox_MoveHistoryOutput.Clear();
+                        break;
                     default:
                         break;
                 }

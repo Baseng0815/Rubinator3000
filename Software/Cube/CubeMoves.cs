@@ -67,10 +67,6 @@ namespace Rubinator3000 {
             for (int c = 0; c < move.CountPositive; c++) {
                 RotateFace(move.Face);
             }
-
-#if DEBUG_MOVES
-            Log.LogMove(move, this);
-#endif
         }
 
         static Cube() {

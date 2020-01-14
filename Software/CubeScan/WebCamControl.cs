@@ -344,15 +344,6 @@ namespace Rubinator3000.CubeScan {
 
                         // Change circle color of the current position on the gui
                         CircleByIndices(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = ReadUtility.ColorBrush(currentCubeColor);
-
-                        /* Notlösung
-
-                        // @TODO: fix color recognition and change this back again
-                        CircleByIndices(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = Helper.ColorBrush((
-                            (MainWindow)Application.Current.MainWindow).cube.At(new Position(((CubeFace)currentPosition.FaceIndex),
-                            currentPosition.RowIndex*3+currentPosition.ColIndex)));
-
-                        */
                     });
                 }
 
@@ -578,8 +569,6 @@ namespace Rubinator3000.CubeScan {
 
             Application.Current.Dispatcher.Invoke(() => {
 
-                //circle = GenerateCircle(pos.AssumedCubeColor);
-                // @TODO fix color recognition and change this back again
                 circle = GenerateCircle(((MainWindow)Application.Current.MainWindow).cube.At(new Position((CubeFace)pos.FaceIndex, pos.RowIndex*3+pos.ColIndex)));
 
                 // When you hover over the circle on the gui, you can see, which position is being read out at this position

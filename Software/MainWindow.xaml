@@ -163,6 +163,11 @@
                     Click="MenuItem_ChangeView_Click"
                     Header="_3D Ansicht"
                     Tag="3D" />
+                <MenuItem
+                    x:Name="MenuItem_ClearHistory"
+                    Click="MenuItem_ChangeView_Click"
+                    Header="_History clearen"
+                    Tag="HistoryClear"/>
             </MenuItem>
         </Menu>
 

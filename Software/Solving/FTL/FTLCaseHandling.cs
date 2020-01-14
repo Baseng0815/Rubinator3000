@@ -86,7 +86,6 @@ namespace Rubinator3000.Solving {
             }
         }
         
-        //TODO: Check CornerInSlot_WhiteUp_EdgeDown
         private void CornerInSlot_WhiteUp_EdgeDown() {
             // move edge to right orientation
             Log.LogMessage($"Corner In Slot White Up Edge Down {pair}");
