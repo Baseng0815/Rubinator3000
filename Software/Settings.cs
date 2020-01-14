@@ -20,5 +20,8 @@ namespace Rubinator3000
         public static readonly int MoveAnimatedTime = int.Parse(ConfigurationManager.AppSettings["moveAnimationTime"]);
 
         public static bool UseMultiTurn = false;
+        public static bool CalibrateColors = false;
+        public static bool PositionEditingAllowed = false;
+        public static bool UseReferenceColors = false;
     }
 }

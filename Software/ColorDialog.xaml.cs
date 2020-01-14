@@ -25,6 +25,7 @@ namespace Rubinator3000 {
         public ColorDialog() {
             InitializeComponent();
 
+            //Make this window appear on top
             Topmost = true;
             inputFaceIndex.Focus();
         }
@@ -40,7 +41,7 @@ namespace Rubinator3000 {
             Result[1] = Convert.ToInt32(inputRowIndex.Text);
             Result[2] = Convert.ToInt32(inputColIndex.Text);
 
-            DialogResult = true; // Marks that this dialog as finshed
+            DialogResult = true; // Marks that this dialog as finshed so it will be closed
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e) {

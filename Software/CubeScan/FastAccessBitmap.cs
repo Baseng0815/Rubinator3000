@@ -26,7 +26,7 @@ namespace Rubinator3000.CubeScan {
             SetBitmap(bitmap);
         }
 
-        public Color ReadPixel(int x, int y, int deltaX, int deltaY) {
+        public Color ReadPixels(int x, int y, int deltaX, int deltaY) {
 
             //    (x,y)           deltaX
             //      O ------------------------------ O                                ----------
@@ -69,8 +69,6 @@ namespace Rubinator3000.CubeScan {
                         pixelCount++;
                     }
                 }
-
-                //Thread.Sleep(10); Maybe not necessary 
 
                 _bitmap.UnlockBits(_bitmapData);
             }

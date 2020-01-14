@@ -222,8 +222,10 @@
                         <ColumnDefinition Width=".3*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height=".5*" />
-                        <RowDefinition Height=".5*" />
+                        <RowDefinition Height=".25*" />
+                        <RowDefinition Height=".25*" />
+                        <RowDefinition Height=".25*" />
+                        <RowDefinition Height=".25*" />
                     </Grid.RowDefinitions>
                     <Border
                         Grid.Row="0"
@@ -232,15 +234,30 @@
                         <CheckBox
                             x:Name="CheckBox_AllowPosEdit"
                             Click="CheckBox_AllowPosEdit_Click"
-                            Content="Allow Position Adding" />
+                            Content="Allow Position Editing" />
                     </Border>
-                    <Border Grid.Row="1" Grid.Column="0">
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2">
+                        <CheckBox
+                            x:Name="CheckBox_CalRefColors"
+                            Click="CheckBox_CalRefColors_Click"
+                            Content="Calibrate Reference Colors" />
+                    </Border>
+                    <Border Grid.Row="2" Grid.Column="0">
+                        <CheckBox
+                            x:Name="CheckBox_UseRefColors"
+                            Click="CheckBox_UseRefColors_Click"
+                            Content="Use Reference Colors" />
+                    </Border>
+                    <Border Grid.Row="3" Grid.Column="0">
                         <CheckBox
                             x:Name="CheckBox_AutoReadout"
                             Click="CheckBox_AutoReadout_Click"
                             Content="Auto Readout" />
                     </Border>
-                    <Border Grid.Row="1" Grid.Column="1">
+                    <Border Grid.Row="3" Grid.Column="1">
                         <Button
                             x:Name="Button_ManualReadout"
                             Click="Button_ManualReadout_Click"
@@ -267,7 +284,10 @@
                     <!--  Camera Preview 0  -->
                     <Border Grid.Row="0" Grid.Column="0">
                         <Grid>
-                            <Image x:Name="Image_CameraPreview0" MouseDown="Image_CameraPreview_MouseDown" />
+                            <Image
+                                x:Name="Image_CameraPreview0"
+                                MouseDown="Image_CameraPreview_MouseDown"
+                                Stretch="Fill" />
                             <TextBox
                                 Grid.Row="0"
                                 Grid.Column="1"

@@ -85,6 +85,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CalibrationDialog.xaml.cs">
+      <DependentUpon>CalibrationDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ColorDialog.xaml.cs">
       <DependentUpon>ColorDialog.xaml</DependentUpon>
     </Compile>
@@ -123,6 +126,10 @@
     <Compile Include="Solving\LLPatterns.cs" />
     <Compile Include="Solving\LLSolver.cs" />
     <Compile Include="Solving\SolvingUtility.cs" />
+    <Page Include="CalibrationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ColorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

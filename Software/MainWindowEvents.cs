@@ -1,5 +1,4 @@
-﻿//#define Camera
-
+﻿
 using Rubinator3000.CubeScan;
 using Rubinator3000.Solving;
 using System;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -22,7 +22,6 @@ namespace Rubinator3000 {
             Log.LogMessage("Shutting down..");
             DrawCube.StopDrawing();
 
-#if Camera
             for (int i = 0; i < webCamControls.Length; i++) {
 
                 webCamControls[i].StopThread();
@@ -32,24 +31,23 @@ namespace Rubinator3000 {
             // Without this line, the program would throw an exception on close
             Environment.Exit(0);
 
-            System.Windows.Application.Current.Shutdown();
-#endif
+            Application.Current.Shutdown();
+
             logging = false;
             logThread.Join();
         }
 
         private void MenuItem_CameraPreview_Click(object sender, RoutedEventArgs e) {
-#if Camera
-            System.Windows.Controls.Image cameraPreivew = (System.Windows.Controls.Image)(((System.Windows.Controls.ContextMenu)((System.Windows.Controls.MenuItem)sender).Parent).PlacementTarget);
+
+            Image cameraPreivew = (Image)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget;
 
             int cameraIndex = Array.IndexOf(cameraPreviews, cameraPreivew);
             webCamControls[cameraIndex].TryInitializeAndStart();
-#endif
         }
-        
+
         private void CheckBox_AllowPosEdit_Click(object sender, RoutedEventArgs e) {
 
-            PositionEditingAllowed = CheckBox_AllowPosEdit.IsChecked.Value;
+            Settings.PositionEditingAllowed = CheckBox_AllowPosEdit.IsChecked.Value;
         }
 
         private async void SolveCube() {
@@ -83,7 +81,7 @@ namespace Rubinator3000 {
         }
 
         private void WebCamControl_OnCubeScanned(object sender, CubeScanEventArgs e) {
-            
+
         }
 
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
@@ -124,15 +122,15 @@ namespace Rubinator3000 {
         }
 
         private void InitalizeCameraPreviews() {
-#if Camera
+
             const int width = 640;
             const int height = 480;
 
             // Link the image-controls to cameraPreviews-array
-            cameraPreviews[0] = cameraPreview0;
-            cameraPreviews[1] = cameraPreview1;
-            cameraPreviews[2] = cameraPreview2;
-            cameraPreviews[3] = cameraPreview3;
+            cameraPreviews[0] = Image_CameraPreview0;
+            cameraPreviews[1] = Image_CameraPreview1;
+            cameraPreviews[2] = Image_CameraPreview2;
+            cameraPreviews[3] = Image_CameraPreview3;
 
             // Initialize previewBitmaps
             for (int i = 0; i < cameraCount; i++) {
@@ -146,64 +144,80 @@ namespace Rubinator3000 {
             }
 
             // Link the canvas-controls to canvases array;
-            canvases[0] = cameraCanvas0;
-            canvases[1] = cameraCanvas1;
-            canvases[2] = cameraCanvas2;
-            canvases[3] = cameraCanvas3;
+            canvases[0] = Canvas_CameraPreview0;
+            canvases[1] = Canvas_CameraPreview1;
+            canvases[2] = Canvas_CameraPreview2;
+            canvases[3] = Canvas_CameraPreview3;
 
             // Initialize all webcam-controls
             for (int i = 0; i < cameraCount; i++) {
-                webCamControls[i] = new WebCamControl(i, /*ref*/ canvases[i], ref previewBitmaps[i]);
+                webCamControls[i] = new WebCamControl(i, canvases[i], ref previewBitmaps[i]);
             }
 
             // Load all positions, that were saved in "ReadPositions.xml"
             WebCamControl.LoadAllPositionsFromXml();
-#endif
         }
 
         private void Image_CameraPreview_MouseDown(object sender, MouseButtonEventArgs e) {
-#if Camera
-            // Manual Position Adding
 
-            if (!PositionEditingAllowed || e.ChangedButton != MouseButton.Left || WebCamControl.TotalPositionCount == WebCamControl.MAXPOSITIONSTOREAD) {
-                return;
-            }
-
-           System.Windows.Controls.Image clickedImage = (System.Windows.Controls.Image)sender;
+            Image clickedImage = (Image)sender;
             Point clickPosition = e.GetPosition(clickedImage);
 
-            colorDialog = new ColorDialog();
-
-            int[] indicies;
-
-            if (colorDialog.ShowDialog() // Waits until dialog gets closed
-                == true) {
-
-                /* "indicies" stores the indicies of the position to add
-                 * [0] faceIndex
-                 * [1] rowIndex
-                 * [2] colIndex
-                 */
-                indicies = colorDialog.Result;
-            }
-            else {
-                return;
-            }
+            // Calculate relativeX and relativeY from clickPosition
+            double relativeX = clickPosition.X / clickedImage.ActualWidth;
+            double relativeY = clickPosition.Y / clickedImage.ActualHeight;
 
             // Determine, which cameraPreview was clicked
             int cameraIndex = Array.IndexOf(cameraPreviews, clickedImage);
 
-            ReadPosition tempPos = new ReadPosition(
-                    clickPosition.X / clickedImage.ActualWidth, // calculate relativeX
-                    clickPosition.Y / clickedImage.ActualHeight, // calculate relativeY
-                    indicies[0], // faceIndex
-                    indicies[1], // rowIndex
-                    indicies[2], // colIndex
-                    cameraIndex
-                );
+            // Calibrate Reference Colors
+            if (Settings.CalibrateColors && e.ChangedButton == MouseButton.Left) {
 
-            Log.LogMessage(WebCamControl.AddPosition(tempPos, cameraIndex));
-#endif
+                calibrationDialog = new CalibrationDialog();
+                if (calibrationDialog.ShowDialog() == true) {
+
+                    CubeColor resultColor = calibrationDialog.Result;
+                    if (resultColor != null && resultColor != CubeColor.NONE) {
+
+                        ColorIdentification.ChangeReferenceColor(resultColor, webCamControls[cameraIndex].ReadColorAtPosition(relativeX, relativeY));
+                    }
+                }
+            }
+
+            // Manual Position Adding
+            if (Settings.PositionEditingAllowed && e.ChangedButton == MouseButton.Left && WebCamControl.TotalPositionCount < WebCamControl.MAXPOSITIONSTOREAD) {
+
+                colorDialog = new ColorDialog();
+
+                int[] indicies;
+
+                if (colorDialog.ShowDialog() // Waits until dialog gets closed
+                    == true) {
+
+                    /* "indicies" stores the indicies of the position to add
+                     * [0] faceIndex
+                     * [1] rowIndex
+                     * [2] colIndex
+                     */
+                    indicies = colorDialog.Result;
+                }
+                else {
+                    return;
+                }
+
+                ReadPosition tempPos = new ReadPosition(
+                        clickPosition.X / clickedImage.ActualWidth, // calculate relativeX
+                        clickPosition.Y / clickedImage.ActualHeight, // calculate relativeY
+                        indicies[0], // faceIndex
+                        indicies[1], // rowIndex
+                        indicies[2], // colIndex
+                        cameraIndex
+                    );
+
+                Log.LogMessage(WebCamControl.AddPosition(tempPos, cameraIndex));
+
+                return;
+            }
         }
 
         private void CheckBox_MultiTurn_Click(object sender, RoutedEventArgs e) {
@@ -211,21 +225,31 @@ namespace Rubinator3000 {
             Settings.UseMultiTurn = CheckBox_MultiTurn.IsChecked.Value;
         }
 
+        private void CheckBox_CalRefColors_Click(object sender, RoutedEventArgs e) {
+
+            Settings.CalibrateColors = CheckBox_CalRefColors.IsChecked.Value;
+        }
+
+        private void CheckBox_UseRefColors_Click(object sender, RoutedEventArgs e) {
+
+            Settings.UseReferenceColors = CheckBox_UseRefColors.IsChecked.Value;
+        }
+
         private void CheckBox_AutoReadout_Click(object sender, RoutedEventArgs e) {
 
             if (CheckBox_AutoReadout.IsChecked.Value) {
 
-                WebCamControl.PositionReadingRequested = ReadUtility.ReadoutRequsted.AUTO_READOUT;
+                WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequsted.AUTO_READOUT;
             }
             else {
 
-                WebCamControl.PositionReadingRequested = ReadUtility.ReadoutRequsted.DISABLED;
+                WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequsted.DISABLED;
             }
         }
 
         private void Button_ManualReadout_Click(object sender, RoutedEventArgs e) {
 
-            WebCamControl.PositionReadingRequested = ReadUtility.ReadoutRequsted.SINGLE_READOUT;
+            WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequsted.SINGLE_READOUT;
         }
     }
 }

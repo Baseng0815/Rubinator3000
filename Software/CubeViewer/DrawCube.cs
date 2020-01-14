@@ -172,7 +172,10 @@ namespace Rubinator3000 {
 
         public static void StopDrawing() {
             running = false;
-            animateMovesThread.Join();
+            if (animateMovesThread != null) {
+
+                animateMovesThread.Join();
+            }
         }
 
         /// <summary>

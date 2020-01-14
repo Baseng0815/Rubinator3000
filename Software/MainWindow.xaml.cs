@@ -31,8 +31,6 @@ namespace Rubinator3000 {
     /// </summary>
     public partial class MainWindow : Window {
 
-        public static bool PositionEditingAllowed = false;
-
         private Queue<string> messages = new Queue<string>();
 
         // cube only used for scanning and passing to solver
@@ -47,6 +45,7 @@ namespace Rubinator3000 {
         private readonly Canvas[] canvases = new Canvas[cameraCount];
 
         private ColorDialog colorDialog;
+        private CalibrationDialog calibrationDialog;
         private bool logging;
         private Thread logThread;
 

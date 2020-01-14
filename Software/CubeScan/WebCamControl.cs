@@ -48,7 +48,7 @@ namespace Rubinator3000.CubeScan {
          * 1: Read positions once
          * 2: Automatically read positions
          */
-        public static ReadoutRequsted PositionReadingRequested = ReadoutRequsted.DISABLED;
+        public static ReadoutRequsted CubeGenerationRequested = ReadoutRequsted.DISABLED;
 
         private static string PathToXml => "./Resources/ReadPositions.xml";
 
@@ -85,7 +85,7 @@ namespace Rubinator3000.CubeScan {
 
         #endregion
 
-        public WebCamControl(int cameraIndex, /*ref*/ Canvas drawingCanvas, ref WriteableBitmap previewBitmap, int ticksPerSecond = 1) {
+        public WebCamControl(int cameraIndex, Canvas drawingCanvas, ref WriteableBitmap previewBitmap, int ticksPerSecond = 1) {
 
             this.drawingCanvas = drawingCanvas;
             this.previewBitmap = previewBitmap;
@@ -172,7 +172,7 @@ namespace Rubinator3000.CubeScan {
                     }
 
                     // If position reading is requested
-                    if ((int)PositionReadingRequested > 0) {
+                    if (CubeGenerationRequested > 0 && !Settings.CalibrateColors) {
 
                         // Read all colors from positions in readPositions
                         for (int i = 0; i < PositionsToReadAt.GetLength(1); i++) {
@@ -180,7 +180,7 @@ namespace Rubinator3000.CubeScan {
                             if (PositionsToReadAt[cameraIndex, i] == null) {
                                 continue;
                             }
-                            PositionsToReadAt[cameraIndex, i].Color = ReadColorAtPosition(PositionsToReadAt[cameraIndex, i]);
+                            PositionsToReadAt[cameraIndex, i].Color = ReadColorAtPosition(PositionsToReadAt[cameraIndex, i].RelativeX, PositionsToReadAt[cameraIndex, i].RelativeY);
                         }
 
                         // This block will be only executed by the primary webcamcontrol
@@ -192,9 +192,9 @@ namespace Rubinator3000.CubeScan {
                                 SortAndValidateColors();
 
                                 // If single readout was requested only
-                                if (PositionReadingRequested == ReadoutRequsted.SINGLE_READOUT) {
+                                if (CubeGenerationRequested == ReadoutRequsted.SINGLE_READOUT) {
 
-                                    PositionReadingRequested = ReadoutRequsted.DISABLED;
+                                    CubeGenerationRequested = ReadoutRequsted.DISABLED;
                                 }
                             }
                         }
@@ -240,32 +240,15 @@ namespace Rubinator3000.CubeScan {
             frameToDisplay = new Bitmap(readBitmap);
             readBitmap.Dispose();
         }
-        /*
-        private static Bitmap SetContrast(Bitmap bmp, int threshold) {
 
-            Bitmap procBit = new Bitmap(bmp);
-            BitmapData bitmapData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
-
-            for (int i = 0; i < y + deltaY; i++) {
-                for (int j = 0; j < x + deltaX; j++) {
-                    int offset = y * _bitmapData.Stride + x * _bytesPerPixel;
-                    blue += ptrFirstPixel[offset];
-                    green += ptrFirstPixel[offset + 1];
-                    red += ptrFirstPixel[offset + 2];
-
-                    pixelCount++;
-                }
-            }
-        }
-        */
-        private Color ReadColorAtPosition(ReadPosition pos) {
+        public Color ReadColorAtPosition(double relativeX, double relativeY) {
 
             if (currentFABitmap.HasValidBitmap()) {
 
-                int absoluteX = Convert.ToInt32(pos.RelativeX * currentFABitmap.Width);
-                int absoluteY = Convert.ToInt32(pos.RelativeY * currentFABitmap.Height);
+                int absoluteX = Convert.ToInt32(relativeX * currentFABitmap.Width);
+                int absoluteY = Convert.ToInt32(relativeY * currentFABitmap.Height);
 
-                Color colorAtPos = currentFABitmap.ReadPixel(absoluteX - ReadRadius, absoluteY - ReadRadius, ReadRadius * 2 + 1, ReadRadius * 2 + 1);
+                Color colorAtPos = currentFABitmap.ReadPixels(absoluteX - ReadRadius, absoluteY - ReadRadius, ReadRadius * 2 + 1, ReadRadius * 2 + 1);
 
                 return colorAtPos;
             }
@@ -635,19 +618,16 @@ namespace Rubinator3000.CubeScan {
 
         private static void Circle_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e) {
 
-            if (/*!MainWindow.PositionEditingAllowed || */e.ChangedButton != System.Windows.Input.MouseButton.Right) {
+            if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
 
-                // If left-clicked, or position-adding is disabled via the gui, dont proceed
-                return;
+                Ellipse circle = (Ellipse)sender;
+                ReadPosition pos = ((PieChart)circle.ToolTip).ReadPosition;
+
+                // Tooltip of circle looks like that: "CubeColor[RowIndex, FaceIndex]"
+
+                RemovePosition(pos.FaceIndex, pos.RowIndex, pos.ColIndex);
+                ((Canvas)circle.Parent).Children.Remove(circle);
             }
-
-            Ellipse circle = (Ellipse)sender;
-            ReadPosition pos = ((PieChart)circle.ToolTip).ReadPosition;
-
-            // Tooltip of circle looks like that: "CubeColor[RowIndex, FaceIndex]"
-            
-            RemovePosition(pos.FaceIndex, pos.RowIndex, pos.ColIndex);
-            ((Canvas)circle.Parent).Children.Remove(circle);
         }
 
         public static CubeColor CubeColorByString(string cubeColorString) {
