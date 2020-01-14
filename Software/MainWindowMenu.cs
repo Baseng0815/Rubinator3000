@@ -10,9 +10,7 @@ using System.Linq;
 
 namespace Rubinator3000 {
     partial class MainWindow {
-        // File
-
-
+        
         private void MenuItem_Close_Click(object sender, RoutedEventArgs e) {
             Close();
         }
@@ -41,6 +39,10 @@ namespace Rubinator3000 {
             PllDebugWindow pllDebug = new PllDebugWindow();
 
             pllDebug.Show();
+        }
+
+        private void CheckBox_MultiTurn_Click(object sender, RoutedEventArgs e) {
+            Settings.UseMultiTurn = CheckBox_MultiTurn.IsChecked.Value;
         }
 
         // View

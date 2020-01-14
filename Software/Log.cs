@@ -106,7 +106,7 @@ namespace Rubinator3000 {
 
         private static void LoggingThread() {
             logging = true;
-            if (messages.Count > 0 && !stopRequested) {
+            while (messages.Count > 0 && !stopRequested) {
                 string message = messages.Dequeue();
                 
                     Application.Current.Dispatcher.Invoke(() => {

@@ -199,12 +199,7 @@ namespace Rubinator3000 {
 
             Log.LogMessage(WebCamControl.AddPosition(tempPos, cameraIndex));
 #endif
-        }
-
-        private void CheckBox_MultiTurn_Click(object sender, RoutedEventArgs e) {
-
-            Settings.UseMultiTurn = CheckBox_MultiTurn.IsChecked.Value;
-        }
+        }        
 
         private void CheckBox_AutoReadout_Click(object sender, RoutedEventArgs e) {
 

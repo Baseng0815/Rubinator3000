@@ -134,6 +134,7 @@
                 <Border>
                     <CheckBox
                         x:Name="CheckBox_MultiTurn"
+                        IsChecked="True"
                         Click="CheckBox_MultiTurn_Click"
                         Content="MultiTurn" />
                 </Border>
