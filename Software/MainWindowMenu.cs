@@ -10,9 +10,7 @@ using System.Linq;
 
 namespace Rubinator3000 {
     partial class MainWindow {
-        // File
-
-
+        
         private void MenuItem_Close_Click(object sender, RoutedEventArgs e) {
             Close();
         }

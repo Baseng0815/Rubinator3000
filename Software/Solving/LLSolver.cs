@@ -92,11 +92,8 @@ namespace Rubinator3000.Solving {
         public static (PllPattern pattern, MoveCollection algorithm)[] PllPatterns;
 
         public override bool Solved => throw new NotImplementedException();
-#if DEBUG
-        public static void LoadOllPatterns() {
-#else
-        private static void LoadOllPatterns() {
-#endif
+        internal static void LoadOllPatterns() {
+
             XDocument doc = XDocument.Load(@".\Resources\ollSolving.xml");
 
             Func<XElement, (OllPattern, MoveCollection)> getPattern = e => {
@@ -140,11 +137,8 @@ namespace Rubinator3000.Solving {
 
             OllPatterns = patterns.ToArray();
         }
-#if DEBUG
-        public static void LoadPllPatterns() {
-#else
-        private static void LoatPllPatterns() { 
-#endif
+        internal static void LoadPllPatterns() {
+
         XDocument doc = XDocument.Load(@".\Resources\pllSolving.xml");
             CubeOrientation orientation = new CubeOrientation(CubeFace.LEFT, CubeFace.DOWN);
             List<(PllPattern, MoveCollection)> patternMoves = new List<(PllPattern, MoveCollection)>();

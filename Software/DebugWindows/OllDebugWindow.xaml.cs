@@ -21,6 +21,7 @@ namespace Rubinator3000.DebugWindows {
     /// <summary>
     /// Interaction logic for OllDebugWindow.xaml
     /// </summary>
+    
     public partial class OllDebugWindow : Window {
         private Cube cube;
         private (OllPattern pattern, MoveCollection algorithm) selectedPattern = LLSolver.OllPatterns[0];
