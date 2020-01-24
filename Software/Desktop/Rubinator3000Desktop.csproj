@@ -123,6 +123,7 @@
     <Compile Include="CubeScan\ReadUtility.cs" />
     <Compile Include="CubeScan\WebCamControl.cs" />
     <Compile Include="CubeScan\XmlElementDesignations.cs" />
+    <Compile Include="CubeViewer\Data\Activity.cs" />
     <Compile Include="CubeViewer\Data\FlatTransformations.cs" />
     <Compile Include="MainWindowEvents.cs" />
     <Compile Include="MainWindowMenu.cs" />

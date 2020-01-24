@@ -57,14 +57,44 @@
     <PackageReference Include="Xamarin.Android.Support.Design">
       <Version>28.0.0.3</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.908675" />
+    <PackageReference Include="Xamarin.Forms" Version="4.4.0.991537" />
     <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CubeViewer\CubeViewer.cs" />
+    <None Include="CubeViewer\CubeViewerEvents.cs" />
+    <Compile Include="CubeViewer\Data\CubeTransformations.cs" />
+    <Compile Include="CubeViewer\Data\CuboidTransformations.cs" />
+    <Compile Include="CubeViewer\Data\FlatTransformations.cs" />
+    <Compile Include="CubeViewer\Data\Model.cs" />
+    <Compile Include="CubeViewer\Data\ResourceManager.cs" />
+    <Compile Include="CubeViewer\Data\Shader.cs" />
+    <Compile Include="CubeViewer\Data\Texture.cs" />
+    <Compile Include="CubeViewer\Data\TRSTransformation.cs" />
+    <Compile Include="CubeViewer\Data\Vertex.cs" />
+    <Compile Include="CubeViewer\DrawCube.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="CubeViewer\Utility.cs" />
+    <Compile Include="CubeViewer\View.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="OpenGLViewSharedCodeService.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <AndroidAsset Include="Assets\Shaders\CubeShader.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="Assets\Shaders\CubeShader.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="Assets\CuboidTileMappings.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="Assets\Shaders\FlatShader.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="Assets\Shaders\FlatShader.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -93,10 +123,34 @@
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\RubinatorCore\RubinatorCore.csproj">
+      <Project>{d50b9bd7-f50b-44e4-a703-94da6b8d325e}</Project>
+      <Name>RubinatorCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RubinatorMobile\RubinatorMobile.csproj">
       <Project>{A4D3458C-F16B-46A1-9F18-CF0731BF1417}</Project>
       <Name>RubinatorMobile</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\Textures\BlendFrame.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="Assets\Textures\BlendFrame.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="Assets\Textures\BlendFrameThick.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="Assets\Textures\NormalMap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="Assets\Textures\NormalMap1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
+    <AndroidAsset Include="Assets\Textures\NormalMap2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </AndroidAsset>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

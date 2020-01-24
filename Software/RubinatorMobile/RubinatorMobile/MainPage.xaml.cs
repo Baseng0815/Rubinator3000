@@ -11,6 +11,9 @@ namespace RubinatorMobile {
     // by visiting https://aka.ms/xamarinforms-previewer
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage {
+        public int GLViewWidth => (int)glView.Width;
+        public int GLViewHeight => (int)glView.Height;
+
         public MainPage() {
             InitializeComponent();
 
@@ -22,8 +25,12 @@ namespace RubinatorMobile {
             var sharedCode = DependencyService.Get<IOpenGLViewSharedCodeService>();
 
             if (sharedCode != null) {
-                glView.OnDisplay = sharedCode.OnDisplay;                
+                glView.OnDisplay = sharedCode.OnDisplay;                    
+                glView.HasRenderLoop = true;
             }
-        }        
-    }
+
+            glView.Display();
+        }
+        
+    }    
 }

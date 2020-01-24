@@ -15,17 +15,19 @@ using Xamarin.Forms;
 
 using OpenTK.Graphics.ES30;
 
-namespace RubinatorMobile.Droid {
-    class OpenGLViewSharedCodeService : IOpenGLViewSharedCodeService {
-        public void Init() {
 
+[assembly: Dependency(typeof(RubinatorMobile.Droid.OpenGLViewSharedCodeService))]
+namespace RubinatorMobile.Droid {
+    class OpenGLViewSharedCodeService : IOpenGLViewSharedCodeService {        
+
+        public void Init() {
+            
         }
 
         public void OnDisplay(Rectangle r) {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);            
 
-            
-
+            DrawCube.Draw(CubeViewer.View);                                  
         }
     }
 }

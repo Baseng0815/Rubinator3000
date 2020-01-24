@@ -5,8 +5,6 @@ using Xamarin.Forms;
 
 namespace RubinatorMobile {
     public interface IOpenGLViewSharedCodeService {
-        void OnDisplay(Rectangle r);
-
-        void Init();        
+        void OnDisplay(Rectangle r);     
     }
 }
