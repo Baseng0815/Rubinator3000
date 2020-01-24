@@ -106,7 +106,6 @@
     <ClInclude Include="stepper.h">
       <FileType>CppCode</FileType>
     </ClInclude>
-    <ClInclude Include="__vm\.Arduino.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stepper.cpp" />
