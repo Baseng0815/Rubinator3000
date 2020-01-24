@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static Rubinator3000.CubeFace;
-using static Rubinator3000.CubeColor;
+using static RubinatorCore.CubeFace;
+using static RubinatorCore.CubeColor;
 
-namespace Rubinator3000.Solving {
+namespace RubinatorCore.Solving {
 
     public interface IPattern {
         int Number { get; }

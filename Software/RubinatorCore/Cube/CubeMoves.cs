@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static Rubinator3000.CubeFace;
+using static RubinatorCore.CubeFace;
 
-namespace Rubinator3000 {    
+namespace RubinatorCore {    
 
     [DebuggerNonUserCode]
     partial class Cube {        

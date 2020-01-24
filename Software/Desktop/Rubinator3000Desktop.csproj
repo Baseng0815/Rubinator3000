@@ -124,42 +124,14 @@
     <Compile Include="CubeScan\WebCamControl.cs" />
     <Compile Include="CubeScan\XmlElementDesignations.cs" />
     <Compile Include="CubeViewer\Data\FlatTransformations.cs" />
-    <Compile Include="Cube\FaceRelation.cs" />
-    <Compile Include="Cube\Position.cs" />
-    <Compile Include="Cube\Stones.cs" />
-    <Compile Include="DebugWindows\OllDebugWindow.xaml.cs">
-      <DependentUpon>OllDebugWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DebugWindows\PllDebugWindow.xaml.cs">
-      <DependentUpon>PllDebugWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Log.cs" />
     <Compile Include="MainWindowEvents.cs" />
     <Compile Include="MainWindowMenu.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Solving\CrossSolver.cs" />
-    <Compile Include="Solving\CubeSolver.cs" />
-    <Compile Include="Solving\Fridrich\CubeSolverFridrich.cs" />
-    <Compile Include="Solving\FTL\FTLCaseHandling.cs" />
-    <Compile Include="Solving\FTL\FTLMoveCalculator.cs" />
-    <Compile Include="Solving\FTL\FTLPair.cs" />
-    <Compile Include="Solving\FTL\FTLSolver.cs" />
-    <Compile Include="Solving\LLPatterns.cs" />
-    <Compile Include="Solving\LLSolver.cs" />
-    <Compile Include="Solving\SolvingUtility.cs" />
     <Page Include="CalibrationDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ColorDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DebugWindows\OllDebugWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DebugWindows\PllDebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -184,10 +156,6 @@
     <Compile Include="CubeViewer\Utility.cs" />
     <Compile Include="CubeViewer\Data\Vertex.cs" />
     <Compile Include="CubeViewer\View.cs" />
-    <Compile Include="Cube\Cube.cs" />
-    <Compile Include="Cube\CubeMoves.cs" />
-    <Compile Include="Cube\Move.cs" />
-    <Compile Include="Cube\MoveCollection.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -210,6 +178,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include=".editorconfig" />
     <None Include="OpenTK.dll.config" />
@@ -245,9 +214,6 @@
     <Content Include="Resources\Shaders\DebugShader.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\pllSolving.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\Shaders\TQShader.frag">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -277,9 +243,6 @@
     <Content Include="Resources\Textures\NormalMap2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\ollSolving.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="packages\Microsoft.CodeAnalysis.VersionCheckAnalyzer.2.9.6\analyzers\dotnet\cs\Microsoft.CodeAnalysis.VersionCheckAnalyzer.resources.dll" />
@@ -303,6 +266,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RubinatorCore\RubinatorCore.csproj">
+      <Project>{d50b9bd7-f50b-44e4-a703-94da6b8d325e}</Project>
+      <Name>RubinatorCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

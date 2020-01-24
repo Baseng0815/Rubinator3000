@@ -13,6 +13,17 @@ namespace RubinatorMobile {
     public partial class MainPage : ContentPage {
         public MainPage() {
             InitializeComponent();
+
         }
+
+        protected override void OnAppearing() {
+            base.OnAppearing();
+            
+            var sharedCode = DependencyService.Get<IOpenGLViewSharedCodeService>();
+
+            if (sharedCode != null) {
+                glView.OnDisplay = sharedCode.OnDisplay;                
+            }
+        }        
     }
 }

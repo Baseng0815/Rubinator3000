@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Rubinator3000.Solving;
+using RubinatorCore;
+using RubinatorCore.Solving;
 
 namespace Rubinator3000 {
     public abstract class Arduino : IDisposable {

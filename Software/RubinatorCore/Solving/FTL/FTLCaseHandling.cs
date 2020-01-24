@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using static Rubinator3000.CubeFace;
-using static Rubinator3000.CubeColor;
+using static RubinatorCore.CubeFace;
+using static RubinatorCore.CubeColor;
 
-namespace Rubinator3000.Solving {
+namespace RubinatorCore.Solving {
     partial class FTLMoveCalculator {
         private void MoveSlotUp(CornerStone slotCorner) {
             var cornerPos = slotCorner.GetPositions().First(p => p.Face != UP);

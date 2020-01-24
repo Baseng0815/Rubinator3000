@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubinator3000 {
+namespace RubinatorCore {
     struct FaceRelation {
         public CubeFace departure;
         public CubeFace destination;

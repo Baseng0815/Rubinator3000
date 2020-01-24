@@ -1,5 +1,4 @@
-﻿using Rubinator3000.DebugWindows;
-using Rubinator3000.Solving;
+﻿using RubinatorCore.Solving;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Rubinator3000;
 using System.Linq;
+using RubinatorCore;
 
 namespace Rubinator3000 {
     partial class MainWindow {
@@ -27,19 +27,7 @@ namespace Rubinator3000 {
 
         private void MenuItem_SolveCube_Click(object sender, RoutedEventArgs e) {
             SolveCube();
-        }
-
-        private void MenuItem_OllDebug_Click(object sender, RoutedEventArgs e) {
-            OllDebugWindow ollDebug = new OllDebugWindow();
-
-            ollDebug.Show();
-        }
-
-        private void MenuItem_PllDebug_Click(object sender, RoutedEventArgs e) {
-            PllDebugWindow pllDebug = new PllDebugWindow();
-
-            pllDebug.Show();
-        }
+        }        
 
         // View
         private void MenuItem_ChangeView_Click(object sender, RoutedEventArgs e) {

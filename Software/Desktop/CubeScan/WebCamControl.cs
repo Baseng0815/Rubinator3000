@@ -1,4 +1,5 @@
 ﻿using Emgu.CV;
+using RubinatorCore;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

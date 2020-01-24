@@ -1,9 +1,9 @@
 ﻿//#define Camera
 
-using Rubinator3000;
+using RubinatorCore;
 using OpenTK;
 using Rubinator3000.CubeScan;
-using Rubinator3000.Solving;
+using RubinatorCore.Solving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +23,7 @@ using System.Windows.Shapes;
 using MenuItem = System.Windows.Controls.MenuItem;
 using System.Threading;
 using Rubinator3000.Communication;
+using Application = System.Windows.Application;
 
 namespace Rubinator3000 {
 
@@ -55,6 +56,21 @@ namespace Rubinator3000 {
             KeyDown += MainWindow_KeyDown;
 
             // init Log
+            Log.LogCallback = (message) => {
+                Application.Current.Dispatcher.Invoke(() => {
+                    MainWindow window = (MainWindow)Application.Current.MainWindow;
+                    if (window.TextBox_Log != null)
+                        window.TextBox_Log.Text += $"{message}\r\n";
+
+                    // Auto Scroll Implementation
+                    if (window.WindowsFormsHost_CubePreview.Child != null) {
+                        window.TextBox_Log.Focus();
+                        window.TextBox_Log.CaretIndex = window.TextBox_Log.Text.Length;
+                        window.TextBox_Log.ScrollToEnd();
+                    }
+                });
+            };
+
             Log.LogMessage("Init Log");
         }
     }

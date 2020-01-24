@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Rubinator3000.CubeColor;
-using static Rubinator3000.CubeFace;
+using static RubinatorCore.CubeColor;
+using static RubinatorCore.CubeFace;
 
-namespace Rubinator3000.Solving {
+namespace RubinatorCore.Solving {
     /// <summary>
     /// Eine Hilfsstruktur, um die Verbindung von einem Kantenstein der mittleren Ebene und eines weiﬂen Ecksteins herzustellen
     /// </summary>

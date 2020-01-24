@@ -6,11 +6,17 @@
              mc:Ignorable="d"
              x:Class="RubinatorMobile.MainPage">
 
-    <StackLayout>
-        <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
-    </StackLayout>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <OpenGLView x:Name="glView" Grid.Column="0" Margin="0" />
+
+        <StackLayout Grid.Column="1">
+            
+        </StackLayout>
+    </Grid>
 
 </ContentPage>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RubinatorCore;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls.DataVisualization;
 using System.Windows.Controls.DataVisualization.Charting;

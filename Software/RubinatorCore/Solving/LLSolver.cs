@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Rubinator3000.Solving {
+namespace RubinatorCore.Solving {
     public class LLSolver : CubeSolver {
         public LLSolver(Cube cube) : base(cube) {
 
@@ -88,7 +88,7 @@ namespace Rubinator3000.Solving {
         public override bool Solved => throw new NotImplementedException();
         internal static void LoadOllPatterns() {
 
-            XDocument doc = XDocument.Load(@".\Resources\ollSolving.xml");
+            XDocument doc = XDocument.Parse(Resources.ollSolving);
 
             Func<XElement, (OllPattern, MoveCollection)> getPattern = e => {
                 int ollNumber = int.Parse(e.Attribute("number").Value);
@@ -133,7 +133,7 @@ namespace Rubinator3000.Solving {
         }
         internal static void LoadPllPatterns() {
 
-        XDocument doc = XDocument.Load(@".\Resources\pllSolving.xml");
+            XDocument doc = XDocument.Parse(Resources.pllSolving);
             CubeOrientation orientation = new CubeOrientation(CubeFace.LEFT, CubeFace.DOWN);
             List<(PllPattern, MoveCollection)> patternMoves = new List<(PllPattern, MoveCollection)>();
 

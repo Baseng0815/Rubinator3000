@@ -1,6 +1,7 @@
 ﻿
 using Rubinator3000.CubeScan;
-using Rubinator3000.Solving;
+using RubinatorCore;
+using RubinatorCore.Solving;
 using System;
 using System.Collections.Generic;
 using System.Linq;

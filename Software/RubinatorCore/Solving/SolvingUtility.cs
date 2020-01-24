@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubinator3000.Solving {
+namespace RubinatorCore.Solving {
     public static class SolvingUtility {
         private static readonly CubeColor[][] layerColors = new CubeColor[6][] {
             // LEFT

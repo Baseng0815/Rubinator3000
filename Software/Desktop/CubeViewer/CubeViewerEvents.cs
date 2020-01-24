@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Forms;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using RubinatorCore;
 
 namespace Rubinator3000
 {

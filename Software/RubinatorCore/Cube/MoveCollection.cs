@@ -1,4 +1,4 @@
-﻿using Rubinator3000.Solving;
+﻿using RubinatorCore.Solving;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Rubinator3000 {
+namespace RubinatorCore {
     public class MoveCollection : IEnumerable<Move> {
         private List<Move> moves;
 
@@ -41,7 +41,7 @@ namespace Rubinator3000 {
                 // wenn der vorherige Move die gleiche Seite hatte, wird die Anzahl der Vierteldrehugen zum vorherigen Addiert
                 if (last.Face == move.Face) {
                     last.Count += move.Count;
-                    last.Count = SolvingUtility.NormalizeCount(last.Count);
+                    last.Count = Solving.SolvingUtility.NormalizeCount(last.Count);
 
                     // sollten sich der neue und der vorherige Move aufheben, so wird der vorherige entfernt
                     if (last.Count == 0) {

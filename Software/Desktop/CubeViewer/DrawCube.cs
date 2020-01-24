@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using RubinatorCore;
 
 namespace Rubinator3000 {
     // State change between the internal cube representation and the draw cube

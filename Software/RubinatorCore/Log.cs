@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.IO;
 using System.Threading;
 
-namespace Rubinator3000 {
+namespace RubinatorCore {
     //[System.Diagnostics.DebuggerNonUserCode]
     public static class Log {
         private static bool stopRequested = false;
@@ -17,6 +11,8 @@ namespace Rubinator3000 {
         private static Thread loggingThread;
 
         private static Queue<string> messages = new Queue<string>();
+
+        public static Action<string> LogCallback { get;  set; }
 
         public static void StopLogging() {
             stopRequested = true;
@@ -42,19 +38,8 @@ namespace Rubinator3000 {
             logging = true;
             while (messages.Count > 0 && !stopRequested) {
                 string message = messages.Dequeue();
-                
-                    Application.Current.Dispatcher.Invoke(() => {
-                        MainWindow window = (MainWindow)Application.Current.MainWindow;
-                        if (window.TextBox_Log != null)
-                            window.TextBox_Log.Text += $"{message}\r\n";
 
-                        // Auto Scroll Implementation
-                        if (window.WindowsFormsHost_CubePreview.Child != null) {
-                            window.TextBox_Log.Focus();
-                            window.TextBox_Log.CaretIndex = window.TextBox_Log.Text.Length;
-                            window.TextBox_Log.ScrollToEnd();
-                        }
-                    });
+                LogCallback?.Invoke(message);
             }
 
             logging = false;

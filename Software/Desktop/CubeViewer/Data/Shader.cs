@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 using System.IO;
+using RubinatorCore;
 
 namespace Rubinator3000
 {
