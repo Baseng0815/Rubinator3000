@@ -235,10 +235,13 @@ namespace Rubinator3000.CubeScan {
 
             Bitmap contrasted = SetContrast(readBitmap, 120);
             */
-            // Display the received frame-update on gui
-            DisplayOnWpfImageControl(bitmapToDisplay: readBitmap, displayWriteableBitmap: previewBitmap);
-            frameToDisplay = new Bitmap(readBitmap);
-            readBitmap.Dispose();
+
+            if (readBitmap != null) {
+                // Display the received frame-update on gui
+                DisplayOnWpfImageControl(bitmapToDisplay: readBitmap, displayWriteableBitmap: previewBitmap);
+                frameToDisplay = new Bitmap(readBitmap);
+                readBitmap.Dispose();
+            }
         }
 
         public Color ReadColorAtPosition(double relativeX, double relativeY) {
@@ -360,7 +363,7 @@ namespace Rubinator3000.CubeScan {
             OnCubeScanned.Invoke(null, new CubeScanEventArgs(scanData));
         }
 
-        private static List<ReadPosition> AllReadPositions() {
+        public static List<ReadPosition> AllReadPositions() {
 
             List<ReadPosition> returnList = new List<ReadPosition>();
 
@@ -563,7 +566,7 @@ namespace Rubinator3000.CubeScan {
             Log.LogMessage(string.Format("All ReadPositions were loaded from \"{0}\"", PathToXml));
         }
 
-        private static Ellipse DrawCircleAtPosition(ReadPosition pos, Canvas canvas) {
+        public static Ellipse DrawCircleAtPosition(ReadPosition pos, Canvas canvas) {
 
             Ellipse circle = null;
 

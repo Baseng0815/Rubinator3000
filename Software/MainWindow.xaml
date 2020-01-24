@@ -287,7 +287,8 @@
                             <Image
                                 x:Name="Image_CameraPreview0"
                                 MouseDown="Image_CameraPreview_MouseDown"
-                                Stretch="Fill" />
+                                Stretch="Fill"
+                                SizeChanged="Image_CameraPreview_SizeChanged"/>
                             <TextBox
                                 Grid.Row="0"
                                 Grid.Column="1"
@@ -304,7 +305,7 @@
                     <!--  Camera Preview 1  -->
                     <Border Grid.Row="0" Grid.Column="1">
                         <Grid>
-                            <Image x:Name="Image_CameraPreview1" MouseDown="Image_CameraPreview_MouseDown" />
+                            <Image x:Name="Image_CameraPreview1" MouseDown="Image_CameraPreview_MouseDown" Stretch="Fill"/>
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"
@@ -319,7 +320,7 @@
                     <!--  Camera Preview 2  -->
                     <Border Grid.Row="1" Grid.Column="0">
                         <Grid>
-                            <Image x:Name="Image_CameraPreview2" MouseDown="Image_CameraPreview_MouseDown" />
+                            <Image x:Name="Image_CameraPreview2" MouseDown="Image_CameraPreview_MouseDown" Stretch="Fill"/>
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"
@@ -334,7 +335,7 @@
                     <!--  Camera Preview 3  -->
                     <Border Grid.Row="1" Grid.Column="1">
                         <Grid>
-                            <Image x:Name="Image_CameraPreview3" MouseDown="Image_CameraPreview_MouseDown" />
+                            <Image x:Name="Image_CameraPreview3" MouseDown="Image_CameraPreview_MouseDown" Stretch="Fill" />
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"

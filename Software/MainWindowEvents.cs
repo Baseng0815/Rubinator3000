@@ -70,7 +70,7 @@ namespace Rubinator3000 {
             TextBox_MoveHistoryOutput.Clear();
 
             await moveSynchronizer.RunAsync(shuffleMoves);
-        }        
+        }
 
         private void WebCamControl_OnCubeScanned(object sender, CubeScanEventArgs e) {
             //TODO: add code
@@ -242,6 +242,30 @@ namespace Rubinator3000 {
         private void Button_ManualReadout_Click(object sender, RoutedEventArgs e) {
 
             WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequsted.SINGLE_READOUT;
+        }
+
+        private void Image_CameraPreview_SizeChanged(object sender, SizeChangedEventArgs e) {
+
+            RedrawAllCircles();
+        }
+
+        private void RedrawAllCircles() {
+
+            for (int i = 0; i < canvases.Length; i++) {
+                canvases[i].Children.Clear();
+            }
+
+            List<ReadPosition> allPositions = WebCamControl.AllReadPositions();
+
+            foreach (ReadPosition readPosition in allPositions) {
+
+                WebCamControl.DrawCircleAtPosition(readPosition, canvases[readPosition.CameraIndex]);
+            }
+
+            for (int i = 0; i < canvases.Length; i++) {
+
+                canvases[i].InvalidateVisual();
+            }
         }
     }
 }
