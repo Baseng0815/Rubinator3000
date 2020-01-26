@@ -21,9 +21,10 @@ namespace RubinatorMobile.Droid
         private int CompileShader(string shaderSource, ShaderType type)
         {
             int shader = GL.CreateShader(type);            
-            Log.LogMessage(string.Format("Shader type {0} source: {1}", type, shaderSource));
+            
             GL.ShaderSource(shader, shaderSource);
             GL.CompileShader(shader);
+
             var info = GL.GetShaderInfoLog(shader);
             if (!string.IsNullOrWhiteSpace(info))
                 Console.WriteLine(info);

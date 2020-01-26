@@ -4,6 +4,7 @@ using Xamarin.Forms.Xaml;
 
 namespace RubinatorMobile {
     public partial class App : Application {
+
         public App() {
             InitializeComponent();
 

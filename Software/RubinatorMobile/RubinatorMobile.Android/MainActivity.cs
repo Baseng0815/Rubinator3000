@@ -10,6 +10,7 @@ using Android.OS;
 using OpenTK.Graphics.ES30;
 using System.IO;
 using System.Linq;
+using Android.Hardware;
 
 namespace RubinatorMobile.Droid {
     [Activity(Label = "RubinatorMobile", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
@@ -23,7 +24,6 @@ namespace RubinatorMobile.Droid {
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
-            DrawCube.InitShaders(this);
             CuboidTransformations.InitCuboidTransformations(this);
             ResourceManager.InitResourceManager(this);
 

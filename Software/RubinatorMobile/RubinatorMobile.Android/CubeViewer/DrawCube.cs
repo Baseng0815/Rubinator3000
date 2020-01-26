@@ -30,32 +30,32 @@ namespace RubinatorMobile.Droid {
 
     public enum CubeDisplayMode { NONE = 0, FLAT = 1, CUBE = 2 };
 
-    public static class DrawCube {
+    public class DrawCube {
         // colors[CuboidIndex, FaceIndex]
-        private static Cube currentState;
+        private Cube currentState;
 
-        public static Shader cubeShader, flatShader;
+        public Shader cubeShader, flatShader;
 
         // a cuboid may be rotated only by one face at a time
         // i.e. rotations like F and R are forbidden, but F and B are fine
-        private static float[] faceRotations;
-        private static Matrix4[] faceRotationMatrices;
+        private float[] faceRotations;
+        private Matrix4[] faceRotationMatrices;
 
 
-        private static Queue<AnimatedMove> moveQueue;
+        private Queue<AnimatedMove> moveQueue;
 
-        private static Vector3[] renderColors;
+        private Vector3[] renderColors;
 
-        private static Thread animateMovesThread;
-        private static bool running = false;
+        private Thread animateMovesThread;
+        private bool running = false;
 
-        public static TRSTransformation Transformation;
-        public static bool AnimateMoves = true;
+        public TRSTransformation Transformation;
+        public bool AnimateMoves = true;
 
-        public static CubeDisplayMode DisplayMode = CubeDisplayMode.CUBE;
+        public CubeDisplayMode DisplayMode = CubeDisplayMode.CUBE;
 
         // set absolute face rotation
-        private static void SetFaceRotation(CubeFace face, float amount) {
+        private void SetFaceRotation(CubeFace face, float amount) {
             faceRotations[(int)face] = amount;
             faceRotationMatrices[(int)face] = RotationMatrixForFace(face);
         }
@@ -63,28 +63,21 @@ namespace RubinatorMobile.Droid {
         /// <summary>
         /// Returns the rotation matrix for a given face
         /// </summary>
-        private static Matrix4 RotationMatrixForFace(CubeFace face) {
-            switch (face) {
-                case CubeFace.LEFT:
-                    return Matrix4.CreateRotationX(Utility.ToRad(faceRotations[(int)face]));
-                case CubeFace.RIGHT:
-                    return Matrix4.CreateRotationX(Utility.ToRad(-faceRotations[(int)face]));
-                case CubeFace.UP:
-                    return Matrix4.CreateRotationY(Utility.ToRad(-faceRotations[(int)face]));
-                case CubeFace.DOWN:
-                    return Matrix4.CreateRotationY(Utility.ToRad(faceRotations[(int)face]));
-                case CubeFace.FRONT:
-                    return Matrix4.CreateRotationZ(Utility.ToRad(-faceRotations[(int)face]));
-                case CubeFace.BACK:
-                    return Matrix4.CreateRotationZ(Utility.ToRad(faceRotations[(int)face]));
-
-                default:
-                    return Matrix4.Identity;
-            }
+        private Matrix4 RotationMatrixForFace(CubeFace face) {
+            return face switch
+            {
+                CubeFace.LEFT => Matrix4.CreateRotationX(Utility.ToRad(faceRotations[(int)face])),
+                CubeFace.RIGHT => Matrix4.CreateRotationX(Utility.ToRad(-faceRotations[(int)face])),
+                CubeFace.UP => Matrix4.CreateRotationY(Utility.ToRad(-faceRotations[(int)face])),
+                CubeFace.DOWN => Matrix4.CreateRotationY(Utility.ToRad(faceRotations[(int)face])),
+                CubeFace.FRONT => Matrix4.CreateRotationZ(Utility.ToRad(-faceRotations[(int)face])),
+                CubeFace.BACK => Matrix4.CreateRotationZ(Utility.ToRad(faceRotations[(int)face])),
+                _ => Matrix4.Identity,
+            };
         }
 
         // do animated moves
-        private static void AnimateMovesThread() {
+        private void AnimateMovesThread() {
             Log.LogMessage("Animated Thread start");
 
             while (moveQueue.Count > 0 && running) {
@@ -144,7 +137,7 @@ namespace RubinatorMobile.Droid {
             running = false;
         }
 
-        public static void Init(Vector3[] _renderColors) {
+        public void Init(Vector3[] _renderColors) {
 
             cubeShader.Bind();
 
@@ -168,19 +161,19 @@ namespace RubinatorMobile.Droid {
             moveQueue = new Queue<AnimatedMove>();
         }
 
-        public static void StopDrawing() {
+        public void StopDrawing() {
             running = false;
             if (animateMovesThread != null) {
 
                 animateMovesThread.Join();
             }
         }
-        public static void InitShaders(Activity activity) {
+        public void InitShaders(Activity activity) {
             cubeShader = new Shader(LoadShaderSource(activity, "Shaders/CubeShader.vert"), LoadShaderSource(activity, "Shaders/CubeShader.frag"));
             flatShader = new Shader(LoadShaderSource(activity, "Shaders/FlatShader.vert"), LoadShaderSource(activity, "Shaders/FlatShader.frag"));
         }
 
-        private static string LoadShaderSource(Activity activity, string file) {
+        private string LoadShaderSource(Activity activity, string file) {
             string source;
             using (StreamReader reader = new StreamReader(activity.Assets.Open(file))) {
                 source = reader.ReadToEnd();
@@ -193,7 +186,7 @@ namespace RubinatorMobile.Droid {
         /// Adds the end state to the queue
         /// </summary>
         /// <param name="endState"></param>
-        public static void AddState(Cube endState) {
+        public void AddState(Cube endState) {
             lock (moveQueue)
                 moveQueue.Enqueue(new AnimatedMove(null, (Cube)endState.Clone()));
         }
@@ -201,13 +194,13 @@ namespace RubinatorMobile.Droid {
         /// <summary>
         /// Adds the move to the queue
         /// </summary>
-        public static void AddMove(Move move) {
+        public void AddMove(Move move) {
             moveQueue.Enqueue(new AnimatedMove(move, null));
 
             KeepThreadAlive();
         }
 
-        private static void KeepThreadAlive() {
+        private void KeepThreadAlive() {
             if (!running) {
                 running = true;
                 animateMovesThread = new Thread(AnimateMovesThread);
@@ -215,7 +208,7 @@ namespace RubinatorMobile.Droid {
             }
         }
 
-        public static void Draw(View view) {
+        public void Draw(View view) {
             // draw cube
             if (DisplayMode == CubeDisplayMode.CUBE) {
                 cubeShader.Bind();
