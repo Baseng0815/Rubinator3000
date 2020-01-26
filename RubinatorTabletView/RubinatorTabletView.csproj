@@ -61,7 +61,8 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CubeView.cs" />
+    <Compile Include="CustomViews\CameraView.cs" />
+    <Compile Include="CustomViews\CubeView.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
