@@ -6,6 +6,6 @@ using Xamarin.Forms;
 namespace RubinatorMobile {
     public interface IOpenGLViewSharedCodeService {
         void Init();
-        void OnDisplay(Rectangle r, OpenTK.Graphics.GraphicsContext context);
+        void OnDisplay(Rectangle r);
     }
 }

@@ -38,11 +38,9 @@ namespace RubinatorMobile.Droid {
             GL.ClearColor(Color.Black);            
         }
 
-        public void OnDisplay(Rectangle r, GraphicsContext context) {
+        public void OnDisplay(Rectangle r) {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.Viewport((int)r.X, (int)r.Y, (int)r.Width, (int)r.Height);
-
-            //drawCube.Draw(CubeViewer.View);                        
+            GL.Viewport((int)r.X, (int)r.Y, (int)r.Width, (int)r.Height);                                   
 
             int vbo;
             GL.GenBuffers(1, out vbo);

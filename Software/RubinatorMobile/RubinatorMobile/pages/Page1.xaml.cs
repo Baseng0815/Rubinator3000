@@ -8,6 +8,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace RubinatorMobile.pages {
+
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Page1 : ContentPage {
         public Page1() {

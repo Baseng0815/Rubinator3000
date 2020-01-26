@@ -87,6 +87,7 @@
     </AndroidAsset>
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Shaders\DebugShader.vert" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
