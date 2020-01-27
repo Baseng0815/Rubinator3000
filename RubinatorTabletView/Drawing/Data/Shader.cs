@@ -10,7 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using OpenTK;
-using OpenTK.Graphics.ES20;
+using OpenTK.Graphics.ES30;
 
 namespace RubinatorTabletView {
     public class Shader {
@@ -72,6 +72,11 @@ namespace RubinatorTabletView {
         public void Upload(string location, Vector2 vec) {
             int handle = GL.GetUniformLocation(program, location);
             GL.Uniform2(handle, ref vec);
+        }
+
+        public void Upload(string location, float value) {
+            int handle = GL.GetUniformLocation(program, location);
+            GL.Uniform1(handle, value);
         }
     }
 }

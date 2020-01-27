@@ -6,31 +6,26 @@ using System.Threading.Tasks;
 
 using System.Drawing;
 using System.Drawing.Imaging;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.ES30;
 using RubinatorCore;
+using Android.App;
+using Android.Graphics;
 
-namespace RubinatorTabletView
-{
-    public class Texture
-    {
+namespace RubinatorTabletView {
+    public class Texture {
         private readonly int texture;
 
-        public Texture(string filePath)
-        {
-            Log.LogMessage(string.Format("Loading texture {0}.", filePath));
+        public Texture(string filePath) {
 
-            Bitmap bitmap = new Bitmap(filePath);
+            Android.Graphics.Bitmap bitmap = BitmapFactory.DecodeStream(Application.Context.Assets.Open(filePath));
 
-            GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
-
-            GL.GenTextures(1, out texture);
+            texture = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, texture);
 
-            BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0,
-                OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+            GL.CompressedTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width, bitmap.Height, 0,
+                bitmap.ByteCount, bitmap.LockPixels());
 
-            bitmap.UnlockBits(data);
+            bitmap.UnlockPixels();
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
@@ -41,8 +36,7 @@ namespace RubinatorTabletView
         /// <summary>
         /// Bind the texture so the shader uses it
         /// </summary>
-        public void Bind(int textureUnit)
-        {
+        public void Bind(int textureUnit) {
             GL.ActiveTexture(TextureUnit.Texture0 + textureUnit);
             GL.BindTexture(TextureTarget.Texture2D, this.texture);
         }

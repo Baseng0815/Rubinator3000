@@ -10,8 +10,8 @@ namespace RubinatorTabletView
 {
     class Settings
     {
-        //public static readonly int CameraFov = int.Parse(ConfigurationManager.AppSettings["cameraFov"]);
-        //public static readonly int CameraDistance = int.Parse(ConfigurationManager.AppSettings["cameraDistance"]);
+        public static readonly int CameraFov = 90;
+        public static readonly int CameraDistance = 10;
         //public static readonly int ViewerDelay = int.Parse(ConfigurationManager.AppSettings["viewerDelay"]);
         //public static readonly float MouseSensitivity = float.Parse(ConfigurationManager.AppSettings["mouseSensitivity"]);
         //public static readonly float ScrollSensitivity = float.Parse(ConfigurationManager.AppSettings["scrollSensitivity"]);

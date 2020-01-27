@@ -1,4 +1,4 @@
-﻿using OpenTK.Graphics.ES20;
+﻿using OpenTK.Graphics.ES30;
 using RubinatorCore;
 using System;
 using System.Collections.Generic;
@@ -16,9 +16,11 @@ namespace RubinatorTabletView {
         private float[] bitangents;
 
         private int drawCount;
+        private bool useTangentSpace;
 
-        public Model(Vertex[] vertices) {
-
+        public Model(Vertex[] vertices, bool useTangentSpace = false) {
+            this.useTangentSpace = useTangentSpace;
+            drawCount = vertices.Length;
 
             this.vertices = Enumerable.Aggregate(vertices, new List<float>(),
                 (l, v) => {
@@ -38,17 +40,19 @@ namespace RubinatorTabletView {
                     return l;
                 }).ToArray();
 
-            tangents = Enumerable.Aggregate(vertices, new List<float>(),
-                (l, v) => {
-                    l.AddRange(v.Tangent.ToArray());
-                    return l;
-                }).ToArray();
+            if (useTangentSpace) {
+                tangents = Enumerable.Aggregate(vertices, new List<float>(),
+                    (l, v) => {
+                        l.AddRange(v.Tangent.ToArray());
+                        return l;
+                    }).ToArray();
 
-            bitangents = Enumerable.Aggregate(vertices, new List<float>(),
-                (l, v) => {
-                    l.AddRange(v.Bitangent.ToArray());
-                    return l;
-                }).ToArray();
+                bitangents = Enumerable.Aggregate(vertices, new List<float>(),
+                    (l, v) => {
+                        l.AddRange(v.Bitangent.ToArray());
+                        return l;
+                    }).ToArray();
+            }
         }
 
         public void Draw(Shader shader) {
@@ -64,21 +68,26 @@ namespace RubinatorTabletView {
             GL.EnableVertexAttribArray(normalHandle);
             GL.VertexAttribPointer(normalHandle, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), normals);
 
-            int tangentHandle = shader.GetAttribLocation("tangent");
-            GL.EnableVertexAttribArray(tangentHandle);
-            GL.VertexAttribPointer(tangentHandle, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), tangents);
+            int tangentHandle = -1, bitangentHandle = -1;
+            if (useTangentSpace) {
+                tangentHandle = shader.GetAttribLocation("tangent");
+                GL.EnableVertexAttribArray(tangentHandle);
+                GL.VertexAttribPointer(tangentHandle, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), tangents);
 
-            int bitangetHandle = shader.GetAttribLocation("bitangent");
-            GL.EnableVertexAttribArray(bitangetHandle);
-            GL.VertexAttribPointer(bitangetHandle, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), bitangents);
+                bitangentHandle = shader.GetAttribLocation("bitangent");
+                GL.EnableVertexAttribArray(bitangentHandle);
+                GL.VertexAttribPointer(bitangentHandle, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), bitangents);
+            }
 
-            GL.DrawArrays(BeginMode.Triangles, 0, vertices.Length / 3);
+            GL.DrawArrays(BeginMode.Triangles, 0, drawCount);
 
             GL.DisableVertexAttribArray(positionHandle);
             GL.DisableVertexAttribArray(texCoordHandle);
             GL.DisableVertexAttribArray(normalHandle);
-            GL.DisableVertexAttribArray(tangentHandle);
-            GL.DisableVertexAttribArray(bitangetHandle);
+            if (useTangentSpace) {
+                GL.DisableVertexAttribArray(tangentHandle);
+                GL.DisableVertexAttribArray(bitangentHandle);
+            }
         }        
     }
 }

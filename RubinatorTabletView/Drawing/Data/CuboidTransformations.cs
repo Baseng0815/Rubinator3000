@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using Android.App;
+using OpenTK;
 using RubinatorCore;
 using System;
 using System.Collections.Generic;
@@ -42,7 +43,11 @@ namespace RubinatorTabletView {
                 { CubeFace.BACK, new int[] { 6, 7, 8,  15, 16, 17, 24, 25, 26 } },
             };
 
-            string[] lines = File.ReadAllLines("Resources/CuboidTileMappings.txt").Where(val => !val.Contains("//")).ToArray();
+            string[] lines;
+            using (StreamReader reader = new StreamReader(Application.Context.Assets.Open("CuboidTileMappings.txt"))) {
+                lines = reader.ReadToEnd().Split('\n').Where(val => !val.Contains("//")).ToArray();
+            }
+
             int lineIndex = 0;
 
             for (int y = 0; y < 3; y++) {

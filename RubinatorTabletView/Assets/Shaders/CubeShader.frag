@@ -1,4 +1,5 @@
-﻿#version 330 core
+﻿#version 300 es
+precision highp float;
 
 in vec3 pass_fragPos;
 in vec2 pass_texCoord;
@@ -76,7 +77,7 @@ vec3 calcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.f);
 
     // combine results
-	vec3 defaultColor = color[instanceID] * texture2D(texture0, pass_texCoord).xyz;
+	vec3 defaultColor = color[instanceID] * texture(texture0, pass_texCoord).xyz;
 
     vec3 ambient = light.ambient * defaultColor;
     vec3 diffuse = light.diffuse * diff * defaultColor;
@@ -95,7 +96,7 @@ vec3 calcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.f);
 
     // combine results
-	vec3 defaultColor = color[instanceID] * texture2D(texture0, pass_texCoord).xyz;
+	vec3 defaultColor = color[instanceID] * texture(texture0, pass_texCoord).xyz;
 
     vec3 ambient = light.ambient * defaultColor;
 	vec3 diffuse = light.diffuse * diff * defaultColor;

@@ -15,9 +15,8 @@ namespace RubinatorTabletView
 
         private static void InitCubeData()
         {
-            LoadedTextures.Add("cubeBlendFrame", new Texture("Resources/Textures/BlendFrame.png"));
-            LoadedTextures.Add("cubeBumpMap", new Texture("Resources/Textures/NormalMap1.png"));
-            Log.LogMessage("Texture loading finished.");
+            LoadedTextures.Add("cubeBlendFrame", new Texture("Textures/BlendFrame.png"));
+            LoadedTextures.Add("cubeBumpMap", new Texture("Textures/NormalMap1.png"));            
 
             // geometry
             Vector3[] positions = new Vector3[]
@@ -55,12 +54,12 @@ namespace RubinatorTabletView
             tangent1.X = f * (deltaUV2.Y * edge1.X - deltaUV1.Y * edge2.X);
             tangent1.Y = f * (deltaUV2.Y * edge1.Y - deltaUV1.Y * edge2.Y);
             tangent1.Z = f * (deltaUV2.Y * edge1.Z - deltaUV1.Y * edge2.Z);
-            tangent1 = tangent1.Normalized();
+            tangent1.Normalize();
 
             bitangent1.X = f * (-deltaUV2.X * edge1.X + deltaUV1.X * edge2.X);
             bitangent1.Y = f * (-deltaUV2.X * edge1.Y + deltaUV1.X * edge2.Y);
             bitangent1.Z = f * (-deltaUV2.X * edge1.Z + deltaUV1.X * edge2.Z);
-            bitangent1 = bitangent1.Normalized();
+            bitangent1.Normalize();
 
             // triangle 2
             // ----------
@@ -74,13 +73,13 @@ namespace RubinatorTabletView
             tangent2.X = f * (deltaUV2.Y * edge1.X - deltaUV1.Y * edge2.X);
             tangent2.Y = f * (deltaUV2.Y * edge1.Y - deltaUV1.Y * edge2.Y);
             tangent2.Z = f * (deltaUV2.Y * edge1.Z - deltaUV1.Y * edge2.Z);
-            tangent2 = tangent2.Normalized();
+            tangent2.Normalize();
 
 
             bitangent2.X = f * (-deltaUV2.X * edge1.X + deltaUV1.X * edge2.X);
             bitangent2.Y = f * (-deltaUV2.X * edge1.Y + deltaUV1.X * edge2.Y);
             bitangent2.Z = f * (-deltaUV2.X * edge1.Z + deltaUV1.X * edge2.Z);
-            bitangent2 = bitangent2.Normalized();
+            bitangent2.Normalize();
 
             // indexed drawing is not used
             int[] indices = new int[]
@@ -97,8 +96,7 @@ namespace RubinatorTabletView
                     vertices[i] = new Vertex(positions[indices[i]], normal, texCoords[indices[i]], tangent2, bitangent2);
             }
 
-            LoadedModels.Add("cubePlane", new Model(vertices, true));
-            Log.LogMessage("Model loading finished.");
+            LoadedModels.Add("cubePlane", new Model(vertices, true));         
         }
 
         private static void InitFlatData()
@@ -113,11 +111,14 @@ namespace RubinatorTabletView
                 new Vertex { Position = new Vector3(0, 0, 0), TexCoord = new Vector2(0, 1) },
                 new Vertex { Position = new Vector3(1, 0, 0), TexCoord = new Vector2(1, 1) },
                 new Vertex { Position = new Vector3(1, -1, 0), TexCoord = new Vector2(1, 0) },
+                new Vertex { Position = new Vector3(0, -1, 0), TexCoord = new Vector2(0, 0) },
+                new Vertex { Position = new Vector3(1, 0, 0), TexCoord = new Vector2(1, 1) },
+                new Vertex { Position = new Vector3(1, -1, 0), TexCoord = new Vector2(1, 0) },
                 new Vertex { Position = new Vector3(0, -1, 0), TexCoord = new Vector2(0, 0) }
             };
 
-            LoadedModels.Add("flatPlane", new Model(vertices, false, indices));
-            LoadedTextures.Add("flatBlendFrame", new Texture("Resources/Textures/BlendFrameThick.png"));
+            LoadedModels.Add("flatPlane", new Model(vertices, false));
+            LoadedTextures.Add("flatBlendFrame", new Texture("Textures/BlendFrameThick.png"));
         }
 
         static ResourceManager()

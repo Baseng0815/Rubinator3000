@@ -10,7 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using OpenTK;
-using OpenTK.Graphics.ES20;
+using OpenTK.Graphics.ES30;
 using OpenTK.Platform.Android;
 
 namespace RubinatorTabletView {
@@ -20,6 +20,7 @@ namespace RubinatorTabletView {
         private Shader shader;
         private bool initialized = false;
         private CubeRenderer renderer;
+        private View view;
 
         public CubeView(Context context) : base(context) {
 
@@ -34,13 +35,26 @@ namespace RubinatorTabletView {
         }
 
         private void Init() {
-            // load shaders
-            shader = new Shader("Shaders/cubeShader");
-
             GL.ClearColor(OpenTK.Graphics.Color4.Black);
             GL.Enable(EnableCap.DepthTest);
 
-            renderer = new CubeRenderer();            
+            view = new View(Width, Height, Settings.CameraFov, Settings.CameraDistance);
+
+            Vector3[] renderColors = new Vector3[]
+            {
+                new Vector3(255, 106, 0),
+                new Vector3(255, 255, 255),
+                new Vector3(0, 255, 0),
+                new Vector3(255, 255, 0),
+                new Vector3(255, 0, 0),
+                new Vector3(0, 0, 255)
+            };
+
+            for (int i = 0; i < renderColors.Length; i++)
+                renderColors[i] /= 255f;
+
+            renderer = new CubeRenderer();
+            renderer.Init(renderColors);
         }
 
         protected override void CreateFrameBuffer() {
@@ -56,27 +70,20 @@ namespace RubinatorTabletView {
                 initialized = true;
             }
 
-            Render();
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            renderer.Draw(view);
+
+            SwapBuffers();
         }
 
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
 
             GL.Viewport(0, 0, Width, Height);
-        }
 
-        private void Render() {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);                        
-
-            GL.EnableVertexAttribArray(positionHandle);
-
-            GL.VertexAttribPointer(positionHandle, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), vertices);
-
-            GL.DrawArrays(BeginMode.Triangles, 0, 3);
-
-            SwapBuffers();
-
-            GL.DisableVertexAttribArray(positionHandle);
+            if (view != null)
+                view.SetSize(Width, Height);
         }
 
         private readonly float[] vertices = new float[] {
