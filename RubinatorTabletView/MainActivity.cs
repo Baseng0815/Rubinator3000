@@ -25,8 +25,7 @@ namespace RubinatorTabletView {
 
         private RelativeLayout display_area;
         private CubeView cubeView;
-        private FrameLayout cameraPreviewLayout;
-        private CameraView cameraView;
+        private CameraIdView cameraView;
 
         private Camera camera;
 
@@ -60,22 +59,12 @@ namespace RubinatorTabletView {
         [Obsolete]
         private void Init_Camera() {
 
-            cameraPreviewLayout = new FrameLayout(ApplicationContext);
-            camera = GetCameraObject();
-            cameraView = new CameraView(ApplicationContext, camera);
-            cameraPreviewLayout.AddView(cameraView);
-        }
+            camera = Camera.Open();
 
-        private Camera GetCameraObject() {
-            Camera cam_obj;
-
-            cam_obj = Camera.Open();
-
-            Parameters parameters = cam_obj.GetParameters();
-
+            Parameters parameters = camera.GetParameters();
             parameters.Set("orientation", "landscape");
 
-            return cam_obj;
+            cameraView = new CameraIdView(ApplicationContext, camera);
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults) {
@@ -103,7 +92,7 @@ namespace RubinatorTabletView {
                     return true;
                 case Resource.Id.navigation_color_id:
                     display_area.RemoveAllViews();
-                    display_area.AddView(cameraPreviewLayout);
+                    display_area.AddView(cameraView);
                     return true;
                 case Resource.Id.navigation_settings:
                     display_area.RemoveAllViews();
