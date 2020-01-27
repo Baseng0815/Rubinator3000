@@ -1,4 +1,5 @@
-﻿#version 330 core
+﻿#version 300 es
+precision highp float;
 
 in vec3 pass_fragPos;
 in vec2 pass_texCoord;

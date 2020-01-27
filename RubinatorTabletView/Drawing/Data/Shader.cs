@@ -73,5 +73,10 @@ namespace RubinatorTabletView {
             int handle = GL.GetUniformLocation(program, location);
             GL.Uniform2(handle, ref vec);
         }
+
+        public void Upload(string location, float value) {
+            int handle = GL.GetUniformLocation(program, location);
+            GL.Uniform1(handle, value);
+        }
     }
 }

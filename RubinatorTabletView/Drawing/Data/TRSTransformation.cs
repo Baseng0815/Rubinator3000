@@ -39,11 +39,11 @@ namespace RubinatorTabletView
         {
             // rotation quaternion
             // better than multiplying each euler angle
-            Quaternion rotationQuat = new Quaternion(Utility.ToRad(Rotation));
+            Quaternion rotationQuat = new Quaternion(Utility.ToRad(Rotation), 1);
 
             // only rotations around the origin are required
             // so the rotation will be multiplied last (left-to-right mm (!OpenTK reverse to GLSL!))
-            return  Matrix4.CreateScale(Scale) * Matrix4.CreateTranslation(Position) * Matrix4.CreateFromQuaternion(rotationQuat);
+            return  Matrix4.Scale(Scale) * Matrix4.CreateTranslation(Position) * Matrix4.Rotate(rotationQuat);
         }
     }
 }

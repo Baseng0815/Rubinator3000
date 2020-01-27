@@ -144,7 +144,67 @@ namespace RubinatorTabletView {
             running = false;
         }
 
-        public void Draw() {
+        public void Init(Vector3[] _renderColors) {
+            cubeShader = new Shader("Shaders/CubeShader");
+            flatShader = new Shader("Shaders/FlatShader");
+
+            cubeShader.Bind();
+
+            // texture units to sampler
+            for (int i = 0; i < 2; i++)
+                cubeShader.Upload(string.Format("texture{0}", i.ToString()), i);
+
+            currentState = new Cube();
+
+            renderColors = _renderColors;
+
+            faceRotations = new float[6];
+            faceRotationMatrices = new Matrix4[6];
+
+            Transformation = new TRSTransformation();
+            Transformation.Scale = new Vector3(2);
+
+            for (int i = 0; i < 6; i++)
+                faceRotationMatrices[i] = Matrix4.Identity;
+
+            moveQueue = new Queue<AnimatedMove>();
+        }
+
+        public void StopDrawing() {
+            running = false;
+            if (animateMovesThread != null) {
+
+                animateMovesThread.Join();
+            }
+        }
+
+        /// <summary>
+        /// Adds the end state to the queue
+        /// </summary>
+        /// <param name="endState"></param>
+        public void AddState(Cube endState) {
+            lock (moveQueue)
+                moveQueue.Enqueue(new AnimatedMove(null, (Cube)endState.Clone()));
+        }
+
+        /// <summary>
+        /// Adds the move to the queue
+        /// </summary>
+        public void AddMove(Move move) {
+            moveQueue.Enqueue(new AnimatedMove(move, null));
+
+            KeepThreadAlive();
+        }
+
+        private void KeepThreadAlive() {
+            if (!running) {
+                running = true;
+                animateMovesThread = new Thread(AnimateMovesThread);
+                animateMovesThread.Start();
+            }
+        }
+
+        public void Draw(View view) {
 
             // draw cube
             if (DisplayMode == CubeDisplayMode.CUBE) {
@@ -192,11 +252,9 @@ namespace RubinatorTabletView {
                     }
 
                     // access time for a dict is close to O(1), so no significant performance loss
-                    ResourceManager.LoadedModels["cubePlane"].Draw(flatShader);
                     ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
                     ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
-
-                    GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, (int)6);
+                    ResourceManager.LoadedModels["cubePlane"].Draw(cubeShader);
                 }
 
                 // draw flat
@@ -215,10 +273,9 @@ namespace RubinatorTabletView {
                     }
                 }
 
-                ResourceManager.LoadedModels["flatPlane"].BindVao();
                 ResourceManager.LoadedTextures["flatBlendFrame"].Bind(0);
-
-                GL.DrawElementsInstanced(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, (IntPtr)0, 54);
+                ResourceManager.LoadedModels["flatPlane"].Draw(flatShader);
             }
         }
     }
+}
