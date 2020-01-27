@@ -36,10 +36,13 @@ namespace RubinatorTabletView {
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
 
+            OpenTK.Toolkit.Init();
+
             display_area = FindViewById<RelativeLayout>(Resource.Id.display_area);
 
             cubeView = new CubeView(ApplicationContext);
             display_area.AddView(cubeView);
+            cubeView.Run(60.0f);
 
             if (ContextCompat.CheckSelfPermission(this, Manifest.Permission.Camera) == Permission.Granted) {
 

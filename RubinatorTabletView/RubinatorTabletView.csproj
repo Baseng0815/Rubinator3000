@@ -63,11 +63,29 @@
   <ItemGroup>
     <Compile Include="CustomViews\CameraView.cs" />
     <Compile Include="CustomViews\CubeView.cs" />
+    <Compile Include="Drawing\CubeRenderer.cs" />
+    <Compile Include="Drawing\Data\CubeTransformations.cs" />
+    <Compile Include="Drawing\Data\CuboidTransformations.cs" />
+    <Compile Include="Drawing\Data\FlatTransformations.cs" />
+    <Compile Include="Drawing\Data\Model.cs" />
+    <Compile Include="Drawing\Data\ResourceManager.cs" />
+    <Compile Include="Drawing\Data\Shader.cs" />
+    <Compile Include="Drawing\Data\Texture.cs" />
+    <Compile Include="Drawing\Data\TRSTransformation.cs" />
+    <Compile Include="Drawing\Data\Vertex.cs" />
+    <Compile Include="Drawing\Utility.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
+    <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Shaders\CubeShader.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Shaders\CubeShader.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml">
       <SubType>Designer</SubType>
@@ -115,6 +133,12 @@
     <AndroidResource Include="Resources\layout\activity_cubeView.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Software\RubinatorCore\RubinatorCore.csproj">
+      <Project>{d50b9bd7-f50b-44e4-a703-94da6b8d325e}</Project>
+      <Name>RubinatorCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
