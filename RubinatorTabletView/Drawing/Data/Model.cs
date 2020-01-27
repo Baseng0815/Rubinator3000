@@ -20,6 +20,7 @@ namespace RubinatorTabletView {
 
         public Model(Vertex[] vertices, bool useTangentSpace = false) {
             this.useTangentSpace = useTangentSpace;
+            drawCount = vertices.Length;
 
             this.vertices = Enumerable.Aggregate(vertices, new List<float>(),
                 (l, v) => {
