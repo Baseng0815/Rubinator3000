@@ -28,6 +28,8 @@ namespace RubinatorTabletView
             this.width = width;
             this.height = height;
             this.fov = fov;
+
+            recalculateProjectionMatrix();
         }
 
         public void SetSize(float width, float height)

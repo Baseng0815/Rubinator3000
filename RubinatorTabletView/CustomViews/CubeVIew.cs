@@ -10,7 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using OpenTK;
-using OpenTK.Graphics.ES20;
+using OpenTK.Graphics.ES30;
 using OpenTK.Platform.Android;
 
 namespace RubinatorTabletView {
@@ -73,6 +73,8 @@ namespace RubinatorTabletView {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             renderer.Draw(view);
+
+            SwapBuffers();
         }
 
         protected override void OnResize(EventArgs e) {
