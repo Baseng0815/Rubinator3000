@@ -61,7 +61,7 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomViews\CameraView.cs" />
+    <Compile Include="CustomViews\CameraIdView.cs" />
     <Compile Include="CustomViews\CubeView.cs" />
     <Compile Include="Drawing\CubeRenderer.cs" />
     <Compile Include="Drawing\Data\CubeTransformations.cs" />
