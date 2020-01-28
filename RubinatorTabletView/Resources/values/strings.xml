@@ -3,4 +3,17 @@
   <string name="title_cube_view">Cube View</string>
   <string name="title_color_id">Color Id</string>
   <string name="title_settings">Settings</string>
+  <string name="title_controls">Controls</string>
+  <string name="control_l">Left</string>
+  <string name="control_li">iLeft</string>
+  <string name="control_r">Right</string>
+  <string name="control_ri">iRight</string>
+  <string name="control_u">Up</string>
+  <string name="control_ui">iUp</string>
+  <string name="control_d">Down</string>
+  <string name="control_di">iDown</string>
+  <string name="control_f">Front</string>
+  <string name="control_fi">iFront</string>
+  <string name="control_b">Back</string>
+  <string name="control_bi">iBack</string>
 </resources>
