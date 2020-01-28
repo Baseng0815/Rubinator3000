@@ -40,8 +40,8 @@ namespace Rubinator3000 {
         private readonly WebCamControl[] webCamControls = new WebCamControl[cameraCount];
         private readonly Canvas[] canvases = new Canvas[cameraCount];
 
-        private ColorDialog colorDialog;
-        private CalibrationDialog calibrationDialog;       
+        private ReadPositionDialog readPositionDialog;
+        public static CubeColorDialog cubeColorDialog;
 
         public MainWindow() {
             InitializeComponent();

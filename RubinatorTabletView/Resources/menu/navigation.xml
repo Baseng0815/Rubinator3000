@@ -7,7 +7,7 @@
       android:title="@string/title_cube_view" />
 
   <item
-      android:id="@+id/navigation_color_id"
+      android:id="@+id/navigation_correction"
       android:icon="@drawable/ic_dashboard_black_24dp"
       android:title="@string/title_color_id" />
 

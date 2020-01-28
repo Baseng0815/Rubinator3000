@@ -48,5 +48,8 @@ namespace RubinatorTabletView
 
             this.recalculateProjectionMatrix();
         }
+
+        internal interface IOnClickListener {
+        }
     }
 }

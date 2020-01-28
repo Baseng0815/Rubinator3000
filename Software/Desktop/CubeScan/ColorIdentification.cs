@@ -7,16 +7,27 @@ using System.Linq;
 namespace Rubinator3000.CubeScan {
     static class ColorIdentification {
 
+        public static Dictionary<ReadPosition, CubeColor> ForcedColors = new Dictionary<ReadPosition, CubeColor>();
+
+        public static Color[] ReferenceColors = new Color[6];
+
         public static void ChangeReferenceColor(CubeColor cubeColor, Color newColor) {
             ReferenceColors[(int)cubeColor] = newColor;
         }
 
-        public static Color[] ReferenceColors = new Color[6];
-
         // "color" is the rgb color, that should be identified
-        public static double[] CalculateColorPercentages(Color color) {
+        public static double[] CalculateColorPercentages(ReadPosition readPosition) {
 
             double[] percentages = new double[6];
+
+            if (ForcedColors.ContainsKey(readPosition)) {
+
+                // Set color percentage to 200% for forced colors
+                percentages[(int)ForcedColors[readPosition]] = 2;
+                return percentages;
+            }
+
+            Color color = readPosition.Color;
 
             if (Settings.UseReferenceColors) {
 

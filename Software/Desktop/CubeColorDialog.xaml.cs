@@ -15,13 +15,13 @@ using System.Windows.Shapes;
 
 namespace Rubinator3000 {
     /// <summary>
-    /// Interaction logic for CalibrationDialog.xaml
+    /// Interaction logic for CubeColorDialog.xaml
     /// </summary>
-    public partial class CalibrationDialog : Window {
+    public partial class CubeColorDialog : Window {
 
         public CubeColor Result { get; set; } = CubeColor.NONE;
 
-        public CalibrationDialog() {
+        public CubeColorDialog() {
 
             InitializeComponent();
             // Make this window appear on top
@@ -30,7 +30,7 @@ namespace Rubinator3000 {
             ComboBox_CubeColorSelection.ItemsSource = Enum.GetNames(typeof(CubeColor));
 
             ComboBox_CubeColorSelection.SelectedItem = null;
-            ComboBox_CubeColorSelection.Focus();   
+            ComboBox_CubeColorSelection.Focus();
         }
 
         private void Button_FinishDialog_Click(object sender, RoutedEventArgs e) {

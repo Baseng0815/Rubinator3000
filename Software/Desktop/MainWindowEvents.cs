@@ -166,10 +166,10 @@ namespace Rubinator3000 {
             // Calibrate Reference Colors
             if (Settings.CalibrateColors && e.ChangedButton == MouseButton.Left) {
 
-                calibrationDialog = new CalibrationDialog();
-                if (calibrationDialog.ShowDialog() == true) {
+                cubeColorDialog = new CubeColorDialog();
+                if (cubeColorDialog.ShowDialog() == true) {
 
-                    CubeColor resultColor = calibrationDialog.Result;
+                    CubeColor resultColor = cubeColorDialog.Result;
                     if (resultColor != null && resultColor != CubeColor.NONE) {
 
                         ColorIdentification.ChangeReferenceColor(resultColor, webCamControls[cameraIndex].ReadColorAtPosition(relativeX, relativeY));
@@ -180,11 +180,11 @@ namespace Rubinator3000 {
             // Manual Position Adding
             if (Settings.PositionEditingAllowed && e.ChangedButton == MouseButton.Left && WebCamControl.TotalPositionCount < WebCamControl.MAXPOSITIONSTOREAD) {
 
-                colorDialog = new ColorDialog();
+                readPositionDialog = new ReadPositionDialog();
 
                 int[] indicies;
 
-                if (colorDialog.ShowDialog() // Waits until dialog gets closed
+                if (readPositionDialog.ShowDialog() // Waits until dialog gets closed
                     == true) {
 
                     /* "indicies" stores the indicies of the position to add
@@ -192,7 +192,7 @@ namespace Rubinator3000 {
                      * [1] rowIndex
                      * [2] colIndex
                      */
-                    indicies = colorDialog.Result;
+                    indicies = readPositionDialog.Result;
                 }
                 else {
                     return;
