@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
@@ -15,13 +16,12 @@ namespace RubinatorTabletView {
 
         private RelativeLayout display_area;
 
-        private RelativeLayout layout_controls;
+        private TableLayout layout_controls;
         private RelativeLayout layout_correction;
         private RelativeLayout layout_cube_view;
         private RelativeLayout layout_settings;
 
         private CubeView cube_view;
-        private Button example_button;
 
         protected override void OnCreate(Bundle savedInstanceState) {
 
@@ -34,15 +34,19 @@ namespace RubinatorTabletView {
             display_area = FindViewById<RelativeLayout>(Resource.Id.display_area);
 
             // Load layouts
-            layout_controls = (RelativeLayout)LayoutInflater.Inflate(Resource.Layout.layout_controls, null);
+            layout_controls = (TableLayout)LayoutInflater.Inflate(Resource.Layout.layout_controls, null);
             layout_correction = (RelativeLayout)LayoutInflater.Inflate(Resource.Layout.layout_correction, null);
             layout_cube_view = (RelativeLayout)LayoutInflater.Inflate(Resource.Layout.layout_cube_view, null);
             layout_settings = (RelativeLayout)LayoutInflater.Inflate(Resource.Layout.layout_settings, null);
 
+            ControlHandler.AddButtonEvents(layout_controls);
+
+            layout_controls.FindViewById<Button>(Resource.Id.button_pairBluetooth).Click += (sender, e) => {
+                ControlHandler.Connect(this);
+            };
+
             // Load references to views of inside the layouts
             cube_view = layout_cube_view.FindViewById<CubeView>(Resource.Id.cube_view);
-            example_button = layout_controls.FindViewById<Button>(Resource.Id.example_button);
-            example_button.Click += Example_button_Click;
 
             display_area.AddView(layout_cube_view);
             //cube_view.Run(60.0f);
@@ -51,9 +55,8 @@ namespace RubinatorTabletView {
             navigation.SetOnNavigationItemSelectedListener(this);
         }
 
-        private void Example_button_Click(object sender, System.EventArgs e) {
+        protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data) {
 
-            // Handle Click of example_button
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults) {

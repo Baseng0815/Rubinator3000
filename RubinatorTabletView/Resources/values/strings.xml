@@ -4,16 +4,27 @@
   <string name="title_color_id">Color Id</string>
   <string name="title_settings">Settings</string>
   <string name="title_controls">Controls</string>
+
+  <!-- DeviceListActivity -->
+  <string name="title_paired_devices">Paired devices</string>
+  <string name="title_other_devices">Other available devices</string>
+  <string name="scanning">Scanning for devices...</string>
+  <string name="button_scan">Scan for nearby devices</string>
+  <string name="none_paired">No devices have been paired</string>
+  <string name="activity_device_list_name">Select device</string>
+
+  <!-- ControlLayout -->
   <string name="control_l">Left</string>
-  <string name="control_li">iLeft</string>
+  <string name="control_li">Left inverted</string>
   <string name="control_r">Right</string>
-  <string name="control_ri">iRight</string>
+  <string name="control_ri">Right inverted</string>
   <string name="control_u">Up</string>
-  <string name="control_ui">iUp</string>
+  <string name="control_ui">Up inverted</string>
   <string name="control_d">Down</string>
-  <string name="control_di">iDown</string>
+  <string name="control_di">Down inverted</string>
   <string name="control_f">Front</string>
-  <string name="control_fi">iFront</string>
+  <string name="control_fi">Front inverted</string>
   <string name="control_b">Back</string>
-  <string name="control_bi">iBack</string>
+  <string name="control_bi">Back inverted</string>
+  <string name="button_pairBluetooth">Connect to Bluetooth device</string>
 </resources>

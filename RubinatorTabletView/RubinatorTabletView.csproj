@@ -61,7 +61,9 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControlHandler.cs" />
     <Compile Include="CustomViews\CubeView.cs" />
+    <Compile Include="DeviceListActivity.cs" />
     <Compile Include="Drawing\CubeRenderer.cs" />
     <Compile Include="Drawing\Data\CubeTransformations.cs" />
     <Compile Include="Drawing\Data\CuboidTransformations.cs" />
@@ -168,17 +170,25 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\layout_controls.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\layout_correction.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\layout_settings.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\layout_controls.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\device_name.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_device_list.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
