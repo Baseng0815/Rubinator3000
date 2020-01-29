@@ -52,7 +52,7 @@ namespace RubinatorTabletView {
         public TRSTransformation Transformation;
         public bool AnimateMoves = true;
 
-        public CubeDisplayMode DisplayMode = CubeDisplayMode.FLAT;
+        public CubeDisplayMode DisplayMode = CubeDisplayMode.CUBE;
 
         // set absolute face rotation
         private void SetFaceRotation(CubeFace face, float amount) {

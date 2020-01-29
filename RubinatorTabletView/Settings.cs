@@ -13,14 +13,14 @@ namespace RubinatorTabletView
         public static readonly int CameraFov = 90;
         public static readonly int CameraDistance = 10;
         //public static readonly int ViewerDelay = int.Parse(ConfigurationManager.AppSettings["viewerDelay"]);
-        //public static readonly float MouseSensitivity = float.Parse(ConfigurationManager.AppSettings["mouseSensitivity"]);
-        //public static readonly float ScrollSensitivity = float.Parse(ConfigurationManager.AppSettings["scrollSensitivity"]);
+        public static readonly float TouchSensitivity = 0.5f;
+        public static readonly float ScrollSensitivity = 8.0f;
 
         public static readonly int MoveAnimatedTime = 500;
 
         public static bool UseMultiTurn = false;
         public static bool CalibrateColors = false;
         public static bool PositionEditingAllowed = false;
-        public static bool UseReferenceColors = false;
+        public static bool UseReferenceColors = false;        
     }
 }
