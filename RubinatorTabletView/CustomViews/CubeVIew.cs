@@ -18,7 +18,6 @@ namespace RubinatorTabletView {
 
     class CubeView : AndroidGameView {
 
-        private Shader shader;
         private bool initialized = false;
         private CubeRenderer renderer;
         private View view;
@@ -42,7 +41,7 @@ namespace RubinatorTabletView {
             GL.ClearColor(OpenTK.Graphics.Color4.Black);
             GL.Enable(EnableCap.DepthTest);
 
-            view = new View(Width, Height, Settings.CameraFov, Settings.CameraDistance);
+            view = new View(Width, Height, Settings.CameraFov, Settings.CameraDistance);            
 
             Vector3[] renderColors = new Vector3[]
             {
@@ -62,7 +61,7 @@ namespace RubinatorTabletView {
         }
 
         protected override void CreateFrameBuffer() {
-            this.ContextRenderingApi = OpenTK.Graphics.GLVersion.ES2;
+            this.ContextRenderingApi = OpenTK.Graphics.GLVersion.ES3;
             base.CreateFrameBuffer();
         }
 
@@ -78,7 +77,7 @@ namespace RubinatorTabletView {
 
             renderer.Draw(view);
 
-            SwapBuffers();
+            SwapBuffers();         
         }
 
         protected override void OnResize(EventArgs e) {
@@ -111,7 +110,7 @@ namespace RubinatorTabletView {
                 cubeRotation.X += dy * Settings.TouchSensitivity;
 
                 Invalidate();
-            }            
+            }
 
             return base.OnTouchEvent(e);
         }

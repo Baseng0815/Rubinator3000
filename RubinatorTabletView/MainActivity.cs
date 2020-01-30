@@ -50,7 +50,7 @@ namespace RubinatorTabletView {
             cube_view = layout_cube_view.FindViewById<CubeView>(Resource.Id.cube_view);
 
             display_area.AddView(layout_cube_view);
-            //cube_view.Run(60.0f);
+            cube_view.Run(60.0f);
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.SetOnNavigationItemSelectedListener(this);
