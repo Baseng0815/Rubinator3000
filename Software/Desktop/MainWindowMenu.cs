@@ -66,5 +66,9 @@ namespace Rubinator3000 {
         private void MenuItem_Disconnect_Click(object sender, RoutedEventArgs e) {
             moveSynchronizer.DisconnectArduino();
         }
+
+        private void MenuItem_BluetoothSetup_Click(object sender, RoutedEventArgs e) {
+            moveSynchronizer.SetupBluetooth();
+        }
     }
 }

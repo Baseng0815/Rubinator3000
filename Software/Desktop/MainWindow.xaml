@@ -143,12 +143,13 @@
             <MenuItem Header="Hardware">
                 <Border>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox VerticalAlignment="Center" Text="COM Port" />
+                        <TextBox VerticalAlignment="Center" Text="Arduino COM Port" />
                         <ComboBox x:Name="ComboBox_COMPort" Width="70" />
                     </StackPanel>
                 </Border>
-                <MenuItem Click="MenuItem_Connect_Click" Header="Verbinden" />
-                <MenuItem Click="MenuItem_Disconnect_Click" Header="Trennen" />
+                <MenuItem Click="MenuItem_Connect_Click" Header="Arduino verbinden" />
+                <MenuItem Click="MenuItem_Disconnect_Click" Header="Arduino trennen" />
+                <MenuItem Click="MenuItem_BluetoothSetup_Click" Header="Bluetooth starten" />
             </MenuItem>
 
             <!--  Index Tab "Ansicht"  -->

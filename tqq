@@ -1,0 +1,1233 @@
+[33mcommit 133bb88fb1b6c8585c84a0693d1aa59704dd15e8[m[33m ([m[1;36mHEAD -> [m[1;32mApp[m[33m)[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Wed Jan 29 22:14:55 2020 +0100
+
+    Add bluetooth device selection
+
+[33mcommit bd76f3d3e22600f883b39c0b70fbf2b5d67aedd4[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Wed Jan 29 00:15:25 2020 +0100
+
+    GUI-Framework
+
+[33mcommit 9b107d0acbacc1ccf8b977ce7a593c09cfa84be4[m
+Merge: e7c50f3 17c90e2
+Author: PhiGei2000 <Philipp-Geil@outlook.com>
+Date:   Tue Jan 28 19:13:09 2020 +0100
+
+    Merge branch 'App' of http://github.com/Baseng0815/Rubinator3000 into App
+
+[33mcommit e7c50f32f5110e63cd0a1a2dc29688c29682810c[m
+Author: PhiGei2000 <Philipp-Geil@outlook.com>
+Date:   Tue Jan 28 19:12:52 2020 +0100
+
+    Fix packages
+
+[33mcommit 17c90e299786abca57aaf0d37cf6feeb321a610b[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Tue Jan 28 18:47:38 2020 +0100
+
+    Add controls page
+
+[33mcommit c6ad8a49afc2a4558ac05789c0b9057948ab9be9[m
+Author: PhiGei2000 <Philipp-Geil@outlook.com>
+Date:   Tue Jan 28 18:44:50 2020 +0100
+
+    Fix Builderrors
+
+[33mcommit 6d84d6a68b159bbf229c62bf9427dc73665cec4a[m
+Merge: 36b6d5c 1d24ffd
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Mon Jan 27 22:33:38 2020 +0100
+
+    Merge branch 'App' of https://github.com/Baseng0815/Rubinator3000 into App
+
+[33mcommit 36b6d5cf04294d471b4fb2174cbe1e317cfde689[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Mon Jan 27 22:33:07 2020 +0100
+
+    CameraPreview Stuff
+
+[33mcommit 1d24ffd92beddb20ea6a858b566f43ba7676b92f[m
+Author: PhiGei2000 <Philipp-Geil@outlook.com>
+Date:   Mon Jan 27 22:25:05 2020 +0100
+
+    Fix fragment Shader
+
+[33mcommit 52961a54fc759d7c4bff8175d199e600737bb4b3[m
+Author: PhiGei2000 <Philipp-Geil@outlook.com>
+Date:   Mon Jan 27 22:10:16 2020 +0100
+
+    Work on Texture loading
+
+[33mcommit 842883b932e3bd68f27e0719a8850eefd1d7a9a0[m
+Author: PhiGei2000 <Philipp-Geil@outlook.com>
+Date:   Mon Jan 27 21:51:35 2020 +0100
+
+    Implement CubeView
+
+[33mcommit 1f48dfca497ae237d58123b46031a3ab8b2c2205[m
+Author: PhiGei2000 <Philipp-Geil@outlook.com>
+Date:   Mon Jan 27 21:01:05 2020 +0100
+
+    Work on 3D View
+
+[33mcommit b1974a28db0fa766db85de201c4ab0b1fafba7b8[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Sun Jan 26 23:57:10 2020 +0100
+
+    Adding Camera - not working yet
+
+[33mcommit 4cd101a53709bc71c31cc821b4eab7bb2600daac[m
+Author: PhiGei2000 <Philipp-Geil@outlook.com>
+Date:   Sun Jan 26 20:53:29 2020 +0100
+
+    Work on CubeView
+
+[33mcommit 074b1140b6cb0ab98cb874821b066feb32662aa8[m
+Author: PhiGei2000 <Philipp-Geil@outlook.com>
+Date:   Sun Jan 26 18:26:26 2020 +0100
+
+    New Project
+
+[33mcommit 2f23f8f8bed0ed7b97149d90747273ffc6e41af3[m
+Author: PhiGei2000 <Philipp-Geil@outlook.com>
+Date:   Sun Jan 26 17:12:12 2020 +0100
+
+    Remove Errors
+
+[33mcommit 1a85189c5b6364bfe469e76466c0620da16271e0[m
+Author: PhiGei2000 <Philipp-Geil@outlook.com>
+Date:   Sun Jan 26 17:00:12 2020 +0100
+
+    Work on CubeDrawing
+
+[33mcommit a208c26aea7f57fb55650038ecf27caf001f949a[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Jan 24 19:53:49 2020 +0100
+
+    Android add CubeDrawing
+
+[33mcommit 930488c123fd3f4be33ac30af82caaa7cec6ab71[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Jan 24 16:54:10 2020 +0100
+
+    Extract RubinatorCore Library
+
+[33mcommit d69b5c9c7492899c89199b0ed65d75e344bbbe77[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Jan 24 15:20:32 2020 +0100
+
+    Create app project
+
+[33mcommit 92b09dcaa1d69057da7c8ff2e3d048d9389f0801[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Jan 24 11:32:31 2020 +0100
+
+    ReadPosition dynamic
+
+[33mcommit d6ceb9d90f6e9484edeec648405c6af3b7ef7906[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Tue Jan 14 22:29:09 2020 +0100
+
+    Remove debug code
+
+[33mcommit 57e379e70d8bd90454556f40c7e98747d963ba54[m
+Merge: 2fea8bc e576d77
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Tue Jan 14 20:00:34 2020 +0100
+
+    Fix failed Auto Merge
+
+[33mcommit 2fea8bc5bb7ffac0da2c7532410c19dbeada0ea6[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Tue Jan 14 19:50:12 2020 +0100
+
+    Added RefColors
+
+[33mcommit e576d77759a54656278208b5dd8b3d86a3f736ef[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Jan 14 18:54:50 2020 +0100
+
+    fix logging
+
+[33mcommit 421fa72eea25de694eb9a2cdd09329abe24453e3[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Jan 14 18:40:23 2020 +0100
+
+    Fix release mode
+
+[33mcommit d5b4abf93b4d58634471cd4eaf2ed149749468ef[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Jan 14 18:32:56 2020 +0100
+
+    Overwork Log system
+
+[33mcommit b9c3b8f9335aff8cb260f97b47353803adb32f30[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Jan 14 18:11:18 2020 +0100
+
+    Fix debug menu
+
+[33mcommit 3c801238a30a42be32453568cbba9ac5041991e4[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Tue Jan 14 16:28:22 2020 +0100
+
+    Manual Cube Generation From Camera-Streams and GUI-Name-Refactoring
+
+[33mcommit e2863f07f257a68a4bfc89d33fc5fd6005c17b39[m
+Author: MEDIU07 <MEDIU07@ETS>
+Date:   Mon Jan 13 12:56:51 2020 +0100
+
+    Remove unused Mikrocontroller program
+
+[33mcommit f2289195c546e7da18c0cfee07ab2afacd23351c[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Jan 10 21:32:30 2020 +0100
+
+    F2L Debug
+
+[33mcommit 44f0fa6ba92a5f65484ef67e7410c045e008cbed[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Jan 10 20:48:12 2020 +0100
+
+    Fix draw moves
+
+[33mcommit d676687c2c9d43eb391d42174e3167a40ce36a9b[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Jan 10 19:31:57 2020 +0100
+
+    Fix multiturn steppers
+
+[33mcommit c411d287cc02fb98d2a1a77d013ac1c6213e8f7b[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Fri Jan 10 18:50:15 2020 +0100
+
+    Add changes, todo: fix draw moves
+
+[33mcommit 947ec9506d2300077066317cd634af2b176da695[m
+Merge: d98bb21 5a664fc
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Fri Jan 10 16:46:05 2020 +0100
+
+    Merge pull request #6 from Baseng0815/MultiTurn
+    
+    Multi turn
+
+[33mcommit 5a664fc45ff5a4b2acf702a49f48270516679fa9[m[33m ([m[1;31morigin/MultiTurn[m[33m)[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Jan 10 16:37:56 2020 +0100
+
+    Fix Arduinoprogram
+
+[33mcommit 5da298304c77769a9d6b8a7faf661165088768f8[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Thu Jan 9 18:48:51 2020 +0100
+
+    Implement multi turn move synchronisation
+
+[33mcommit 71227102798ce8e2ca9f459c6f433f03defb4d5f[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Thu Jan 9 18:09:37 2020 +0100
+
+    Fix PLL Solving
+
+[33mcommit d98bb2171985fc535b60902f6ca710905268cd36[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Wed Jan 8 18:01:27 2020 +0100
+
+    Camera and PieChart fixes
+
+[33mcommit 990a30b7f2aa94a89eb9512ef32d2c9a68bc7b71[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Jan 8 17:50:21 2020 +0100
+
+    Add arduino multi turns
+
+[33mcommit a785796ad1cac66e0771c636186e07d1eb80c317[m
+Merge: b3e03f9 bf6320c
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Wed Jan 8 17:14:16 2020 +0100
+
+    Merge branch 'master' of https://github.com/Baseng0815/Rubinator3000
+
+[33mcommit b3e03f9bb32f448e457067d580edb93618bea744[m[33m ([m[1;31morigin/pieseries[m[33m)[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Wed Jan 8 17:11:47 2020 +0100
+
+    define Camera
+
+[33mcommit bf6320c340e3b3003d73fa75476021cfa65aa261[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Wed Jan 8 17:08:09 2020 +0100
+
+    Add MultiTurn setting
+
+[33mcommit a4833a07c35923b6db58cd2d28a8ea8fdf4f8289[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Wed Jan 8 16:55:23 2020 +0100
+
+    Added Pie charts
+
+[33mcommit 3d8d74d6557a7f9dc3fb8c1da4a5bc54349b9b6b[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Wed Jan 8 16:50:29 2020 +0100
+
+    DrawCube MultiTurn
+
+[33mcommit ca2c12bb8885fc7ab7274d361fef53eed6e14045[m[33m ([m[1;32mpieseries[m[33m)[m
+Merge: bd5d905 c6aed12
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Sat Jan 4 19:51:56 2020 +0100
+
+    Merge pull request #5 from Baseng0815/Refactor
+    
+    Refactor
+
+[33mcommit c6aed12cdee962a76e4bfef472957f0efbbcd97f[m[33m ([m[1;31morigin/Refactor[m[33m)[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Jan 4 18:36:24 2020 +0100
+
+    Remove unused OLL pattern
+
+[33mcommit d2b3facf21fdcd9dc86868c015c0708850e44863[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Jan 4 16:54:20 2020 +0100
+
+    Fix .csproj and optimize face rotation
+
+[33mcommit 8697037d9d5247bf894429cb415e6bc6995864f7[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Dec 28 00:01:17 2019 +0100
+
+    Fix cube solving algorithm
+
+[33mcommit 49ea30bfc4c161a178fd3479818301fbc19b96fb[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Dec 27 22:44:01 2019 +0100
+
+    Add Move logging
+
+[33mcommit 6c73c513b1ed996cd14cc1d4165b9a07bb1a2790[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Dec 27 21:38:27 2019 +0100
+
+    Overwork cube rotations
+
+[33mcommit 19aee277330614b1bdff2dad2ec084131059f6e1[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Sat Dec 21 18:22:00 2019 +0100
+
+    Finished graphics error and logThread joining, introduced timeout on arduino
+
+[33mcommit 1eea9162fee9003715df2a59a55b755888a2e0f8[m
+Merge: ddce738 348a5a1
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Dec 21 14:16:54 2019 +0100
+
+    fix move parsing
+
+[33mcommit ddce738c74af5c007471aa59dee52a4e3516435b[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Dec 21 14:05:28 2019 +0100
+
+    fix move parsing
+
+[33mcommit 348a5a1fd4c54de32bd36d658b5ccf4af55663d7[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Fri Dec 20 12:33:16 2019 +0100
+
+    Added MoveSynchronization and wrapped arduino
+
+[33mcommit b0d433ae18cf64418337e886a0ab405a92c689e1[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Thu Dec 19 14:36:19 2019 +0100
+
+    Removed isPrime
+
+[33mcommit 380fb1dfe1fa9eaeb514ad56a9ae1b610abb8004[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Wed Dec 18 20:28:43 2019 +0100
+
+    Started refactoring
+
+[33mcommit bd5d90540887f182795a35d4bea63f1d5de18c23[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Dec 18 16:18:31 2019 +0100
+
+    Fix Problems for 'MINT-Messe'
+
+[33mcommit 0c91732a2343def0ee6cfc1726ea723b77298d49[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Dec 16 20:57:00 2019 +0100
+
+    Remove ESP8266 code
+
+[33mcommit aa2daacc7fcff6b79fc9e535126e12ba08d8de18[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Mon Dec 16 20:45:36 2019 +0100
+
+    Temporary fix for weird isPrime system
+
+[33mcommit 330749af69efefc12f4fce0f4fdb1523f8714804[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Dec 16 17:59:01 2019 +0100
+
+    Implement Arduino Mega for 'MINT-Messe'
+
+[33mcommit ed39ab0dec052d16c1d015d72ae868a5c25ab28c[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Dec 15 17:51:20 2019 +0100
+
+    fix merge
+
+[33mcommit 51f45800584f767579a17603fa49c7c06e16c6ae[m
+Merge: 3acad64 b224108
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Dec 15 17:27:39 2019 +0100
+
+    Merge branch 'rollback'
+    
+    Merge "rollback"
+
+[33mcommit b224108c608d4d7362b96223b2280d4d2d85512f[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Dec 15 16:35:45 2019 +0100
+
+    Add Software Folder
+
+[33mcommit e4f9afdfe88ed8184b90dfa26d7c055ef71771fe[m
+Merge: db313e2 3b0d3c1
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Dec 15 16:20:49 2019 +0100
+
+    Merge branch 'rollback' of http://github.com/Baseng0815/Rubinator3000 into rollback
+
+[33mcommit db313e2a6775b50f74975b539e60dfb1a6fd2fcc[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Dec 15 16:19:17 2019 +0100
+
+    CAD Stuff
+
+[33mcommit 3b0d3c186f3581f5bc4a26c03e2f6caa33d461d6[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Sun Dec 15 16:06:55 2019 +0100
+
+    Refaftoring and Commenting of CubeScan
+
+[33mcommit 855097223316e5dbb7135f007e9c8a85d6526f02[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Dec 14 17:04:08 2019 +0100
+
+    BehebmalBasti
+
+[33mcommit 3acad64d16cdb8d2e920f43357f1f2cf9cdadb3e[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Dec 13 15:55:33 2019 +0100
+
+    Finish microcontroller programming
+
+[33mcommit 717f42429941c4e38550fb543046e3c75e719496[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Dec 13 14:05:28 2019 +0100
+
+    Add IO and Serial communication
+
+[33mcommit a73ff74ed4653e4d7a802793cc64dee9e1ae03a1[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Dec 9 21:10:33 2019 +0100
+
+    implement Serial
+
+[33mcommit f497545676165363fdf8961ea0cf155eaa0feed0[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Dec 9 18:54:44 2019 +0100
+
+    Add IO support on ATMEGA16
+
+[33mcommit 5ae37d371699c38f220941fbafbb10aabad2b9f7[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Dec 4 20:50:20 2019 +0100
+
+    Add communication protocol
+
+[33mcommit 19d6b9e9b3fbb653bdec7a0f179063e752dcb121[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Dec 2 18:57:12 2019 +0100
+
+    Work on microcontroller communication
+
+[33mcommit f46082831a6ab0b0331cf93465d9cdd3a8f77df1[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Dec 2 15:28:28 2019 +0100
+
+    Add log Thread
+
+[33mcommit 1c8f2c407fa0035fd8a8675d86ace8a55ba9ce6e[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Nov 30 18:37:36 2019 +0100
+
+    optimize solving
+
+[33mcommit 12b77a93a43ce1836811f5e70f0e986ca818d488[m
+Merge: 7f8dadc be8e254
+Author: PhiGei2000 <46970229+PhiGei2000@users.noreply.github.com>
+Date:   Sat Nov 30 16:47:42 2019 +0100
+
+    Merge pull request #3 from Baseng0815/refactoring
+    
+    Split project
+
+[33mcommit be8e254fa4e0c886b336879f0858e1aaedb18eee[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Nov 30 16:36:03 2019 +0100
+
+    Split project
+
+[33mcommit 7f8dadcc2122af23996f31d5a289866941d50622[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Nov 29 21:47:58 2019 +0100
+
+    Make solving ssync and add move history
+
+[33mcommit 13b552256da0e908bb0a672c24375e53ad1e38ed[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Nov 29 21:37:44 2019 +0100
+
+    Fix Cube Solving
+
+[33mcommit 2af69039e73bfdabbdf41595c8810ffb058197e2[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Nov 29 17:30:37 2019 +0100
+
+    Update Oll Patterns
+
+[33mcommit e80ad42639589aa6535f72a558b086cedae27e57[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Thu Nov 28 18:35:03 2019 +0100
+
+    Make Solving async and work on last layer solving
+
+[33mcommit e21f7a4f1dfa67630e673f6ee84a1f723347382b[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Nov 27 21:46:45 2019 +0100
+
+    fix pll solving
+
+[33mcommit b39a8a702640917f2d800d669ce6b1d07e1471b6[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Nov 27 16:46:05 2019 +0100
+
+    Finish F2L
+
+[33mcommit 807fddef7d5ab84fd07b75fcd66181c56f72ca1d[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Nov 26 20:37:41 2019 +0100
+
+    debug F2L cases
+
+[33mcommit 7b3f1c6d8daf1edba0ff635c48009b23f7388396[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Nov 26 19:33:06 2019 +0100
+
+    compile arduino program
+
+[33mcommit fe1b7e372d0d3d6ade26f44bec152a9a0cb06cad[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Nov 19 20:02:16 2019 +0100
+
+    Implement F2L
+
+[33mcommit 5bf3fc7133aa61e6751d42adc418097f10c88b18[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Nov 19 17:32:55 2019 +0100
+
+    Add new MotorHalterungen
+
+[33mcommit 1521fed58aad969f5c5d0160c7a71864a7e4dc4e[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Nov 18 21:23:04 2019 +0100
+
+    Add WiFi program
+
+[33mcommit c5378d2ab9adbf436b6c90d4b01bbc9095c7c593[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Nov 18 18:48:24 2019 +0100
+
+    Add Motorhalterungen
+
+[33mcommit 4825e820f578919c3198f4b7cdba020cc5519cc2[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Nov 18 14:42:50 2019 +0100
+
+    Debug WebCams
+
+[33mcommit 371e3b7ce17eabc7fe7b10ceeb6a41d52e2d0fa9[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Nov 17 18:50:33 2019 +0100
+
+    Add E-Box and Drawings
+
+[33mcommit b93bd122e928e7102cec7eae58ba712ace511af2[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Nov 16 14:58:56 2019 +0100
+
+    implement corner white facing up
+
+[33mcommit 06499da73e8141c966b2ff10922a1d94d6b06e1f[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Nov 15 18:03:34 2019 +0100
+
+    Implement F2L cases Corner false in slot
+
+[33mcommit 8092d47e55d2f1d2e14d57a6b84420f01317c25d[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Nov 15 17:12:37 2019 +0100
+
+    fix white cross
+
+[33mcommit ed26b427d857f6eb2f2fd6f39d391d52ba8871c5[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Nov 15 16:50:10 2019 +0100
+
+    F2L Corner White down
+
+[33mcommit a2f818b360b524b6b550076555a41e4d0c34ae77[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Thu Nov 14 17:45:38 2019 +0100
+
+    Work on F2L
+
+[33mcommit 264be3ace17f3f9520d611f311524270a5d77709[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Nov 6 18:53:24 2019 +0100
+
+    update partslist
+
+[33mcommit f45d7fa1b5ddc246c625186b7824c309d7a00a94[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Nov 6 18:46:08 2019 +0100
+
+    Work on FTL
+
+[33mcommit 95a4f76995be102dc4b8ce5658334f3edb356884[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Nov 5 18:28:40 2019 +0100
+
+    Add components list
+
+[33mcommit 08b04d05130badd997840b616a387ae8169d05f4[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Nov 5 18:12:23 2019 +0100
+
+    Implement 'Eagle' Case
+
+[33mcommit 999a4577b7ffe74aef64e0ed5831433b3a385705[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Oct 29 19:01:46 2019 +0100
+
+    Work on 3D Model
+
+[33mcommit 320455fc9e737073ca8989665557e36fcd1f8071[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Oct 27 12:51:39 2019 +0100
+
+    Add actual 3D files
+
+[33mcommit d28dea5a308911134e3241147b74dcd40f8da047[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Oct 27 12:48:42 2019 +0100
+
+    Add 3D Model
+
+[33mcommit 1bf28aad356e3f41cce34027475899972f6d884e[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Oct 22 18:12:23 2019 +0200
+
+    Add some unnecessary stuff
+
+[33mcommit 5b4152dc14a1a7f7955e9a0e570deb7ccd3e4441[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Oct 14 19:35:41 2019 +0200
+
+    start implementation of FTL cases
+
+[33mcommit dce0ea6c757765d7672f3abd0e051dee5880b675[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Oct 14 16:47:33 2019 +0200
+
+    Work on FTL
+
+[33mcommit 42e217a87a0c758cf5c016395971dd8eeee958f7[m
+Author: MEDIU08 <MEDIU08@ETS>
+Date:   Mon Oct 14 13:02:29 2019 +0200
+
+    Start to implement FTLSlot
+
+[33mcommit 8b36ab39bcb8feff22cee058e65b877d147ab791[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Oct 13 12:02:29 2019 +0200
+
+    start with FTL
+
+[33mcommit 455d21a49b99aa39a888f46fbfa929bd671e3fee[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Oct 12 16:33:19 2019 +0200
+
+    implement CornerStones
+
+[33mcommit e39da41404532d63e946088dda7b81a5aa618beb[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Oct 12 15:53:31 2019 +0200
+
+    Fix menu style
+
+[33mcommit 8b08a72c07406c08d24ab8469fe7a42f1aeeb371[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Oct 12 09:15:34 2019 +0200
+
+    Fix white cross
+
+[33mcommit 40f154f4e0f7dcdf3de138b2971cddb624afe898[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Oct 11 20:13:41 2019 +0200
+
+    Fix opimized MoveCollection
+
+[33mcommit f44a1872ed52472d3e740b1a1ab97685b26015c7[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Oct 11 20:08:55 2019 +0200
+
+    Optimize MoveCollection
+
+[33mcommit b68c7c2e9cfc297e05184007c3ec5f1290f0fd8f[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Oct 11 19:59:59 2019 +0200
+
+    Fix move drawing
+
+[33mcommit a9aef920ded33936a6cff9d266ca2224accf1a5b[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Oct 11 17:52:05 2019 +0200
+
+    fix .gitignore
+
+[33mcommit ff0ee8d4a22e78bd55211e745c0a8b68fc2e1ae5[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Oct 11 17:49:46 2019 +0200
+
+    Implement white cross
+
+[33mcommit a8f1e423268fdc2e34904a193fbb202f4f41e4c0[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Oct 11 17:01:30 2019 +0200
+
+    Fix moves and add move shortcuts
+
+[33mcommit caf1db740096132917ac7b4c4219da03bae8046d[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Thu Oct 10 18:33:25 2019 +0200
+
+    Work on white cross
+
+[33mcommit 9d28faeeaa013d00dced525fb2b23f42808fd618[m
+Merge: 5e3c371 46e1ff9
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Oct 9 22:39:51 2019 +0200
+
+    Merge branch 'master' of https://github.com/Baseng0815/Rubinator3000
+
+[33mcommit 5e3c371cf135c2ce55293e0e00470cb5d66eee8d[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Oct 9 22:39:04 2019 +0200
+
+    Working on white cross
+
+[33mcommit 46e1ff9b019f60babb59feb5d01d139f434a3b46[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Wed Oct 9 21:37:49 2019 +0200
+
+    Replaced Console with Log
+
+[33mcommit ed88cf8362e8cbc2a53f7cdf74230e9c50b71fc4[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Oct 8 18:13:54 2019 +0200
+
+    Implement Last Layer Solving
+
+[33mcommit 9e53b201755306419eb2a3b24d1d2880b487184a[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Oct 8 13:10:06 2019 +0200
+
+    Work on Last Layer Solving
+
+[33mcommit d7e2eb567a5239321498d7c8aa87783eb0efc106[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Oct 8 11:21:18 2019 +0200
+
+    Add MoveCollection Parsing
+
+[33mcommit de03791da999230a28a62c364aa2814aa59e37ed[m
+Merge: f1b46e3 fa7f186
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Mon Oct 7 18:06:06 2019 +0200
+
+    Performance increase on animation thread (made into a task)
+
+[33mcommit f1b46e32bad0d7f4b02e9c0c6182e5036d2cec24[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Mon Oct 7 18:05:06 2019 +0200
+
+    Performance increase on animation thread (made into a task)
+
+[33mcommit fa7f18635ad8d38e6259968f0ac43dd861284f2a[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Oct 7 18:01:10 2019 +0200
+
+    Start work on LastLayer Solving
+
+[33mcommit 91989f563d5e407b9cd6cdf2fd55b5cb17f86137[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Oct 7 17:51:14 2019 +0200
+
+    Remove bin and obj
+
+[33mcommit 6cad67607b718e61464ad8f74124ffa6ff2a1e3a[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Oct 7 17:40:02 2019 +0200
+
+    Fix MainWindow Style
+
+[33mcommit 70e53fcdc42e5507ace772c84309b692d184c555[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Mon Oct 7 16:37:40 2019 +0200
+
+    Fixed orange color loss on vec4 cast
+
+[33mcommit f3b9739f05eadcaa2cd224bf3dc0552cda423f97[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Oct 7 15:57:03 2019 +0200
+
+    Fix Scroll Delta
+
+[33mcommit 4e16b7e8dc045c08f7fbd4cf3bd2e3d6ab9574f5[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Oct 7 15:02:40 2019 +0200
+
+    Fix ReadPositions
+
+[33mcommit 14843ae6dee81ab1c8158932d7f2daa9e6939b3e[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Mon Oct 7 14:53:03 2019 +0200
+
+    Fixed decimal point parsing
+
+[33mcommit 8210d1fc900e241e5f874e5b42f5c430e486031e[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Mon Oct 7 14:21:06 2019 +0200
+
+    Tolles Zeug
+
+[33mcommit 84e66de33321c1463455fed853ee7f397459c26f[m
+Merge: ee65118 7a0bd22
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Sat Oct 5 15:56:10 2019 +0200
+
+    color ident. code cleanup
+
+[33mcommit ee651185c9a4bd0afdd697c27117a07836d207d0[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Sat Oct 5 15:55:03 2019 +0200
+
+    color ident. code cleanup
+
+[33mcommit 7a0bd22b6fe986d2c07282a3db747398e3eb8037[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Sat Oct 5 13:42:33 2019 +0200
+
+    Make window context current
+
+[33mcommit 70649c1ca5ba8fd96c0e3adda851b6050460f186[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Sat Oct 5 13:12:57 2019 +0200
+
+    Simplified drawing
+
+[33mcommit 2eede1fcdb031973eae6cb6d7f9c69363bca6587[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Wed Oct 2 14:29:59 2019 +0200
+
+    making the color identifaction work
+
+[33mcommit 9a498c36616584502660e4dd91cd4cc4f4214c88[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Tue Oct 1 15:10:26 2019 +0200
+
+    merge fix
+
+[33mcommit 5de9ec631c4ecc5f921ecb1eb849509b43fbcdf4[m
+Merge: 1fd67df 785bd15
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Mon Sep 30 23:47:32 2019 +0200
+
+    Merge branch 'master' of https://github.com/Baseng0815/Rubinator3000
+
+[33mcommit 1fd67dfca83b42ece9e40924a4b25f88fc7e1bc8[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Mon Sep 30 23:43:52 2019 +0200
+
+    Color Identifaction Fixes 2
+
+[33mcommit 785bd1543ec0bcf0ba0f4e69754e7d1ae0bc0d97[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Mon Sep 30 23:42:52 2019 +0200
+
+    Color Identification Fixes
+
+[33mcommit 729b34b923f9e4317eb69c86c5f99f4ca25bd0ba[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Mon Sep 30 22:02:51 2019 +0200
+
+    Manual Position Adding
+
+[33mcommit fea22dc3c778a6c5d59dddcd8a7ae87aceb8409a[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Mon Sep 30 13:26:00 2019 +0200
+
+    Readding menu
+
+[33mcommit 8dae8edb481811188a36771536c6ab5add0e1021[m
+Merge: 081837e 1490fd6
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Mon Sep 30 13:03:42 2019 +0200
+
+    crossSolver.cs
+
+[33mcommit 081837eff055370bfd380de63493ba871dce2f7b[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Mon Sep 30 12:56:21 2019 +0200
+
+    Gui-Rework
+
+[33mcommit 1490fd69d25a1b968c7299ef2df97c248bdd8fbe[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Sep 30 12:12:29 2019 +0200
+
+    Prepare cross solver debug
+
+[33mcommit 7deb92423935a1bc37dbd8f6172bba56d01b9817[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Sep 29 20:42:25 2019 +0200
+
+    Add animationTime setting
+
+[33mcommit 04891a6b1d98b8a41fe258cdd1c4eff2e50bcf6a[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Sun Sep 29 19:45:11 2019 +0200
+
+    Added more LogStuff
+
+[33mcommit 43375ccb9cc2426ee419d15e468e7cbdfd61c606[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Sep 29 19:23:23 2019 +0200
+
+    Fix merge
+
+[33mcommit e051adead32c1860c477089c289502ddb6830c21[m
+Merge: 04c9776 7d5511e
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Sun Sep 29 18:57:22 2019 +0200
+
+    finished color identification
+
+[33mcommit 04c97765f73023502b549f9a5611ad73ee3d49aa[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Sun Sep 29 18:53:47 2019 +0200
+
+    finisished color identification
+
+[33mcommit 7d5511e6407572d6500de50da3753b44c55b3022[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Sep 29 16:51:31 2019 +0200
+
+    Fix MoveCollection
+
+[33mcommit 6b68c04aaf169a6c446f52853615fd438567a7b3[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Sep 28 17:47:04 2019 +0200
+
+    Finish white cross
+
+[33mcommit 30443bc5ef49d15e70d60b1242a83b9c265c7984[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Sat Sep 28 00:48:36 2019 +0200
+
+    bitmap processing fixes, reduces ram usage
+
+[33mcommit ce454530c736afcbd687b9b3aa5d6460ebbe9c2f[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Fri Sep 27 15:39:01 2019 +0200
+
+    more efficent camera stream
+
+[33mcommit f7878a41e1a70d085a4f6a59314a3340ee9dec4c[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Thu Sep 26 21:51:45 2019 +0200
+
+    color recognition
+
+[33mcommit e056eef8813602e59eeb92038c51682f8bbb1349[m
+Merge: b348c59 16cf16f
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Sep 25 21:55:34 2019 +0200
+
+    Merge branch 'master' of https://github.com/Baseng081s/Rubinator2996
+
+[33mcommit b348c59521b7ef6b1b2a73275cf03e4fc9be8022[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Sep 25 21:39:03 2019 +0200
+
+    Working on white cross
+
+[33mcommit 16cf16f1b90a4004ff2c73f7f96ac2c3e01dc7e0[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Wed Sep 25 20:45:36 2019 +0200
+
+    camera exception handling
+
+[33mcommit 5a20376a2768bea0613257281598d791f4cf6f6e[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Wed Sep 25 20:28:23 2019 +0200
+
+    nextFix
+
+[33mcommit b365079aaefc88ffb7b82cfa9ec600bbf3382025[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Wed Sep 25 20:24:42 2019 +0200
+
+    fix
+
+[33mcommit 2837dbc28dab8fa63cce0eb1908f07f4269aebcc[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Wed Sep 25 17:30:01 2019 +0200
+
+    MainWindow rework
+
+[33mcommit 8173a8b8b7ef0ce0fa5de480e0f98b23cd740a80[m
+Author: C0rr4do <46971128+C0rr4do@users.noreply.github.com>
+Date:   Tue Sep 24 23:39:32 2019 +0200
+
+    Start CubeScan implementation
+
+[33mcommit 71e63c7763528bdda90804b86d8e1a009c087640[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Tue Sep 24 17:21:23 2019 +0200
+
+    Start working on white cross
+
+[33mcommit e2d0f4e8accc66821c1d73c4ea16c95341724d49[m
+Author: MEDIU02 <MEDIU02@ETS>
+Date:   Tue Sep 24 09:35:37 2019 +0200
+
+    Cube constructor
+
+[33mcommit eb47d9f0edef94a85a5aa13921d33623b8208df9[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Sep 21 16:28:28 2019 +0200
+
+    Add compiling references
+
+[33mcommit 1fe5ad761852d0d62f49912e3a8d269878bce28f[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Sep 21 16:19:45 2019 +0200
+
+    Add Arduino communication
+
+[33mcommit 8decbe533bf0abeb14e3de9ff5b595a0d744934e[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Sat Sep 21 15:15:27 2019 +0200
+
+    Removed setState
+
+[33mcommit 0ba612a7329418bfe9ade585496f2531caf72e58[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Sep 20 13:57:35 2019 +0200
+
+    Remove unnecessary code and GUI functions
+
+[33mcommit 70640fa66d38b8b4da0fa5f3a5091683d5b743fc[m
+Merge: 137a122 b3d7502
+Author: PhiGei2000 <46970229+PhiGei2000@users.noreply.github.com>
+Date:   Fri Sep 20 13:32:45 2019 +0200
+
+    Merge pull request #2 from Baseng0815/Solving
+    
+    merge Solving
+
+[33mcommit b3d75026a43ac94baea281ce540feccc09c955d6[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Mon Sep 9 20:40:14 2019 +0200
+
+    Fix some bugs
+
+[33mcommit b421f05bb2097e86dc42384e0c13e57631a9c37b[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Aug 30 16:56:26 2019 +0200
+
+    Start with white cross
+
+[33mcommit 4a11ea59a7ebcc45f3de0eb9e678bffe2c17879d[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Aug 30 15:55:58 2019 +0200
+
+    Implement EdgeStone
+
+[33mcommit a4df9ee256d7fd936727381df42321e0203614c0[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Aug 30 15:30:33 2019 +0200
+
+    Overwork move implementation
+
+[33mcommit 137a122b8b45a947f5ffaf674fc1d5fd78caa901[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Wed Aug 28 21:56:25 2019 +0200
+
+    understanding session
+
+[33mcommit 90cd0ee4ee2cf4e5e7e3bafac303187aff9da4d3[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Wed Aug 28 19:07:02 2019 +0200
+
+    Finished 2d window invalidating on shuffle
+
+[33mcommit 855a5131037f1c1d7d9e0e911c1fd589bb9fbfc0[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Aug 28 18:34:56 2019 +0200
+
+    Work on Undo and Redo
+
+[33mcommit bb16961ecff0e03784e2ce051a8b385f83f34cf2[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Wed Aug 28 17:13:23 2019 +0200
+
+    Fix shuffle rendering in animation thread
+
+[33mcommit f0c7490543f1207253b91f3ee6e95ac879dbabe0[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Aug 28 17:06:52 2019 +0200
+
+    Work on Menu
+
+[33mcommit 5fa30f525ad997db669bd6e1aceaf846a10118a7[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Mon Aug 26 18:01:01 2019 +0200
+
+    Added log stuff, fixed lighting and mainwindow=null bug on log call
+
+[33mcommit 51c79cb775c37e2dd6393889ddc87f88541d9596[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Aug 25 21:26:37 2019 +0200
+
+    Fix Log Bug
+
+[33mcommit bdecdb9d4983db19e799e2eb00c7a6ceacca5419[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Aug 25 11:54:38 2019 +0200
+
+    Implement Log on MainWindow
+
+[33mcommit 2462140fa287d86c4baf995906bd37059797045c[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sun Aug 25 11:43:02 2019 +0200
+
+    Fix Close Bug
+
+[33mcommit 85bae1222895f02b61348d85cf884e948fbca1d6[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Sat Aug 24 23:14:37 2019 +0200
+
+    2D view and view selection finished
+
+[33mcommit 03e8cc691ba9dc207b41af0199a6e7f4f88cf6f2[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Sat Aug 24 19:15:03 2019 +0200
+
+    Finished 2D system, models still todo
+    Cleaned up some transformations and naming
+    Created flat shaders
+
+[33mcommit 10cae07360b4a429978b5ce744ca4223c4dd3ec2[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Aug 24 16:16:38 2019 +0200
+
+    Fix Merge
+
+[33mcommit 5fcf46ce00f5ff2ff6278d2677e1c93f29f1fca7[m
+Merge: f7c4678 a1ff0f1
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Sat Aug 24 15:57:04 2019 +0200
+
+    Merge branch 'master' of https://github.com/Baseng0815/Rubinator3000
+
+[33mcommit f7c467857e85fe93ac203acad25054bab2acb292[m
+Author: Baseng0815 <1shedex2@gmail.com>
+Date:   Sat Aug 24 15:53:03 2019 +0200
+
+    Graphics and events ported to GLControl
+
+[33mcommit a1ff0f1e9c63bf41519e199db3c8be832814cbf9[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Sat Aug 24 15:07:37 2019 +0200
+
+    Fix .csproj
+
+[33mcommit dab972ea15a13e9b8a2c44392d6ecdf38e180377[m
+Merge: 7d325c2 41e50d6
+Author: PhiGei2000 <46970229+PhiGei2000@users.noreply.github.com>
+Date:   Sat Aug 24 14:20:45 2019 +0200
+
+    Merge pull request #1 from Baseng0815/NetFramework
+    
+    Porting to Net Framework
+
+[33mcommit 41e50d6a9541d381ea8367d83d7c559241fe6270[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Aug 23 21:43:17 2019 +0200
+
+    Porting to .Net Framework 4.7.2
+
+[33mcommit c0b839c6d0e0351edb996b766f4b0bab15ad07de[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Aug 23 21:36:19 2019 +0200
+
+    Proting to .Net Framework
+
+[33mcommit 7d325c2c72650135839d041a5ca93515784e4799[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Fri Aug 23 17:41:38 2019 +0200
+
+    Add lost Files
+
+[33mcommit bfeda9923566882390ce53a3140c844f3952f1eb[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Thu Aug 22 17:36:52 2019 +0200
+
+    Prepare Main Window for OpenGL
+
+[33mcommit 13131741082b60961194d0d2700cfb4a6a7cdeca[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Thu Aug 22 16:48:47 2019 +0200
+
+    Add Files From Rubinator Project
+
+[33mcommit a6b82a124599f74d191da2040b0fb26e57b03023[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Aug 21 16:59:34 2019 +0200
+
+    Projektdateien hinzufügen.
+
+[33mcommit 7ff217d1719be7678433c60d74e5614fa19a368e[m
+Author: Philipp Geil <Philipp-Geil@outlook.com>
+Date:   Wed Aug 21 16:59:30 2019 +0200
+
+    GITIGNORE und GITATTRIBUTES hinzufügen.

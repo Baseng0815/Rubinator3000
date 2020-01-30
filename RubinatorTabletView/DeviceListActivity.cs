@@ -15,8 +15,8 @@ namespace RubinatorTabletView {
 
     [Activity(Label = "@string/activity_device_list_name")]
     public class DeviceListActivity : Activity {
-        const string TAG = "DeviceListActivity";
         public const string EXTRA_DEVICE_ADDRESS = "device_address";
+        public const string EXTRA_DEVICE_NAME = "device_name";
 
         BluetoothAdapter adapter;
         static ArrayAdapter<string> newDevicesArrayAdapter;
@@ -45,7 +45,7 @@ namespace RubinatorTabletView {
             pairedListView.Adapter = pairedDevicesArrayAdapter;
             pairedListView.ItemClick += DeviceListView_ItemClick;
 
-            var newListView = FindViewById<ListView>(Resource.Id.paired_devices);
+            var newListView = FindViewById<ListView>(Resource.Id.new_devices);
             newListView.Adapter = newDevicesArrayAdapter;
             newListView.ItemClick += DeviceListView_ItemClick;
 
@@ -72,6 +72,14 @@ namespace RubinatorTabletView {
             }
         }
 
+        protected override void OnDestroy() {
+            base.OnDestroy();
+
+            if (adapter != null)
+                adapter.CancelDiscovery();
+            UnregisterReceiver(receiver);
+        }
+
         void DoDiscovery() {
             SetProgressBarIndeterminateVisibility(true);
             SetTitle(Resource.String.scanning);
@@ -89,9 +97,11 @@ namespace RubinatorTabletView {
 
             var info = ((TextView)e.View).Text;
             var address = info.Substring(info.Length - 17);
+            var name = info.Substring(0, info.Length - 18);
 
             var intent = new Intent();
             intent.PutExtra(EXTRA_DEVICE_ADDRESS, address);
+            intent.PutExtra(EXTRA_DEVICE_NAME, name);
 
             SetResult(Result.Ok, intent);
             Finish();

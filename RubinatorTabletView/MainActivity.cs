@@ -7,6 +7,7 @@ using Android.Support.Design.Widget;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
+using Xamarin.Essentials;
 
 namespace RubinatorTabletView {
 
@@ -42,7 +43,7 @@ namespace RubinatorTabletView {
             ControlHandler.AddButtonEvents(layout_controls);
 
             layout_controls.FindViewById<Button>(Resource.Id.button_pairBluetooth).Click += (sender, e) => {
-                ControlHandler.Connect(this);
+                ControlHandler.GetAddress(this);
             };
 
             // Load references to views of inside the layouts
@@ -56,7 +57,31 @@ namespace RubinatorTabletView {
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data) {
+            base.OnActivityResult(requestCode, resultCode, data);
 
+            if (resultCode == Result.Ok) {
+                string address = data.Extras.GetString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+                string name = data.Extras.GetString(DeviceListActivity.EXTRA_DEVICE_NAME);
+
+                Android.App.AlertDialog.Builder alert = new Android.App.AlertDialog.Builder(this);
+                alert.SetTitle("Confirm connection");
+                alert.SetMessage("Connect to device '" + name + "' ?");
+                alert.SetPositiveButton("OK", (c, ev) => {
+                    if (!ControlHandler.TryConnect(address)) {
+                        Android.App.AlertDialog.Builder connectionFailedAlert = new Android.App.AlertDialog.Builder(this);
+                        connectionFailedAlert.SetTitle("Error");
+                        connectionFailedAlert.SetMessage("Failed to connect to device '" + name + "'");
+
+                        Dialog dialog = connectionFailedAlert.Create();
+                        dialog.Show();
+                    }
+                });
+
+                alert.SetNegativeButton("CANCEL", (c, ev) => { /* do nothing */ });
+
+                Dialog dialog = alert.Create();
+                dialog.Show();
+            }
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults) {

@@ -10,10 +10,11 @@ using System.Windows.Controls;
 
 namespace Rubinator3000.Communication {
     // synchronizes sending moves to the arduino and redrawing the cube
-    // wraps arduino
+    // wraps arduino and bluetooth server
     public class MoveSynchronizer {
         private Arduino arduino = null;
-        private TextBox moveHistory;
+        private readonly TextBox moveHistory;
+        private BluetoothServer bluetoothServer;
 
         public MoveSynchronizer(TextBox moveHistory) {
             this.moveHistory = moveHistory;
@@ -28,7 +29,13 @@ namespace Rubinator3000.Communication {
         }
 
         public void DisconnectArduino() {
-            arduino.Disconnect();
+            if (arduino != null)
+                arduino.Disconnect();
+        }
+
+        public void SetupBluetooth() {
+            bluetoothServer = new BluetoothServer();
+            bluetoothServer.StartListening();
         }
 
         public Task RunAsync(Move move) {

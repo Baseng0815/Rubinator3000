@@ -10,10 +10,18 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Bluetooth;
+using System.IO;
+using Java.Util;
 
 namespace RubinatorTabletView {
     public static class ControlHandler {
         public static BluetoothDevice device;
+
+        private static BluetoothSocket socket;
+        private static BluetoothAdapter adapter;
+        private static Stream outStream;
+
+        private static readonly UUID SERVICE_UUID = UUID.FromString("053eaaaf-f981-4b64-a39e-ea4f5f44bb57");
 
         public static void AddButtonEvents(TableLayout controlLayout) {
             controlLayout.FindViewById<Button>(Resource.Id.button_l).Click += LeftButtonPressed;
@@ -30,21 +38,42 @@ namespace RubinatorTabletView {
             controlLayout.FindViewById<Button>(Resource.Id.button_di).Click += DowniButtonPressed;
         }
 
-        public static void Connect(Activity activity) {
-            var intent = new Intent(activity, typeof(DeviceListActivity));
-            activity.StartActivityForResult(intent, 2);
+        /// <summary>
+        /// Open a new activity from which you can select the device
+        /// </summary>
+        /// <param name="mainActivity">The main activity from which to launch the new one</param>
+        public static void GetAddress(Activity mainActivity) {
+            var intent = new Intent(mainActivity, typeof(DeviceListActivity));
+            mainActivity.StartActivityForResult(intent, 2);
+        }
 
-            /*AlertDialog.Builder alert = new AlertDialog.Builder(activity);
-            alert.SetTitle("Connect to device");
-            alert.SetMessage(intent.Extras.GetString(DeviceListActivity.EXTRA_DEVICE_ADDRESS));
+        public static bool TryConnect(string address) {
+            if (adapter == null)
+                adapter = BluetoothAdapter.DefaultAdapter;
 
-            Dialog dialog = alert.Create();
-            dialog.Show();
-            */
+            try {
+                var device = adapter.GetRemoteDevice(address);
+                socket = device.CreateInsecureRfcommSocketToServiceRecord(SERVICE_UUID);
+                socket.Connect();
+            } catch (Exception e) {
+                return false;
+            }
+
+            outStream = socket.OutputStream;
+
+            return true;
+        }
+
+        public static void Write(byte[] buffer) {
+            try {
+                outStream.Write(buffer, 0, buffer.Length);
+            } catch (Exception e) {
+                return;
+            }
         }
 
         private static void LeftButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x1 });
         }
         private static void LeftiButtonPressed(object sender, EventArgs e) {
 
