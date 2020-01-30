@@ -115,6 +115,8 @@
     <AndroidAsset Include="Assets\Shaders\FlatShader.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </AndroidAsset>
+    <AndroidAsset Include="Assets\Shaders\DebugShader.vert" />
+    <AndroidAsset Include="Assets\Shaders\DebugShader.frag" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml">
       <SubType>Designer</SubType>

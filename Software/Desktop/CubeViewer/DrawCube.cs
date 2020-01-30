@@ -254,7 +254,7 @@ namespace Rubinator3000 {
                     ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
                     ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
 
-                    GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, (int)6);
+                    GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, 6);
                 }
 
                 // draw flat

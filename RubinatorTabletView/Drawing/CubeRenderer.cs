@@ -13,6 +13,8 @@ using Android.Widget;
 using OpenTK;
 using RubinatorCore;
 
+using OpenTK.Graphics.ES30;
+
 namespace RubinatorTabletView {
     // State change between the internal cube representation and the draw cube
     // will take place through animated moves containing the move, endstate and animated time
@@ -152,6 +154,7 @@ namespace RubinatorTabletView {
 
             // texture units to sampler
             for (int i = 0; i < 2; i++)
+                //TODO: remove error
                 cubeShader.Upload(string.Format("texture{0}", i.ToString()), i);
 
             currentState = new Cube();
@@ -252,9 +255,12 @@ namespace RubinatorTabletView {
                     }
 
                     // access time for a dict is close to O(1), so no significant performance loss
+                    ResourceManager.LoadedModels["cubePlane"].BindVao();
                     ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
                     ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
-                    ResourceManager.LoadedModels["cubePlane"].Draw(cubeShader);
+
+                    GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, 6);
+
                 }
 
                 // draw flat
@@ -266,15 +272,17 @@ namespace RubinatorTabletView {
                 for (CubeFace face = 0; (int)face < 6; face++) {
                     for (int tile = 0; tile < 9; tile++) {
                         int ind = (int)face * 9 + tile;
-                        flatShader.Upload(string.Format("modelMatrix[{0}]", ind), FlatTransformations.Transformations[(int)face, tile].GetMatrix());
+                        //flatShader.Upload(string.Format("modelMatrix[{0}]", ind), FlatTransformations.Transformations[(int)face, tile].GetMatrix());
 
                         CubeColor color = data[(int)face][tile];
                         flatShader.Upload(string.Format("color[{0}]", ind), renderColors[(int)color]);
                     }
                 }
 
+                ResourceManager.LoadedModels["flatPlane"].BindVao();
                 ResourceManager.LoadedTextures["flatBlendFrame"].Bind(0);
-                ResourceManager.LoadedModels["flatPlane"].Draw(flatShader);
+
+                GL.DrawElementsInstanced(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, (IntPtr)0, 54);
             }
         }
     }
