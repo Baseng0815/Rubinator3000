@@ -11,7 +11,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using OpenTK;
-using OpenTK.Graphics.ES30;
+using OpenTK.Graphics.ES31;
 using OpenTK.Platform.Android;
 
 namespace RubinatorTabletView {

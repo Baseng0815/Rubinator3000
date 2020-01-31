@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using System.Drawing;
 using System.Drawing.Imaging;
-using OpenTK.Graphics.ES30;
+using OpenTK.Graphics.ES31;
 using RubinatorCore;
 using Android.App;
 using Android.Graphics;
@@ -22,10 +22,11 @@ namespace RubinatorTabletView {
             texture = GL.GenTexture();
             GL.BindTexture(TextureTarget.Texture2D, texture);
 
-            GL.CompressedTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width, bitmap.Height, 0,
-                bitmap.ByteCount, bitmap.LockPixels());
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bitmap.Width, bitmap.Height, 0,
+                OpenTK.Graphics.ES31.PixelFormat.Rgba, PixelType.UnsignedByte, bitmap.LockPixels());            
 
             bitmap.UnlockPixels();
+            bitmap.Dispose();
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);

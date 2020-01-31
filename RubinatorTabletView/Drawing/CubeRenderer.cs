@@ -13,7 +13,7 @@ using Android.Widget;
 using OpenTK;
 using RubinatorCore;
 
-using OpenTK.Graphics.ES30;
+using OpenTK.Graphics.ES31;
 
 namespace RubinatorTabletView {
     // State change between the internal cube representation and the draw cube
@@ -155,7 +155,8 @@ namespace RubinatorTabletView {
             // texture units to sampler
             for (int i = 0; i < 2; i++)
                 //TODO: remove error
-                cubeShader.Upload(string.Format("texture{0}", i.ToString()), i);
+                cubeShader.UpoadSampler(string.Format("texture{0}", i.ToString()), i);
+            var error = GL.GetError();
 
             currentState = new Cube();
 
@@ -251,7 +252,7 @@ namespace RubinatorTabletView {
                         var model = CubeTransformations.Transformations[(int)face].GetMatrix() * cuboidMat * rotMat;
 
                         cubeShader.Upload(string.Format("modelMatrix[{0}]", ((int)face).ToString()), model);
-                        cubeShader.Upload("cubeModelMatrix", Transformation.GetMatrix());
+                        cubeShader.Upload("cubeModelMatrix", Transformation.GetMatrix());                
                     }
 
                     // access time for a dict is close to O(1), so no significant performance loss
@@ -259,10 +260,8 @@ namespace RubinatorTabletView {
                     ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
                     ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
 
-                    GL.DrawArraysInstanced(PrimitiveType.Triangles, 0, 6, 6);
-
+                    GL.DrawArraysInstanced(All.Triangles, 0, 6, 6);                    
                 }
-
                 // draw flat
             }
             else if (DisplayMode == CubeDisplayMode.FLAT) {

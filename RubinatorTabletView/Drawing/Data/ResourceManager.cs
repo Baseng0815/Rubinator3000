@@ -15,7 +15,7 @@ namespace RubinatorTabletView
 
         private static void InitCubeData()
         {
-            LoadedTextures.Add("cubeBlendFrame", new Texture("Textures/BlendFrame.png"));
+            LoadedTextures.Add("cubeBlendFrame", new Texture("Textures/BlendFrame.png"));            
             LoadedTextures.Add("cubeBumpMap", new Texture("Textures/NormalMap1.png"));            
 
             // geometry
