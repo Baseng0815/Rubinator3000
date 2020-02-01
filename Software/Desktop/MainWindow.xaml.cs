@@ -43,6 +43,8 @@ namespace Rubinator3000 {
         private ReadPositionDialog readPositionDialog;
         public static CubeColorDialog cubeColorDialog;
 
+        public static CancellationTokenSource ctSource = new CancellationTokenSource();
+
         public MainWindow() {
             InitializeComponent();
 

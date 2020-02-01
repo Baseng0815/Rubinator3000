@@ -7,6 +7,8 @@ using Android.Support.Design.Widget;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
+using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 
 namespace RubinatorTabletView {
@@ -67,14 +69,16 @@ namespace RubinatorTabletView {
                 alert.SetTitle("Confirm connection");
                 alert.SetMessage("Connect to device '" + name + "' ?");
                 alert.SetPositiveButton("OK", (c, ev) => {
-                    if (!ControlHandler.TryConnect(address)) {
-                        Android.App.AlertDialog.Builder connectionFailedAlert = new Android.App.AlertDialog.Builder(this);
-                        connectionFailedAlert.SetTitle("Error");
-                        connectionFailedAlert.SetMessage("Failed to connect to device '" + name + "'");
+                    Task.Run(() => RunOnUiThread(() => {
+                        if (!ControlHandler.TryConnect(address)) {
+                            Android.App.AlertDialog.Builder connectionFailedAlert = new Android.App.AlertDialog.Builder(this);
+                            connectionFailedAlert.SetTitle("Error");
+                            connectionFailedAlert.SetMessage("Failed to connect to device '" + name + "'");
 
-                        Dialog dialog = connectionFailedAlert.Create();
-                        dialog.Show();
-                    }
+                            Dialog dialog = connectionFailedAlert.Create();
+                            dialog.Show();
+                        }
+                    }));
                 });
 
                 alert.SetNegativeButton("CANCEL", (c, ev) => { /* do nothing */ });
