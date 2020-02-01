@@ -41,7 +41,7 @@ namespace RubinatorTabletView {
             GL.ClearColor(OpenTK.Graphics.Color4.Black);
             GL.Enable(EnableCap.DepthTest);
 
-            view = new View(Width, Height, Settings.CameraFov, Settings.CameraDistance);            
+            view = new View(Width, Height, Settings.CameraFov, Settings.CameraDistance);
 
             Vector3[] renderColors = new Vector3[]
             {
@@ -58,6 +58,49 @@ namespace RubinatorTabletView {
 
             renderer = new CubeRenderer();
             renderer.Init(renderColors);
+            renderer.Transformation.Rotation = new Vector3(45, 0, 0);
+
+            Touch += CubeView_Touch;
+        }
+
+        private void CubeView_Touch(object sender, TouchEventArgs e) {
+            switch (e.Event.Action & MotionEventActions.Mask) {
+                case MotionEventActions.Down:
+                    prevTouchX = e.Event.GetX();
+                    prevTouchY = e.Event.GetX(); ;
+                    break;
+                case MotionEventActions.Up:
+                    prevTouchX = 0;
+                    prevTouchY = 0;
+                    break;
+                case MotionEventActions.Move:
+                    float x = e.Event.GetX();
+                    float y = e.Event.GetY();
+
+                    float dx = x - prevTouchX;
+                    float dy = y - prevTouchY;
+
+                    prevTouchX = x;
+                    prevTouchY = y;
+
+                    var cubeRotation = renderer.Transformation.Rotation;
+
+                    // X ^= pitch
+                    // Y ^= yaw
+                    if (cubeRotation.X % 360 < 90 || cubeRotation.X % 360 < -90)
+                        cubeRotation.Y += dx * Settings.TouchSensitivity;
+                    else
+                        cubeRotation.Y -= dx * Settings.TouchSensitivity;
+
+                    cubeRotation.X += dy * Settings.TouchSensitivity;
+
+                    renderer.Transformation.Rotation = cubeRotation;
+
+                    Invalidate();
+                    break;
+                default:
+                    break;
+            }
         }
 
         protected override void CreateFrameBuffer() {
@@ -77,7 +120,7 @@ namespace RubinatorTabletView {
 
             renderer.Draw(view);
 
-            SwapBuffers();         
+            SwapBuffers();
         }
 
         protected override void OnResize(EventArgs e) {
@@ -87,33 +130,7 @@ namespace RubinatorTabletView {
 
             if (view != null)
                 view.SetSize(Width, Height);
-        }
-
-        public override bool OnTouchEvent(MotionEvent e) {
-            if (e.Action == MotionEventActions.Down) {
-                prevTouchX = e.GetX();
-                prevTouchY = e.GetY();
-            }
-            else if (e.Action == MotionEventActions.Move) {
-                float dx = e.GetX() - prevTouchX;
-                float dy = e.GetY() - prevTouchY;
-
-                var cubeRotation = renderer.Transformation.Rotation;
-
-                // X ^= pitch
-                // Y ^= yaw
-                if (cubeRotation.X % 360 < 90 || cubeRotation.X % 360 < -90)
-                    cubeRotation.Y += dx * Settings.TouchSensitivity;
-                else
-                    cubeRotation.Y -= dx * Settings.TouchSensitivity;
-
-                cubeRotation.X += dy * Settings.TouchSensitivity;
-
-                Invalidate();
-            }
-
-            return base.OnTouchEvent(e);
-        }
+        }        
 
         private readonly float[] vertices = new float[] {
             0.5f, -0.5f, 0.0f,
