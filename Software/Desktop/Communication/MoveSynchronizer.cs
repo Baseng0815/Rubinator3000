@@ -35,7 +35,7 @@ namespace Rubinator3000.Communication {
 
         public void SetupBluetooth() {
             bluetoothServer = new BluetoothServer();
-            bluetoothServer.StartListening();
+            bluetoothServer.StartDiscovering();
         }
 
         public Task RunAsync(Move move) {

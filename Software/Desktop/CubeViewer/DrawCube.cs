@@ -44,8 +44,6 @@ namespace Rubinator3000 {
         private static Vector3[] renderColors;
 
         private static Thread animateMovesThread;
-        private static bool running = false;
-
         public static TRSTransformation Transformation;
         public static bool AnimateMoves = true;
 
@@ -84,7 +82,7 @@ namespace Rubinator3000 {
         private static void AnimateMovesThread() {
             Log.LogMessage("Animated Thread start");
 
-            while (moveQueue.Count > 0 && running) {
+            while (moveQueue.Count > 0) {
                 //Log.LogMessage("Animated move executing in animated move task");
                 AnimatedMove animMove;
 
@@ -139,8 +137,6 @@ namespace Rubinator3000 {
                     CubeViewer.Window.Invalidate();
                 }
             }
-
-            running = false;
         }
 
         public static void Init(Vector3[] _renderColors) {
@@ -169,14 +165,6 @@ namespace Rubinator3000 {
             moveQueue = new Queue<AnimatedMove>();            
         }
 
-        public static void StopDrawing() {
-            running = false;
-            if (animateMovesThread != null) {
-
-                animateMovesThread.Join();
-            }
-        }
-
         /// <summary>
         /// Adds the end state to the queue
         /// </summary>
@@ -196,8 +184,15 @@ namespace Rubinator3000 {
         }
 
         private static void KeepThreadAlive() {
-            if (!running) {
-                running = true;
+            bool renew = false;
+            if (animateMovesThread == null) {
+                renew = true;
+            } else {
+                if (animateMovesThread.ThreadState != System.Threading.ThreadState.Running)
+                    renew = true;
+            }
+
+            if (renew) {
                 animateMovesThread = new Thread(AnimateMovesThread);
                 animateMovesThread.Start();
             }

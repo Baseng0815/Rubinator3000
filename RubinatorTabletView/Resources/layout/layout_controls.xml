@@ -98,6 +98,13 @@
         android:layout_height="match_parent"
         android:text="@string/button_pairBluetooth"
         android:id="@+id/button_pairBluetooth"/>
+        <TextView
+            android:minWidth="30px"
+            android:minHeight="30px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/bluetooth_disconnected"
+            android:id="@+id/textView1" />
     </TableRow>
 
 </TableLayout>

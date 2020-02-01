@@ -21,7 +21,7 @@ namespace Rubinator3000 {
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
             Log.LogMessage("Shutting down..");
-            DrawCube.StopDrawing();
+            ctSource.Cancel();
 
             for (int i = 0; i < webCamControls.Length; i++) {
 
