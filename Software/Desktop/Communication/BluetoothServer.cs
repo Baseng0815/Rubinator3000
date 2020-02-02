@@ -12,9 +12,17 @@ namespace Rubinator3000.Communication {
     public class BluetoothServer {
         private static readonly Guid SERVICE_UUID = new Guid("053eaaaf-f981-4b64-a39e-ea4f5f44bb57");
 
-        private static Stream inputStream;
-        private static BluetoothClient client;
-        private static BluetoothListener listener;
+        private Stream inputStream;
+        private BluetoothClient client;
+        private readonly BluetoothListener listener;
+
+        public event EventHandler<byte> DataReceived;
+
+        protected void OnDataReceived(byte data) {
+            EventHandler<byte> handler = DataReceived;
+            if (handler != null)
+                handler(this, data);
+        }
 
         private void ReceiveDataThread() {
             Log.LogMessage("Start receiving bluetooth data...");
@@ -23,8 +31,8 @@ namespace Rubinator3000.Communication {
 
             while (!MainWindow.ctSource.IsCancellationRequested) {
                 try {
-                    int content = reader.Read();
-                    Log.LogMessage("Bluetooth data received: " + content.ToString());
+                    byte content = Convert.ToByte(reader.Read());
+                    OnDataReceived(content);
                 } catch (Exception e) {
                     Log.LogMessage(e.Message);
                 }
@@ -36,7 +44,7 @@ namespace Rubinator3000.Communication {
         }
 
         /// <summary>
-        /// Discovers the device to connect and receives data
+        /// Discovers the device to connect to and receives data
         /// </summary>
         public void StartDiscovering() {
             Task.Run(() => {

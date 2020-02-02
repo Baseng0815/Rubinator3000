@@ -72,41 +72,42 @@ namespace RubinatorTabletView {
             }
         }
 
+        // same codes as specified in RubinatorCommunicationProtocol.txt
         private static void LeftButtonPressed(object sender, EventArgs e) {
-            Write(new byte[] { 0x1 });
+            Write(new byte[] { 0x02 });
         }
         private static void LeftiButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x03 });
         }
         private static void RightButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x0A });
         }
         private static void RightiButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x0B });
         }
         private static void FrontButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x06 });
         }
         private static void FrontiButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x07 });
         }
         private static void BackButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x0C });
         }
         private static void BackiButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x0D });
         }
         private static void UpButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x04});
         }
         private static void UpiButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x05 });
         }
         private static void DownButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x08 });
         }
         private static void DowniButtonPressed(object sender, EventArgs e) {
-
+            Write(new byte[] { 0x09 });
         }
     }
 }

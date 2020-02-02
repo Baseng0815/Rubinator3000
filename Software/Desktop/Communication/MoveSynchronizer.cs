@@ -16,6 +16,12 @@ namespace Rubinator3000.Communication {
         private readonly TextBox moveHistory;
         private BluetoothServer bluetoothServer;
 
+        private void HandleBluetoothMove(byte moveByte) {
+            CubeFace face = (CubeFace)((moveByte >> 1) - 1);
+            int count = (moveByte & 0x01) == 1 ? -1 : 1;
+            RunAsync(new Move(face, count));
+        }
+
         public MoveSynchronizer(TextBox moveHistory) {
             this.moveHistory = moveHistory;
         }
@@ -35,6 +41,12 @@ namespace Rubinator3000.Communication {
 
         public void SetupBluetooth() {
             bluetoothServer = new BluetoothServer();
+
+            bluetoothServer.DataReceived += (obj, data) => {
+                HandleBluetoothMove(data);
+                Log.LogMessage("Bluetooth data received: " + data);
+            };
+
             bluetoothServer.StartDiscovering();
         }
 
@@ -60,7 +72,7 @@ namespace Rubinator3000.Communication {
 
         public Task RunAsync(MoveCollection moves) {
             return Task.Run(delegate {
-                bool confirmationNeeded = true;                
+                bool confirmationNeeded = true;
 
                 for (int i = 0; i < moves.Count; i++) {
                     bool multiTurn = false;

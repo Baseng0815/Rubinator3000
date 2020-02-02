@@ -8,7 +8,7 @@ using RubinatorCore.Solving;
 
 namespace Rubinator3000 {
     public abstract class Arduino : IDisposable {
-        public abstract void SendMove(Move move);        
+        public abstract void SendMove(Move move);
         public abstract void SendMultiTurnMove(Move move1, Move move2);
 
         public abstract void Dispose();
