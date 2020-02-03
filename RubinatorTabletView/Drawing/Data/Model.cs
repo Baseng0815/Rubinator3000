@@ -48,22 +48,8 @@ namespace RubinatorTabletView {
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(vertices[0]), offset);
             offset += Marshal.SizeOf(vertices[0].Position);
 
-            // normal
-            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(vertices[0]), offset);
-            offset += Marshal.SizeOf(vertices[0].Normal);
-
             // tex coord
-            GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(vertices[0]), offset);
-            offset += Marshal.SizeOf(vertices[0].TexCoord);
-
-            if (useTangentSpace) {
-                // tangent
-                GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(vertices[0]), offset);
-                offset += Marshal.SizeOf(vertices[0].Tangent);
-
-                // bitangent
-                GL.VertexAttribPointer(4, 3, VertexAttribPointerType.Float, false, Marshal.SizeOf(vertices[0]), offset);
-            }
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, Marshal.SizeOf(vertices[0]), offset);
         }
 
         public void BindVao() {

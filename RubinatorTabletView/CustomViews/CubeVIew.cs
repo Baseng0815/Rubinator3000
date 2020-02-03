@@ -24,7 +24,6 @@ namespace RubinatorTabletView {
 
         private float prevTouchX;
         private float prevTouchY;
-        private bool firstTouch = true;
 
         public CubeView(Context context) : base(context) {
 
@@ -65,42 +64,36 @@ namespace RubinatorTabletView {
         }
 
         private void CubeView_Touch(object sender, TouchEventArgs e) {
-            if ((e.Event.Action & MotionEventActions.Mask) == MotionEventActions.Move) {
-                if (firstTouch) {
-                    prevTouchX = e.Event.GetX();
-                    prevTouchY = e.Event.GetY();
-                    firstTouch = false;
-                }
-                else {
-                    float x = e.Event.GetX();
-                    float y = e.Event.GetY();
-
-                    float dx = x - prevTouchX;
-                    float dy = y - prevTouchY;
-
-                    prevTouchX = x;
-                    prevTouchY = y;
-
-                    var cubeRotation = renderer.Transformation.Rotation;
-
-                    // X ^= pitch
-                    // Y ^= yaw
-                    if (cubeRotation.X < 90 || cubeRotation.X > 270)
-                        cubeRotation.Y += dx * Settings.TouchSensitivity;
-                    else
-                        cubeRotation.Y -= dx * Settings.TouchSensitivity;
-
-                    cubeRotation.X += dy * Settings.TouchSensitivity;
-                    cubeRotation.X = (cubeRotation.X + 360) % 360;
-                    cubeRotation.Y = (cubeRotation.Y + 360) % 360;
-
-
-                    renderer.Transformation.Rotation = cubeRotation;
-                    Invalidate();
-                }
+            if ((e.Event.Action & MotionEventActions.Mask) == MotionEventActions.Down) {
+                prevTouchX = e.Event.GetX();
+                prevTouchY = e.Event.GetY();
             }
-            else if((e.Event.Action & MotionEventActions.Mask) == MotionEventActions.Up) {
-                firstTouch = true;
+            if ((e.Event.Action & MotionEventActions.Mask) == MotionEventActions.Move) {
+                float x = e.Event.GetX();
+                float y = e.Event.GetY();
+
+                float dx = x - prevTouchX;
+                float dy = y - prevTouchY;
+
+                prevTouchX = x;
+                prevTouchY = y;
+
+                var cubeRotation = renderer.Transformation.Rotation;
+
+                // X ^= pitch
+                // Y ^= yaw
+                if (cubeRotation.X < 90 || cubeRotation.X > 270)
+                    cubeRotation.Y += dx * Settings.TouchSensitivity;
+                else
+                    cubeRotation.Y -= dx * Settings.TouchSensitivity;
+
+                cubeRotation.X += dy * Settings.TouchSensitivity;
+                cubeRotation.X = (cubeRotation.X + 360) % 360;
+                cubeRotation.Y = (cubeRotation.Y + 360) % 360;
+
+
+                renderer.Transformation.Rotation = cubeRotation;
+                Invalidate();
             }
         }
 

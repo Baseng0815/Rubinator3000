@@ -35,52 +35,6 @@ namespace RubinatorTabletView
                 new Vector2(0, 0)
             };
 
-            Vector3 normal = new Vector3(0, 1, 0);
-
-            // calculate tangent/bitangent vectors of both triangles
-            // taken from https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-            Vector3 tangent1, bitangent1;
-            Vector3 tangent2, bitangent2;
-
-            // triangle 1
-            // ----------
-            Vector3 edge1 = positions[1] - positions[0];
-            Vector3 edge2 = positions[2] - positions[0];
-            Vector2 deltaUV1 = texCoords[1] - texCoords[0];
-            Vector2 deltaUV2 = texCoords[2] - texCoords[0];
-
-            float f = 1.0f / (deltaUV1.X * deltaUV2.Y - deltaUV2.X * deltaUV1.Y);
-
-            tangent1.X = f * (deltaUV2.Y * edge1.X - deltaUV1.Y * edge2.X);
-            tangent1.Y = f * (deltaUV2.Y * edge1.Y - deltaUV1.Y * edge2.Y);
-            tangent1.Z = f * (deltaUV2.Y * edge1.Z - deltaUV1.Y * edge2.Z);
-            tangent1.Normalize();
-
-            bitangent1.X = f * (-deltaUV2.X * edge1.X + deltaUV1.X * edge2.X);
-            bitangent1.Y = f * (-deltaUV2.X * edge1.Y + deltaUV1.X * edge2.Y);
-            bitangent1.Z = f * (-deltaUV2.X * edge1.Z + deltaUV1.X * edge2.Z);
-            bitangent1.Normalize();
-
-            // triangle 2
-            // ----------
-            edge1 = positions[2] - positions[0];
-            edge2 = positions[3] - positions[0];
-            deltaUV1 = texCoords[2] - texCoords[0];
-            deltaUV2 = texCoords[3] - texCoords[0];
-
-            f = 1.0f / (deltaUV1.X * deltaUV2.Y - deltaUV2.X * deltaUV1.Y);
-
-            tangent2.X = f * (deltaUV2.Y * edge1.X - deltaUV1.Y * edge2.X);
-            tangent2.Y = f * (deltaUV2.Y * edge1.Y - deltaUV1.Y * edge2.Y);
-            tangent2.Z = f * (deltaUV2.Y * edge1.Z - deltaUV1.Y * edge2.Z);
-            tangent2.Normalize();
-
-
-            bitangent2.X = f * (-deltaUV2.X * edge1.X + deltaUV1.X * edge2.X);
-            bitangent2.Y = f * (-deltaUV2.X * edge1.Y + deltaUV1.X * edge2.Y);
-            bitangent2.Z = f * (-deltaUV2.X * edge1.Z + deltaUV1.X * edge2.Z);
-            bitangent2.Normalize();
-
             // indexed drawing is not used
             int[] indices = new int[]
             {
@@ -91,12 +45,12 @@ namespace RubinatorTabletView
             for (int i = 0; i < 6; i++)
             {
                 if (i < 3)
-                    vertices[i] = new Vertex(positions[indices[i]], normal, texCoords[indices[i]], tangent1, bitangent1);
+                    vertices[i] = new Vertex(positions[indices[i]], texCoords[indices[i]]);
                 else
-                    vertices[i] = new Vertex(positions[indices[i]], normal, texCoords[indices[i]], tangent2, bitangent2);
+                    vertices[i] = new Vertex(positions[indices[i]], texCoords[indices[i]]);
             }
 
-            LoadedModels.Add("cubePlane", new Model(vertices, true));         
+            LoadedModels.Add("cubePlane", new Model(vertices, true));
         }
 
         private static void InitFlatData()
