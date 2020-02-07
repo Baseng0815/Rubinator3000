@@ -56,11 +56,8 @@ namespace RubinatorCore.Solving {
                     }
                 }
 
-                DoMoves(minMoves);
-                Log.LogMessage($"Pair {unsolvedPairs[pairIndex].Edge.ToString()} " + (unsolvedPairs[pairIndex].Solved ? "solved" : "not Solved"));
-            }
-
-            Log.LogMessage(Solved ? "F2L gelöst" : "F2L nicht gelöst");
+                DoMoves(minMoves);                
+            }            
         }
 
         public override Task SolveCubeAsync() {

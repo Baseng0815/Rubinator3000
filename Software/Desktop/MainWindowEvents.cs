@@ -67,8 +67,8 @@ namespace Rubinator3000 {
         private async void ShuffleCube() {
             Random rnd = new Random();
 
-            MoveCollection shuffleMoves = cube.GetShuffleMoves(rnd.Next(5, 10));
             TextBox_MoveHistoryOutput.Clear();
+            MoveCollection shuffleMoves = cube.GetShuffleMoves(rnd.Next(5, 10));
 
             await moveSynchronizer.RunAsync(shuffleMoves);
         }

@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <pllSolving>
-    <pllPattern number="00" face0="10" face1="60" face2="49" face3="45" algorithm="RiFRiB2RFiRiB2R2" />
-    <pllPattern number="01" face0="15" face1="40" face2="30" face3="19" algorithm="R2B2RFRiB2RFiR" />
-    <pllPattern number="02" face0="59" face1="25" face2="59" face3="25" algorithm="xiRUiRiDRURiDiRURiDRUiRiDi" />
-    <pllPattern number="03" face0="49" face1="49" face2="00" face3="34" algorithm="RUiRURURUiRiUiR2" />
-    <pllPattern number="04" face0="19" face1="34" face2="00" face3="19" algorithm="LiULiUiLiUiLiULUL2" />
-    <pllPattern number="05" face0="34" face1="34" face2="34" face3="34" algorithm="M2UiM2U2M2UiM2" />
-    <pllPattern number="06" face0="19" face1="49" face2="19" face3="49" algorithm="M2UiM2UiMiU2M2U2MiU2" />
-    <pllPattern number="07" face0="15" face1="34" face2="60" face3="59" algorithm="RURiUiRiFR2UiRiUiRURiFi" />
-    <pllPattern number="08" face0="60" face1="00" face2="60" face3="40" algorithm="RURiFiRURiUiRiFR2UiRiUi" />
-    <pllPattern number="09" face0="15" face1="10" face2="15" face3="00" algorithm="LiUiLFLiUiLULFiL2ULU" />
-    <pllPattern number="10" face0="49" face1="60" face2="25" face3="30" algorithm="RiU2RU2RiFRURiUiRiFiR2Ui" />
-    <pllPattern number="11" face0="19" face1="45" face2="25" face3="15" algorithm="LU2LiU2LFiLiUiLULFL2U" />
-    <pllPattern number="12" face0="45" face1="00" face2="30" face3="25" algorithm="RiUiFiRURiUiRiFR2UiRiUiRURiUR" />
-    <pllPattern number="13" face0="10" face1="40" face2="25" face3="25" algorithm="D2RU2RiDRUiRUiRUR2DRiUiR" />
-    <pllPattern number="14" face0="10" face1="59" face2="59" face3="40" algorithm="FRUiRiUiRURiFiRURiUiRiFRFi" />
-    <pllPattern number="15" face0="40" face1="40" face2="40" face3="40" algorithm="RwiDRwU2RwiDRwU2RwiDRwU2RwiDRwU2RwiDRwU2" />
-    <pllPattern number="16" face0="10" face1="10" face2="10" face3="10" algorithm="LwDiLwiU2LwDiLwiU2LwDiLwiU2LwDiLwiU2LwDiLwiU2" />
-    <pllPattern number="17" face0="60" face1="19" face2="30" face3="59" algorithm="R2URiURiUiRUiR2DUiRiURDi" />
-    <pllPattern number="18" face0="45" face1="34" face2="45" face3="40" algorithm="DRiUiRUDiR2URiURUiRUiR2" />
-    <pllPattern number="19" face0="45" face1="49" face2="15" face3="59" algorithm="R2UiRUiRURiUR2DiURUiRiD" />
-    <pllPattern number="20" face0="30" face1="34" face2="30" face3="10" algorithm="DiRURiUiDR2UiRUiRiURiUR2" />
+    <pllPattern number="00" face0="00" face1="00" face2="00" face3="00" algorithm="" />
+    <pllPattern number="01" face0="10" face1="60" face2="49" face3="45" algorithm="RiFRiB2RFiRiB2R2" />
+    <pllPattern number="02" face0="15" face1="40" face2="30" face3="19" algorithm="R2B2RFRiB2RFiR" />
+    <pllPattern number="03" face0="59" face1="25" face2="59" face3="25" algorithm="xiRUiRiDRURiDiRURiDRUiRiDi" />
+    <pllPattern number="04" face0="49" face1="49" face2="00" face3="34" algorithm="RUiRURURUiRiUiR2" />
+    <pllPattern number="05" face0="19" face1="34" face2="00" face3="19" algorithm="LiULiUiLiUiLiULUL2" />
+    <pllPattern number="06" face0="34" face1="34" face2="34" face3="34" algorithm="M2UiM2U2M2UiM2" />
+    <pllPattern number="07" face0="19" face1="49" face2="19" face3="49" algorithm="M2UiM2UiMiU2M2U2MiU2" />
+    <pllPattern number="08" face0="15" face1="34" face2="60" face3="59" algorithm="RURiUiRiFR2UiRiUiRURiFi" />
+    <pllPattern number="09" face0="60" face1="00" face2="60" face3="40" algorithm="RURiFiRURiUiRiFR2UiRiUi" />
+    <pllPattern number="10" face0="15" face1="10" face2="15" face3="00" algorithm="LiUiLFLiUiLULFiL2ULU" />
+    <pllPattern number="11" face0="49" face1="60" face2="25" face3="30" algorithm="RiU2RU2RiFRURiUiRiFiR2Ui" />
+    <pllPattern number="12" face0="19" face1="45" face2="25" face3="15" algorithm="LU2LiU2LFiLiUiLULFL2U" />
+    <pllPattern number="13" face0="45" face1="00" face2="30" face3="25" algorithm="RiUiFiRURiUiRiFR2UiRiUiRURiUR" />
+    <pllPattern number="14" face0="10" face1="40" face2="25" face3="25" algorithm="D2RU2RiDRUiRUiRUR2DRiUiR" />
+    <pllPattern number="15" face0="10" face1="59" face2="59" face3="40" algorithm="FRUiRiUiRURiFiRURiUiRiFRFi" />
+    <pllPattern number="16" face0="40" face1="40" face2="40" face3="40" algorithm="RwiDRwU2RwiDRwU2RwiDRwU2RwiDRwU2RwiDRwU2" />
+    <pllPattern number="17" face0="10" face1="10" face2="10" face3="10" algorithm="LwDiLwiU2LwDiLwiU2LwDiLwiU2LwDiLwiU2LwDiLwiU2" />
+    <pllPattern number="18" face0="60" face1="19" face2="30" face3="59" algorithm="R2URiURiUiRUiR2DUiRiURDi" />
+    <pllPattern number="19" face0="45" face1="34" face2="45" face3="40" algorithm="DRiUiRUDiR2URiURUiRUiR2" />
+    <pllPattern number="20" face0="45" face1="49" face2="15" face3="59" algorithm="R2UiRUiRURiUR2DiURUiRiD" />
+    <pllPattern number="21" face0="30" face1="34" face2="30" face3="10" algorithm="DiRURiUiDR2UiRUiRiURiUR2" />
 </pllSolving>
