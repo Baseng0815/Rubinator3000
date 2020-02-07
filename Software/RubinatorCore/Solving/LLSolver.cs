@@ -8,19 +8,36 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace RubinatorCore.Solving {
+    /// <summary>
+    /// Ein Last Layer Solver, der die letzte Seite löst
+    /// </summary>
     public class LLSolver : CubeSolver {
+        /// <summary>
+        /// Gibt an, ob der Würfel gelöst ist
+        /// </summary>
+        public override bool Solved => GetCubeSolved();
+
+        /// <summary>
+        /// Erstellt einen neuen Last Layer Solver mit einer Kopie des aktuellen Würfels
+        /// </summary>
+        /// <param name="cube">Der zu lösende Cube</param>
         public LLSolver(Cube cube) : base(cube) {
 
         }
 
+        /// <summary>
+        /// Überprüft, ob die vorherigen beiden Seiten gelöst sind
+        /// </summary>
+        /// <param name="cube">Der zu lösende Würfel</param>
+        /// <returns>Einen Wert, der angibt, ob der Würfel den Anforderungen entspricht</returns>
         protected override bool CheckCube(Cube cube) {
-            // check white face is solved
+            // überprüfen, ob die weiße Seite gelöst ist
             for (int t = 0; t < 9; t++) {
                 if (cube.At(CubeFace.UP, t) != CubeColor.WHITE)
                     return false;
             }
 
-            // check FTL is solved
+            // überprüfen, ob die obere und mittlere Ebene gelöst sind
             for (int f = 0; f < 4; f++) {
                 CubeColor faceColor = Cube.GetFaceColor(MiddleLayerFaces[f]);
                 for (int t = 0; t < 6; t++) {
@@ -32,46 +49,53 @@ namespace RubinatorCore.Solving {
             return true;
         }
 
+        /// <summary>
+        /// Bestimmt die Algorithmen zum Lösen der letzten Ebene
+        /// </summary>
         public override void SolveCube() {
-            MoveCollection algorithm;
-
-            int c = 0;
             try {
+                // überprüfen, ob das OLL gelöst ist
                 if (!OllSolved()) {
-                    while (c < 4 && !OllPatterns.Any(p => p.pattern.IsMatch(cube))) {
+                    // das richtige OLL Pattern finden                    
+                    while (!OllPatterns.Any(p => p.pattern.IsMatch(cube))) {
                         DoMove(new Move(CubeFace.DOWN));
-                        c++;
                     }
 
+                    // den Algorithmus ausführen
                     (OllPattern p, MoveCollection a) pattern = OllPatterns.First(p => p.pattern.IsMatch(cube));
                     Log.LogMessage($"OLL Pattern {pattern.p.Number}");
                     DoMoves(pattern.a);
                 }
 
+                // überprüfen, ob der Würfel glöst ist
                 if (!GetCubeSolved()) {
-                    c = 0;
-                    while (c < 4 && !PllPatterns.Any(p => p.pattern.IsMatch(cube))) {
+                    // das richtige PLL Pattern finden                    
+                    while (!PllPatterns.Any(p => p.pattern.IsMatch(cube))) {
                         DoMove(new Move(CubeFace.DOWN));
-                        c++;
                     }
 
+                    // den Algorithmus ausführen
                     (PllPattern p, MoveCollection a) pattern = PllPatterns.First(p => p.pattern.IsMatch(cube));
                     Log.LogMessage($"PLL Pattern {pattern.p.Number}");
                     DoMoves(pattern.a);
                 }
 
-                c = 0;
-                while (!GetCubeSolved() && c < 4) {
+                // die gelbe Seite in die richtige Position drehen
+                while (!GetCubeSolved()) {
                     DoMove(new Move(CubeFace.DOWN));
-                    c++;
-                }                
+                }
             }
-            catch {
-
+            catch (Exception e) {
+                Log.LogMessage("Last Layer Solver:\t" + e.ToString());
             }
         }
 
+        /// <summary>
+        /// Überprüft, ob das Oll gelöst ist
+        /// </summary>
+        /// <returns></returns>
         protected bool OllSolved() {
+            // die gelbe Seite überprüfen
             for (int t = 0; t < 9; t++) {
                 if (cube.At(CubeFace.DOWN, t) != CubeColor.YELLOW)
                     return false;
@@ -81,19 +105,28 @@ namespace RubinatorCore.Solving {
         }
 
         #region static members        
-
+        /// <summary>
+        /// Die OLL Patterns und Algorithmen
+        /// </summary>
         public static (OllPattern pattern, MoveCollection algorithm)[] OllPatterns;
+
+        /// <summary>
+        /// Die PLL Patterns und Algorithmen
+        /// </summary>
         public static (PllPattern pattern, MoveCollection algorithm)[] PllPatterns;
 
-        public override bool Solved => throw new NotImplementedException();
+        /// <summary>
+        /// Lädt die OLL Patterns und Algorithmen aus der xml-Datei
+        /// </summary>
         internal static void LoadOllPatterns() {
-
+            // die xml-Datei öffnen
             XDocument doc = XDocument.Parse(Resources.ollSolving);
 
             Func<XElement, (OllPattern, MoveCollection)> getPattern = e => {
+                // die Nummer des Patterns aus dem xml-Element lesen
                 int ollNumber = int.Parse(e.Attribute("number").Value);
 
-                // read faceData from xml
+                // die Konstellation der gelben Seite aus dem xml-Element lesen
                 int face = int.Parse(e.Attribute("face").Value);
 
                 bool[] faceData = new bool[9];
@@ -102,20 +135,22 @@ namespace RubinatorCore.Solving {
                     faceData[i] = (face & exp) == exp;
                 }
 
-                // read sidesData
+                // die Orientierung der anderen Seiten aus dem xml-Element lesen
                 bool[][] sidesData = new bool[4][];
                 for (int s = 0; s < 4; s++) {
                     sidesData[s] = new bool[3];
                     int sideValue = int.Parse(e.Attribute($"side{s}").Value);
 
-                    for (int i = 0; i < 3; i++) {
-                        int exp = (int)Math.Pow(2, i);
-                        sidesData[s][i] = (sideValue & exp) == exp;
+                    for (int i = 0; i < 3; i++) {                        
+                        sidesData[s][i] = (sideValue & (1 >> i)) == (1 >> i);
                     }
                 }
 
                 try {
+                    // den Algorithmus aus dem xml-Element lesen
                     MoveCollection moves = MoveCollection.Parse(e.Attribute("algorithm").Value);
+
+                    // das Pattern und den Algorithmus zurückgeben
                     return (new OllPattern(ollNumber, faceData, sidesData), moves);
                 }
                 catch (FormatException ex) {
@@ -126,22 +161,22 @@ namespace RubinatorCore.Solving {
                 return (new OllPattern(), null);
             };
 
+            // alle Elemente aus der Datei lesen und speichern
             IEnumerable<(OllPattern, MoveCollection)> patterns = from element in doc.Root.Elements("ollPattern")
                                                                  select getPattern(element);
 
             OllPatterns = patterns.ToArray();
         }
         internal static void LoadPllPatterns() {
-
             XDocument doc = XDocument.Parse(Resources.pllSolving);
             CubeOrientation orientation = new CubeOrientation(CubeFace.LEFT, CubeFace.DOWN);
-            List<(PllPattern, MoveCollection)> patternMoves = new List<(PllPattern, MoveCollection)>();
 
-            foreach (var e in doc.Root.Elements("pllPattern")) {
+            Func<XElement, (PllPattern, MoveCollection)> getPattern = e => {
+                // die Nummer des Patterns aus dem xml-Element lesen
                 int number = int.Parse(e.Attribute("number").Value);
 
                 byte[][] patternData = new byte[4][];
-                // read data from xml
+                // die Farbdifferenzen aus der xml-Datei lesen
                 for (int f = 0; f < 4; f++) {
                     patternData[f] = new byte[3];
                     int value = int.Parse(e.Attribute($"face{f}").Value);
@@ -152,25 +187,34 @@ namespace RubinatorCore.Solving {
                 }
 
                 try {
+                    // den Algorithmus aus dem xml-Element lesen
                     MoveCollection moves = MoveCollection.Parse(e.Attribute("algorithm").Value);
-                    patternMoves.Add((new PllPattern(number, patternData), moves.TransformMoves(orientation)));
+
+                    // das Pattern und den transformierten Algorithmus zurückgeben
+                    return (new PllPattern(number, patternData), moves.TransformMoves(orientation));
                 }
                 catch (FormatException) {
                     string message = $"Error:\tParsing Pll algorithm {number}";
                     Log.LogMessage(message);
                 }
 
+                return (new PllPattern(), null);
+            };
 
-            }
-
-            PllPatterns = patternMoves.ToArray();
+            // alle Elemente aus der Datei lesen und speichern
+            IEnumerable<(PllPattern, MoveCollection)> patterns = from element in doc.Root.Elements("pllPattern")
+                                                                 select getPattern(element);
+            PllPatterns = patterns.ToArray();
         }
 
+        /// <summary>
+        /// Ein statischer Konstruktor, der die Patterns läd
+        /// </summary>
         static LLSolver() {
             LoadOllPatterns();
             LoadPllPatterns();
         }
 
-#endregion
+        #endregion
     }
 }

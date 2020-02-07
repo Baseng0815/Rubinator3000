@@ -6,26 +6,34 @@ using System.Threading.Tasks;
 
 namespace RubinatorCore.Solving {
     public static class SolvingUtility {
+        /// <summary>
+        /// Die Farben der angrenzenden Seiten
+        /// </summary>
         private static readonly CubeColor[][] layerColors = new CubeColor[6][] {
-            // LEFT
+            // Links
             new CubeColor[4] { CubeColor.WHITE, CubeColor.BLUE, CubeColor.YELLOW, CubeColor.GREEN },
-            // UP
+            // Oben
             new CubeColor[4] { CubeColor.ORANGE, CubeColor.GREEN, CubeColor.RED, CubeColor.BLUE },
-            // FRONT
+            // Vorne
             new CubeColor[4] { CubeColor.ORANGE, CubeColor.YELLOW, CubeColor.RED, CubeColor.WHITE },
-            // DOWN
+            // Unten
             new CubeColor[4] { CubeColor.ORANGE, CubeColor.BLUE, CubeColor.RED, CubeColor.GREEN },
-            // RIGHT
+            // Rechts
             new CubeColor[4] { CubeColor.WHITE, CubeColor.GREEN, CubeColor.YELLOW, CubeColor.BLUE },
-            // BACK
+            // Hinten
             new CubeColor[4] { CubeColor.ORANGE, CubeColor.WHITE, CubeColor.RED, CubeColor.YELLOW }
         };
 
+        /// <summary>
+        /// Normiert den Wert zwischen 1 und 4
+        /// </summary>
+        /// <param name="count">Der zu normierende Wert</param>
+        /// <returns>Den normierten Wert</returns>
         public static int NormalizeCount(int count) {
             while (count < -1) count += 4;
 
             return (count + 1) % 4 - 1;
-        }      
+        }
 
         #region Extension Methodes
         /// <summary>
@@ -35,11 +43,13 @@ namespace RubinatorCore.Solving {
         /// <param name="color">Die Farbe</param>
         /// <param name="face">Die Seite auf der sich die Farbe befindet</param>
         /// <param name="faceToRot">Die Seite, die gedreht werden soll, um die Farbe auf die richtige Seite zu bringen</param>
-        /// <returns></returns>
+        /// <returns>Einen Wert, der den Unterschied der Farben darstellt</returns>
         public static int GetDelta(this CubeColor color, CubeFace face, CubeFace faceToRot) {
+            // die Farben der angrenzenden Seiten und der Seite auf der sich die Farbe befindet bestimmen
             CubeColor[] colors = layerColors[(int)faceToRot];
             CubeColor faceColor = Cube.GetFaceColor(face);
 
+            // die Parameter überprüfen
             if (Cube.IsOpponentColor(faceColor, Cube.GetFaceColor(faceToRot)) || faceColor == Cube.GetFaceColor(faceToRot))
                 throw new ArgumentOutOfRangeException();
 
@@ -49,56 +59,28 @@ namespace RubinatorCore.Solving {
             if (!colors.Contains(color))
                 throw new ArgumentOutOfRangeException(nameof(faceToRot));
 
+            // das Delta berechnen und zurückgeben
             int delta = Array.IndexOf(colors, color) - Array.IndexOf(colors, faceColor);
             return NormalizeCount(delta);
         }
 
+        /// <summary>
+        /// Gibt die Farbe einer Seite zurück
+        /// </summary>
+        /// <param name="face">Die Seite, deren Farbe bestimmt werden soll</param>
+        /// <returns>Die Farbe der Seite</returns>
         public static CubeColor GetFaceColor(this CubeFace face) {
             return Cube.GetFaceColor(face);
         }
 
+        /// <summary>
+        /// Gibt die Seite einer Farbe zurück
+        /// </summary>
+        /// <param name="color">Die Farbe, deren Seite bestimmt werden soll</param>
+        /// <returns>Die Seite der Farbe</returns>
         public static CubeFace GetFace(this CubeColor color) {
             return Cube.GetFace(color);
-        }
-
-        public static bool ValuesEqual<T>(this Tuple<T, T> source, Tuple<T, T> tuple) {
-            EqualityComparer<T> comparer = EqualityComparer<T>.Default;
-
-            return (comparer.Equals(source.Item1, tuple.Item1) && comparer.Equals(source.Item2, tuple.Item2))
-                || (comparer.Equals(source.Item1, tuple.Item2) && comparer.Equals(source.Item2, tuple.Item1));
-
-        }
-
-        public static Tuple<T, T> Swap<T>(this Tuple<T, T> tuple) {
-            return new Tuple<T, T>(tuple.Item2, tuple.Item1);
-        }
-
-        public static Tuple<T, T, T> Swap<T>(this Tuple<T, T, T> tuple, int firstItem, int secondItem) {
-            if (firstItem < 0 || firstItem > 2)
-                throw new ArgumentOutOfRangeException(nameof(firstItem));
-
-            if (secondItem < 0 || secondItem > 2)
-                throw new ArgumentOutOfRangeException(nameof(secondItem));
-
-            if (firstItem == secondItem)
-                return tuple;
-
-            T[] values = { tuple.Item1, tuple.Item2, tuple.Item3 };
-
-            T tmp = values[firstItem];
-            values[firstItem] = values[secondItem];
-            values[secondItem] = tmp;
-
-            return new Tuple<T, T, T>(values[0], values[1], values[2]);
-        }
-
-        public static bool ValuesEqual<T>(this IEnumerable<T> first, IEnumerable<T> second) {
-            return ValuesEqual(first, second, EqualityComparer<T>.Default);
-        }
-
-        public static bool ValuesEqual<T>(this IEnumerable<T> first, IEnumerable<T> second, EqualityComparer<T> comparer) {
-            return first.All(e => second.Any(f => comparer.Equals(e, f)));
-        }
+        }       
         #endregion
     }
 }

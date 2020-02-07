@@ -37,9 +37,16 @@ namespace RubinatorCore {
         private static void LoggingThread() {
             logging = true;
             while (messages.Count > 0 && !stopRequested) {
-                string message = messages.Dequeue();
+                string message = null;
+                try {
+                    message = messages.Dequeue();
+                }
+                catch (InvalidOperationException) {
+                    break;
+                }
 
                 LogCallback?.Invoke(message);
+                System.Diagnostics.Debug.WriteLine(message);
             }
 
             logging = false;
