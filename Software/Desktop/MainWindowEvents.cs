@@ -232,17 +232,17 @@ namespace Rubinator3000 {
 
             if (CheckBox_AutoReadout.IsChecked.Value) {
 
-                WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequsted.AUTO_READOUT;
+                WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequested.AUTO_READOUT;
             }
             else {
 
-                WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequsted.DISABLED;
+                WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequested.DISABLED;
             }
         }
 
         private void Button_ManualReadout_Click(object sender, RoutedEventArgs e) {
 
-            WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequsted.SINGLE_READOUT;
+            WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequested.SINGLE_READOUT;
         }
 
         private void Image_CameraPreview_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -250,7 +250,7 @@ namespace Rubinator3000 {
             RedrawAllCircles();
         }
 
-        private void RedrawAllCircles() {
+        public void RedrawAllCircles() {
 
             for (int i = 0; i < canvases.Length; i++) {
                 canvases[i].Children.Clear();

@@ -6,6 +6,9 @@ connection:
 0xF0		disconnected
 0xF1		connected
 
+bluetooth:
+0x01		begin cube transmission
+
 errors:
 0xB0		error
 0xB1		error not connected

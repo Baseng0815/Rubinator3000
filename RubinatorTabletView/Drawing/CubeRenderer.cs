@@ -34,7 +34,7 @@ namespace RubinatorTabletView {
 
     public enum CubeDisplayMode { NONE = 0, FLAT = 1, CUBE = 2 };
 
-    class CubeRenderer {
+    public class CubeRenderer {
         private Cube currentState;
 
         private Shader cubeShader, flatShader;
@@ -60,6 +60,10 @@ namespace RubinatorTabletView {
         private void SetFaceRotation(CubeFace face, float amount) {
             faceRotations[(int)face] = amount;
             faceRotationMatrices[(int)face] = RotationMatrixForFace(face);
+        }
+
+        public CubeColor At(CubeFace face, int tile) {
+            return currentState.At(face, tile);
         }
 
         /// <summary>
@@ -151,12 +155,6 @@ namespace RubinatorTabletView {
             flatShader = new Shader("Shaders/FlatShader");
 
             cubeShader.Bind();
-
-            // texture units to sampler
-            for (int i = 0; i < 2; i++)
-                //TODO: remove error
-                cubeShader.UpoadSampler(string.Format("texture{0}", i.ToString()), i);
-            var error = GL.GetError();
 
             currentState = new Cube();
 

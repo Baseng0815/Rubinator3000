@@ -1,19 +1,138 @@
-<RelativeLayout
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_cube_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <rubinatortabletview.CubeView
         android:id="@+id/cube_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-    <TextView
-        android:id="@+id/transformationText"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:textColor="@android:color/white"
-        android:text="@string/search_menu_title"/>
-</RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_l"
+                android:id="@+id/button_l"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_li"
+                android:id="@+id/button_li"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_r"
+                android:id="@+id/button_r"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_ri"
+                android:id="@+id/button_ri"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_f"
+                android:id="@+id/button_f"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_fi"
+                android:id="@+id/button_fi"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_b"
+                android:id="@+id/button_b"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_bi"
+                android:id="@+id/button_bi"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_u"
+                android:id="@+id/button_u"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_ui"
+                android:id="@+id/button_ui"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_d"
+                android:id="@+id/button_d"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_di"
+                android:id="@+id/button_di"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/button_pairBluetooth"
+                android:id="@+id/button_pairBluetooth"/>
+            <TextView
+                android:minWidth="30px"
+                android:minHeight="30px"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/bluetooth_disconnected"
+                android:id="@+id/textView1"
+                android:gravity="center"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_downsync"
+                android:id="@+id/control_downsync"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_upsync"
+                android:id="@+id/control_upsync"/>
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

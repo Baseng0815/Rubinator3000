@@ -16,15 +16,19 @@ namespace RubinatorTabletView {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true, ScreenOrientation = ScreenOrientation.Landscape)]
     public class MainActivity : AppCompatActivity, BottomNavigationView.IOnNavigationItemSelectedListener {
 
-
         private RelativeLayout display_area;
 
-        private TableLayout layout_controls;
         private RelativeLayout layout_correction;
-        private RelativeLayout layout_cube_view;
+        private LinearLayout layout_cube_view;
         private RelativeLayout layout_settings;
 
-        private CubeView cube_view;
+        public CubeView cube_view;
+        public CancellationTokenSource ctSource;
+        public static Context context;
+
+        public MainActivity() {
+            context = this;
+        }
 
         protected override void OnCreate(Bundle savedInstanceState) {
 
@@ -37,14 +41,13 @@ namespace RubinatorTabletView {
             display_area = FindViewById<RelativeLayout>(Resource.Id.display_area);
 
             // Load layouts
-            layout_controls = (TableLayout)LayoutInflater.Inflate(Resource.Layout.layout_controls, null);
             layout_correction = (RelativeLayout)LayoutInflater.Inflate(Resource.Layout.layout_correction, null);
-            layout_cube_view = (RelativeLayout)LayoutInflater.Inflate(Resource.Layout.layout_cube_view, null);
+            layout_cube_view = (LinearLayout)LayoutInflater.Inflate(Resource.Layout.layout_cube_view, null);
             layout_settings = (RelativeLayout)LayoutInflater.Inflate(Resource.Layout.layout_settings, null);
 
-            ControlHandler.AddButtonEvents(layout_controls);
+            ControlHandler.AddButtonEvents(layout_cube_view);
 
-            layout_controls.FindViewById<Button>(Resource.Id.button_pairBluetooth).Click += (sender, e) => {
+            layout_cube_view.FindViewById<Button>(Resource.Id.button_pairBluetooth).Click += (sender, e) => {
                 ControlHandler.GetAddress(this);
             };
 
@@ -56,6 +59,10 @@ namespace RubinatorTabletView {
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.SetOnNavigationItemSelectedListener(this);
+        }
+
+        protected override void OnDestroy() {
+            ctSource.Cancel();
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data) {
@@ -77,6 +84,8 @@ namespace RubinatorTabletView {
 
                             Dialog dialog = connectionFailedAlert.Create();
                             dialog.Show();
+                        } else {
+                            layout_cube_view.FindViewById<TextView>(Resource.Id.textView1).SetText(Resource.String.bluetooth_connected);
                         }
                     }));
                 });
@@ -107,9 +116,6 @@ namespace RubinatorTabletView {
                     return true;
                 case Resource.Id.navigation_settings:
                     display_area.AddView(layout_settings);
-                    return true;
-                case Resource.Id.navigation_controls:
-                    display_area.AddView(layout_controls);
                     return true;
             }
             return false;

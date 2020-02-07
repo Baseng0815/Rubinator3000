@@ -80,10 +80,7 @@ namespace Rubinator3000 {
 
         // do animated moves
         private static void AnimateMovesThread() {
-            Log.LogMessage("Animated Thread start");
-
             while (moveQueue.Count > 0) {
-                //Log.LogMessage("Animated move executing in animated move task");
                 AnimatedMove animMove;
 
                 animMove = moveQueue.Dequeue();
@@ -116,7 +113,7 @@ namespace Rubinator3000 {
                         if (nextMove.HasValue)
                             SetFaceRotation(nextMove.Value.Move.Face, watch.ElapsedMilliseconds * anglePerMillisecond * nextMove.Value.Move.Direction);
                         CubeViewer.Window.Invalidate();
-                    }                    
+                    }
 
                     // set new state and reset rotation
                     currentState.DoMove(animMove.Move);
@@ -124,10 +121,10 @@ namespace Rubinator3000 {
 
                     if (nextMove.HasValue) {
                         currentState.DoMove(nextMove.Value.Move);
-                        SetFaceRotation(nextMove.Value.Move.Face, 0);                     
+                        SetFaceRotation(nextMove.Value.Move.Face, 0);
                     }
 
-                    // skip animation and directly set end state
+                // skip animation and directly set end state
                 }
                 else {
                     if (nextMove.HasValue)
@@ -162,7 +159,7 @@ namespace Rubinator3000 {
             for (int i = 0; i < 6; i++)
                 faceRotationMatrices[i] = Matrix4.Identity;
 
-            moveQueue = new Queue<AnimatedMove>();            
+            moveQueue = new Queue<AnimatedMove>();
         }
 
         /// <summary>
@@ -170,8 +167,9 @@ namespace Rubinator3000 {
         /// </summary>
         /// <param name="endState"></param>
         public static void AddState(Cube endState) {
-            lock (moveQueue)
-                moveQueue.Enqueue(new AnimatedMove(null, (Cube)endState.Clone()));
+            moveQueue.Enqueue(new AnimatedMove(null, (Cube)endState.Clone()));
+
+            KeepThreadAlive();
         }
 
         /// <summary>

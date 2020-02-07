@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 namespace Rubinator3000.CubeScan {
     public class ReadUtility {
 
-        public enum ReadoutRequsted : int {
+        public enum ReadoutRequested : int {
             DISABLED = 0,
             SINGLE_READOUT = 1,
             AUTO_READOUT = 2

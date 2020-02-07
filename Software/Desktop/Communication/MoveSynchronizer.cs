@@ -16,10 +16,31 @@ namespace Rubinator3000.Communication {
         private readonly TextBox moveHistory;
         private BluetoothServer bluetoothServer;
 
-        private void HandleBluetoothMove(byte moveByte) {
-            CubeFace face = (CubeFace)((moveByte >> 1) - 1);
-            int count = (moveByte & 0x01) == 1 ? -1 : 1;
-            RunAsync(new Move(face, count));
+        private Cube receivingState = new Cube();
+        private int tilesReceived = 54;
+
+        private void HandleBluetoothData(byte data) {
+            if (tilesReceived < 54) {
+                CubeFace face = (CubeFace)(tilesReceived / 9);
+                int tile = tilesReceived % 9;
+                receivingState.SetTile(face, tile, (CubeColor)data);
+
+                tilesReceived++;
+                if (tilesReceived == 54) {
+                    Application.Current.Dispatcher.Invoke(delegate {
+                        ((MainWindow)Application.Current.MainWindow).cube = (Cube)receivingState.Clone();
+                    });
+                    DrawCube.AddState(receivingState);
+                }
+            } else if (data > 0x01 && data < 0x0E)
+                RunAsync(RubinatorCore.Utility.ByteToMove(data), false);
+            else if (data == 0x01) {
+                tilesReceived = 0;
+            }
+        }
+
+        private void SendBluetoothMove(Move move) {
+            bluetoothServer.Write(RubinatorCore.Utility.MoveToByte(move));
         }
 
         public MoveSynchronizer(TextBox moveHistory) {
@@ -43,16 +64,18 @@ namespace Rubinator3000.Communication {
             bluetoothServer = new BluetoothServer();
 
             bluetoothServer.DataReceived += (obj, data) => {
-                HandleBluetoothMove(data);
+                HandleBluetoothData(data);
                 Log.LogMessage("Bluetooth data received: " + data);
             };
 
             bluetoothServer.StartDiscovering();
         }
 
-        public Task RunAsync(Move move) {
+        public Task RunAsync(Move move, bool btSend = true) {
             return Task.Run(delegate {
                 DrawCube.AddMove(move);
+                if (bluetoothServer != null && btSend)
+                    SendBluetoothMove(move);
 
                 if (arduino == null)
                     Log.LogMessage("Arduino not connected");
@@ -70,7 +93,7 @@ namespace Rubinator3000.Communication {
             });
         }
 
-        public Task RunAsync(MoveCollection moves) {
+        public Task RunAsync(MoveCollection moves, bool btSend = true) {
             return Task.Run(delegate {
                 bool confirmationNeeded = true;
 
@@ -109,8 +132,13 @@ namespace Rubinator3000.Communication {
                     }
 
                     DrawCube.AddMove(moves[i]);
-                    if (multiTurn)
+                    if (bluetoothServer != null && btSend)
+                        SendBluetoothMove(moves[i]);
+                    if (multiTurn) {
                         DrawCube.AddMove(moves[i + 1]);
+                        if (bluetoothServer != null && btSend)
+                            SendBluetoothMove(moves[i]);
+                    }
 
                     Application.Current.Dispatcher.Invoke(delegate {
                         ((MainWindow)Application.Current.MainWindow).cube.DoMove(moves[i]);
