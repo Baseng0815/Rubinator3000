@@ -76,13 +76,7 @@ namespace RubinatorTabletView {
 
         public void Upload(string location, float value) {
             int handle = GL.GetUniformLocation(program, location);
-            GL.Uniform1(handle, value);            
-        }
-
-        public void UpoadSampler(string location, float value) {
-            int handle = GL.GetUniformLocation(program, location);
-            GL.Uniform1(handle, (int)value);
-            var error = GL.GetErrorCode(); 
+            GL.Uniform1(handle, value);
         }
     }
 }

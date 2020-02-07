@@ -12,35 +12,42 @@ namespace Rubinator3000.Communication {
     public class BluetoothServer {
         private static readonly Guid SERVICE_UUID = new Guid("053eaaaf-f981-4b64-a39e-ea4f5f44bb57");
 
-        private Stream inputStream;
+        private Stream stream;
         private BluetoothClient client;
         private readonly BluetoothListener listener;
 
         public event EventHandler<byte> DataReceived;
 
-        protected void OnDataReceived(byte data) {
-            EventHandler<byte> handler = DataReceived;
-            if (handler != null)
-                handler(this, data);
-        }
-
         private void ReceiveDataThread() {
             Log.LogMessage("Start receiving bluetooth data...");
 
-            StreamReader reader = new StreamReader(inputStream);
+            StreamReader reader = new StreamReader(stream);
 
             while (!MainWindow.ctSource.IsCancellationRequested) {
                 try {
-                    byte content = Convert.ToByte(reader.Read());
-                    OnDataReceived(content);
+                    var read = reader.Read();
+                    byte content = Convert.ToByte(read);
+                    DataReceived?.Invoke(null, content);
                 } catch (Exception e) {
-                    Log.LogMessage(e.Message);
+                    Log.LogMessage(e.ToString());
+                    return;
                 }
             }
         }
 
         public BluetoothServer() {
             listener = new BluetoothListener(SERVICE_UUID);
+        }
+
+        public void Write(byte b) {
+            Write(new byte[] { b });
+        }
+        public void Write(byte[] b) {
+            try {
+                stream.Write(b, 0, b.Length);
+            } catch (Exception e) {
+                Log.LogMessage(e.ToString());
+            }
         }
 
         /// <summary>
@@ -54,7 +61,7 @@ namespace Rubinator3000.Communication {
                 client = listener.AcceptBluetoothClient();
                 Log.LogMessage("Bluetooth device with name '" + client.RemoteMachineName + "' connected.");
 
-                inputStream = client.GetStream();
+                stream = client.GetStream();
 
                 new Thread(ReceiveDataThread).Start();
             });

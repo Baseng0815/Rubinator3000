@@ -49,7 +49,7 @@ namespace Rubinator3000.CubeScan {
          * 1: Read positions once
          * 2: Automatically read positions
          */
-        public static ReadoutRequsted CubeGenerationRequested = ReadoutRequsted.DISABLED;
+        public static ReadoutRequested CubeGenerationRequested = ReadoutRequested.DISABLED;
 
         private static string PathToXml => "./Resources/ReadPositions.xml";
 
@@ -193,9 +193,9 @@ namespace Rubinator3000.CubeScan {
                                 SortAndValidateColors();
 
                                 // If single readout was requested only
-                                if (CubeGenerationRequested == ReadoutRequsted.SINGLE_READOUT) {
+                                if (CubeGenerationRequested == ReadoutRequested.SINGLE_READOUT) {
 
-                                    CubeGenerationRequested = ReadoutRequsted.DISABLED;
+                                    CubeGenerationRequested = ReadoutRequested.DISABLED;
                                 }
                             }
                         }
@@ -214,10 +214,9 @@ namespace Rubinator3000.CubeScan {
                         Thread.Sleep(Convert.ToInt32(loopEnd - CurrentTimeMillis()));
                     }
                 }
-            }
-            catch (Exception) {
+            } catch (Exception e) {
 
-                Log.LogMessage(string.Format("Camera {0} crashed", cameraIndex));
+               Log.LogMessage(string.Format("Camera {0} crashed", cameraIndex));
             }
             threadStarted = false;
         }
@@ -342,6 +341,7 @@ namespace Rubinator3000.CubeScan {
 
                         // Change circle color of the current position on the gui
                         CircleByIndices(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Fill = ReadUtility.ColorBrush(currentCubeColor);
+                        CircleByIndices(currentPosition.FaceIndex, currentPosition.RowIndex, currentPosition.ColIndex).Stroke = ReadUtility.ColorBrush(currentCubeColor);
                     });
                 }
 

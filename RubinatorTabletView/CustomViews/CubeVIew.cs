@@ -13,17 +13,19 @@ using Android.Widget;
 using OpenTK;
 using OpenTK.Graphics.ES31;
 using OpenTK.Platform.Android;
+using RubinatorCore;
 
 namespace RubinatorTabletView {
 
-    class CubeView : AndroidGameView {
+    public class CubeView : AndroidGameView {
 
         private bool initialized = false;
-        private CubeRenderer renderer;
         private View view;
 
         private float prevTouchX;
         private float prevTouchY;
+
+        public CubeRenderer renderer;
 
         public CubeView(Context context) : base(context) {
 
@@ -61,6 +63,11 @@ namespace RubinatorTabletView {
             renderer.Transformation.Rotation = new Vector3(45, 0, 0);
 
             Touch += CubeView_Touch;
+
+            // do move when data is received
+            ControlHandler.DataReceived += (obj, data) => {
+                renderer.AddMove(RubinatorCore.Utility.ByteToMove(data));
+            };
         }
 
         private void CubeView_Touch(object sender, TouchEventArgs e) {

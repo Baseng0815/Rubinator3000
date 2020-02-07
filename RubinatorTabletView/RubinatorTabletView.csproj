@@ -182,9 +182,6 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\layout_controls.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\device_name.xml">
       <SubType>Designer</SubType>
     </AndroidResource>

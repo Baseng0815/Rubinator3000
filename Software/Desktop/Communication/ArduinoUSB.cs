@@ -32,7 +32,7 @@ namespace Rubinator3000 {
                 serial.Open();
             }
             catch (Exception e) {
-                Log.LogMessage("Der Port kann nicht geöffnet werden:" + e.Message);
+                Log.LogMessage("Der Port kann nicht geöffnet werden:" + e.ToString());
                 return;
             }
         }
@@ -58,22 +58,17 @@ namespace Rubinator3000 {
             if (serial.IsOpen) {
                 serial.Write(new byte[] { 0xA0 }, 0, 1);
 
-                try
-                {
-                    if (serial.ReadByte() != 0xF0)
-                    {
+                try {
+                    if (serial.ReadByte() != 0xF0) {
                         Log.LogMessage("Aduinoprogramm ist nicht korrekt");
                         return;
-                    }
-                    else
-                    {
+                    } else {
                         connected = false;
                     }
 
                     serial.Close();
-                } catch (Exception e)
-                {
-                    Log.LogMessage(e.Message);
+                } catch (Exception e) {
+                    Log.LogMessage(e.ToString());
                 }
 
             }
@@ -94,7 +89,7 @@ namespace Rubinator3000 {
                 return;
             }
 
-            byte[] moveData = MoveToByte(move);
+            byte[] moveData = RubinatorCore.Utility.MoveToByte(move);
 
             Debug.WriteLine(BitConverter.ToString(moveData));
             serial.Write(moveData, 0, moveData.Length);
@@ -111,7 +106,7 @@ namespace Rubinator3000 {
                 return;
             }
 
-            byte[] moveData = MulitTurnMoveToByte(move1, move2);
+            byte[] moveData = RubinatorCore.Utility.MulitTurnMoveToByte(move1, move2);
 
             serial.Write(moveData, 0, moveData.Length);
         }

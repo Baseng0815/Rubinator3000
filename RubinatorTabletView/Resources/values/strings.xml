@@ -3,7 +3,6 @@
   <string name="title_cube_view">Cube View</string>
   <string name="title_color_id">Color Id</string>
   <string name="title_settings">Settings</string>
-  <string name="title_controls">Controls</string>
 
   <!-- DeviceListActivity -->
   <string name="title_paired_devices">Paired devices</string>
@@ -26,6 +25,9 @@
   <string name="control_fi">Front inverted</string>
   <string name="control_b">Back</string>
   <string name="control_bi">Back inverted</string>
+  <string name="control_downsync">Sync downwards</string>
+  <string name="control_upsync">Sync upwards</string>
   <string name="button_pairBluetooth">Connect to Bluetooth device</string>
   <string name="bluetooth_disconnected">Disconnected</string>
+  <string name="bluetooth_connected">Connected</string>
 </resources>
