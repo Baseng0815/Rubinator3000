@@ -84,6 +84,12 @@ namespace RubinatorCore.Solving {
             }
         }
 
+        /// <summary>
+        /// Gibt die transformierten Züge zurück, die durch das passende Pattern definiert sind
+        /// </summary>
+        /// <param name="patterns">Die Patterns, die mit dem Würfel verglichen werden sollen</param>
+        /// <param name="patternNumber">Die Nummer des Patterns</param>
+        /// <returns>Die transformierten Züge</returns>
         private MoveCollection GetSolvingMoves((IPattern, MoveCollection)[] patterns, out int patternNumber) {
             patternNumber = -1;
             int count = 0;
