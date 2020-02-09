@@ -25,8 +25,8 @@
   <string name="control_fi">Front inverted</string>
   <string name="control_b">Back</string>
   <string name="control_bi">Back inverted</string>
-  <string name="control_downsync">Sync downwards</string>
-  <string name="control_upsync">Sync upwards</string>
+  <string name="control_synctoserver">Sync to server</string>
+  <string name="control_syncfromserver">Sync from server</string>
   <string name="button_pairBluetooth">Connect to Bluetooth device</string>
   <string name="bluetooth_disconnected">Disconnected</string>
   <string name="bluetooth_connected">Connected</string>

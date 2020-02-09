@@ -63,11 +63,6 @@ namespace RubinatorTabletView {
             renderer.Transformation.Rotation = new Vector3(45, 0, 0);
 
             Touch += CubeView_Touch;
-
-            // do move when data is received
-            ControlHandler.DataReceived += (obj, data) => {
-                renderer.AddMove(RubinatorCore.Utility.ByteToMove(data));
-            };
         }
 
         private void CubeView_Touch(object sender, TouchEventArgs e) {

@@ -22,6 +22,8 @@ namespace RubinatorTabletView {
         private LinearLayout layout_cube_view;
         private RelativeLayout layout_settings;
 
+        private ControlHandler controlHandler;
+
         public CubeView cube_view;
         public CancellationTokenSource ctSource;
         public static Context context;
@@ -45,10 +47,11 @@ namespace RubinatorTabletView {
             layout_cube_view = (LinearLayout)LayoutInflater.Inflate(Resource.Layout.layout_cube_view, null);
             layout_settings = (RelativeLayout)LayoutInflater.Inflate(Resource.Layout.layout_settings, null);
 
-            ControlHandler.AddButtonEvents(layout_cube_view);
+            controlHandler = new ControlHandler();
+            controlHandler.AddButtonEvents(layout_cube_view);
 
             layout_cube_view.FindViewById<Button>(Resource.Id.button_pairBluetooth).Click += (sender, e) => {
-                ControlHandler.GetAddress(this);
+                controlHandler.GetAddress(this);
             };
 
             // Load references to views of inside the layouts
@@ -77,7 +80,7 @@ namespace RubinatorTabletView {
                 alert.SetMessage("Connect to device '" + name + "' ?");
                 alert.SetPositiveButton("OK", (c, ev) => {
                     Task.Run(() => RunOnUiThread(() => {
-                        if (!ControlHandler.TryConnect(address)) {
+                        if (!controlHandler.TryConnect(address)) {
                             Android.App.AlertDialog.Builder connectionFailedAlert = new Android.App.AlertDialog.Builder(this);
                             connectionFailedAlert.SetTitle("Error");
                             connectionFailedAlert.SetMessage("Failed to connect to device '" + name + "'");

@@ -39,6 +39,18 @@ namespace Rubinator3000.Communication {
             listener = new BluetoothListener(SERVICE_UUID);
         }
 
+        public void Disconnect() {
+            if (listener != null) {
+                listener.Stop();
+                Log.LogMessage("Stopped bluetooth listener");
+            }
+
+            if (client != null) {
+                client.Dispose();
+                Log.LogMessage("Disposed of bluetooth client");
+            }
+        }
+
         public void Write(byte b) {
             Write(new byte[] { b });
         }
@@ -58,7 +70,13 @@ namespace Rubinator3000.Communication {
                 Log.LogMessage("Start listening for bluetooth devices...");
 
                 listener.Start();
-                client = listener.AcceptBluetoothClient();
+                try {
+                    client = listener.AcceptBluetoothClient();
+                } catch (Exception e) {
+                    Log.LogMessage(e.ToString());
+                    return;
+                }
+
                 Log.LogMessage("Bluetooth device with name '" + client.RemoteMachineName + "' connected.");
 
                 stream = client.GetStream();

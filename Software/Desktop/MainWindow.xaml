@@ -150,6 +150,7 @@
                 <MenuItem Click="MenuItem_Connect_Click" Header="Arduino verbinden" />
                 <MenuItem Click="MenuItem_Disconnect_Click" Header="Arduino trennen" />
                 <MenuItem Click="MenuItem_BluetoothSetup_Click" Header="Bluetooth starten" />
+                <MenuItem Click="MenuItem_BluetoothUnsetup_Click" Header="Bluetooth stoppen" />
             </MenuItem>
 
             <!--  Index Tab "Ansicht"  -->

@@ -27,7 +27,7 @@ namespace Rubinator3000 {
 
         private void MenuItem_SolveCube_Click(object sender, RoutedEventArgs e) {
             SolveCube();
-        }        
+        }
 
         // View
         private void MenuItem_ChangeView_Click(object sender, RoutedEventArgs e) {
@@ -69,6 +69,10 @@ namespace Rubinator3000 {
 
         private void MenuItem_BluetoothSetup_Click(object sender, RoutedEventArgs e) {
             moveSynchronizer.SetupBluetooth();
+        }
+
+        private void MenuItem_BluetoothUnsetup_Click(object sender, RoutedEventArgs e) {
+            moveSynchronizer.UnsetupBluetooth();
         }
     }
 }

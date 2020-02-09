@@ -125,13 +125,13 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/control_downsync"
-                android:id="@+id/control_downsync"/>
+                android:text="@string/control_syncfromserver"
+                android:id="@+id/control_syncfromserver"/>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/control_upsync"
-                android:id="@+id/control_upsync"/>
+                android:text="@string/control_synctoserver"
+                android:id="@+id/control_synctoserver"/>
         </TableRow>
     </TableLayout>
 

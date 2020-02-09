@@ -20,22 +20,39 @@ namespace Rubinator3000.Communication {
         private int tilesReceived = 54;
 
         private void HandleBluetoothData(byte data) {
+            // handle incoming state data
             if (tilesReceived < 54) {
-                CubeFace face = (CubeFace)(tilesReceived / 9);
-                int tile = tilesReceived % 9;
-                receivingState.SetTile(face, tile, (CubeColor)data);
+                try {
+                    CubeFace face = (CubeFace)(tilesReceived / 9);
+                    int tile = tilesReceived % 9;
+                    receivingState.SetTile(face, tile, (CubeColor)data);
 
-                tilesReceived++;
-                if (tilesReceived == 54) {
-                    Application.Current.Dispatcher.Invoke(delegate {
-                        ((MainWindow)Application.Current.MainWindow).cube = (Cube)receivingState.Clone();
-                    });
-                    DrawCube.AddState(receivingState);
+                    tilesReceived++;
+                    if (tilesReceived == 54) {
+                        Application.Current.Dispatcher.Invoke(delegate {
+                            ((MainWindow)Application.Current.MainWindow).cube = (Cube)receivingState.Clone();
+                        });
+                        DrawCube.AddState(receivingState);
+                    }
+                } catch (Exception e) {
+                    Log.LogMessage(e.ToString());
                 }
+            // do move
             } else if (data > 0x01 && data < 0x0E)
                 RunAsync(RubinatorCore.Utility.ByteToMove(data), false);
+
+            // start receiving state from client
             else if (data == 0x01) {
                 tilesReceived = 0;
+            // send state to client
+            } else if (data == 0x00) {
+                for (CubeFace face = CubeFace.LEFT; face <= CubeFace.BACK; face++) {
+                    for (int tile = 0; tile < 9; tile++) {
+                        Application.Current.Dispatcher.Invoke(delegate {
+                            bluetoothServer.Write((byte)((MainWindow)Application.Current.MainWindow).cube.At(face, tile));
+                        });
+                    }
+                }
             }
         }
 
@@ -69,6 +86,10 @@ namespace Rubinator3000.Communication {
             };
 
             bluetoothServer.StartDiscovering();
+        }
+
+        public void UnsetupBluetooth() {
+            bluetoothServer.Disconnect();
         }
 
         public Task RunAsync(Move move, bool btSend = true) {

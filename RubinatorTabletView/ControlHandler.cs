@@ -16,25 +16,47 @@ using System.Threading;
 using RubinatorCore;
 
 namespace RubinatorTabletView {
-    public static class ControlHandler {
-        public static BluetoothDevice device;
+    public class ControlHandler {
+        public BluetoothDevice device;
 
-        private static BluetoothSocket socket;
-        private static BluetoothAdapter adapter;
-        private static Stream outStream;
-        private static Stream inStream;
+        private BluetoothSocket socket;
+        private BluetoothAdapter adapter;
+        private Stream outStream;
+        private Stream inStream;
 
-        public static event EventHandler<byte> DataReceived;
+        private Cube receivingState = new Cube();
+        private int tilesReceived = 54;
 
-        private static readonly UUID SERVICE_UUID = UUID.FromString("053eaaaf-f981-4b64-a39e-ea4f5f44bb57");
+        private readonly UUID SERVICE_UUID = UUID.FromString("053eaaaf-f981-4b64-a39e-ea4f5f44bb57");
 
-        private static void ReceiveDataThread() {
+        private void HandleBluetoothData(byte data) {
+            // handle incoming state data
+            if (tilesReceived < 54) {
+                try {
+                    CubeFace face = (CubeFace)(tilesReceived / 9);
+                    int tile = tilesReceived % 9;
+                    receivingState.SetTile(face, tile, (CubeColor)data);
+
+                    tilesReceived++;
+                    if (tilesReceived == 54) {
+                        ((MainActivity)MainActivity.context).cube_view.renderer.AddState(receivingState);
+                    }
+                } catch (Exception e) {
+
+                }
+                // do move
+            } else if (data > 0x00 && data < 0x0E) {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(RubinatorCore.Utility.ByteToMove(data));
+            }
+        }
+
+        private void ReceiveDataThread() {
             StreamReader reader = new StreamReader(inStream);
 
             while (true) {
                 try {
                     byte content = Convert.ToByte(reader.Read());
-                    DataReceived?.Invoke(null, content);
+                    HandleBluetoothData(content);
                     System.Diagnostics.Debug.WriteLine(content);
                 } catch (Exception e) {
                     return;
@@ -42,33 +64,68 @@ namespace RubinatorTabletView {
             }
         }
 
-        public static void AddButtonEvents(LinearLayout cubeViewLayout) {
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_l).Click += LeftButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_li).Click += LeftiButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_r).Click += RightButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_ri).Click += RightiButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_f).Click += FrontButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_fi).Click += FrontiButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_b).Click += BackButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_bi).Click += BackiButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_u).Click += UpButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_ui).Click += UpiButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_d).Click += DownButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_di).Click += DowniButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.control_downsync).Click += DownSyncButtonPressed;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.control_upsync).Click += UpSyncButtonPressed;
+        public void AddButtonEvents(LinearLayout cubeViewLayout) {
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_l).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.LEFT));
+                Write(0x02);
+            };
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_li).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.LEFT, -1));
+                Write(0x03);
+            };
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_r).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.RIGHT));
+                Write(0x0A);
+            }; ;
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_ri).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.RIGHT, -1));
+                Write(0x0B);
+            }; ;
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_f).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.FRONT));
+                Write(0x06);
+            }; ;
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_fi).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.FRONT, -1));
+                Write(0x07);
+            }; ;
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_b).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.BACK));
+                Write(0x0C);
+            }; ;
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_bi).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.BACK, -1));
+                Write(0x0D);
+            }; ;
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_u).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.UP));
+                Write(0x04);
+            }; ;
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_ui).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.UP, -1));
+                Write(0x05);
+            }; ;
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_d).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.DOWN));
+                Write(0x08);
+            }; ;
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_ui).Click += (obj, e) => {
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.DOWN, -1));
+                Write(0x09);
+            };
+
+            cubeViewLayout.FindViewById<Button>(Resource.Id.control_syncfromserver).Click += SyncFromServer;
+            cubeViewLayout.FindViewById<Button>(Resource.Id.control_synctoserver).Click += SyncToServer;
         }
 
-        /// <summary>
-        /// Open a new activity from which you can select the device
-        /// </summary>
-        /// <param name="mainActivity">The main activity from which to launch the new one</param>
-        public static void GetAddress(Activity mainActivity) {
+        // open up a new activity from which you can retrieve the BT_ADDR of a device
+        // https://macaddresschanger.com/what-is-bluetooth-address-BD_ADDR
+        public void GetAddress(Activity mainActivity) {
             var intent = new Intent(mainActivity, typeof(DeviceListActivity));
             mainActivity.StartActivityForResult(intent, 2);
         }
 
-        public static bool TryConnect(string address) {
+        public bool TryConnect(string address) {
             if (adapter == null)
                 adapter = BluetoothAdapter.DefaultAdapter;
 
@@ -88,11 +145,11 @@ namespace RubinatorTabletView {
             return true;
         }
 
-        public static void Write(byte b) {
+        public void Write(byte b) {
             Write(new byte[] { b });
         }
 
-        public static void Write(byte[] b) {
+        public void Write(byte[] b) {
             try {
                 outStream.Write(b, 0, b.Length);
             } catch (Exception e) {
@@ -101,64 +158,18 @@ namespace RubinatorTabletView {
         }
 
         // same codes as specified in RubinatorCommunicationProtocol.txt
-        private static void DownSyncButtonPressed(object sender, EventArgs e) {
-
+        private void SyncFromServer(object sender, EventArgs e) {
+            // request the server to send the state
+            Write(0x00);
         }
-        private static void UpSyncButtonPressed(object sender, EventArgs e) {
+        private void SyncToServer(object sender, EventArgs e) {
+            // request the server to read the state data (54 bytes) which follows
             Write(0x01);
             for (CubeFace face = CubeFace.LEFT; face <= CubeFace.BACK; face++) {
                 for (int tile = 0; tile < 9; tile++) {
                     Write(Convert.ToByte(((MainActivity)MainActivity.context).cube_view.renderer.At(face, tile)));
                 }
             }
-        }
-        private static void LeftButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.LEFT));
-            Write(0x02);
-        }
-        private static void LeftiButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.LEFT, -1));
-            Write(0x03);
-        }
-        private static void RightButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.RIGHT));
-            Write(0x0A);
-        }
-        private static void RightiButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.RIGHT, -1));
-            Write(0x0B);
-        }
-        private static void FrontButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.FRONT));
-            Write(0x06);
-        }
-        private static void FrontiButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.FRONT, -1));
-            Write(0x07);
-        }
-        private static void BackButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.BACK));
-            Write(0x0C);
-        }
-        private static void BackiButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.BACK, -1));
-            Write(0x0D);
-        }
-        private static void UpButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.UP));
-            Write(0x04);
-        }
-        private static void UpiButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.UP, -1));
-            Write(0x05);
-        }
-        private static void DownButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.DOWN));
-            Write(0x08);
-        }
-        private static void DowniButtonPressed(object sender, EventArgs e) {
-            ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new RubinatorCore.Move(RubinatorCore.CubeFace.DOWN, -1));
-            Write(0x09);
         }
     }
 }

@@ -3413,10 +3413,10 @@ namespace RubinatorTabletView
 			public const int contentPanel = 2131230784;
 			
 			// aapt resource value: 0x7F080041
-			public const int control_downsync = 2131230785;
+			public const int control_syncfromserver = 2131230785;
 			
 			// aapt resource value: 0x7F080042
-			public const int control_upsync = 2131230786;
+			public const int control_synctoserver = 2131230786;
 			
 			// aapt resource value: 0x7F080043
 			public const int coordinator = 2131230787;
@@ -4385,34 +4385,34 @@ namespace RubinatorTabletView
 			public const int control_di = 2131623988;
 			
 			// aapt resource value: 0x7F0E0035
-			public const int control_downsync = 2131623989;
+			public const int control_f = 2131623989;
 			
 			// aapt resource value: 0x7F0E0036
-			public const int control_f = 2131623990;
+			public const int control_fi = 2131623990;
 			
 			// aapt resource value: 0x7F0E0037
-			public const int control_fi = 2131623991;
+			public const int control_l = 2131623991;
 			
 			// aapt resource value: 0x7F0E0038
-			public const int control_l = 2131623992;
+			public const int control_li = 2131623992;
 			
 			// aapt resource value: 0x7F0E0039
-			public const int control_li = 2131623993;
+			public const int control_r = 2131623993;
 			
 			// aapt resource value: 0x7F0E003A
-			public const int control_r = 2131623994;
+			public const int control_ri = 2131623994;
 			
 			// aapt resource value: 0x7F0E003B
-			public const int control_ri = 2131623995;
+			public const int control_syncfromserver = 2131623995;
 			
 			// aapt resource value: 0x7F0E003C
-			public const int control_u = 2131623996;
+			public const int control_synctoserver = 2131623996;
 			
 			// aapt resource value: 0x7F0E003D
-			public const int control_ui = 2131623997;
+			public const int control_u = 2131623997;
 			
 			// aapt resource value: 0x7F0E003E
-			public const int control_upsync = 2131623998;
+			public const int control_ui = 2131623998;
 			
 			// aapt resource value: 0x7F0E003F
 			public const int fab_transformation_scrim_behavior = 2131623999;
