@@ -61,7 +61,7 @@ namespace RubinatorTabletView {
             while (true) {
                 try {
                     byte content = Convert.ToByte(reader.Read());
-                    System.Diagnostics.Debug.WriteLine(BitConverter.ToString(new byte[] { content }));
+                    System.Diagnostics.Debug.WriteLine("CLIENT RECEIVED " + BitConverter.ToString(new byte[] { content }));
                     HandleBluetoothData(content);
                 } catch (Exception e) {
                     return;
@@ -114,7 +114,7 @@ namespace RubinatorTabletView {
                 ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.DOWN));
                 Write(0x08);
             }; ;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_ui).Click += (obj, e) => {
+            cubeViewLayout.FindViewById<Button>(Resource.Id.button_di).Click += (obj, e) => {
                 ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.DOWN, -1));
                 Write(0x09);
             };
@@ -170,6 +170,7 @@ namespace RubinatorTabletView {
         public void Write(byte[] b) {
             try {
                 outStream.Write(b, 0, b.Length);
+                System.Diagnostics.Debug.WriteLine("CLIENT SENT " + BitConverter.ToString(b));
             } catch (Exception e) {
                 return;
             }

@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Widget;
 using OpenTK;
 using OpenTK.Graphics.ES31;
+using RubinatorCore;
 
 namespace RubinatorTabletView {
     public class Shader {
@@ -47,7 +48,7 @@ namespace RubinatorTabletView {
 
             string infoLog = GL.GetShaderInfoLog(shader);
             if (infoLog != ""){
-                System.Diagnostics.Debug.WriteLine(infoLog);
+                Log.LogMessage(infoLog);
             }
 
             return shader;

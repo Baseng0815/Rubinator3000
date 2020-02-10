@@ -7,7 +7,10 @@ connection:
 0xF1		connected
 
 bluetooth:
-0x01		begin cube transmission
+0x00		transmit cube to client
+0x01		transmit cube to server
+0x30		solve cube
+0x31		shuffle cube	
 
 errors:
 0xB0		error

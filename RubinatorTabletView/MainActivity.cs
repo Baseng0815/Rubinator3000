@@ -14,13 +14,7 @@ using Xamarin.Essentials;
 namespace RubinatorTabletView {
 
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true, ScreenOrientation = ScreenOrientation.Landscape)]
-    public class MainActivity : AppCompatActivity, BottomNavigationView.IOnNavigationItemSelectedListener {
-
-        private RelativeLayout display_area;
-
-        private RelativeLayout layout_correction;
-        private LinearLayout layout_cube_view;
-        private RelativeLayout layout_settings;
+    public class MainActivity : AppCompatActivity {
 
         private ControlHandler controlHandler;
 
@@ -40,33 +34,22 @@ namespace RubinatorTabletView {
 
             OpenTK.Toolkit.Init();
 
-            display_area = FindViewById<RelativeLayout>(Resource.Id.display_area);
-
-            // Load layouts
-            layout_correction = (RelativeLayout)LayoutInflater.Inflate(Resource.Layout.layout_correction, null);
-            layout_cube_view = (LinearLayout)LayoutInflater.Inflate(Resource.Layout.layout_cube_view, null);
-            layout_settings = (RelativeLayout)LayoutInflater.Inflate(Resource.Layout.layout_settings, null);
-
             controlHandler = new ControlHandler();
-            controlHandler.AddButtonEvents(layout_cube_view);
+            controlHandler.AddButtonEvents(FindViewById<LinearLayout>(Resource.Id.container));
 
-            layout_cube_view.FindViewById<Button>(Resource.Id.button_pairBluetooth).Click += (sender, e) => {
+            FindViewById<Button>(Resource.Id.button_pairBluetooth).Click += (sender, e) => {
                 controlHandler.GetAddress(this);
             };
 
-            layout_cube_view.FindViewById<Button>(Resource.Id.button_unpairBluetooth).Click += (sender, e) => {
+            FindViewById<Button>(Resource.Id.button_unpairBluetooth).Click += (sender, e) => {
                 controlHandler.Disconnect();
-                layout_cube_view.FindViewById<TextView>(Resource.Id.textView1).SetText(Resource.String.bluetooth_disconnected);
+                FindViewById<TextView>(Resource.Id.textView1).SetText(Resource.String.bluetooth_disconnected);
             };
 
             // Load references to views of inside the layouts
-            cube_view = layout_cube_view.FindViewById<CubeView>(Resource.Id.cube_view);
+            cube_view = FindViewById<CubeView>(Resource.Id.cube_view);
 
-            display_area.AddView(layout_cube_view);
             cube_view.Run(60.0f);
-
-            BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
-            navigation.SetOnNavigationItemSelectedListener(this);
         }
 
         protected override void OnDestroy() {
@@ -94,7 +77,7 @@ namespace RubinatorTabletView {
                             dialog.Show();
                         } else {
                             string str = Resources.GetString(Resource.String.bluetooth_connected) + " " + name;
-                            layout_cube_view.FindViewById<TextView>(Resource.Id.textView1).SetText(str.ToCharArray(), 0, str.Length);
+                            FindViewById<TextView>(Resource.Id.textView1).SetText(str.ToCharArray(), 0, str.Length);
                         }
                     }));
                 });
@@ -110,24 +93,6 @@ namespace RubinatorTabletView {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-
-        public bool OnNavigationItemSelected(IMenuItem item) {
-
-            display_area.RemoveAllViews();
-
-            switch (item.ItemId) {
-                case Resource.Id.navigation_cube_view:
-                    display_area.AddView(layout_cube_view);
-                    return true;
-                case Resource.Id.navigation_correction:
-                    display_area.AddView(layout_correction);
-                    return true;
-                case Resource.Id.navigation_settings:
-                    display_area.AddView(layout_settings);
-                    return true;
-            }
-            return false;
         }
     }
 }

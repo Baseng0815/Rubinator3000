@@ -27,6 +27,7 @@ namespace Rubinator3000.Communication {
                 try {
                     var read = reader.Read();
                     byte content = Convert.ToByte(read);
+                    System.Diagnostics.Debug.WriteLine("SERVER RECEIVED " + BitConverter.ToString(new byte[] { content }));
                     DataReceived?.Invoke(null, content);
                 } catch (Exception e) {
                     Log.LogMessage(e.ToString());
@@ -54,6 +55,7 @@ namespace Rubinator3000.Communication {
         }
         public void Write(byte[] b) {
             try {
+                System.Diagnostics.Debug.WriteLine("SERVER SENT " + BitConverter.ToString(b));
                 stream.Write(b, 0, b.Length);
             } catch (Exception e) {
                 Log.LogMessage(e.ToString());

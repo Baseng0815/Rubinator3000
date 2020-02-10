@@ -106,7 +106,7 @@ namespace Rubinator3000 {
                 return;
             }
 
-            byte[] moveData = RubinatorCore.Utility.MulitTurnMoveToByte(move1, move2);
+            byte[] moveData = RubinatorCore.Utility.MultiTurnToByte(move1, move2);
 
             serial.Write(moveData, 0, moveData.Length);
         }

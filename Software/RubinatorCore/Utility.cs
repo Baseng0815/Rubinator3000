@@ -20,6 +20,7 @@ namespace RubinatorCore {
             return Enumerable.Repeat(moveData, Math.Abs(move.Count)).ToArray();
         }
 
+        // TODO fix multiturn to byte conversion
         public static byte[] MultiTurnToByte(Move move1, Move move2) {
             if (!Cube.IsOpponentFace(move1.Face, move2.Face))
                 throw new InvalidOperationException();
