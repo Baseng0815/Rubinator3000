@@ -8,7 +8,13 @@ using static RubinatorCore.CubeColor;
 using System.Threading;
 
 namespace RubinatorCore.Solving {
+    /// <summary>
+    /// Ein <see cref="CubeSolver"/> zum Lösen des F2L
+    /// </summary>
     public partial class FTLSolver : CubeSolver {
+        /// <summary>
+        /// Gibt an, ob das F2L gelöst ist
+        /// </summary>
         public override bool Solved {
             get {
                 for (int f = 0; f < 4; f++) {
@@ -25,14 +31,22 @@ namespace RubinatorCore.Solving {
             }
         }
 
+        /// <summary>
+        /// Eine Auflistung der F2L-Paare
+        /// </summary>
         private IEnumerable<FTLPair> pairs;
 
+        /// <summary>
+        /// Erstellt einen neuen <see cref="FTLSolver"/> mit dem eingegebenen Würfel
+        /// </summary>
+        /// <param name="cube">Der Würfel bei dem das F2L gelöst werden soll</param>
         public FTLSolver(Cube cube) : base(cube) {
             Func<EdgeStone, CornerStone, bool> edgeSelector = (e, c) => {
                 var colors = c.GetColors().Except(new List<CubeColor>() { WHITE });
                 return e.GetColors().All(color => colors.Contains(color));
             };
 
+            // die F2L-Paare bestimmen
             pairs = from corner in cube.Corners
                     where corner.HasColor(WHITE)
                     select new FTLPair(corner,
@@ -40,11 +54,16 @@ namespace RubinatorCore.Solving {
                             cube);
         }
 
+        /// <summary>
+        /// Löst das F2L
+        /// </summary>
         public override void SolveCube() {
             while (pairs.Any(pair => !pair.Solved)) {
+                // ungelöste Paare bestimmen
                 FTLPair[] unsolvedPairs = pairs.Where(pair => !pair.Solved).ToArray();
-                int pairIndex  = - 1;
+                int pairIndex = -1;
 
+                // das Paar mit den wenigsten Zügen lösen
                 MoveCollection minMoves = null;
                 for (int i = 0; i < unsolvedPairs.Length; i++) {
                     FTLMoveCalculator moveCalculator = new FTLMoveCalculator(unsolvedPairs[i], cube);
@@ -56,16 +75,21 @@ namespace RubinatorCore.Solving {
                     }
                 }
 
-                DoMoves(minMoves);                
-            }            
+                DoMoves(minMoves);
+            }
         }
 
+        /// <summary>
+        /// Löst das F2L asynchron
+        /// </summary>
         public override Task SolveCubeAsync() {
             return Task.Factory.StartNew(async () => {
 
                 while (pairs.Any(pair => !pair.Solved)) {
+                    // ungelöste Paare bestimmen
                     IEnumerable<FTLPair> unsolvedPairs = pairs.Where(pair => !pair.Solved);
 
+                    // Aufgaben erstellen um alle Paare zu lösen
                     List<Task<MoveCollection>> tasks = new List<Task<MoveCollection>>();
                     foreach (var pair in unsolvedPairs) {
                         var task = new Task<MoveCollection>(() => {
@@ -76,33 +100,42 @@ namespace RubinatorCore.Solving {
                         tasks.Add(task);
                     }
 
+                    // alle Aufgaben starten
                     tasks.ForEach(t => t.Start());
 
+                    // das Paar mit den wenigsten Zügen lösen
                     MoveCollection minMoves = null;
                     while (tasks.Count > 0) {
                         var moves = await tasks.First();
 
-                        if(minMoves == null || minMoves.Count > moves.Count) {
+                        if (minMoves == null || minMoves.Count > moves.Count) {
                             minMoves = moves;
                         }
 
                         tasks.RemoveAt(0);
                     }
 
-                    DoMoves(minMoves);                    
+                    DoMoves(minMoves);
                 }
 
                 Log.LogMessage(Solved ? "F2L gelöst" : "F2L nicht gelöst");
             }).Unwrap();
-        }        
+        }
 
+        /// <summary>
+        /// Überprüft, ob das weiße Kreuz gelöst ist
+        /// </summary>
+        /// <param name="cube">Der Würfel, der überprüft werden soll</param>
+        /// <returns>Eine Wert, der angibt, ob das weiße Kreuz gelöst ist</returns>
         protected override bool CheckCube(Cube cube) {
+            // überprüfen, ob die weiße Seite ein Kreuz aufweist
             for (int t = 1; t < 9; t += 2) {
                 if (!(cube.At(UP, t) == WHITE)) {
                     return false;
                 }
             }
 
+            // überprüfen, ob die Kantensteine richtig sind
             foreach (var face in MiddleLayerFaces) {
                 if (!(cube.At(face, 1) == Cube.GetFaceColor(face))) {
                     return false;

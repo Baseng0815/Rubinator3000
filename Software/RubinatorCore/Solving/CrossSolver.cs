@@ -12,8 +12,15 @@ namespace RubinatorCore.Solving {
     /// </summary>
     public class CrossSolver : CubeSolver {
         #region CubeSolver
+        /// <summary>
+        /// Der Pivotstein
+        /// </summary>
         protected EdgeStone pivotStone;
+        /// <summary>
+        /// Eine Auflistung der weißen Kantensteine
+        /// </summary>
         protected IEnumerable<EdgeStone> whiteEdges;
+
         /// <summary>
         /// Gibt die Orientierung der weißen Seite zurück
         /// </summary>

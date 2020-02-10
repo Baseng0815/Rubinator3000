@@ -5,157 +5,192 @@ using static RubinatorCore.CubeColor;
 using static RubinatorCore.CubeFace;
 
 namespace RubinatorCore.Solving {
+    /// <summary>
+    /// Berechnet die Züge die zum Lösen eines F2L-Paares nötig sind
+    /// </summary>
     internal partial class FTLMoveCalculator {
+
+        /// <summary>
+        /// Eine Kopie des Würfels der gelöst werden soll
+        /// </summary>
         private Cube cube;
+
+        /// <summary>
+        /// Die F2L-Paare
+        /// </summary>
         private IEnumerable<FTLPair> pairs;
+
+        /// <summary>
+        /// Das aktuelle F2L-Paar
+        /// </summary>
         private FTLPair pair;
 
-
+        /// <summary>
+        /// Ein EventHandler um die Züge zu speichern
+        /// </summary>
+        /// <param name="face">Die Seite, die gedreht wird</param>
+        /// <param name="count">Die Anzahl der Drehungen im Uhrzeigersinn</param>
         private delegate void DoMoveEventHandler(CubeFace face, int count = 1);
+
+        /// <summary>
+        /// Ein Event, das ausgelöst wird, wenn der Würfel gedreht wird
+        /// </summary>
         private event DoMoveEventHandler DoMove;
 
+        /// <summary>
+        /// Erstellt einen neuen <see cref="FTLMoveCalculator"/> mit einem Wüfel und einem F2L-Paar
+        /// /// </summary>
+        /// <param name="pair">Das Paar, für welches die Züge berechnet werden sollen</param>
+        /// <param name="cube">Der Würfel</param>
         public FTLMoveCalculator(FTLPair pair, Cube cube) {
             this.cube = (Cube)cube.Clone();
 
+            // die Position der F2L-Paare bestimmen
             pairs = from corner in this.cube.Corners
                     where corner.HasColor(WHITE)
                     select FTLPair.GetPair(corner, this.cube);
 
+            // das zu lösende Paar festlegen
             this.pair = pairs.First(p => p == pair);
         }
 
+        /// <summary>
+        /// Gibt die Züge zurück, die nötig sind um das Paar zu lösen
+        /// </summary>
+        /// <returns>Eine <see cref="MoveCollection"/>, die die Züge zum Lösen enthält</returns>
         public MoveCollection CalcMoves() {
             MoveCollection moves = new MoveCollection();
 
+            // eine lokale Methode zum Hinzufügen und Ausführen der Züge
             void DoMove(CubeFace face, int count) {
                 if (count == 0)
-                    return; 
+                    return;
 
                 Move m = new Move(face, count);
                 cube.DoMove(m);
                 moves.Add(m);
-
-                pairs = from corner in cube.Corners
-                        where corner.HasColor(WHITE)
-                        select FTLPair.GetPair(corner, cube);
             }
 
+            // das DoMove Event abonnieren
             this.DoMove += DoMove;
 
+            // die Züge für das Paar berechnen
             CalcPairMoves();
 
+            // das DoMove Event deabonnieren
             this.DoMove -= DoMove;
 
+            // die Züge zum Lösen zurückgeben
             return moves;
         }
 
+        /// <summary>
+        /// Berechnet die Züge, die nötig sind um das aktuelle Paar zu lösen
+        /// </summary>
         private void CalcPairMoves() {
-            CubeFace faceToRot;
-            int direction;
-
-            // corner in slot and white face on white side
+            // Eckstein im Slot und weiße Fläche auf der weißen Seite
             if (pair.CornerWhitePosition.Face == UP) {
-                // in right slot
+                // im richtigen Slot
                 if (pair.Corner.InRightPosition()) {
-                    // edge in slot
+                    // Kantenstein in einem Slot
                     if (pair.EdgeInSlot) {
-                        // already paired and in right slot
+                        // F2L-Paar breits gelöst
                         if (pair.Edge.InRightPosition()) {
                             return;
                         }
-                        // edge false in slot
+                        // Kantenstein falsch orientiert im falschen Slot
                         else if (EdgeFalseInRightSlot(pair.Edge)) {
-                            // move pair to yellow layer
+                            // Paar auf gelbe Ebene bewegen
                             MoveSlotUp(pair.Corner);
 
-                            // handle false paired yellow layer
+                            // Falsch gepaart auf gelber Ebene lösen
                             FalsePairedDownLayer();
                         }
-                        // edge in other slot
+                        // Kantenstein in einem falschen Slot
                         else {
-                            // move edge on yellow layer
+                            // Kantentstein auf gelbe Ebene bewegen
                             MoveSlotUp(pair.Edge);
 
-                            // handle corner right and edge yellow layer
+                            // Konstellation lösen
                             CornerInSlot_WhiteUp_EdgeDown();
                         }
                     }
-                    // edge on yellow layer
+                    // Kantenstein auf gelber Ebene
                     else {
                         CornerInSlot_WhiteUp_EdgeDown();
                     }
                 }
-                // in false slot
+                // Eckstein im falschen Slot
                 else {
-                    // edge in slot
+                    // Kantenstein in einem Slot
                     if (pair.EdgeInSlot) {
                         IEnumerable<CubeFace> cornerSideFaces = from pos in pair.Corner.GetPositions()
                                                                 where pos.Face != UP
                                                                 select pos.Face;
-                        // edge in same slot 
+                        // Kanten- und Eckstein im gleichen Slot
                         if (pair.Edge.GetPositions().All(p => cornerSideFaces.Contains(p.Face))) {
-                            // right paired
+                            // richtig gepaart
                             if (pair.Paired) {
-                                // move on yellow layer
+                                // auf gelbe Ebene bewegen
                                 MoveSlotUp(pair.Corner);
 
-                                // handle as right paired
+                                // in richtigen Slot einsetzen
                                 RightPairedDownLayer();
                             }
                             else {
-                                // move edge on yellow layer
+                                // Kantenstein auf gelbe Ebene bewegen
                                 MoveSlotUp(pair.Edge);
 
-                                // handle as false paired
+                                // als falsch gepaart lösen
                                 FalsePairedDownLayer();
                             }
                         }
-                        // edge in other slot
+                        // Kantenstein in anderem Slot
                         else {
-                            // move edge up
+                            // Kantenstein auf gelbe Ebene bringen
                             MoveSlotUp(pair.Edge);
 
-                            // handle corner in slot and edge on yellow layer
+                            // Konstellation lösen
                             CornerInSlot_WhiteUp_EdgeDown();
                         }
                     }
                     else {
-                        // handle corner in slot and edge on yellow layer
+                        // Eckstein richtig im Slot und Kantenstein auf gelber Ebene lösen
                         CornerInSlot_WhiteUp_EdgeDown();
                     }
                 }
             }
-            // corner in slot and white face to side 
+            // Eckstein falsch orientiert in einem Slot
             else if (pair.Corner.GetPositions().Any(p => p.Face == UP)) {
-                // get the color on side which is not white
+                // die andere seitliche Farbe bestimmen, die nicht Weiß ist
                 Position cornerSidePos = pair.Corner.GetPosition(p => p.Face != UP && p != pair.CornerWhitePosition);
                 CubeColor cornerSideColor = pair.Corner.GetColor(cornerSidePos);
 
-                // edge in slot
+                // Kantenstein in einem Slot
                 if (pair.EdgeInSlot) {
-                    // edge in same slot as corner
+                    // beide Steine im gleichen Slot
                     if (pair.IsPaired()) {
-                        // move pair to up layer and try to calc the moves again
+                        // beide Steine uf gelbe Ebene bewegen und neu lösen
                         MoveSlotUp(pair.Edge);
 
                         CalcPairMoves();
                     }
-                    // edge in other slot
+                    // Kantenstein in einem anderen Slot
                     else {
-                        // move edge to yellow layer and try to calc the moves new
+                        // Kantenstein auf gelbe Ebene bewegen und neu lösen
                         MoveSlotUp(pair.Edge);
 
                         CalcPairMoves();
                     }
                 }
-                // edge on top
+                // Kantenstein auf gelber Ebene
                 else {
-                    // edge color on top
+                    // Farbe des Kantensteins auf gelber Seite bestimmen
                     CubeColor edgeDownColor = pair.Edge.GetColor(p => p.Face == DOWN);
 
-                    // edge right
+                    // Kantenstein richtig orientiert
                     if (cornerSideColor == edgeDownColor) {
-                        // handle crocodile
+                        // "Krokodil"-Konstellation lösen
                         CornerInSlot_WhiteSide_EdgeRightDown();
                     }
                     else {
@@ -163,24 +198,24 @@ namespace RubinatorCore.Solving {
                     }
                 }
             }
-            // corner on down layer and white face on yellow side
+            // Eckstein auf gelber Ebene und weiße Fläche nach oben
             else if (pair.CornerWhitePosition.Face == DOWN) {
-                // edge in slot
+                // Kantenstein in einem Slot
                 if (pair.EdgeInSlot) {
                     CubeColor color = pair.Corner.GetColors().First(c => c != WHITE);
                     int cornerTile = pair.Corner.GetColorPosition(color).Tile;
                     int edgeTile = pair.Edge.GetColorPosition(color).Tile;
 
-                    // edge right orientated
+                    // Kantenstein richtig orientiert
                     if (edgeTile + 3 == cornerTile) {
                         EaglePosition();
                     }
-                    // edge false orientated
+                    // Kantenstein falsch orientiert
                     else {
                         CornerDown_YellowSide_EdgeFalse();
                     }
                 }
-                // edge on down layer
+                // Kantenstein auf gelber Ebene
                 else {
                     if (pair.IsPaired()) {
                         CornerDown_YellowSide_Paired();
@@ -190,33 +225,33 @@ namespace RubinatorCore.Solving {
                     }
                 }
             }
-            // corner on down layer and white face to side
+            // Eckstein auf gelber Ebene und weiße Fläche zur Seite
             else {
-                // edge in slot
+                // Kantenstein in einem Slot
                 if (pair.EdgeInSlot) {
                     CornerDown_Side_EdgeSlot();
                 }
-                // edge on yellow side
+                // Kantenstein auf gelber Ebene
                 else {
-                    // pair paired
-                    if(pair.IsPaired(out bool edgeRight, out bool cornerRight)) {
-                        // corner facing to edge side
+                    // Steine gepaart
+                    if (pair.IsPaired(out bool edgeRight, out bool cornerRight)) {
+                        // Eckstein falsch orientiert
                         if (!cornerRight) {
                             PairedDown_CornerFalse();
                         }
-                        // corner right
+                        // Eckstein richtig orientiert
                         else {
-                            // right paired
+                            // Kantenstein richtig
                             if (edgeRight) {
                                 RightPairedDownLayer();
                             }
-                            // false paired
+                            // Kantenstein falsch
                             else {
                                 FalsePairedDownLayer();
                             }
                         }
                     }
-                    // not paired
+                    // nicht gepaart
                     else {
                         CornerDown_Side_EdgeDown();
                     }
@@ -224,9 +259,15 @@ namespace RubinatorCore.Solving {
             }
         }
 
+        /// <summary>
+        /// Bestimmt, ob ein Kantenstein falsch orientiert im richtigen Slot ist
+        /// </summary>
+        /// <param name="edge">Der Kantenstein, der überprüft werden soll</param>
+        /// <returns>Einen Wert, der angibt, ob der Kantentstein falsch orientiert im richtigen Slot ist</returns>
         private static bool EdgeFalseInRightSlot(EdgeStone edge) {
-            // edge in any slot
+            // überprüfen, ob der Kantenstein in einem Slot ist
             if (edge.GetPositions().All(p => p.Face != DOWN)) {
+                // überprüfen ob die Orientierung falsch ist und der Slot richig ist
                 var color1Face = Cube.GetFace(edge.Colors.Item1);
                 var color2Face = Cube.GetFace(edge.Colors.Item2);
 
@@ -235,10 +276,6 @@ namespace RubinatorCore.Solving {
             }
 
             return false;
-        }
-
-        private static bool OnDownLayer(IStone stone) {
-            return stone.GetPositions().Any(p => p.Face == DOWN);
         }
     }
 }

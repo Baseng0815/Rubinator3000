@@ -9,7 +9,13 @@ namespace RubinatorCore.Solving {
     /// Eine Hilfsstruktur, um die Verbindung von einem Kantenstein der mittleren Ebene und eines weißen Ecksteins herzustellen
     /// </summary>
     public struct FTLPair {
+        /// <summary>
+        /// Die Steine des Paares
+        /// </summary>
         private (EdgeStone edge, CornerStone corner) stones;
+        /// <summary>
+        /// Der Würfel, zu dem die Steine gehören
+        /// </summary>
         private readonly Cube cube;
 
         /// <summary>
@@ -23,6 +29,12 @@ namespace RubinatorCore.Solving {
             this.cube = cube;
         }
 
+        /// <summary>
+        /// Bestimmt ein F2L-Paar mithilfe eines Steins
+        /// </summary>
+        /// <param name="stone">Der Eck- oder Kantenstein</param>
+        /// <param name="cube">Der Würfe, zu dem der Stein gehört</param>
+        /// <returns>Ein F2L-Paar mit den Farben des Steins</returns>
         public static FTLPair GetPair(IStone stone, Cube cube) {
             if (stone is CornerStone corner) {
                 if (!corner.HasColor(WHITE))
@@ -93,6 +105,9 @@ namespace RubinatorCore.Solving {
             get => Corner.GetColorPosition(WHITE);
         }
 
+        /// <summary>
+        /// Gibt an, ob sich der Kantenstein des Paares in einem Slot befindet
+        /// </summary>
         public bool EdgeInSlot {
             get => stones.edge.GetPositions().All(p => p.Face != DOWN);
         }
@@ -111,8 +126,8 @@ namespace RubinatorCore.Solving {
         /// </summary>
         /// <param name="edgeRight">Gibt an, ob die beiden Steine farblich korrekt verbunden sind</param>
         /// <returns>Gibt zurück, ob sich beide Steine nebeneinander befinden</returns>
-        public bool IsPaired(out bool edgeRight, out bool cornerRight) {
-            // get common edge and corner positions on same face            
+        public bool IsPaired(out bool edgeRight, out bool cornerRight) {            
+            // die Positionen auf den gemeinsamen Seiten bestimmen
             IEnumerable<(Position corner, Position edge)> commonFaces = from ePos in Edge.GetPositions()
                                                                         join cPos in Corner.GetPositions() on ePos.Face equals cPos.Face
                                                                         select (cPos, ePos);
@@ -122,13 +137,13 @@ namespace RubinatorCore.Solving {
             if (commonFaces.Count() == 0 || commonFaces.Count() == 1)
                 return false;
 
-            // check if edge and corner position are side by side 
+            // überprüfen ob die gemeinsamen Seitenpositionen nebeneinander liegen
             if (commonFaces.All(t => {
                 int d = Math.Abs(t.edge.Tile - t.corner.Tile);
                 return d == 1 || d == 3;
             })) {
                 IStone Corner = this.Corner;
-                // return if colors are equal on each face
+                // zurückgeben, ob die nebeneinander liegenden Farben gleich sind
                 edgeRight = commonFaces.All(t => cube.At(t.edge) == cube.At(t.corner));
                 cornerRight = !commonFaces.Any(t => t.corner == Corner.GetColorPosition(WHITE));
                 return true;
@@ -137,6 +152,10 @@ namespace RubinatorCore.Solving {
             return false;
         }        
 
+        /// <summary>
+        /// Überprüft F2L-Paare auf Gleichheit
+        /// </summary>        
+        /// <returns>Einen Wert, der angibt, ob die beiden Paare gleich sind</returns>
         public override bool Equals(object obj) {
             return obj is FTLPair pair &&
                    EqualityComparer<Cube>.Default.Equals(cube, pair.cube) &&

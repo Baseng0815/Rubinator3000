@@ -56,28 +56,22 @@ namespace RubinatorCore.Solving {
             try {
                 // überprüfen, ob das OLL gelöst ist
                 if (!OllSolved()) {
-                    // das richtige OLL Pattern finden                    
-                    while (!OllPatterns.Any(p => p.pattern.IsMatch(cube))) {
-                        DoMove(new Move(CubeFace.DOWN));
-                    }
+                    // den Algorithmus bestimmen
+                    MoveCollection ollMoves = GetSolvingMoves(OllPatterns, out int patternNumber);
 
                     // den Algorithmus ausführen
-                    (OllPattern p, MoveCollection a) pattern = OllPatterns.First(p => p.pattern.IsMatch(cube));
-                    Log.LogMessage($"OLL Pattern {pattern.p.Number}");
-                    DoMoves(pattern.a);
+                    Log.LogMessage($"OLL Pattern {patternNumber}");
+                    DoMoves(ollMoves);
                 }
 
                 // überprüfen, ob der Würfel glöst ist
                 if (!GetCubeSolved()) {
-                    // das richtige PLL Pattern finden                    
-                    while (!PllPatterns.Any(p => p.pattern.IsMatch(cube))) {
-                        DoMove(new Move(CubeFace.DOWN));
-                    }
+                    // den Algorithmus bestimmen
+                    MoveCollection pllMoves = GetSolvingMoves(PllPatterns, out int patternNumber);
 
-                    // den Algorithmus ausführen
-                    (PllPattern p, MoveCollection a) pattern = PllPatterns.First(p => p.pattern.IsMatch(cube));
-                    Log.LogMessage($"PLL Pattern {pattern.p.Number}");
-                    DoMoves(pattern.a);
+                    // den Algorithmus ausführen                    
+                    Log.LogMessage($"PLL Pattern {patternNumber}");
+                    DoMoves(pllMoves);
                 }
 
                 // die gelbe Seite in die richtige Position drehen
@@ -88,6 +82,40 @@ namespace RubinatorCore.Solving {
             catch (Exception e) {
                 Log.LogMessage("Last Layer Solver:\t" + e.ToString());
             }
+        }
+
+        /// <summary>
+        /// Gibt die transformierten Züge zurück, die durch das passende Pattern definiert sind
+        /// </summary>
+        /// <param name="patterns">Die Patterns, die mit dem Würfel verglichen werden sollen</param>
+        /// <param name="patternNumber">Die Nummer des Patterns</param>
+        /// <returns>Die transformierten Züge</returns>
+        private MoveCollection GetSolvingMoves((IPattern, MoveCollection)[] patterns, out int patternNumber) {
+            patternNumber = -1;
+            int count = 0;
+            IPattern pattern;
+            MoveCollection moves = null;
+
+            // die richtige Orientierung der gelben Seite und das richtige Pattern finden
+            for (int i = 0; i < 4; i++) {
+                if (moves == null)
+                    for (int p = 0; p < patterns.Length; p++) {
+                        if (!patterns[p].Item1.IsMatch(cube))
+                            continue;
+
+                        (pattern, moves) = patterns[p];
+                        patternNumber = pattern.Number;
+                        count = i;
+                        break;
+                    }
+
+
+                DoMove(new Move(CubeFace.DOWN));
+            }
+
+            // den Algorithmus transformieren und zurückgeben
+            CubeOrientation orientation = new CubeOrientation(MiddleLayerFaces[(5 - count) % 4], CubeFace.UP);
+            return moves.TransformMoves(orientation);
         }
 
         /// <summary>
@@ -108,12 +136,12 @@ namespace RubinatorCore.Solving {
         /// <summary>
         /// Die OLL Patterns und Algorithmen
         /// </summary>
-        public static (OllPattern pattern, MoveCollection algorithm)[] OllPatterns;
+        public static (IPattern pattern, MoveCollection algorithm)[] OllPatterns;
 
         /// <summary>
         /// Die PLL Patterns und Algorithmen
         /// </summary>
-        public static (PllPattern pattern, MoveCollection algorithm)[] PllPatterns;
+        public static (IPattern pattern, MoveCollection algorithm)[] PllPatterns;
 
         /// <summary>
         /// Lädt die OLL Patterns und Algorithmen aus der xml-Datei
@@ -122,7 +150,7 @@ namespace RubinatorCore.Solving {
             // die xml-Datei öffnen
             XDocument doc = XDocument.Parse(Resources.ollSolving);
 
-            Func<XElement, (OllPattern, MoveCollection)> getPattern = e => {
+            Func<XElement, (IPattern, MoveCollection)> getPattern = e => {
                 // die Nummer des Patterns aus dem xml-Element lesen
                 int ollNumber = int.Parse(e.Attribute("number").Value);
 
@@ -141,8 +169,8 @@ namespace RubinatorCore.Solving {
                     sidesData[s] = new bool[3];
                     int sideValue = int.Parse(e.Attribute($"side{s}").Value);
 
-                    for (int i = 0; i < 3; i++) {                        
-                        sidesData[s][i] = (sideValue & (1 >> i)) == (1 >> i);
+                    for (int i = 0; i < 3; i++) {
+                        sidesData[s][i] = (sideValue & (1 << i)) == (1 << i);
                     }
                 }
 
@@ -162,8 +190,8 @@ namespace RubinatorCore.Solving {
             };
 
             // alle Elemente aus der Datei lesen und speichern
-            IEnumerable<(OllPattern, MoveCollection)> patterns = from element in doc.Root.Elements("ollPattern")
-                                                                 select getPattern(element);
+            IEnumerable<(IPattern, MoveCollection)> patterns = from element in doc.Root.Elements("ollPattern")
+                                                               select getPattern(element);
 
             OllPatterns = patterns.ToArray();
         }
@@ -171,7 +199,7 @@ namespace RubinatorCore.Solving {
             XDocument doc = XDocument.Parse(Resources.pllSolving);
             CubeOrientation orientation = new CubeOrientation(CubeFace.LEFT, CubeFace.DOWN);
 
-            Func<XElement, (PllPattern, MoveCollection)> getPattern = e => {
+            Func<XElement, (IPattern, MoveCollection)> getPattern = e => {
                 // die Nummer des Patterns aus dem xml-Element lesen
                 int number = int.Parse(e.Attribute("number").Value);
 
@@ -202,8 +230,8 @@ namespace RubinatorCore.Solving {
             };
 
             // alle Elemente aus der Datei lesen und speichern
-            IEnumerable<(PllPattern, MoveCollection)> patterns = from element in doc.Root.Elements("pllPattern")
-                                                                 select getPattern(element);
+            IEnumerable<(IPattern, MoveCollection)> patterns = from element in doc.Root.Elements("pllPattern")
+                                                               select getPattern(element);
             PllPatterns = patterns.ToArray();
         }
 
