@@ -19,8 +19,7 @@ namespace RubinatorCore {
 
             return Enumerable.Repeat(moveData, Math.Abs(move.Count)).ToArray();
         }
-
-        // TODO fix multiturn to byte conversion
+        
         public static byte[] MultiTurnToByte(Move move1, Move move2) {
             if (!Cube.IsOpponentFace(move1.Face, move2.Face))
                 throw new InvalidOperationException();
@@ -39,18 +38,18 @@ namespace RubinatorCore {
             moveByte |= 0x10;
 
             // create data array
-            int minCount = Math.Min(leftMove.CountPositive, rightMove.CountPositive);
-            int maxCount = Math.Max(leftMove.CountPositive, rightMove.CountPositive);
+            int minCount = Math.Min(Math.Abs(leftMove.Count), Math.Abs(rightMove.Count));
+            int maxCount = Math.Max(Math.Abs(leftMove.Count), Math.Abs(rightMove.Count));
 
-            byte[] data = new byte[maxCount];
+             byte[] data = new byte[maxCount];
 
             // fill array with data
             for (int i = 0; i < maxCount; i++) {
                 if (i < minCount)
                     data[i] = moveByte;
-                else if (i < leftMove.CountPositive) {
+                else if (i < Math.Abs(leftMove.Count)) {
                     data[i] = MoveToByte(leftMove)[0];
-                } else if (i < rightMove.CountPositive) {
+                } else if (i < Math.Abs(rightMove.Count)) {
                     data[i] = MoveToByte(rightMove)[0];
                 }
             }
