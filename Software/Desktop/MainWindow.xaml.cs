@@ -68,7 +68,7 @@ namespace Rubinator3000 {
                     if (window.WindowsFormsHost_CubePreview.Child != null) {
                         window.TextBox_Log.Focus();
                         window.TextBox_Log.CaretIndex = window.TextBox_Log.Text.Length;
-                        window.TextBox_Log.ScrollToEnd();
+                        //window.TextBox_Log.ScrollToEnd();
                     }
                 });
             };

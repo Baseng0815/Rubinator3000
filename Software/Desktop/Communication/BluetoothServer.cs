@@ -42,12 +42,10 @@ namespace Rubinator3000.Communication {
         public void Disconnect() {
             if (listener != null) {
                 listener.Stop();
-                Log.LogMessage("Stopped bluetooth listener");
             }
 
             if (client != null) {
                 client.Dispose();
-                Log.LogMessage("Disposed of bluetooth client");
             }
         }
 

@@ -57,7 +57,6 @@ namespace RubinatorTabletView {
                 try {
                     byte content = Convert.ToByte(reader.Read());
                     HandleBluetoothData(content);
-                    System.Diagnostics.Debug.WriteLine(content);
                 } catch (Exception e) {
                     return;
                 }
@@ -145,6 +144,11 @@ namespace RubinatorTabletView {
             return true;
         }
 
+        public void Disconnect() {
+            if (socket != null)
+                socket.Dispose();
+        }
+
         public void Write(byte b) {
             Write(new byte[] { b });
         }
@@ -160,6 +164,7 @@ namespace RubinatorTabletView {
         // same codes as specified in RubinatorCommunicationProtocol.txt
         private void SyncFromServer(object sender, EventArgs e) {
             // request the server to send the state
+            tilesReceived = 0;
             Write(0x00);
         }
         private void SyncToServer(object sender, EventArgs e) {

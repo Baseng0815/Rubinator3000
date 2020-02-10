@@ -1,4 +1,3 @@
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -110,6 +109,15 @@
                 android:layout_height="match_parent"
                 android:text="@string/button_pairBluetooth"
                 android:id="@+id/button_pairBluetooth"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/button_unpairBluetooth"
+                android:id="@+id/button_unpairBluetooth"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
             <TextView
                 android:minWidth="30px"
                 android:minHeight="30px"
@@ -118,6 +126,11 @@
                 android:text="@string/bluetooth_disconnected"
                 android:id="@+id/textView1"
                 android:gravity="center"/>
+            <TextView
+                android:minWidth="30px"
+                android:minHeight="30px"
+                xmlns="http://schemas.android.com/apk/res/android"
+                android:id="@+id/textView2" />
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
@@ -134,5 +147,4 @@
                 android:id="@+id/control_synctoserver"/>
         </TableRow>
     </TableLayout>
-
 </LinearLayout>

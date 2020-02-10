@@ -54,6 +54,11 @@ namespace RubinatorTabletView {
                 controlHandler.GetAddress(this);
             };
 
+            layout_cube_view.FindViewById<Button>(Resource.Id.button_unpairBluetooth).Click += (sender, e) => {
+                controlHandler.Disconnect();
+                layout_cube_view.FindViewById<TextView>(Resource.Id.textView1).SetText(Resource.String.bluetooth_disconnected);
+            };
+
             // Load references to views of inside the layouts
             cube_view = layout_cube_view.FindViewById<CubeView>(Resource.Id.cube_view);
 
@@ -88,7 +93,8 @@ namespace RubinatorTabletView {
                             Dialog dialog = connectionFailedAlert.Create();
                             dialog.Show();
                         } else {
-                            layout_cube_view.FindViewById<TextView>(Resource.Id.textView1).SetText(Resource.String.bluetooth_connected);
+                            string str = Resources.GetString(Resource.String.bluetooth_connected) + name;
+                            layout_cube_view.FindViewById<TextView>(Resource.Id.textView1).SetText(str.ToCharArray(), 0, str.Length);
                         }
                     }));
                 });

@@ -185,8 +185,9 @@ namespace RubinatorTabletView {
         /// </summary>
         /// <param name="endState"></param>
         public void AddState(Cube endState) {
-            lock (moveQueue)
-                moveQueue.Enqueue(new AnimatedMove(null, (Cube)endState.Clone()));
+            moveQueue.Enqueue(new AnimatedMove(null, (Cube)endState.Clone()));
+
+            KeepThreadAlive();
         }
 
         /// <summary>
