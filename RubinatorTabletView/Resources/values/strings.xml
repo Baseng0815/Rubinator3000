@@ -27,8 +27,10 @@
   <string name="control_bi">Back inverted</string>
   <string name="control_synctoserver">Sync to server</string>
   <string name="control_syncfromserver">Sync from server</string>
+  <string name="control_solve">Solve</string>
+  <string name="control_shuffle">Shuffle</string>
   <string name="button_pairBluetooth">Connect to bluetooth device</string>
   <string name="button_unpairBluetooth">Disconnect bluetooth device</string>
   <string name="bluetooth_disconnected">Disconnected</string>
-  <string name="bluetooth_connected">Connected to </string>
+  <string name="bluetooth_connected">Connected to</string>
 </resources>

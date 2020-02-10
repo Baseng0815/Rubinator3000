@@ -18,9 +18,9 @@ namespace RubinatorTabletView
 
         public static readonly int MoveAnimatedTime = 500;
 
-        public static bool UseMultiTurn = false;
+        public static bool UseMultiTurn = true;
         public static bool CalibrateColors = false;
         public static bool PositionEditingAllowed = false;
-        public static bool UseReferenceColors = false;        
+        public static bool UseReferenceColors = false;
     }
 }

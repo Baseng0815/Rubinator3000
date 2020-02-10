@@ -53,7 +53,7 @@ namespace Rubinator3000 {
             Settings.PositionEditingAllowed = CheckBox_AllowPosEdit.IsChecked.Value;
         }
 
-        private async void SolveCube() {
+        public async void SolveCube() {
             CubeSolver solver = new CubeSolverFridrich(cube);
 
             solver.SolveCube();
@@ -64,7 +64,7 @@ namespace Rubinator3000 {
             await moveSynchronizer.RunAsync(solvingMoves);
         }
 
-        private async void ShuffleCube() {
+        public async void ShuffleCube() {
             Random rnd = new Random();
 
             TextBox_MoveHistoryOutput.Clear();

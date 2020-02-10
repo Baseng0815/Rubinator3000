@@ -161,7 +161,7 @@ void doParallelMove(int axis, int leftDir, int rightDir, const int stepDelay) {
 
   for(int i = 0; i < 50; i++) {
     steppers[leftStepper].doStep(leftDir, 0);
-    steppers[rightStepper].doStep(rightDir, 0);    
+    steppers[rightStepper].doStep(rightDir, 0);
 
     delay(stepDelay);
   }

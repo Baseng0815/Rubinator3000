@@ -44,9 +44,14 @@ namespace RubinatorTabletView {
                 } catch (Exception e) {
 
                 }
-                // do move
-            } else if (data > 0x00 && data < 0x0E) {
+            // single turn move
+            } else if (data > 0x01 && data < 0x0E) {
                 ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(RubinatorCore.Utility.ByteToMove(data));
+            // multi turn move
+            } else if (data > 0x0F && data < 0x1C) {
+                var moves = RubinatorCore.Utility.MultiTurnByteToMove(data);
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(moves[0]);
+                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(moves[1]);
             }
         }
 
@@ -56,6 +61,7 @@ namespace RubinatorTabletView {
             while (true) {
                 try {
                     byte content = Convert.ToByte(reader.Read());
+                    System.Diagnostics.Debug.WriteLine(BitConverter.ToString(new byte[] { content }));
                     HandleBluetoothData(content);
                 } catch (Exception e) {
                     return;
@@ -115,6 +121,14 @@ namespace RubinatorTabletView {
 
             cubeViewLayout.FindViewById<Button>(Resource.Id.control_syncfromserver).Click += SyncFromServer;
             cubeViewLayout.FindViewById<Button>(Resource.Id.control_synctoserver).Click += SyncToServer;
+
+            cubeViewLayout.FindViewById<Button>(Resource.Id.control_solve).Click += (obj, e) => {
+                Write(0x30);
+            };
+
+            cubeViewLayout.FindViewById<Button>(Resource.Id.control_shuffle).Click += (obj, e) => {
+                Write(0x31);
+            };
         }
 
         // open up a new activity from which you can retrieve the BT_ADDR of a device

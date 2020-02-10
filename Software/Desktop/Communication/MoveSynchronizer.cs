@@ -53,11 +53,25 @@ namespace Rubinator3000.Communication {
                         });
                     }
                 }
+            // solve cube
+            } else if (data == 0x30) {
+                Application.Current.Dispatcher.Invoke(delegate {
+                    ((MainWindow)Application.Current.MainWindow).SolveCube();
+                });
+            // shuffle cube
+            } else if (data == 0x31) {
+                Application.Current.Dispatcher.Invoke(delegate {
+                    ((MainWindow)Application.Current.MainWindow).ShuffleCube();
+                });
             }
         }
 
         private void SendBluetoothMove(Move move) {
             bluetoothServer.Write(RubinatorCore.Utility.MoveToByte(move));
+        }
+
+        private void SendBluetoothMove(Move move1, Move move2) {
+            bluetoothServer.Write(RubinatorCore.Utility.MultiTurnToByte(move1, move2));
         }
 
         public MoveSynchronizer(TextBox moveHistory) {
@@ -136,6 +150,9 @@ namespace Rubinator3000.Communication {
                         if (arduino != null)
                             arduino.SendMultiTurnMove(moves[i], moves[i + 1]);
 
+                        if (bluetoothServer != null && btSend)
+                            SendBluetoothMove(moves[i], moves[i + 1]);
+
                         multiTurn = true;
                     }
                     else {
@@ -150,15 +167,13 @@ namespace Rubinator3000.Communication {
 
                         if (arduino != null)
                             arduino.SendMove(moves[i]);
+                        if (bluetoothServer != null && btSend)
+                            SendBluetoothMove(moves[i]);
                     }
 
                     DrawCube.AddMove(moves[i]);
-                    if (bluetoothServer != null && btSend)
-                        SendBluetoothMove(moves[i]);
                     if (multiTurn) {
                         DrawCube.AddMove(moves[i + 1]);
-                        if (bluetoothServer != null && btSend)
-                            SendBluetoothMove(moves[i]);
                     }
 
                     Application.Current.Dispatcher.Invoke(delegate {

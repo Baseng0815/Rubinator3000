@@ -93,7 +93,7 @@ namespace RubinatorTabletView {
                             Dialog dialog = connectionFailedAlert.Create();
                             dialog.Show();
                         } else {
-                            string str = Resources.GetString(Resource.String.bluetooth_connected) + name;
+                            string str = Resources.GetString(Resource.String.bluetooth_connected) + " " + name;
                             layout_cube_view.FindViewById<TextView>(Resource.Id.textView1).SetText(str.ToCharArray(), 0, str.Length);
                         }
                     }));

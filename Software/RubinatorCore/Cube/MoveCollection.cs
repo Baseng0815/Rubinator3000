@@ -50,7 +50,7 @@ namespace RubinatorCore {
                 }
                 // wenn der vorherige Move die Gegenseite des Würfels dreht und der davor die gleiche Seite wie der Move,
                 //kann die Anzahl der Vierteldrehungen zum vorherigen des vorherigen Moves addiert werden
-                else if(moves.Count > 2 && last.Face == Cube.GetOpponentFace(move.Face) && moves.ElementAt(moves.Count - 2).Face == move.Face) {
+                else if(moves.Count > 1 && last.Face == Cube.GetOpponentFace(move.Face) && moves.ElementAt(moves.Count - 2).Face == move.Face) {
                     Move m = moves.ElementAt(moves.Count - 2);
                     m.Count += move.Count;
                     m.Count = SolvingUtility.NormalizeCount(m.Count);

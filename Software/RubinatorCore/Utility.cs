@@ -5,6 +5,8 @@ using System.Text;
 
 namespace RubinatorCore {
     public static class Utility {
+        private static readonly int[] axisToFace = { 4, 3, 5 };
+
         public static byte[] MoveToByte(Move move) {
             //bool isPrime = move.IsPrime;
             int face = (int)move.Face;
@@ -18,7 +20,7 @@ namespace RubinatorCore {
             return Enumerable.Repeat(moveData, Math.Abs(move.Count)).ToArray();
         }
 
-        public static byte[] MulitTurnMoveToByte(Move move1, Move move2) {
+        public static byte[] MultiTurnToByte(Move move1, Move move2) {
             if (!Cube.IsOpponentFace(move1.Face, move2.Face))
                 throw new InvalidOperationException();
 
@@ -60,6 +62,18 @@ namespace RubinatorCore {
             int count = (moveByte & 0x01) == 1 ? -1 : 1;
 
             return new Move(face, count);
+        }
+
+        public static Move[] MultiTurnByteToMove(byte moveByte) {
+            int axis = (moveByte & (1 << 3 | 1 << 2)) >> 2;
+
+            int leftDir = (moveByte & (1 << 1)) >> 1;
+            int rightDir = moveByte & (1 << 0);
+
+            leftDir = leftDir == 0 ? 1 : -1;
+            rightDir = rightDir == 0 ? 1 : -1;
+
+            return new Move[] { new Move((CubeFace)axis, leftDir), new Move((CubeFace)axisToFace[axis], rightDir) };
         }
     }
 }

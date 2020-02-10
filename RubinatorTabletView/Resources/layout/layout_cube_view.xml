@@ -146,5 +146,19 @@
                 android:text="@string/control_synctoserver"
                 android:id="@+id/control_synctoserver"/>
         </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_solve"
+                android:id="@+id/control_solve"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/control_shuffle"
+                android:id="@+id/control_shuffle"/>
+        </TableRow>
     </TableLayout>
 </LinearLayout>
