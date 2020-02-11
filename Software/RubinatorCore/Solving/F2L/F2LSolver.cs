@@ -11,7 +11,7 @@ namespace RubinatorCore.Solving {
     /// <summary>
     /// Ein <see cref="CubeSolver"/> zum Lösen des F2L
     /// </summary>
-    public partial class FTLSolver : CubeSolver {
+    public partial class F2LSolver : CubeSolver {
         /// <summary>
         /// Gibt an, ob das F2L gelöst ist
         /// </summary>
@@ -34,13 +34,13 @@ namespace RubinatorCore.Solving {
         /// <summary>
         /// Eine Auflistung der F2L-Paare
         /// </summary>
-        private IEnumerable<FTLPair> pairs;
+        private IEnumerable<F2LPair> pairs;
 
         /// <summary>
-        /// Erstellt einen neuen <see cref="FTLSolver"/> mit dem eingegebenen Würfel
+        /// Erstellt einen neuen <see cref="F2LSolver"/> mit dem eingegebenen Würfel
         /// </summary>
         /// <param name="cube">Der Würfel bei dem das F2L gelöst werden soll</param>
-        public FTLSolver(Cube cube) : base(cube) {
+        public F2LSolver(Cube cube) : base(cube) {
             Func<EdgeStone, CornerStone, bool> edgeSelector = (e, c) => {
                 var colors = c.GetColors().Except(new List<CubeColor>() { WHITE });
                 return e.GetColors().All(color => colors.Contains(color));
@@ -49,7 +49,7 @@ namespace RubinatorCore.Solving {
             // die F2L-Paare bestimmen
             pairs = from corner in cube.Corners
                     where corner.HasColor(WHITE)
-                    select new FTLPair(corner,
+                    select new F2LPair(corner,
                             cube.Edges.First(e => edgeSelector(e, corner)),
                             cube);
         }
@@ -60,13 +60,13 @@ namespace RubinatorCore.Solving {
         public override void SolveCube() {
             while (pairs.Any(pair => !pair.Solved)) {
                 // ungelöste Paare bestimmen
-                FTLPair[] unsolvedPairs = pairs.Where(pair => !pair.Solved).ToArray();
+                F2LPair[] unsolvedPairs = pairs.Where(pair => !pair.Solved).ToArray();
                 int pairIndex = -1;
 
                 // das Paar mit den wenigsten Zügen lösen
                 MoveCollection minMoves = null;
                 for (int i = 0; i < unsolvedPairs.Length; i++) {
-                    FTLMoveCalculator moveCalculator = new FTLMoveCalculator(unsolvedPairs[i], cube);
+                    F2LMoveCalculator moveCalculator = new F2LMoveCalculator(unsolvedPairs[i], cube);
                     MoveCollection pairMoves = moveCalculator.CalcMoves();
 
                     if (minMoves == null || pairMoves.Count < minMoves.Count) {
@@ -87,13 +87,13 @@ namespace RubinatorCore.Solving {
 
                 while (pairs.Any(pair => !pair.Solved)) {
                     // ungelöste Paare bestimmen
-                    IEnumerable<FTLPair> unsolvedPairs = pairs.Where(pair => !pair.Solved);
+                    IEnumerable<F2LPair> unsolvedPairs = pairs.Where(pair => !pair.Solved);
 
                     // Aufgaben erstellen um alle Paare zu lösen
                     List<Task<MoveCollection>> tasks = new List<Task<MoveCollection>>();
                     foreach (var pair in unsolvedPairs) {
                         var task = new Task<MoveCollection>(() => {
-                            FTLMoveCalculator moveCalculator = new FTLMoveCalculator(pair, cube);
+                            F2LMoveCalculator moveCalculator = new F2LMoveCalculator(pair, cube);
                             return moveCalculator.CalcMoves();
                         });
 

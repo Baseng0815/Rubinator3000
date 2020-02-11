@@ -4,7 +4,7 @@ using static RubinatorCore.CubeFace;
 using static RubinatorCore.CubeColor;
 
 namespace RubinatorCore.Solving {
-    partial class FTLMoveCalculator {
+    partial class F2LMoveCalculator {
         /// <summary>
         /// Löst einen Eckstein aus dem Slot und bringt ihn auf die gelbe Ebene
         /// </summary>
@@ -80,7 +80,7 @@ namespace RubinatorCore.Solving {
             // https://speedcube.de/fridrich_f2l.php
             var faceToRot = pair.CornerWhitePosition.Face;
 
-            FTLPair secondPair = pairs.First(p => p.Edge.HasColor(Cube.GetFaceColor(faceToRot)) && p != pair);
+            F2LPair secondPair = pairs.First(p => p.Edge.HasColor(Cube.GetFaceColor(faceToRot)) && p != pair);
             bool secondPairSolved = secondPair.Solved;
 
             int direction = pair.CornerWhitePosition.Tile == 6 ? 1 : -1;

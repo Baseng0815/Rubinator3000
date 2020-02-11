@@ -8,7 +8,7 @@ namespace RubinatorCore.Solving {
     /// <summary>
     /// Eine Hilfsstruktur, um die Verbindung von einem Kantenstein der mittleren Ebene und eines weißen Ecksteins herzustellen
     /// </summary>
-    public struct FTLPair {
+    public struct F2LPair {
         /// <summary>
         /// Die Steine des Paares
         /// </summary>
@@ -24,7 +24,7 @@ namespace RubinatorCore.Solving {
         /// <param name="corner">Der Eckstein</param>
         /// <param name="edge">Der Kantenstein</param>        
         /// <param name="cube">Der Würfel</param>
-        public FTLPair(CornerStone corner, EdgeStone edge, Cube cube) {
+        public F2LPair(CornerStone corner, EdgeStone edge, Cube cube) {
             this.stones = (edge, corner);
             this.cube = cube;
         }
@@ -35,7 +35,7 @@ namespace RubinatorCore.Solving {
         /// <param name="stone">Der Eck- oder Kantenstein</param>
         /// <param name="cube">Der Würfe, zu dem der Stein gehört</param>
         /// <returns>Ein F2L-Paar mit den Farben des Steins</returns>
-        public static FTLPair GetPair(IStone stone, Cube cube) {
+        public static F2LPair GetPair(IStone stone, Cube cube) {
             if (stone is CornerStone corner) {
                 if (!corner.HasColor(WHITE))
                     throw new ArgumentException();
@@ -43,7 +43,7 @@ namespace RubinatorCore.Solving {
                 var colors = corner.GetColors().Where(c => c != WHITE);
                 EdgeStone edge = cube.Edges.First(e => e.GetColors().All(c => colors.Contains(c)));
 
-                return new FTLPair(corner, edge, cube);
+                return new F2LPair(corner, edge, cube);
             }
             else if (stone is EdgeStone edge) {
                 if (edge.HasColor(WHITE) || edge.HasColor(YELLOW))
@@ -52,7 +52,7 @@ namespace RubinatorCore.Solving {
                 var colors = edge.GetColors();
                 corner = cube.Corners.First(cr => cr.GetColors().All(c => colors.Contains(c)) && cr.HasColor(WHITE));
 
-                return new FTLPair(corner, edge, cube);
+                return new F2LPair(corner, edge, cube);
             }
             else
                 throw new ArgumentException();
@@ -157,7 +157,7 @@ namespace RubinatorCore.Solving {
         /// </summary>        
         /// <returns>Einen Wert, der angibt, ob die beiden Paare gleich sind</returns>
         public override bool Equals(object obj) {
-            return obj is FTLPair pair &&
+            return obj is F2LPair pair &&
                    EqualityComparer<Cube>.Default.Equals(cube, pair.cube) &&
                    EqualityComparer<EdgeStone>.Default.Equals(Edge, pair.Edge) &&
                    EqualityComparer<CornerStone>.Default.Equals(Corner, pair.Corner);
@@ -175,11 +175,11 @@ namespace RubinatorCore.Solving {
             return Edge.ToString();
         }
 
-        public static bool operator ==(FTLPair left, FTLPair right) {
+        public static bool operator ==(F2LPair left, F2LPair right) {
             return left.Corner.GetColors().All(c => right.Corner.GetColors().Contains(c));
         }
 
-        public static bool operator !=(FTLPair left, FTLPair right) {
+        public static bool operator !=(F2LPair left, F2LPair right) {
             return !(left == right);
         }
     }

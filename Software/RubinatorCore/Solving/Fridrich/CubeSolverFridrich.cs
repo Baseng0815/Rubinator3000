@@ -22,7 +22,7 @@ namespace RubinatorCore.Solving {
 
             Log.LogMessage("Solve F2L");
             // F2L
-            FTLSolver ftl = new FTLSolver(cube);
+            F2LSolver ftl = new F2LSolver(cube);
             ftl.SolveCube();
             SolvingMoves.AddRange(ftl.SolvingMoves);
 

@@ -8,7 +8,7 @@ namespace RubinatorCore.Solving {
     /// <summary>
     /// Berechnet die Züge die zum Lösen eines F2L-Paares nötig sind
     /// </summary>
-    internal partial class FTLMoveCalculator {
+    internal partial class F2LMoveCalculator {
 
         /// <summary>
         /// Eine Kopie des Würfels der gelöst werden soll
@@ -18,12 +18,12 @@ namespace RubinatorCore.Solving {
         /// <summary>
         /// Die F2L-Paare
         /// </summary>
-        private IEnumerable<FTLPair> pairs;
+        private IEnumerable<F2LPair> pairs;
 
         /// <summary>
         /// Das aktuelle F2L-Paar
         /// </summary>
-        private FTLPair pair;
+        private F2LPair pair;
 
         /// <summary>
         /// Ein EventHandler um die Züge zu speichern
@@ -38,17 +38,17 @@ namespace RubinatorCore.Solving {
         private event DoMoveEventHandler DoMove;
 
         /// <summary>
-        /// Erstellt einen neuen <see cref="FTLMoveCalculator"/> mit einem Wüfel und einem F2L-Paar
+        /// Erstellt einen neuen <see cref="F2LMoveCalculator"/> mit einem Wüfel und einem F2L-Paar
         /// /// </summary>
         /// <param name="pair">Das Paar, für welches die Züge berechnet werden sollen</param>
         /// <param name="cube">Der Würfel</param>
-        public FTLMoveCalculator(FTLPair pair, Cube cube) {
+        public F2LMoveCalculator(F2LPair pair, Cube cube) {
             this.cube = (Cube)cube.Clone();
 
             // die Position der F2L-Paare bestimmen
             pairs = from corner in this.cube.Corners
                     where corner.HasColor(WHITE)
-                    select FTLPair.GetPair(corner, this.cube);
+                    select F2LPair.GetPair(corner, this.cube);
 
             // das zu lösende Paar festlegen
             this.pair = pairs.First(p => p == pair);
