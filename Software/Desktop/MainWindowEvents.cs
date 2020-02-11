@@ -71,6 +71,7 @@ namespace Rubinator3000 {
             MoveCollection shuffleMoves = cube.GetShuffleMoves(rnd.Next(5, 10));
 
             await moveSynchronizer.RunAsync(shuffleMoves);
+
         }
 
         private void WebCamControl_OnCubeScanned(object sender, CubeScanEventArgs e) {
@@ -267,6 +268,13 @@ namespace Rubinator3000 {
 
                 canvases[i].InvalidateVisual();
             }
+        }
+
+        private void Slider_MoveDelay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+            Settings.StepDelay = (int)(Settings.MaxStepDelay * e.NewValue);
+
+            if (Label_MoveDelay != null)
+                Label_MoveDelay.Content = Settings.StepDelay / 100 + " ds";
         }
     }
 }

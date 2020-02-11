@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,18 +35,21 @@ namespace Rubinator3000.Communication {
                         });
                         DrawCube.AddState(receivingState);
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     Log.LogMessage(e.ToString());
                 }
-            // do move
-            } else if (data > 0x01 && data < 0x0E)
+                // do move
+            }
+            else if (data > 0x01 && data < 0x0E)
                 RunAsync(RubinatorCore.Utility.ByteToMove(data), false);
 
             // start receiving state from client
             else if (data == 0x01) {
                 tilesReceived = 0;
-            // send state to client
-            } else if (data == 0x00) {
+                // send state to client
+            }
+            else if (data == 0x00) {
                 for (CubeFace face = CubeFace.LEFT; face <= CubeFace.BACK; face++) {
                     for (int tile = 0; tile < 9; tile++) {
                         Application.Current.Dispatcher.Invoke(delegate {
@@ -53,13 +57,15 @@ namespace Rubinator3000.Communication {
                         });
                     }
                 }
-            // solve cube
-            } else if (data == 0x30) {
+                // solve cube
+            }
+            else if (data == 0x30) {
                 Application.Current.Dispatcher.Invoke(delegate {
                     ((MainWindow)Application.Current.MainWindow).SolveCube();
                 });
-            // shuffle cube
-            } else if (data == 0x31) {
+                // shuffle cube
+            }
+            else if (data == 0x31) {
                 Application.Current.Dispatcher.Invoke(delegate {
                     ((MainWindow)Application.Current.MainWindow).ShuffleCube();
                 });
@@ -125,6 +131,8 @@ namespace Rubinator3000.Communication {
                     else
                         moveHistory.AppendText(", " + move.ToString());
                 });
+
+                Thread.Sleep(Settings.StepDelay);
             });
         }
 
@@ -192,6 +200,8 @@ namespace Rubinator3000.Communication {
 
                     if (multiTurn)
                         i++;
+
+                    Thread.Sleep(Settings.StepDelay);
                 }
             });
         }

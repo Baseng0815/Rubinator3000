@@ -1,0 +1,59 @@
+RubinatorCore
+	Cube.cs
+	CubeMoves.cs
+	Position.cs
+	Move.cs
+	MoveCollection.cs
+	FaceRelation.cs
+	Stones.cs
+
+	CubeSolver.cs
+	CubeSolverFridrich.cs
+	SolvingUtility.cs
+
+	CrossSolver.cs
+	F2LSolver.cs
+	F2LMoveCalculator.cs
+	F2LCaseHandling.cs
+	F2LPair.cs
+	LLPatterns.cs
+	LLSolver.cs
+
+	ollSolving.xml
+	pllSolving.xml
+
+	Utility.cs
+
+Rubinator3000Desktop
+	MainWindow.xaml
+	MainWindow.xaml.cs
+	MainWindowEvents.cs
+	MainWindowMenu.cs
+	
+	WebCamControl.cs
+	FastAccessBitmap.cs
+	ReadPosition.cs
+	ReadUtility.cs
+	ColorIdentification.cs
+	PieSlice.cs
+	PieChart.cs
+
+	Arduino.cs
+	ArduinoUSB.cs
+	BluetoothServer.cs
+	MoveSyncronizer.cs
+	
+	Vertex.cs
+	Texture.cs
+	Shader.cs
+	TRSTransformations.cs
+	CuboidTransformations.cs
+	CubeTransformations.cs
+	FlatTransformations.cs
+	ResourceManager.cs
+
+	DrawCube.cs
+	CubeViewer.cs
+	CubeViewerEvents.cs
+	Utility.cs
+	View.cs

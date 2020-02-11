@@ -23,5 +23,8 @@ namespace Rubinator3000
         public static bool CalibrateColors = false;
         public static bool PositionEditingAllowed = false;
         public static bool UseReferenceColors = false;
+        
+        public static readonly int MaxStepDelay = 1000;
+        public static int StepDelay = 500;
     }
 }

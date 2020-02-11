@@ -59,6 +59,15 @@
             <Setter Property="TextWrapping" Value="WrapWithOverflow" />
         </Style>
 
+        <!-- Label Preset -->
+        <Style TargetType="Label">
+            <Setter Property="Background" Value="{StaticResource BackgroundColor}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="{StaticResource Font}" />
+            <Setter Property="Foreground" Value="{StaticResource ForegroundColor}" />
+            <Setter Property="FontSize" Value="11" />
+        </Style>
+
         <!--  Button Preset  -->
         <Style TargetType="Button">
             <Setter Property="Background" Value="{StaticResource BackgroundColor}" />
@@ -177,6 +186,7 @@
         <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height=".5*" />
+                <RowDefinition Height="35" />
                 <RowDefinition Height=".5*" />
             </Grid.RowDefinitions>
 
@@ -185,8 +195,24 @@
                 <WindowsFormsHost x:Name="WindowsFormsHost_CubePreview" Initialized="WinFormsHost_Initialized" />
             </Border>
 
+            <!-- Move Delay Slider -->
+            <Border Grid.Row="1" >
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="80" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Move Delay" />
+                    <Slider x:Name="Slider_MoveDelay" Grid.Column="1" ValueChanged="Slider_MoveDelay_ValueChanged"
+                            Value="0.5" Maximum="1" Minimum="0" SmallChange="0.02"/>
+                    <Label x:Name="Label_MoveDelay" Grid.Column="3" Content="5 ds" HorizontalContentAlignment="Right"/>
+                </Grid>
+            </Border>
+
             <!--  Console Output  -->
-            <Border Grid.Row="1">
+            <Border Grid.Row="2">
                 <TextBox x:Name="TextBox_Log" TextBlock.LineHeight="16" />
             </Border>
         </Grid>
