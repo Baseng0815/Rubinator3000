@@ -113,15 +113,17 @@ namespace Rubinator3000.Communication {
         }
 
         public Task RunAsync(Move move, bool btSend = true) {
-            return Task.Run(delegate {
+            return Task.Run(async delegate {
+                Task arduinoMoveTask = Task.Factory.StartNew(() => { return; });
+                if (arduino == null)
+                    Log.LogMessage("Arduino not connected");
+                else
+                    arduinoMoveTask = arduino.SendMoveAsync(move);
+
                 DrawCube.AddMove(move);
                 if (bluetoothServer != null && btSend)
                     SendBluetoothMove(move);
 
-                if (arduino == null)
-                    Log.LogMessage("Arduino not connected");
-                else
-                    arduino.SendMove(move);
 
                 Application.Current.Dispatcher.Invoke(delegate {
                     ((MainWindow)Application.Current.MainWindow).cube.DoMove(move);
@@ -132,18 +134,21 @@ namespace Rubinator3000.Communication {
                         moveHistory.AppendText(", " + move.ToString());
                 });
 
+                await arduinoMoveTask;
+
                 Thread.Sleep(Settings.StepDelay);
             });
         }
 
         public Task RunAsync(MoveCollection moves, bool btSend = true) {
-            return Task.Run(delegate {
+            return Task.Run(async delegate {
                 bool confirmationNeeded = true;
 
                 for (int i = 0; i < moves.Count; i++) {
                     bool multiTurn = false;
                     CubeFace currentFace = moves[i].Face;
                     CubeFace nextFace = i < moves.Count - 1 ? moves[i + 1].Face : CubeFace.NONE;
+                    Task arduinoMoveTask = Task.Factory.StartNew(() => { return; });
 
                     if (nextFace != CubeFace.NONE && Cube.IsOpponentFace(currentFace, nextFace) && Settings.UseMultiTurn) {
                         // multi turn
@@ -156,7 +161,7 @@ namespace Rubinator3000.Communication {
                         }
 
                         if (arduino != null)
-                            arduino.SendMultiTurnMove(moves[i], moves[i + 1]);
+                            arduinoMoveTask = arduino.SendMultiTurnMoveAsync(moves[i], moves[i + 1]);
 
                         if (bluetoothServer != null && btSend)
                             SendBluetoothMove(moves[i], moves[i + 1]);
@@ -174,7 +179,7 @@ namespace Rubinator3000.Communication {
                         }
 
                         if (arduino != null)
-                            arduino.SendMove(moves[i]);
+                            arduinoMoveTask = arduino.SendMoveAsync(moves[i]);
                         if (bluetoothServer != null && btSend)
                             SendBluetoothMove(moves[i]);
                     }
@@ -200,6 +205,8 @@ namespace Rubinator3000.Communication {
 
                     if (multiTurn)
                         i++;
+
+                    await arduinoMoveTask;
 
                     Thread.Sleep(Settings.StepDelay);
                 }

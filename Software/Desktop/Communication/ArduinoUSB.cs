@@ -46,9 +46,11 @@ namespace Rubinator3000 {
                 if (response != 0xF1) {
                     Log.LogMessage("Arduinoprogramm ist nicht korrekt. Response: " + response);
                     return;
-                } else
+                }
+                else
                     connected = true;
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Log.LogMessage(e.ToString());
                 return;
             }
@@ -62,12 +64,14 @@ namespace Rubinator3000 {
                     if (serial.ReadByte() != 0xF0) {
                         Log.LogMessage("Aduinoprogramm ist nicht korrekt");
                         return;
-                    } else {
+                    }
+                    else {
                         connected = false;
                     }
 
                     serial.Close();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     Log.LogMessage(e.ToString());
                 }
 
@@ -93,8 +97,12 @@ namespace Rubinator3000 {
 
             Debug.WriteLine(BitConverter.ToString(moveData));
             serial.Write(moveData, 0, moveData.Length);
+
+            // receive arduino response
+            byte[] response = new byte[1];
+            serial.Read(response, 0, 1);
         }
-        
+
         public override void SendMultiTurnMove(Move move1, Move move2) {
             if (serial == null || !serial.IsOpen) {
                 Log.LogMessage("Der Port ist nicht geöffnet!");
