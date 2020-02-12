@@ -274,7 +274,7 @@ namespace Rubinator3000 {
             Settings.StepDelay = (int)(Settings.MaxStepDelay * e.NewValue);
 
             if (Label_MoveDelay != null)
-                Label_MoveDelay.Content = Settings.StepDelay / 100 + " ds";
+                Label_MoveDelay.Content = Settings.StepDelay + " ms";
         }
     }
 }

@@ -97,6 +97,10 @@ namespace Rubinator3000.Communication {
                 arduino.Disconnect();
         }
 
+        public void SetArduinoLEDs(ArduinoLEDs leds, bool state) {
+            arduino.SendLedCommand(leds, state ? 1 : 0);
+        }
+
         public void SetupBluetooth() {
             bluetoothServer = new BluetoothServer();
 

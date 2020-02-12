@@ -118,5 +118,27 @@ namespace Rubinator3000 {
 
             serial.Write(moveData, 0, moveData.Length);
         }
+
+        public override void SendLedCommand(ArduinoLEDs leds, int state) {
+            if (state > 1 || state < 0)
+                throw new ArgumentOutOfRangeException(nameof(state));
+
+            switch (leds) {
+                case ArduinoLEDs.UP:
+                    serial.Write(new byte[] { (byte)(0x44 | state) }, 0, 1);
+                    break;
+                case ArduinoLEDs.DOWN:
+                    serial.Write(new byte[] { (byte)(0x42 | state) }, 0, 1);
+                    break;
+                case ArduinoLEDs.STRIPES:
+                    serial.Write(new byte[] { (byte)(0x46 | state) }, 0, 1);
+                    break;
+                case ArduinoLEDs.ALL:
+                    serial.Write(new byte[] { (byte)(0x40 | state) }, 0, 1);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

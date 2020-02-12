@@ -126,7 +126,6 @@
                 <MenuItem Header="_Neu" InputGestureText="Strg+N" />
                 <MenuItem Header="_Öffnen" InputGestureText="Strg+O" />
                 <Separator Margin="0,3,0,3" Template="{StaticResource SeparatorTemplate}" />
-                <MenuItem Header="_Züge" />
                 <MenuItem Click="MenuItem_Close_Click" Header="_Beenden" />
             </MenuItem>
             <!--  Index Tab "Würfel"  -->
@@ -140,13 +139,6 @@
                     Click="MenuItem_SolveCube_Click"
                     Header="_Lösen"
                     InputGestureText="S" />
-                <Border>
-                    <CheckBox
-                        x:Name="CheckBox_MultiTurn"
-                        IsChecked="True"
-                        Click="CheckBox_MultiTurn_Click"
-                        Content="MultiTurn" />
-                </Border>
             </MenuItem>
 
             <MenuItem Header="Hardware">
@@ -186,7 +178,7 @@
         <Grid Grid.Row="1" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height=".5*" />
-                <RowDefinition Height="35" />
+                <RowDefinition Height="70" />
                 <RowDefinition Height=".5*" />
             </Grid.RowDefinitions>
 
@@ -198,16 +190,29 @@
             <!-- Move Delay Slider -->
             <Border Grid.Row="1" >
                 <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="Move Delay" />
-                    <Slider x:Name="Slider_MoveDelay" Grid.Column="1" ValueChanged="Slider_MoveDelay_ValueChanged"
-                            Value="0.5" Maximum="1" Minimum="0" SmallChange="0.02"/>
-                    <Label x:Name="Label_MoveDelay" Grid.Column="3" Content="5 ds" HorizontalContentAlignment="Right"/>
+                    <Label Content="Move Delay" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <Slider x:Name="Slider_MoveDelay" Grid.Column="1" 
+                            VerticalAlignment="Center"
+                            ValueChanged="Slider_MoveDelay_ValueChanged"
+                            Value="0.5" Maximum="1" Minimum="0" SmallChange="0.01" IsSnapToTickEnabled="True" TickFrequency="0.01" />
+                    <Label x:Name="Label_MoveDelay" Grid.Column="3" Content="500 ms" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+
+                    <CheckBox
+                        x:Name="CheckBox_MultiTurn"
+                        Grid.Row="1" Grid.ColumnSpan="2"
+                        IsChecked="True"
+                        Click="CheckBox_MultiTurn_Click"
+                        Content="MultiTurn" />
                 </Grid>
             </Border>
 

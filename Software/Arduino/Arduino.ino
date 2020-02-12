@@ -6,16 +6,6 @@
 #define STATE_CONNECT 0x01
 #define STATE_SOLVED 0x02
 
-#if ARDUINO_UNO
-int stepperPins[6][4] = {
-  { 2, 3, 4, 5 },
-  { 2, 3, 4, 5 },
-  { 2, 3, 4, 5 },
-  { 2, 3, 4, 5 },
-  { 2, 3, 4, 5 },
-  { 2, 3, 4, 5 }
-};
-#else
 int stepperPins[6][4] = {
     { 26, 28, 22, 24 },
     { 23, 25, 27, 29 },
@@ -24,28 +14,30 @@ int stepperPins[6][4] = {
     { 42, 44, 46, 48 },
     { 47, 49, 43, 45 }
 };
-#endif
+
 
 Stepper steppers[6];
 
 int state;
-#if ARDUINO_UNO
-int ledGreen = 6;
-int ledRed = 7;
-#else
 int ledGreen = 2;
 int ledRed = 3;
-#endif
+
+int ledsUp = 4;
+int ledsDown = 5;
+int ledStripes = 6;
 
 void setup() {
 	for(int i = 0; i < 6; i++) {
-        steppers[i] = Stepper(stepperPins[i]);
-    }
+    steppers[i] = Stepper(stepperPins[i]);
+  }
 
-    pinMode(ledGreen, OUTPUT);
-    pinMode(ledRed, OUTPUT);
+  pinMode(ledGreen, OUTPUT);
+  pinMode(ledRed, OUTPUT);
+  pinMode(ledsUp, OUTPUT);
+  pinMode(ledsDown, OUTPUT);
+  pinMode(ledStripes, OUTPUT);
 
-    Serial.begin(9600);
+  Serial.begin(9600);
 
 	// 2 minutes timeout
 	Serial.setTimeout(120000);
@@ -56,32 +48,32 @@ void loop() {
   // put your main code here, to run repeatedly:
 
 	if (Serial.available()) {
-	uint8_t data = Serial.read();
+	  uint8_t data = Serial.read();
 
-	// disconnected
-	if (data == -1) {
-		setState(STATE_DISCONNECT);
-		return;
-	}
+  	// disconnected
+	  if (data == -1) {
+		  setState(STATE_DISCONNECT);
+		  return;
+	  }
 
-    switch (data) {
-      case 0xA1:  // connect
-        setState(STATE_CONNECT);
+    switch (data & 0xF0) {
+      case 0xA0:    // states
+        stateCommand(data & 0xF);
         break;
-      case 0xA0:  // disconnect
-        setState(STATE_DISCONNECT);
-        break;
-      case 0xA2:  // solved event
-        setState(STATE_SOLVED);
-        break;
-      default:    // move
+      case 0x00:    // move
         handleMove(data);
+        break;
+      case 0x10:    // multiTurn
+        handleMultiTurnMove(data);
+        break;
+      case  0x40:   // leds
+        ledCommand(data & 0x0F);
         break;
     }
   }
 }
 
-void setState(uint8_t newState) {
+void stateCommand(uint8_t newState) {
   if(state != newState) {
 
     switch(newState) {
@@ -113,13 +105,7 @@ void handleMove(uint8_t move) {
   if(state != STATE_CONNECT) {
     Serial.write(0xB1);  // send not connected
     return;
-  }
-
-  //handle parallel move
-  if((move & 0x10) == 0x10) {
-    handleParallelMove(move);
-    return;
-  }
+  }  
 
   uint8_t face = (move >> 1) - 1;
   bool isPrime = move & 0x01;
@@ -131,17 +117,23 @@ void handleMove(uint8_t move) {
     Serial.write(0x20 + move);
   }
   else {
-    Serial.write(0xB2);  // send move not valid
+    Serial.write(0xB2);  // send not valid
   }
 }
 
-void handleParallelMove(uint8_t parallelMove) {
-    int axis = (parallelMove & (1 << 3 | 1 << 2)) >> 2;
+void handleMultiTurnMove(uint8_t multiTurnMove) {
+  if(state != STATE_CONNECT) {
+    Serial.write(0xB1);  // send not connected
+    return;
+  }
 
+  int axis = (multiTurnMove & (1 << 3 | 1 << 2)) >> 2;
+
+  if(axis < 3)
     Serial.write(axis);
 
-    int leftDir = (parallelMove & (1 << 1)) >> 1;
-    int rightDir = parallelMove & (1 << 0);
+    int leftDir = (multiTurnMove & (1 << 1)) >> 1;
+    int rightDir = multiTurnMove & (1 << 0);
 
     leftDir = leftDir == 0 ? 1 : -1;
     rightDir = rightDir == 0 ? 1 : -1;
@@ -149,12 +141,16 @@ void handleParallelMove(uint8_t parallelMove) {
     Serial.write(leftDir);
     Serial.write(rightDir);
 
-    doParallelMove(axis, leftDir, rightDir, 10);
+    doMultiTurnMove(axis, leftDir, rightDir, 10);
 
-    Serial.write(0x20 + parallelMove);
+    Serial.write(0x20 + multiTurnMove);
+  }
+  else {
+    Serial.write(0xB2);  // send not valid
+  }
 }
 
-void doParallelMove(int axis, int leftDir, int rightDir, const int stepDelay) {
+void doMultiTurnMove(int axis, int leftDir, int rightDir, const int stepDelay) {
   int rightSteppers[] = {4, 3, 5};
   int rightStepper = rightSteppers[axis];
   int leftStepper = axis;
@@ -168,4 +164,27 @@ void doParallelMove(int axis, int leftDir, int rightDir, const int stepDelay) {
 
   steppers[leftStepper].writeState(0, 0, 0, 0);
   steppers[rightStepper].writeState(0, 0, 0, 0);
+}
+
+void ledCommand(uint8_t command) {
+  int level = command & 0x01;
+  switch (command & 0x0E){
+    case 0x00:  // all leds      
+      analogWrite(ledsUp, 127 * level);
+      analogWrite(ledsDown, 127 * level);
+      digitalWrite(ledStripes, level);
+      break;
+    case 0x02:  // leds down
+      analogWrite(ledsDown, 127 * level);
+      break;
+    case 0x04:  // leds up
+      analogWrite(ledsUp, 127 * level);
+      break;
+    case 0x06:  // led stripes
+      digitalWrite(ledStripes, level);
+      break;
+    default:
+      Serial.write(0xB2);
+      break;
+  }  
 }
