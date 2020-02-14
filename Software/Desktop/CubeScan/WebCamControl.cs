@@ -140,39 +140,39 @@ namespace Rubinator3000.CubeScan {
 
             //try {
 
-                threadStarted = true;
+            threadStarted = true;
 
-                while (!threadShouldStop) {
+            while (!threadShouldStop) {
 
-                    long loopStart = ReadUtility.CurrentTimeMillis();
-                    long loopEnd = loopStart + 1000 / ticksPerSecond;
+                long loopStart = ReadUtility.CurrentTimeMillis();
+                long loopEnd = loopStart + 1000 / ticksPerSecond;
 
-                    // Code in while loop  
+                // Code in while loop  
 
-                    // Handle all frameUpdates
-                    if (frameToDisplay != null) {
+                // Handle all frameUpdates
+                if (frameToDisplay != null) {
 
-                        currentFABitmap.SetBitmap(frameToDisplay);
-                        frameToDisplay.Dispose();
-                        frameToDisplay = null;
-                    }
+                    currentFABitmap.SetBitmap(frameToDisplay);
+                    frameToDisplay.Dispose();
+                    frameToDisplay = null;
+                }
 
-                    // Add all pendingPositions to PositionsToReadAt and draw their circles
-                    while (pendingPositions[cameraIndex].Count > 0) {
+                // Add all pendingPositions to PositionsToReadAt and draw their circles
+                while (pendingPositions[cameraIndex].Count > 0) {
 
-                        ReadPosition pos = pendingPositions[cameraIndex].Dequeue();
+                    ReadPosition pos = pendingPositions[cameraIndex].Dequeue();
 
-                        for (int i = 0; i < positionsToReadAt.GetLength(1); i++) {
+                    for (int i = 0; i < positionsToReadAt.GetLength(1); i++) {
 
-                            if (positionsToReadAt[cameraIndex, i] == null) {
+                        if (positionsToReadAt[cameraIndex, i] == null) {
 
-                                pos.Circle = DrawCircleAtPosition(pos, drawingCanvas);
-                                positionsToReadAt[cameraIndex, i] = pos;
-                                TotalPositionCount++;
-                                break;
-                            }
+                            pos.Circle = DrawCircleAtPosition(pos, drawingCanvas);
+                            positionsToReadAt[cameraIndex, i] = pos;
+                            TotalPositionCount++;
+                            break;
                         }
                     }
+                }
 
                 //if (cameraIndex == 0) {
                 //    byte brightness = currentFABitmap.GetBrightness();
@@ -191,47 +191,45 @@ namespace Rubinator3000.CubeScan {
                 // If position reading is requested
                 if (CubeGenerationRequested > 0 && !Settings.CalibrateColors) {
 
-                        // Read all colors from positions in readPositions
-                        for (int i = 0; i < positionsToReadAt.GetLength(1); i++) {
+                    // Read all colors from positions in readPositions
+                    for (int i = 0; i < positionsToReadAt.GetLength(1); i++) {
 
-                            if (positionsToReadAt[cameraIndex, i] == null) {
-                                continue;
-                            }
-                            positionsToReadAt[cameraIndex, i].Color = ReadColorAtPosition(positionsToReadAt[cameraIndex, i].RelativeX, positionsToReadAt[cameraIndex, i].RelativeY);
+                        if (positionsToReadAt[cameraIndex, i] == null) {
+                            continue;
                         }
-
-                        // This block will be only executed by the primary webcamcontrol
-                        if (cameraIndex == 0) {
-
-                            // If the whole cube is scanned, send the cube-configuration to the cube solver
-                            if (CubeIsFullyScanned()) {
-
-                                SortAndValidateColors();
-
-                                // If single readout was requested only
-                                if (CubeGenerationRequested == ReadoutRequested.SINGLE_READOUT) {
-
-                                    CubeGenerationRequested = ReadoutRequested.DISABLED;
-                                }
-
-                                Log.LogMessage("End Camera 0");
-                            }
-                        }
+                        positionsToReadAt[cameraIndex, i].Color = ReadColorAtPosition(positionsToReadAt[cameraIndex, i].RelativeX, positionsToReadAt[cameraIndex, i].RelativeY);
                     }
 
-                    // Code in while loop  
+                    // This block will be only executed by the primary webcamcontrol
+                    if (cameraIndex == 0) {
 
-                    // Garbage Collection if RAM Usage is above 500 MB
-                    if (GC.GetTotalMemory(true) > 500 * Math.Pow(10, 6)) {
+                        // If the whole cube is scanned, send the cube-configuration to the cube solver
+                        if (CubeIsFullyScanned()) {
 
-                        GC.Collect();
-                    }
+                            SortAndValidateColors();
 
-                    while (CurrentTimeMillis() < loopEnd) {
+                            // If single readout was requested only
+                            if (CubeGenerationRequested == ReadoutRequested.SINGLE_READOUT) {
 
-                        Thread.Sleep(Convert.ToInt32(loopEnd - CurrentTimeMillis()));
+                                CubeGenerationRequested = ReadoutRequested.DISABLED;
+                            }
+                        }
                     }
                 }
+
+                // Code in while loop  
+
+                // Garbage Collection if RAM Usage is above 500 MB
+                if (GC.GetTotalMemory(true) > 500 * Math.Pow(10, 6)) {
+
+                    GC.Collect();
+                }
+
+                while (CurrentTimeMillis() < loopEnd) {
+
+                    Thread.Sleep(Convert.ToInt32(loopEnd - CurrentTimeMillis()));
+                }
+            }
             //}
             //catch (Exception e) {
 

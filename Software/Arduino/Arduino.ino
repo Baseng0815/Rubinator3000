@@ -1,7 +1,5 @@
 #include "stepper.h"
 
-#define ARDUINO_UNO false
-
 #define STATE_DISCONNECT 0x00
 #define STATE_CONNECT 0x01
 #define STATE_SOLVED 0x02
@@ -19,8 +17,8 @@ int stepperPins[6][4] = {
 Stepper steppers[6];
 
 int state;
-int ledGreen = 2;
-int ledRed = 3;
+int ledGreen = 3;
+int ledRed = 2;
 
 int ledsUp = 4;
 int ledsDown = 5;
@@ -31,11 +29,29 @@ void setup() {
     steppers[i] = Stepper(stepperPins[i]);
   }
 
-  pinMode(ledGreen, OUTPUT);
+  pinMode(ledGreen, OUTPUT);  
   pinMode(ledRed, OUTPUT);
+
+  // testing status leds
+  digitalWrite(ledGreen, LOW);
+  digitalWrite(ledRed, HIGH);
+
+  delay(500);
+  digitalWrite(ledGreen, HIGH);
+
+  delay(500);
+  digitalWrite(ledRed, LOW);
+
+  delay(500);
+  digitalWrite(ledRed, HIGH);
+  digitalWrite(ledGreen, LOW);
+
   pinMode(ledsUp, OUTPUT);
+  digitalWrite(ledsUp, LOW);
   pinMode(ledsDown, OUTPUT);
+  digitalWrite(ledsDown, LOW);
   pinMode(ledStripes, OUTPUT);
+  digitalWrite(ledStripes, LOW);
 
   Serial.begin(9600);
 
@@ -84,6 +100,11 @@ void stateCommand(uint8_t newState) {
 
         digitalWrite(ledGreen, LOW);
         digitalWrite(ledRed, HIGH);
+
+        // set all leds off
+        digitalWrite(ledsDown, 0);
+        digitalWrite(ledsUp, 0);
+        digitalWrite(ledStripes, 0);
         break;
       case STATE_CONNECT:
         state = STATE_CONNECT;
@@ -181,7 +202,7 @@ void ledCommand(uint8_t command, uint8_t brightness) {
 
   if(command & 0x04 == 0x04) {
     // led stripes
-    digitalWrite(ledStripes, brightness > 0 ? HIGH : LOW);
+    analogWrite(ledStripes, brightness);
   }
 
   Serial.write(command);

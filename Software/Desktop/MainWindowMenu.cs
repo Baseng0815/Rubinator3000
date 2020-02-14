@@ -55,17 +55,12 @@ namespace Rubinator3000 {
         // Hardware
 
         private void MenuItem_Connect_Click(object sender, RoutedEventArgs e) {
-            string serialPort = ComboBox_COMPort.Text;
-            if (!System.IO.Ports.SerialPort.GetPortNames().Contains(serialPort)) {
-                MessageBox.Show("Bitte einen gültigen Port auswählen!");
-            }
-            else {
-                moveSynchronizer.ConnectArduino(serialPort);
-            }
+            ConnectArduino();
         }
 
         private void MenuItem_Disconnect_Click(object sender, RoutedEventArgs e) {
             moveSynchronizer.DisconnectArduino();
+            Button_Connect.Content = "Connect";
         }
 
         private void MenuItem_BluetoothSetup_Click(object sender, RoutedEventArgs e) {

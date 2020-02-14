@@ -23,6 +23,9 @@ namespace Rubinator3000 {
         public abstract void Connect();
         public abstract void Disconnect();
 
+        public abstract void SetSolvedState(bool state);
+
+        protected abstract byte[] SendCommand(params byte[] command);
         public abstract void SendLedCommand(ArduinoLEDs leds, byte brightness);
-    }
+    }    
 }

@@ -6,10 +6,11 @@
     xmlns:local="clr-namespace:Rubinator3000"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Rubinator 3000"
-    Background="{StaticResource BackgroundColor}"
-    Closing="Window_Closing"
+    Background="{DynamicResource BackgroundColor}"
+    Closing="Window_Closing"    
     WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+    
+    mc:Ignorable="d" WindowStyle="None" ResizeMode="NoResize" WindowState="Maximized">
     <Window.Resources>
 
         <!--  Border Preset  -->
@@ -191,28 +192,34 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="80" />
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="Move Delay" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                    <Slider x:Name="Slider_MoveDelay" Grid.Column="1" 
-                            VerticalAlignment="Center"
-                            ValueChanged="Slider_MoveDelay_ValueChanged"
+                    <Label Content="LED Control" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <Slider x:Name="Slider_LEDBrightness" Grid.Column="1" 
+                            VerticalAlignment="Center"     
+                            ValueChanged="Slider_LEDBrightness_ValueChanged"
                             Value="0.5" Maximum="1" Minimum="0" SmallChange="0.01" IsSnapToTickEnabled="True" TickFrequency="0.01" />
-                    <Label x:Name="Label_MoveDelay" Grid.Column="3" Content="500 ms" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                    <Button x:Name="Button_LEDControl" Grid.Column="3" Content="50%" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                            Click="Button_LEDControl_Clicked"/>
 
                     <CheckBox
-                        x:Name="CheckBox_MultiTurn"
-                        Grid.Row="1" Grid.ColumnSpan="2"
+                        x:Name="CheckBox_MultiTurn"   
+                        Grid.Row="1" Grid.Column="0"
+                        HorizontalAlignment="Center"
                         IsChecked="True"
                         Click="CheckBox_MultiTurn_Click"
                         Content="MultiTurn" />
-                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="0" HorizontalAlignment="Right">
+
+                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                         <TextBox VerticalAlignment="Center" Text="Arduino COM Port" />
-                        <ComboBox x:Name="ComboBox_COMPort" DropDownOpened="ComboBox_COMPort_DropDownOpened" Width="70" Height="20" />
+                        <ComboBox x:Name="ComboBox_COMPort" DropDownOpened="ComboBox_COMPort_DropDownOpened" Width="70" Height="20" Margin="10,0,0,0" />
                     </StackPanel>
+
+                    <Button x:Name="Button_Connect" Content="Connect" Grid.Row="1" Grid.Column="2"
+                            Click="Button_Connect_Clicked"/>
                 </Grid>
             </Border>
 

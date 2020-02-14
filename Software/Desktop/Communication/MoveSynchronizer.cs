@@ -20,6 +20,8 @@ namespace Rubinator3000.Communication {
         private Cube receivingState = new Cube();
         private int tilesReceived = 54;
 
+        public bool ArduinoConnected => arduino?.Connected ?? false;
+
         private void HandleBluetoothData(byte data) {
             // handle incoming state data
             if (tilesReceived < 54) {
@@ -97,6 +99,12 @@ namespace Rubinator3000.Communication {
         public void DisconnectArduino() {
             if (arduino != null)
                 arduino.Disconnect();
+        }
+
+        public void SetSolvedState(bool state) {
+            if(arduino != null && arduino.Connected) {
+                arduino.SetSolvedState(state);
+            }
         }
 
         public void SetArduinoLEDs(ArduinoLEDs leds, byte brightness) {

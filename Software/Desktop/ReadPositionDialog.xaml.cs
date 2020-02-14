@@ -21,7 +21,21 @@ namespace Rubinator3000 {
 
         private static readonly List<Key> allowedFaceKeys = new List<Key>() { Key.D0, Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.Tab, Key.Back };
         private static readonly List<Key> allowedRowColKeys = new List<Key>() { Key.D0, Key.D1, Key.D2, Key.Tab, Key.Back };
-        public int[] Result { get; set; } = new int[3];
+
+        private int[] result = new int[3];
+        public int[] Result {
+            get => result;
+            set {
+                if(value.Length != 3) {
+                    throw new ArgumentOutOfRangeException(nameof(value));
+                }
+
+                result = value;
+                inputFaceIndex.Text = result[0].ToString();
+                inputRowIndex.Text = result[1].ToString();
+                inputColIndex.Text = result[2].ToString();
+            }
+        }
         public ReadPositionDialog() {
             InitializeComponent();
 

@@ -79,6 +79,10 @@ namespace Rubinator3000 {
 
         public override void Dispose() {
             Disconnect();
+        }        
+
+        ~ArduinoUSB() {
+            Dispose();
         }
 
         public override void SendMove(Move move) {
@@ -95,7 +99,7 @@ namespace Rubinator3000 {
             byte[] moveData = RubinatorCore.Utility.MoveToByte(move);
 
             // send and receive arduino response
-            byte[] response = SendCommand(moveData);
+            SendCommand(moveData);
         }
 
         public override void SendMultiTurnMove(Move move1, Move move2) {
@@ -123,11 +127,16 @@ namespace Rubinator3000 {
             SendCommand(command, brightness);
         }
 
-        ~ArduinoUSB() {
-            Dispose();
+        public override void SetSolvedState(bool state) {
+            if (state) {
+                SendCommand(0xA2);
+            }
+            else {
+                SendCommand(0xA1);
+            }
         }
 
-        protected byte[] SendCommand(params byte[] command) {
+        protected override byte[] SendCommand(params byte[] command) {
             byte[] response = new byte[command.Length];
 
             serial.Write(command, 0, command.Length);

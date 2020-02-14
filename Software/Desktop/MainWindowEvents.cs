@@ -22,6 +22,8 @@ namespace Rubinator3000 {
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
             Log.LogMessage("Shutting down..");
+
+            moveSynchronizer.DisconnectArduino();
             ctSource.Cancel();
 
             for (int i = 0; i < webCamControls.Length; i++) {
@@ -60,6 +62,8 @@ namespace Rubinator3000 {
             TextBox_MoveHistoryOutput.Clear();
 
             await moveSynchronizer.RunAsync(solvingMoves);
+
+            moveSynchronizer.SetSolvedState(true);
         }
 
         public async void ShuffleCube() {
@@ -70,6 +74,20 @@ namespace Rubinator3000 {
 
             await moveSynchronizer.RunAsync(shuffleMoves);
 
+        }
+
+        public void ConnectArduino() {
+            string serialPort = ComboBox_COMPort.Text;
+            if (!System.IO.Ports.SerialPort.GetPortNames().Contains(serialPort)) {
+                MessageBox.Show("Bitte einen gültigen Port auswählen!");
+            }
+            else {
+                moveSynchronizer.ConnectArduino(serialPort);
+
+                moveSynchronizer.SetArduinoLEDs(ArduinoLEDs.ALL, Convert.ToByte(Math.Round(Slider_LEDBrightness.Value * 255)));
+
+                Button_Connect.Content = "Disconnect";
+            }
         }
 
         private void WebCamControl_OnCubeScanned(object sender, CubeScanEventArgs e) {
@@ -119,15 +137,8 @@ namespace Rubinator3000 {
             }
         }
 
-        // cube position editing
-        private static int clickCount = 0;
-        int[] rowMappings = {
-            0, 0, 0, 1, 1, 2, 2, 2
-        };
-
-        int[] columnMappings = {
-            0, 1, 2, 0, 2, 0, 1, 2
-        };
+        // cube position editing        
+        private int[] lastIndices = new int[3] { 6, 3, 3 };
 
         private void InitalizeCameraPreviews() {
 
@@ -192,15 +203,41 @@ namespace Rubinator3000 {
                 }
             }
             int[] indices;
+            if (lastIndices[0] < 6 || lastIndices[1] < 3 || lastIndices[2] < 3) {
+                // get next index                
+                int lastRow = lastIndices[1];
+                int lastCol = lastIndices[2];
 
-            if (clickCount < 48) {
-                indices = new int[3] {
-                    clickCount / 8,
-                    rowMappings[clickCount % 8], // rowIndex
-                    columnMappings[clickCount % 8] // colIndex
-                };
+                indices = new int[3];
+
+                // set face
+                if (lastRow == 2 && lastCol == 2) {
+                    indices[0] = lastIndices[0] + 1;
+                }
+                else {
+                    indices[0] = lastIndices[0];
+                }
+
+                // set row
+                if (lastCol == 2) {
+                    indices[1] = (lastIndices[1] + 1) % 3;
+                }
+                else {
+                    indices[1] = lastIndices[1];
+                }
+
+                // set column
+                if (lastCol == 0 && indices[1] == 1) {
+                    indices[2] = 2;
+                }
+                else {
+                    indices[2] = (lastIndices[2] + 1) % 3;
+                }
             }
-            else indices = new int[3];
+            else {
+                indices = new int[3];
+            }
+
 
             // Manual Position Adding
             if (Settings.PositionEditingAllowed && e.ChangedButton == MouseButton.Left /*&& WebCamControl.TotalPositionCount < WebCamControl.MAXPOSITIONSTOREAD*/) {
@@ -210,12 +247,6 @@ namespace Rubinator3000 {
                 readPositionDialog.Result = indices;
                 if (readPositionDialog.ShowDialog() // Waits until dialog gets closed
                     == true) {
-
-                    /* "indicies" stores the indicies of the position to add
-                     * [0] faceIndex
-                     * [1] rowIndex
-                     * [2] colIndex
-                     */
 
                     indices = readPositionDialog.Result;
                 }
@@ -233,11 +264,7 @@ namespace Rubinator3000 {
                         cameraIndex
                     );
 
-                if (MessageBox.Show($"Confirm {string.Join(" ", indices)}") == MessageBoxResult.OK) {
-                    Log.LogMessage("CONFIRMED");
-                    clickCount++;
-                }
-
+                lastIndices = indices;
 
                 Log.LogMessage(WebCamControl.AddPosition(tempPos, cameraIndex));
 
@@ -273,9 +300,6 @@ namespace Rubinator3000 {
         }
 
         private void Button_ManualReadout_Click(object sender, RoutedEventArgs e) {
-            moveSynchronizer.SetArduinoLEDs(ArduinoLEDs.ALL, 80);
-            Thread.Sleep(1000);
-
             WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequested.SINGLE_READOUT;
         }
 
@@ -303,15 +327,29 @@ namespace Rubinator3000 {
             }
         }
 
-        private void Slider_MoveDelay_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-            Settings.StepDelay = (int)(Settings.MaxStepDelay * e.NewValue);
+        private void Button_LEDControl_Clicked(object sender, RoutedEventArgs e) {
+            moveSynchronizer.SetArduinoLEDs(ArduinoLEDs.ALL, Convert.ToByte(Math.Round(Slider_LEDBrightness.Value * 255)));
+        }
 
-            if (Label_MoveDelay != null)
-                Label_MoveDelay.Content = Settings.StepDelay + " ms";
+        private void Slider_LEDBrightness_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+            if (Button_LEDControl != null)
+                Button_LEDControl.Content = $"{(int)Math.Floor(e.NewValue * 100)}%";
         }
 
         private void ComboBox_COMPort_DropDownOpened(object sender, EventArgs e) {
             ComboBox_COMPort.ItemsSource = System.IO.Ports.SerialPort.GetPortNames();
+        }
+
+        private void Button_Connect_Clicked(object sender, RoutedEventArgs e) {
+            if (!moveSynchronizer.ArduinoConnected) {
+                ConnectArduino();
+                Button_Connect.Content = "Disconnect";
+            }
+            else {
+                moveSynchronizer.DisconnectArduino();
+                Button_Connect.Content = "Connect";
+            }
+
         }
     }
 }
