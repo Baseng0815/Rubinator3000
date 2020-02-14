@@ -10,7 +10,7 @@ using RubinatorCore;
 
 namespace Rubinator3000 {
     partial class MainWindow {
-        
+
         private void MenuItem_Close_Click(object sender, RoutedEventArgs e) {
             Close();
         }
@@ -59,8 +59,9 @@ namespace Rubinator3000 {
             if (!System.IO.Ports.SerialPort.GetPortNames().Contains(serialPort)) {
                 MessageBox.Show("Bitte einen gültigen Port auswählen!");
             }
-
-            moveSynchronizer.ConnectArduino(serialPort);
+            else {
+                moveSynchronizer.ConnectArduino(serialPort);
+            }
         }
 
         private void MenuItem_Disconnect_Click(object sender, RoutedEventArgs e) {
@@ -73,6 +74,12 @@ namespace Rubinator3000 {
 
         private void MenuItem_BluetoothUnsetup_Click(object sender, RoutedEventArgs e) {
             moveSynchronizer.UnsetupBluetooth();
+        }
+
+        private void MenuItem_ReinitializeCameras_Click(object sender, RoutedEventArgs e) {
+            for (int i = 0; i < webCamControls.Length; i++) {
+                webCamControls[i].TryInitializeAndStart();
+            }
         }
     }
 }

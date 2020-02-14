@@ -32,7 +32,7 @@ namespace Rubinator3000 {
     /// </summary>
     public partial class MainWindow : Window {
         public Cube cube = new Cube();
-        private MoveSynchronizer moveSynchronizer;
+        public MoveSynchronizer moveSynchronizer;
 
         private const int cameraCount = 4;
         private readonly Image[] cameraPreviews = new Image[cameraCount];
@@ -66,14 +66,13 @@ namespace Rubinator3000 {
 
                     // Auto Scroll Implementation
                     if (window.WindowsFormsHost_CubePreview.Child != null) {
-                        window.TextBox_Log.Focus();
                         window.TextBox_Log.CaretIndex = window.TextBox_Log.Text.Length;
-                        //window.TextBox_Log.ScrollToEnd();
+                        window.TextBox_Log.ScrollToEnd();
                     }
                 });
             };
 
             Log.LogMessage("Init Log");
-        }        
+        }      
     }
 }

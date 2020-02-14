@@ -56,6 +56,8 @@ namespace Rubinator3000.CubeScan {
         public delegate void OnCubeScannedEventHandler(object sender, CubeScanEventArgs e);
         public static event OnCubeScannedEventHandler OnCubeScanned;
 
+        private static bool LEDon = false;
+
         #endregion
 
         #region Member Variables
@@ -136,7 +138,7 @@ namespace Rubinator3000.CubeScan {
 
         private void Run() {
 
-            try {
+            //try {
 
                 threadStarted = true;
 
@@ -172,8 +174,22 @@ namespace Rubinator3000.CubeScan {
                         }
                     }
 
-                    // If position reading is requested
-                    if (CubeGenerationRequested > 0 && !Settings.CalibrateColors) {
+                //if (cameraIndex == 0) {
+                //    byte brightness = currentFABitmap.GetBrightness();
+                //    //Log.LogMessage("Brightness " + brightness);
+
+                //    Application.Current.Dispatcher.Invoke(() => {
+
+                //        if (brightness < 30)
+                //            ((MainWindow)Application.Current.MainWindow).moveSynchronizer.SetArduinoLEDs(ArduinoLEDs.ALL, 128);
+                //        else
+                //            ((MainWindow)Application.Current.MainWindow).moveSynchronizer.SetArduinoLEDs(ArduinoLEDs.ALL, 0);
+
+                //    });
+                //}
+
+                // If position reading is requested
+                if (CubeGenerationRequested > 0 && !Settings.CalibrateColors) {
 
                         // Read all colors from positions in readPositions
                         for (int i = 0; i < positionsToReadAt.GetLength(1); i++) {
@@ -197,6 +213,8 @@ namespace Rubinator3000.CubeScan {
 
                                     CubeGenerationRequested = ReadoutRequested.DISABLED;
                                 }
+
+                                Log.LogMessage("End Camera 0");
                             }
                         }
                     }
@@ -214,10 +232,11 @@ namespace Rubinator3000.CubeScan {
                         Thread.Sleep(Convert.ToInt32(loopEnd - CurrentTimeMillis()));
                     }
                 }
-            } catch (Exception e) {
+            //}
+            //catch (Exception e) {
 
-               Log.LogMessage(string.Format("Camera {0} crashed", cameraIndex));
-            }
+            //    Log.LogMessage(string.Format("Camera {0} crashed", cameraIndex));
+            //}
             threadStarted = false;
         }
 
@@ -256,6 +275,7 @@ namespace Rubinator3000.CubeScan {
         private void StartThread() {
 
             thread = new Thread(new ThreadStart(Run));
+            thread.Name = "Running Thread";
             threadShouldStop = false;
             thread.Start();
         }
@@ -320,7 +340,11 @@ namespace Rubinator3000.CubeScan {
                 positions[i].Percentages = ColorIdentification.CalculateColorPercentages(positions[i]);
             }
 
-            CubeColor[,] scanData = new CubeColor[6, 9];
+            CubeColor[][] scanData = new CubeColor[6][];
+            for (int i = 0; i < scanData.Length; i++) {
+                scanData[i] = new CubeColor[9];
+                scanData[i][4] = (CubeColor)i;
+            }
 
             for (int i = 0; i < 6; i++) {
                 CubeColor currentCubeColor = (CubeColor)i;
@@ -333,7 +357,7 @@ namespace Rubinator3000.CubeScan {
 
                     // Assign tiles to the cube
                     //MainWindow.cube.SetTile((CubeFace)(currentPosition.FaceIndex), currentPosition.RowIndex * 3 + currentPosition.ColIndex, currentCubeColor);
-                    scanData[currentPosition.FaceIndex, currentPosition.RowIndex * 3 + currentPosition.ColIndex] = currentCubeColor;
+                    scanData[currentPosition.FaceIndex][currentPosition.RowIndex * 3 + currentPosition.ColIndex] = currentCubeColor;
                     currentPosition.AssumedCubeColor = currentCubeColor;
 
                     // Dye the circle of the readposition in the corresponding color
@@ -624,6 +648,8 @@ namespace Rubinator3000.CubeScan {
 
                     CubeColor resultColor = MainWindow.cubeColorDialog.Result;
                     if (resultColor != null && resultColor != CubeColor.NONE) {
+                        if (ColorIdentification.ForcedColors.ContainsKey(pos))
+                            ColorIdentification.ForcedColors.Remove(pos);
 
                         ColorIdentification.ForcedColors.Add(pos, resultColor);
                     }
@@ -677,12 +703,12 @@ namespace Rubinator3000.CubeScan {
     }
 
     public class CubeScanEventArgs : EventArgs {
-        public CubeColor[,] ScanData { get; }
+        public CubeColor[][] ScanData { get; }
 
-        public CubeScanEventArgs(CubeColor[,] scanData) {
+        public CubeScanEventArgs(CubeColor[][] scanData) {
             ScanData = scanData ?? throw new ArgumentNullException(nameof(scanData));
 
-            if (scanData.GetLength(0) != 6 || scanData.GetLength(1) != 9)
+            if (scanData.Length != 6 || scanData[0].Length != 9)
                 throw new ArgumentOutOfRangeException(nameof(scanData));
         }
     }

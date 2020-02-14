@@ -14,6 +14,8 @@ namespace Rubinator3000 {
     class ArduinoUSB : Arduino {
 
         private SerialPort serial;
+
+        public override bool Connected => connected;
         private bool connected = false;
 
         public ArduinoUSB(string portName, int baudRate = 9600) {
@@ -25,26 +27,25 @@ namespace Rubinator3000 {
             }
 
             serial = new SerialPort(portName, baudRate);
-            serial.ReadTimeout = Settings.ArduinoTimeout;
+            //serial.ReadTimeout = Settings.ArduinoTimeout;
 
             // open serial port
             try {
                 serial.Open();
+
+                Log.LogMessage("Arduino connected");
             }
             catch (Exception e) {
-                Log.LogMessage("Der Port kann nicht geöffnet werden:" + e.ToString());
+                Log.LogMessage("Der Port kann nicht geöffnet werden:\r\n" + e.ToString());
                 return;
             }
         }
 
         public override void Connect() {
             try {
-                serial.Write(new byte[] { 0xA1 }, 0, 1);
-
-                byte response;
-                response = (byte)serial.ReadByte();
+                byte response = SendCommand(0xA1)[0];
                 if (response != 0xF1) {
-                    Log.LogMessage("Arduinoprogramm ist nicht korrekt. Response: " + response);
+                    Log.LogMessage("Arduinoprogramm ist nicht korrekt. Response: " + Convert.ToString(response, 16));
                     return;
                 }
                 else
@@ -57,13 +58,11 @@ namespace Rubinator3000 {
         }
 
         public override void Disconnect() {
-            if (serial.IsOpen) {
-                serial.Write(new byte[] { 0xA0 }, 0, 1);
-
+            if (serial?.IsOpen ?? false) {
                 try {
-                    if (serial.ReadByte() != 0xF0) {
+                    byte response = SendCommand(0xA0)[0];
+                    if (response != 0xF0) {
                         Log.LogMessage("Aduinoprogramm ist nicht korrekt");
-                        return;
                     }
                     else {
                         connected = false;
@@ -95,12 +94,8 @@ namespace Rubinator3000 {
 
             byte[] moveData = RubinatorCore.Utility.MoveToByte(move);
 
-            Debug.WriteLine(BitConverter.ToString(moveData));
-            serial.Write(moveData, 0, moveData.Length);
-
-            // receive arduino response
-            byte[] response = new byte[1];
-            serial.Read(response, 0, 1);
+            // send and receive arduino response
+            byte[] response = SendCommand(moveData);
         }
 
         public override void SendMultiTurnMove(Move move1, Move move2) {
@@ -116,29 +111,29 @@ namespace Rubinator3000 {
 
             byte[] moveData = RubinatorCore.Utility.MultiTurnToByte(move1, move2);
 
-            serial.Write(moveData, 0, moveData.Length);
+            SendCommand(moveData);
         }
 
-        public override void SendLedCommand(ArduinoLEDs leds, int state) {
-            if (state > 1 || state < 0)
-                throw new ArgumentOutOfRangeException(nameof(state));
+        public override void SendLedCommand(ArduinoLEDs leds, byte brightness) {
+            if (!connected || !serial.IsOpen)
+                return;
 
-            switch (leds) {
-                case ArduinoLEDs.UP:
-                    serial.Write(new byte[] { (byte)(0x44 | state) }, 0, 1);
-                    break;
-                case ArduinoLEDs.DOWN:
-                    serial.Write(new byte[] { (byte)(0x42 | state) }, 0, 1);
-                    break;
-                case ArduinoLEDs.STRIPES:
-                    serial.Write(new byte[] { (byte)(0x46 | state) }, 0, 1);
-                    break;
-                case ArduinoLEDs.ALL:
-                    serial.Write(new byte[] { (byte)(0x40 | state) }, 0, 1);
-                    break;
-                default:
-                    break;
-            }
+            byte command = (byte)(0x40 | (byte)leds);
+
+            SendCommand(command, brightness);
+        }
+
+        ~ArduinoUSB() {
+            Dispose();
+        }
+
+        protected byte[] SendCommand(params byte[] command) {
+            byte[] response = new byte[command.Length];
+
+            serial.Write(command, 0, command.Length);
+            serial.Read(response, 0, command.Length);
+
+            return response;
         }
     }
 }

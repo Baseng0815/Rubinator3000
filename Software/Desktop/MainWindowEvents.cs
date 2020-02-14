@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,9 +32,6 @@ namespace Rubinator3000 {
 
             // Without this line, the program would throw an exception on close
             Environment.Exit(0);
-
-            Application.Current.Shutdown();
-
 
             Log.StopLogging();
 
@@ -75,7 +73,13 @@ namespace Rubinator3000 {
         }
 
         private void WebCamControl_OnCubeScanned(object sender, CubeScanEventArgs e) {
-            //TODO: add code
+            try {
+                cube = new Cube(e.ScanData);
+                DrawCube.AddState(cube);
+            }
+            catch {
+                Log.LogMessage("Cube not created");
+            }
         }
 
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
@@ -114,6 +118,16 @@ namespace Rubinator3000 {
                 moveSynchronizer.RunAsync(move);
             }
         }
+
+        // cube position editing
+        private static int clickCount = 0;
+        int[] rowMappings = {
+            0, 0, 0, 1, 1, 2, 2, 2
+        };
+
+        int[] columnMappings = {
+            0, 1, 2, 0, 2, 0, 1, 2
+        };
 
         private void InitalizeCameraPreviews() {
 
@@ -177,14 +191,23 @@ namespace Rubinator3000 {
                     }
                 }
             }
+            int[] indices;
+
+            if (clickCount < 48) {
+                indices = new int[3] {
+                    clickCount / 8,
+                    rowMappings[clickCount % 8], // rowIndex
+                    columnMappings[clickCount % 8] // colIndex
+                };
+            }
+            else indices = new int[3];
 
             // Manual Position Adding
-            if (Settings.PositionEditingAllowed && e.ChangedButton == MouseButton.Left && WebCamControl.TotalPositionCount < WebCamControl.MAXPOSITIONSTOREAD) {
+            if (Settings.PositionEditingAllowed && e.ChangedButton == MouseButton.Left /*&& WebCamControl.TotalPositionCount < WebCamControl.MAXPOSITIONSTOREAD*/) {
 
                 readPositionDialog = new ReadPositionDialog();
 
-                int[] indicies;
-
+                readPositionDialog.Result = indices;
                 if (readPositionDialog.ShowDialog() // Waits until dialog gets closed
                     == true) {
 
@@ -193,20 +216,28 @@ namespace Rubinator3000 {
                      * [1] rowIndex
                      * [2] colIndex
                      */
-                    indicies = readPositionDialog.Result;
+
+                    indices = readPositionDialog.Result;
                 }
                 else {
                     return;
                 }
 
+
                 ReadPosition tempPos = new ReadPosition(
                         clickPosition.X / clickedImage.ActualWidth, // calculate relativeX
-                        clickPosition.Y / clickedImage.ActualHeight, // calculate relativeY
-                        indicies[0], // faceIndex
-                        indicies[1], // rowIndex
-                        indicies[2], // colIndex
+                        clickPosition.Y / clickedImage.ActualHeight, // calculate relativeY   
+                        indices[0],
+                        indices[1],
+                        indices[2],
                         cameraIndex
                     );
+
+                if (MessageBox.Show($"Confirm {string.Join(" ", indices)}") == MessageBoxResult.OK) {
+                    Log.LogMessage("CONFIRMED");
+                    clickCount++;
+                }
+
 
                 Log.LogMessage(WebCamControl.AddPosition(tempPos, cameraIndex));
 
@@ -242,6 +273,8 @@ namespace Rubinator3000 {
         }
 
         private void Button_ManualReadout_Click(object sender, RoutedEventArgs e) {
+            moveSynchronizer.SetArduinoLEDs(ArduinoLEDs.ALL, 80);
+            Thread.Sleep(1000);
 
             WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequested.SINGLE_READOUT;
         }
@@ -275,6 +308,10 @@ namespace Rubinator3000 {
 
             if (Label_MoveDelay != null)
                 Label_MoveDelay.Content = Settings.StepDelay + " ms";
+        }
+
+        private void ComboBox_COMPort_DropDownOpened(object sender, EventArgs e) {
+            ComboBox_COMPort.ItemsSource = System.IO.Ports.SerialPort.GetPortNames();
         }
     }
 }

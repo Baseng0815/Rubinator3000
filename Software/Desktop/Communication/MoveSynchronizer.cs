@@ -90,6 +90,8 @@ namespace Rubinator3000.Communication {
 
             arduino = new ArduinoUSB(portName);
             arduino.Connect();
+
+            arduino.SendLedCommand(ArduinoLEDs.ALL, 0);
         }
 
         public void DisconnectArduino() {
@@ -97,8 +99,9 @@ namespace Rubinator3000.Communication {
                 arduino.Disconnect();
         }
 
-        public void SetArduinoLEDs(ArduinoLEDs leds, bool state) {
-            arduino.SendLedCommand(leds, state ? 1 : 0);
+        public void SetArduinoLEDs(ArduinoLEDs leds, byte brightness) {
+            if (arduino != null)
+                arduino.SendLedCommand(leds, brightness);
         }
 
         public void SetupBluetooth() {

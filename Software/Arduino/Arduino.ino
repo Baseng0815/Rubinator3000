@@ -52,7 +52,7 @@ void loop() {
 
   	// disconnected
 	  if (data == -1) {
-		  setState(STATE_DISCONNECT);
+		  stateCommand(STATE_DISCONNECT);
 		  return;
 	  }
 
@@ -67,7 +67,9 @@ void loop() {
         handleMultiTurnMove(data);
         break;
       case  0x40:   // leds
-        ledCommand(data & 0x0F);
+        while (!Serial.available()) ;
+        uint8_t brightness = Serial.read();
+        ledCommand(data & 0x0F, brightness);
         break;
     }
   }
@@ -87,7 +89,7 @@ void stateCommand(uint8_t newState) {
         state = STATE_CONNECT;
 
         digitalWrite(ledGreen, HIGH);
-        digitalWrite(ledRed, HIGH);
+        digitalWrite(ledRed, HIGH);        
         break;
       case STATE_SOLVED:
         state = STATE_SOLVED;
@@ -97,8 +99,8 @@ void stateCommand(uint8_t newState) {
         break;
     }
   }
-
-  Serial.write(0xF0 + state);
+  
+  Serial.write(0xF0 | state);
 }
 
 void handleMove(uint8_t move) {  
@@ -129,7 +131,7 @@ void handleMultiTurnMove(uint8_t multiTurnMove) {
 
   int axis = (multiTurnMove & (1 << 3 | 1 << 2)) >> 2;
 
-  if(axis < 3)
+  if(axis < 3) {
     Serial.write(axis);
 
     int leftDir = (multiTurnMove & (1 << 1)) >> 1;
@@ -166,25 +168,22 @@ void doMultiTurnMove(int axis, int leftDir, int rightDir, const int stepDelay) {
   steppers[rightStepper].writeState(0, 0, 0, 0);
 }
 
-void ledCommand(uint8_t command) {
-  int level = command & 0x01;
-  switch (command & 0x0E){
-    case 0x00:  // all leds      
-      analogWrite(ledsUp, 127 * level);
-      analogWrite(ledsDown, 127 * level);
-      digitalWrite(ledStripes, level);
-      break;
-    case 0x02:  // leds down
-      analogWrite(ledsDown, 127 * level);
-      break;
-    case 0x04:  // leds up
-      analogWrite(ledsUp, 127 * level);
-      break;
-    case 0x06:  // led stripes
-      digitalWrite(ledStripes, level);
-      break;
-    default:
-      Serial.write(0xB2);
-      break;
-  }  
+void ledCommand(uint8_t command, uint8_t brightness) {    
+  if(command & 0x01 == 0x01) {
+    // leds down
+    analogWrite(ledsDown, brightness);    
+  }
+
+  if(command & 0x02 == 0x02) {
+    // leds up
+    analogWrite(ledsUp, brightness);
+  }
+
+  if(command & 0x04 == 0x04) {
+    // led stripes
+    digitalWrite(ledStripes, brightness > 0 ? HIGH : LOW);
+  }
+
+  Serial.write(command);
+  Serial.write(brightness);
 }

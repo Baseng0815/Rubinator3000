@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RubinatorCore;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -91,6 +92,18 @@ namespace Rubinator3000.CubeScan {
         public bool HasValidBitmap() {
 
             return _bitmap != null;
+        }
+    
+
+        public byte GetBrightness() {
+
+            if (_bitmap == null) {
+
+                return 1;
+            }
+
+            Color c = ReadPixels(0,0, _bitmap.Width, _bitmap.Height);
+            return Convert.ToByte(((c.R + c.G + c.B) / (double)(3)));
         }
     }
 }

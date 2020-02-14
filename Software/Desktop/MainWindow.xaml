@@ -142,16 +142,12 @@
             </MenuItem>
 
             <MenuItem Header="Hardware">
-                <Border>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox VerticalAlignment="Center" Text="Arduino COM Port" />
-                        <ComboBox x:Name="ComboBox_COMPort" Width="70" />
-                    </StackPanel>
-                </Border>
                 <MenuItem Click="MenuItem_Connect_Click" Header="Arduino verbinden" />
                 <MenuItem Click="MenuItem_Disconnect_Click" Header="Arduino trennen" />
                 <MenuItem Click="MenuItem_BluetoothSetup_Click" Header="Bluetooth starten" />
                 <MenuItem Click="MenuItem_BluetoothUnsetup_Click" Header="Bluetooth stoppen" />
+                <Separator/>
+                <MenuItem Click="MenuItem_ReinitializeCameras_Click" Header="Reinitialize Cameras" />
             </MenuItem>
 
             <!--  Index Tab "Ansicht"  -->
@@ -213,6 +209,10 @@
                         IsChecked="True"
                         Click="CheckBox_MultiTurn_Click"
                         Content="MultiTurn" />
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" Margin="0" HorizontalAlignment="Right">
+                        <TextBox VerticalAlignment="Center" Text="Arduino COM Port" />
+                        <ComboBox x:Name="ComboBox_COMPort" DropDownOpened="ComboBox_COMPort_DropDownOpened" Width="70" Height="20" />
+                    </StackPanel>
                 </Grid>
             </Border>
 

@@ -1,12 +1,12 @@
 A0xbyte		meaning
 
 state:
-0xA0		disconnect
-0xA1		connect
-0xA2		solve
-0xF0		disconnected
-0xF1		connected
-0xF2		solved
+0xA1		disconnect
+0xA2		connect
+0xA3		solve
+0xF1		disconnected
+0xF2		connected
+0xF3		solved
 
 bluetooth:
 0x00		transmit cube to client
@@ -15,14 +15,9 @@ bluetooth:
 0x31		shuffle cube
 
 LED control:
-0x40		all LED's off
-0x41		all LED's on
-0x42		LED's down off
-0x43		LED's down on
-0x44		LED's up off
-0x45		LED's up on
-0x46		LED stripes off
-0x47		LED stripes on
+0x41		LED's down          0b0100_0001
+0x43		LED's up            0b0100_0010
+0x44		LED stripes         0b0100_0100
 
 errors:
 0xB0		error
