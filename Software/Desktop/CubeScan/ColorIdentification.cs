@@ -22,6 +22,9 @@ namespace Rubinator3000.CubeScan {
 
             if (ForcedColors.ContainsKey(readPosition)) {
 
+                for (int i = 0; i < percentages.Length; i++) {
+                    percentages[i] = 0;
+                }
                 // Set color percentage to 200% for forced colors
                 percentages[(int)ForcedColors[readPosition]] = 2;
                 return percentages;
@@ -175,5 +178,9 @@ namespace Rubinator3000.CubeScan {
             return probableIndicies.Keys.ToList().GetRange(probableIndicies.Count - 8, 8).ToArray();
         }
 
+        public static void ClearForcedColors() {
+
+            ForcedColors.Clear();
+        }
     }
 }

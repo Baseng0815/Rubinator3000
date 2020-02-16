@@ -157,7 +157,7 @@ namespace Rubinator3000.Communication {
 
         public Task RunAsync(MoveCollection moves, bool btSend = true) {
             return Task.Run(async delegate {
-                bool confirmationNeeded = true;
+                bool confirmationNeeded = false;
 
                 for (int i = 0; i < moves.Count; i++) {
                     bool multiTurn = false;

@@ -291,6 +291,12 @@
                             Click="CheckBox_UseRefColors_Click"
                             Content="Use Reference Colors" />
                     </Border>
+                    <Border Grid.Row="2" Grid.Column="1">
+                        <Button
+                            x:Name="CheckBox_ClearForcedColors"
+                            Click="CheckBox_ClearForcedColors_Click"
+                            Content="Clear Forced Colors" />
+                    </Border>
                     <Border Grid.Row="3" Grid.Column="0">
                         <CheckBox
                             x:Name="CheckBox_AutoReadout"

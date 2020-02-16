@@ -63,14 +63,14 @@ namespace Rubinator3000 {
 
             await moveSynchronizer.RunAsync(solvingMoves);
 
-            moveSynchronizer.SetSolvedState(true);
+            //moveSynchronizer.SetSolvedState(true);
         }
 
         public async void ShuffleCube() {
             Random rnd = new Random();
 
             TextBox_MoveHistoryOutput.Clear();
-            MoveCollection shuffleMoves = cube.GetShuffleMoves(rnd.Next(5, 10));
+            MoveCollection shuffleMoves = cube.GetShuffleMoves(rnd.Next(10, 20));
 
             await moveSynchronizer.RunAsync(shuffleMoves);
 
@@ -285,6 +285,11 @@ namespace Rubinator3000 {
         private void CheckBox_UseRefColors_Click(object sender, RoutedEventArgs e) {
 
             Settings.UseReferenceColors = CheckBox_UseRefColors.IsChecked.Value;
+        }
+
+        private void CheckBox_ClearForcedColors_Click(object sender, RoutedEventArgs e) {
+
+            ColorIdentification.ClearForcedColors();
         }
 
         private void CheckBox_AutoReadout_Click(object sender, RoutedEventArgs e) {

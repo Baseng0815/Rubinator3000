@@ -27,7 +27,7 @@ namespace Rubinator3000 {
             }
 
             serial = new SerialPort(portName, baudRate);
-            //serial.ReadTimeout = Settings.ArduinoTimeout;
+            serial.ReadTimeout = Settings.ArduinoTimeout;
 
             // open serial port
             try {
@@ -64,9 +64,9 @@ namespace Rubinator3000 {
                     if (response != 0xF0) {
                         Log.LogMessage("Aduinoprogramm ist nicht korrekt");
                     }
-                    else {
-                        connected = false;
-                    }
+
+                    connected = false;
+
 
                     serial.Close();
                 }
@@ -79,7 +79,7 @@ namespace Rubinator3000 {
 
         public override void Dispose() {
             Disconnect();
-        }        
+        }
 
         ~ArduinoUSB() {
             Dispose();

@@ -632,7 +632,7 @@ namespace Rubinator3000.CubeScan {
             Ellipse circle = (Ellipse)sender;
             ReadPosition pos = ((PieChart)circle.ToolTip).ReadPosition;
 
-            if (e.ChangedButton == System.Windows.Input.MouseButton.Right) {
+            if (e.ChangedButton == System.Windows.Input.MouseButton.Right && MessageBox.Show($"Position {pos.FaceIndex} {pos.RowIndex} {pos.ColIndex}") == MessageBoxResult.OK) {
 
                 RemovePosition(pos.FaceIndex, pos.RowIndex, pos.ColIndex);
                 ((Canvas)circle.Parent).Children.Remove(circle);
@@ -642,7 +642,8 @@ namespace Rubinator3000.CubeScan {
                 // TODO Manual Color Trouble Shooting
 
                 MainWindow.cubeColorDialog = new CubeColorDialog();
-                if (MainWindow.cubeColorDialog.ShowDialog() == true) {
+                bool? result = MainWindow.cubeColorDialog.ShowDialog();
+                if (result ?? false) {
 
                     CubeColor resultColor = MainWindow.cubeColorDialog.Result;
                     if (resultColor != null && resultColor != CubeColor.NONE) {
@@ -652,19 +653,6 @@ namespace Rubinator3000.CubeScan {
                         ColorIdentification.ForcedColors.Add(pos, resultColor);
                     }
                 }
-            }
-        }
-
-        public static CubeColor CubeColorByString(string cubeColorString) {
-
-            switch (cubeColorString) {
-                case "ORANGE": return CubeColor.ORANGE;
-                case "WHITE": return CubeColor.WHITE;
-                case "GREEN": return CubeColor.GREEN;
-                case "YELLOW": return CubeColor.YELLOW;
-                case "RED": return CubeColor.RED;
-                case "BLUE": return CubeColor.BLUE;
-                default: return CubeColor.NONE;
             }
         }
 
