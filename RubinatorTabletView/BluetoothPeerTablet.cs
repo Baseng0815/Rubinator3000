@@ -16,22 +16,40 @@ using System.Threading;
 using RubinatorCore;
 
 namespace RubinatorTabletView {
-    public class ControlHandler {
+    public class BluetoothPeer : RubinatorCore.Communication.BluetoothPeer {
         public BluetoothDevice device;
-
         private BluetoothSocket socket;
         private BluetoothAdapter adapter;
         private Stream outStream;
         private Stream inStream;
 
-        private Cube receivingState = new Cube();
-        private int tilesReceived = 54;
+        public BluetoothPeer() {
+            SERVICE_UUID = UUID.FromString("053eaaaf-f981-4b64-a39e-ea4f5f44bb57");
 
-        private readonly UUID SERVICE_UUID = UUID.FromString("053eaaaf-f981-4b64-a39e-ea4f5f44bb57");
+            InstructionDataLength = new Dictionary<byte, int>();
+            currentPacket = new RubinatorCore.Communication.Packet();
 
-        private void HandleBluetoothData(byte data) {
+            // TODO add instructions here
+            //InstructionDataLength.Add() ...
+        }
+
+        private override void HandleReceivedByte(byte b) {
+            // new instruction
+            if (currentPacket.Instruction == 0x00) {
+                currentPacket.Instruction = b;
+
+            // there is still data to add
+            } else if (currentPacket.Data.Count < InstructionDataLength[currentPacket.Instruction]) {
+                currentPacket.Data.Add(b);
+
+            // instruction and data received, invoke callback
+            } else {
+                PacketReceived?.Invoke(this, currentPacket);
+                currentPacket.Instruction = 0x00;
+            }
+
             // handle incoming state data
-            if (tilesReceived < 54) {
+            if (currentPacket < 54) {
                 try {
                     CubeFace face = (CubeFace)(tilesReceived / 9);
                     int tile = tilesReceived % 9;
@@ -58,13 +76,13 @@ namespace RubinatorTabletView {
         private void ReceiveDataThread() {
             StreamReader reader = new StreamReader(inStream);
 
-            while (true) {
+            while (reader.BaseStream.CanRead) {
                 try {
-                    byte content = Convert.ToByte(reader.Read());
+                    byte b = Convert.ToByte(reader.Read());
                     System.Diagnostics.Debug.WriteLine("CLIENT RECEIVED " + BitConverter.ToString(new byte[] { content }));
-                    HandleBluetoothData(content);
+                    HandleReceivedByte(b);
                 } catch (Exception e) {
-                    return;
+                    continue;
                 }
             }
         }
