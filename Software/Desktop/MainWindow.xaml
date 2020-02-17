@@ -149,6 +149,7 @@
                 <MenuItem Click="MenuItem_BluetoothUnsetup_Click" Header="Bluetooth stoppen" />
                 <Separator/>
                 <MenuItem Click="MenuItem_ReinitializeCameras_Click" Header="Reinitialize Cameras" />
+                <MenuItem Click="MenuItem_SaveCameraInput_Click" Header="Camerainput speichern" />
             </MenuItem>
 
             <!--  Index Tab "Ansicht"  -->

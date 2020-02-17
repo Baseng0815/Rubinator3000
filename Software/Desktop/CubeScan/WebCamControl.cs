@@ -55,9 +55,6 @@ namespace Rubinator3000.CubeScan {
 
         public delegate void OnCubeScannedEventHandler(object sender, CubeScanEventArgs e);
         public static event OnCubeScannedEventHandler OnCubeScanned;
-
-        private static bool LEDon = false;
-
         #endregion
 
         #region Member Variables
@@ -252,6 +249,12 @@ namespace Rubinator3000.CubeScan {
                 DisplayOnWpfImageControl(bitmapToDisplay: readBitmap, displayWriteableBitmap: previewBitmap);
                 frameToDisplay = new Bitmap(readBitmap);
                 readBitmap.Dispose();
+            }
+        }
+
+        public void SaveBitmap(string filename) {
+            using (FileStream fs = File.Create(filename)) {
+                frameToDisplay.Save(fs, ImageFormat.Bmp);
             }
         }
 
