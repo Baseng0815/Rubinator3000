@@ -14,26 +14,37 @@ using System.IO;
 using Java.Util;
 using System.Threading;
 using RubinatorCore;
+using RubinatorCore.Communication;
 
 namespace RubinatorTabletView {
-    public class BluetoothPeer : RubinatorCore.Communication.BluetoothPeer {
+    public class BluetoothPeerTablet : BluetoothPeer {
         public BluetoothDevice device;
         private BluetoothSocket socket;
         private BluetoothAdapter adapter;
         private Stream outStream;
         private Stream inStream;
 
-        public BluetoothPeer() {
-            SERVICE_UUID = UUID.FromString("053eaaaf-f981-4b64-a39e-ea4f5f44bb57");
+        private UUID SERVICE_UUID;
+
+        public BluetoothPeerTablet() {
+            SERVICE_UUID = UUID.FromString(UUID_STRING);
 
             InstructionDataLength = new Dictionary<byte, int>();
-            currentPacket = new RubinatorCore.Communication.Packet();
+            currentPacket = new Packet();
 
             // TODO add instructions here
             //InstructionDataLength.Add() ...
         }
+        protected override void WriteByte(byte b) {
+            WriteBytes(new byte[] { b });
+        }
+        protected override void WriteBytes(byte[] bytes) {
+            if (outStream != null && outStream.CanWrite) {
+                outStream.Write(bytes, 0, bytes.Length);
+            }
+        }
 
-        private override void HandleReceivedByte(byte b) {
+        protected override void HandleReceivedByte(byte b) {
             // new instruction
             if (currentPacket.Instruction == 0x00) {
                 currentPacket.Instruction = b;
@@ -44,7 +55,7 @@ namespace RubinatorTabletView {
 
             // instruction and data received, invoke callback
             } else {
-                PacketReceived?.Invoke(this, currentPacket);
+                RaisePacketReceived(this, currentPacket);
                 currentPacket.Instruction = 0x00;
             }
 
@@ -73,90 +84,12 @@ namespace RubinatorTabletView {
             }
         }
 
-        private void ReceiveDataThread() {
-            StreamReader reader = new StreamReader(inStream);
-
-            while (reader.BaseStream.CanRead) {
-                try {
-                    byte b = Convert.ToByte(reader.Read());
-                    System.Diagnostics.Debug.WriteLine("CLIENT RECEIVED " + BitConverter.ToString(new byte[] { content }));
-                    HandleReceivedByte(b);
-                } catch (Exception e) {
-                    continue;
-                }
-            }
+        public override void SendPacket(Packet packet) {
+            WriteByte(packet.Instruction);
+            WriteBytes(packet.Data.ToArray());
         }
 
-        public void AddButtonEvents(LinearLayout cubeViewLayout) {
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_l).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.LEFT));
-                Write(0x02);
-            };
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_li).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.LEFT, -1));
-                Write(0x03);
-            };
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_r).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.RIGHT));
-                Write(0x0A);
-            }; ;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_ri).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.RIGHT, -1));
-                Write(0x0B);
-            }; ;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_f).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.FRONT));
-                Write(0x06);
-            }; ;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_fi).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.FRONT, -1));
-                Write(0x07);
-            }; ;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_b).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.BACK));
-                Write(0x0C);
-            }; ;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_bi).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.BACK, -1));
-                Write(0x0D);
-            }; ;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_u).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.UP));
-                Write(0x04);
-            }; ;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_ui).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.UP, -1));
-                Write(0x05);
-            }; ;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_d).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.DOWN));
-                Write(0x08);
-            }; ;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.button_di).Click += (obj, e) => {
-                ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(new Move(RubinatorCore.CubeFace.DOWN, -1));
-                Write(0x09);
-            };
-
-            cubeViewLayout.FindViewById<Button>(Resource.Id.control_syncfromserver).Click += SyncFromServer;
-            cubeViewLayout.FindViewById<Button>(Resource.Id.control_synctoserver).Click += SyncToServer;
-
-            cubeViewLayout.FindViewById<Button>(Resource.Id.control_solve).Click += (obj, e) => {
-                Write(0x30);
-            };
-
-            cubeViewLayout.FindViewById<Button>(Resource.Id.control_shuffle).Click += (obj, e) => {
-                Write(0x31);
-            };
-        }
-
-        // open up a new activity from which you can retrieve the BT_ADDR of a device
-        // https://macaddresschanger.com/what-is-bluetooth-address-BD_ADDR
-        public void GetAddress(Activity mainActivity) {
-            var intent = new Intent(mainActivity, typeof(DeviceListActivity));
-            mainActivity.StartActivityForResult(intent, 2);
-        }
-
-        public bool TryConnect(string address) {
+        public override bool Connect(string address) {
             if (adapter == null)
                 adapter = BluetoothAdapter.DefaultAdapter;
 
@@ -164,7 +97,7 @@ namespace RubinatorTabletView {
                 var device = adapter.GetRemoteDevice(address);
                 socket = device.CreateInsecureRfcommSocketToServiceRecord(SERVICE_UUID);
                 socket.Connect();
-            } catch (Exception e) {
+            } catch (Exception) {
                 return false;
             }
 
@@ -176,23 +109,34 @@ namespace RubinatorTabletView {
             return true;
         }
 
-        public void Disconnect() {
-            if (socket != null)
+        public override void Disconnect() {
+            if (socket != null) {
                 socket.Dispose();
-        }
-
-        public void Write(byte b) {
-            Write(new byte[] { b });
-        }
-
-        public void Write(byte[] b) {
-            try {
-                outStream.Write(b, 0, b.Length);
-                System.Diagnostics.Debug.WriteLine("CLIENT SENT " + BitConverter.ToString(b));
-            } catch (Exception e) {
-                return;
+                outStream.Dispose();
+                inStream.Dispose();
             }
         }
+
+        private void ReceiveDataThread() {
+            StreamReader reader = new StreamReader(inStream);
+
+            while (inStream.CanRead) {
+                try {
+                    byte b = Convert.ToByte(reader.Read());
+                    HandleReceivedByte(b);
+                } catch (Exception) {
+                    continue;
+                }
+            }
+        }
+
+        // open up a new activity from which you can retrieve the BT_ADDR of a device
+        // https://macaddresschanger.com/what-is-bluetooth-address-BD_ADDR
+        public void GetAddress(Activity mainActivity) {
+            var intent = new Intent(mainActivity, typeof(DeviceListActivity));
+            mainActivity.StartActivityForResult(intent, 2);
+        }
+
 
         // same codes as specified in RubinatorCommunicationProtocol.txt
         private void SyncFromServer(object sender, EventArgs e) {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace RubinatorCore.Communication
@@ -6,22 +7,26 @@ namespace RubinatorCore.Communication
     public struct Packet {
         public static int[] InstructionDataLength;
 
-        public byte Instruction = 0x00;
+        public byte Instruction;
         public List<byte> Data;
     }
 
     // abstractly defines a bluetooth peer
     public abstract class BluetoothPeer {
-        protected readonly UUID SERVICE_UUID;
+        protected readonly string UUID_STRING = "053eaaaf-f981-4b64-a39e-ea4f5f44bb57";
+
         // maps instructions to their corresponding data length
-        protected readonly Dictionary<byte, int> InstructionDataLength;
+        protected Dictionary<byte, int> InstructionDataLength;
         protected Packet currentPacket;
 
-        public event EventHandler<Packet> PacketReceived;
+        protected event EventHandler<Packet> PacketReceived;
+        protected void RaisePacketReceived(object sender, Packet packet) {
+            PacketReceived?.Invoke(sender, packet);
+        }
 
-        private void WriteByte(byte b);
-        private void WriteBytes(byte[] bytes);
-        private void HandleReceivedByte(byte b);
+        protected abstract void WriteByte(byte b);
+        protected abstract void WriteBytes(byte[] bytes);
+        protected abstract void HandleReceivedByte(byte b);
 
         public abstract void SendPacket(Packet toSend);
 

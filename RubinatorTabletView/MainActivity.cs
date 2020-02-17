@@ -16,7 +16,8 @@ namespace RubinatorTabletView {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true, ScreenOrientation = ScreenOrientation.Landscape)]
     public class MainActivity : AppCompatActivity {
 
-        private ControlHandler controlHandler;
+        private BluetoothPeerTablet bluetoothPeer;
+        private PacketHandler packetHandler;
 
         public CubeView cube_view;
         public CancellationTokenSource ctSource;
@@ -34,8 +35,8 @@ namespace RubinatorTabletView {
 
             OpenTK.Toolkit.Init();
 
-            controlHandler = new ControlHandler();
-            controlHandler.AddButtonEvents(FindViewById<LinearLayout>(Resource.Id.container));
+            bluetoothPeer = new BluetoothPeerTablet();
+            packetHandler = new PacketHandler(FindViewById<LinearLayout>(Resource.Id.container), bluetoothPeer);
 
             FindViewById<Button>(Resource.Id.button_pairBluetooth).Click += (sender, e) => {
                 controlHandler.GetAddress(this);
