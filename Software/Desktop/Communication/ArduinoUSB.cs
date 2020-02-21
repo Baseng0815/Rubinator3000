@@ -1,4 +1,5 @@
-﻿using Rubinator3000;
+﻿#undefine SerialPrint
+using Rubinator3000;
 using RubinatorCore;
 using System;
 using System.Collections.Generic;
@@ -142,6 +143,10 @@ namespace Rubinator3000 {
             serial.Write(command, 0, command.Length);
             serial.Read(response, 0, command.Length);
 
+#if SerialPrint
+            Log.LogMessage("send data: \r\n\t" + string.Join(", ", command.Select(c => "0x" + c.ToString("X2"))));
+            Log.LogMessage("received data: \r\n\t" + string.Join(", ", response.Select(c => "0x" + c.ToString("X2"))));
+#endif
             return response;
         }
     }

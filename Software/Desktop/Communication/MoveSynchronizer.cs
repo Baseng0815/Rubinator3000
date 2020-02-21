@@ -156,8 +156,7 @@ namespace Rubinator3000.Communication {
         }
 
         public Task RunAsync(MoveCollection moves, bool btSend = true) {
-            return Task.Run(async delegate {
-                bool confirmationNeeded = false;
+            return Task.Run(async delegate {                
 
                 for (int i = 0; i < moves.Count; i++) {
                     bool multiTurn = false;
@@ -166,15 +165,7 @@ namespace Rubinator3000.Communication {
                     Task arduinoMoveTask = Task.Factory.StartNew(() => { return; });
 
                     if (nextFace != CubeFace.NONE && Cube.IsOpponentFace(currentFace, nextFace) && Settings.UseMultiTurn) {
-                        // multi turn
-                        if (confirmationNeeded) {
-                            var result = MessageBox.Show("Next multi turn move: " + moves[i].ToString() + " " + moves[i + 1].ToString() + "\nContinue stepping?", "Confirm", MessageBoxButton.YesNoCancel, MessageBoxImage.Information, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly);
-                            if (result == MessageBoxResult.No)
-                                confirmationNeeded = false;
-                            else if (result == MessageBoxResult.Cancel)
-                                return;
-                        }
-
+                        // multi turn                        
                         if (arduino != null)
                             arduinoMoveTask = arduino.SendMultiTurnMoveAsync(moves[i], moves[i + 1]);
 
@@ -184,15 +175,7 @@ namespace Rubinator3000.Communication {
                         multiTurn = true;
                     }
                     else {
-                        // normal move
-                        if (confirmationNeeded) {
-                            var result = MessageBox.Show("Next move: " + moves[i].ToString() + "\nContinue stepping?", "Confirm", MessageBoxButton.YesNoCancel, MessageBoxImage.Information, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly);
-                            if (result == MessageBoxResult.No)
-                                confirmationNeeded = false;
-                            else if (result == MessageBoxResult.Cancel)
-                                return;
-                        }
-
+                        // normal move                        
                         if (arduino != null)
                             arduinoMoveTask = arduino.SendMoveAsync(moves[i]);
                         if (bluetoothServer != null && btSend)

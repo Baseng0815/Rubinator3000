@@ -135,7 +135,7 @@ void handleMove(uint8_t move) {
 
   if(face < 6) {
     int steps = (1 + (-2 * isPrime)) * 50;
-    steppers[face].doMove(steps, 10);
+    steppers[face].doMove(steps, 5);
 
     Serial.write(0x20 + move);
   }
@@ -164,7 +164,7 @@ void handleMultiTurnMove(uint8_t multiTurnMove) {
     Serial.write(leftDir);
     Serial.write(rightDir);
 
-    doMultiTurnMove(axis, leftDir, rightDir, 10);
+    doMultiTurnMove(axis, leftDir, rightDir, 5);
 
     Serial.write(0x20 + multiTurnMove);
   }
