@@ -156,8 +156,10 @@ namespace Rubinator3000.Communication {
         }
 
         public Task RunAsync(MoveCollection moves, bool btSend = true) {
-            return Task.Run(async delegate {                
+            return Task.Run(async delegate {
+                Stopwatch stopwatch = new Stopwatch();                
 
+                stopwatch.Start();
                 for (int i = 0; i < moves.Count; i++) {
                     bool multiTurn = false;
                     CubeFace currentFace = moves[i].Face;
@@ -208,6 +210,9 @@ namespace Rubinator3000.Communication {
 
                     Thread.Sleep(Settings.StepDelay);
                 }
+
+                stopwatch.Stop();
+                Log.LogMessage("Time needed: " + stopwatch.ElapsedMilliseconds + "ms");
             });
         }
     }

@@ -1,4 +1,4 @@
-﻿#undefine SerialPrint
+﻿#undef SerialPrint
 using Rubinator3000;
 using RubinatorCore;
 using System;
