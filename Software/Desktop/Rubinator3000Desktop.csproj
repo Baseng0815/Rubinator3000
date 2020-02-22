@@ -56,6 +56,9 @@
     <IntermediateOutputPath>$(USERPROFILE)\AppData\Local\Temp\vs218E.tmp\Release\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DirectShowLib, Version=2.1.0.1599, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DirectShowLib.1.0.0\lib\DirectShowLib.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.CV.UI, Version=4.1.1.3497, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EMGU.CV.4.1.1.3497\lib\net35\Emgu.CV.UI.dll</HintPath>
     </Reference>
@@ -139,6 +142,10 @@
     <Compile Include="CubeColorDialog.xaml.cs">
       <DependentUpon>CubeColorDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CubeScan\Contour.cs" />
+    <Compile Include="CubeScan\CubeScanFrame.cs" />
+    <Compile Include="CubeScan\CubeScanner.cs" />
+    <Compile Include="CubeScan\WebCamControl2.cs" />
     <Compile Include="ReadPositionDialog.xaml.cs">
       <DependentUpon>ReadPositionDialog.xaml</DependentUpon>
     </Compile>

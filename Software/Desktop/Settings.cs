@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 using System.Configuration;
 
-namespace Rubinator3000
-{
-    class Settings
-    {
+namespace Rubinator3000 {
+    class Settings {
         public static readonly int CameraFov = int.Parse(ConfigurationManager.AppSettings["cameraFov"]);
         public static readonly int CameraDistance = int.Parse(ConfigurationManager.AppSettings["cameraDistance"]);
         public static readonly int ViewerDelay = int.Parse(ConfigurationManager.AppSettings["viewerDelay"]);
@@ -23,7 +21,14 @@ namespace Rubinator3000
         public static bool CalibrateColors = false;
         public static bool PositionEditingAllowed = false;
         public static bool UseReferenceColors = false;
-               
+
         public static int StepDelay = 300;
+
+        // ColorIdentificationSettings
+        public static int CannyThresh = 255;
+        public static int CannyThreshLinking = 20;
+        public static int MinimalContourArea = 1500;
+        public static int MinimalContourLength = 200;
+        public static int MaximalContourLength = 350;
     }
 }

@@ -80,7 +80,7 @@ namespace Rubinator3000.CubeScan {
         private bool threadStarted = false;
         public bool Initialized { get; set; } = false;
 
-        // This Bitmap holds only the current update of the camera-stream for color identification, not for gui camera stream
+        // This Bitmap holds only the current update of the camera-stream for color identification, not for wpf-image-control
         private Bitmap frameToDisplay;
 
         #endregion
@@ -135,8 +135,6 @@ namespace Rubinator3000.CubeScan {
 
         private void Run() {
 
-            //try {
-
             threadStarted = true;
 
             while (!threadShouldStop) {
@@ -170,20 +168,6 @@ namespace Rubinator3000.CubeScan {
                         }
                     }
                 }
-
-                //if (cameraIndex == 0) {
-                //    byte brightness = currentFABitmap.GetBrightness();
-                //    //Log.LogMessage("Brightness " + brightness);
-
-                //    Application.Current.Dispatcher.Invoke(() => {
-
-                //        if (brightness < 30)
-                //            ((MainWindow)Application.Current.MainWindow).moveSynchronizer.SetArduinoLEDs(ArduinoLEDs.ALL, 128);
-                //        else
-                //            ((MainWindow)Application.Current.MainWindow).moveSynchronizer.SetArduinoLEDs(ArduinoLEDs.ALL, 0);
-
-                //    });
-                //}
 
                 // If position reading is requested
                 if (CubeGenerationRequested > 0 && !Settings.CalibrateColors) {
@@ -227,11 +211,6 @@ namespace Rubinator3000.CubeScan {
                     Thread.Sleep(Convert.ToInt32(loopEnd - CurrentTimeMillis()));
                 }
             }
-            //}
-            //catch (Exception e) {
-
-            //    Log.LogMessage(string.Format("Camera {0} crashed", cameraIndex));
-            //}
             threadStarted = false;
         }
 

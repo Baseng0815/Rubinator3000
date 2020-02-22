@@ -189,19 +189,6 @@ namespace Rubinator3000 {
             // Determine, which cameraPreview was clicked
             int cameraIndex = Array.IndexOf(cameraPreviews, clickedImage);
 
-            // Calibrate Reference Colors
-            if (Settings.CalibrateColors && e.ChangedButton == MouseButton.Left) {
-
-                cubeColorDialog = new CubeColorDialog();
-                if (cubeColorDialog.ShowDialog() == true) {
-
-                    CubeColor resultColor = cubeColorDialog.Result;
-                    if (resultColor != null && resultColor != CubeColor.NONE) {
-
-                        ColorIdentification.ChangeReferenceColor(resultColor, webCamControls[cameraIndex].ReadColorAtPosition(relativeX, relativeY));
-                    }
-                }
-            }
             int[] indices;
             if (lastIndices[0] < 6 || lastIndices[1] < 3 || lastIndices[2] < 3) {
                 // get next index                
@@ -236,39 +223,6 @@ namespace Rubinator3000 {
             }
             else {
                 indices = new int[3];
-            }
-
-
-            // Manual Position Adding
-            if (Settings.PositionEditingAllowed && e.ChangedButton == MouseButton.Left /*&& WebCamControl.TotalPositionCount < WebCamControl.MAXPOSITIONSTOREAD*/) {
-
-                readPositionDialog = new ReadPositionDialog();
-
-                readPositionDialog.Result = indices;
-                if (readPositionDialog.ShowDialog() // Waits until dialog gets closed
-                    == true) {
-
-                    indices = readPositionDialog.Result;
-                }
-                else {
-                    return;
-                }
-
-
-                ReadPosition tempPos = new ReadPosition(
-                        clickPosition.X / clickedImage.ActualWidth, // calculate relativeX
-                        clickPosition.Y / clickedImage.ActualHeight, // calculate relativeY   
-                        indices[0],
-                        indices[1],
-                        indices[2],
-                        cameraIndex
-                    );
-
-                lastIndices = indices;
-
-                Log.LogMessage(WebCamControl.AddPosition(tempPos, cameraIndex));
-
-                return;
             }
         }
 

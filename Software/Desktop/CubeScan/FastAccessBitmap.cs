@@ -23,7 +23,7 @@ namespace Rubinator3000.CubeScan {
 
         private int _bytesPerPixel = 3;
 
-        public FastAccessBitmap(Bitmap bitmap) {
+        public FastAccessBitmap(Bitmap bitmap = null) {
             SetBitmap(bitmap);
         }
 
@@ -61,7 +61,9 @@ namespace Rubinator3000.CubeScan {
                 byte* ptrFirstPixel = (byte*)_bitmapData.Scan0;
 
                 for (int i = y; i < y + deltaY; i++) {
+
                     for (int j = x; j < x + deltaX; j++) {
+
                         int offset = i * _bitmapData.Stride + j * _bytesPerPixel;
                         blue += ptrFirstPixel[offset];
                         green += ptrFirstPixel[offset + 1];
@@ -93,8 +95,9 @@ namespace Rubinator3000.CubeScan {
 
             return _bitmap != null;
         }
-    
 
+
+        // This method may be useful for automatic LED-Brightness
         public byte GetBrightness() {
 
             if (_bitmap == null) {
@@ -102,7 +105,7 @@ namespace Rubinator3000.CubeScan {
                 return 1;
             }
 
-            Color c = ReadPixels(0,0, _bitmap.Width, _bitmap.Height);
+            Color c = ReadPixels(0, 0, _bitmap.Width, _bitmap.Height);
             return Convert.ToByte(((c.R + c.G + c.B) / (double)(3)));
         }
     }
