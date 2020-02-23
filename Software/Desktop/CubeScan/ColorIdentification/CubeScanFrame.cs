@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Rubinator3000.CubeScan.ColorIdentification {
 
-    class CubeScanFrame {
+    public class CubeScanFrame {
 
         #region Properties
 
@@ -39,7 +39,7 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
                 }
                 Original = image;
                 TileContours = new List<Contour>();
-                FindTiles();
+                TileContours = FindTiles();
                 Initialized = true;
             }
         }
@@ -67,7 +67,7 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
                 CvInvoke.ApproxPolyDP(allContours[i], approx, percentage * perimeter, true);
 
                 if (CvInvoke.ContourArea(allContours[i]) > Settings.MinimalContourArea && ReadUtility.IsInBound(perimeter, Settings.MinimalContourLength, Settings.MaximalContourLength) && ReadUtility.IsInBound(approx.Size, 4, 8)) {
-                    contours.Add(new Contour(allContours[i]));
+                    contours.Add(new Contour(approx, Original.Width, Original.Height));
                 }
             }
 

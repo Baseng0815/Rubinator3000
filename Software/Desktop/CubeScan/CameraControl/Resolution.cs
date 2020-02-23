@@ -1,5 +1,5 @@
 ﻿namespace Rubinator3000.CubeScan.CameraControl {
-    class Resolution {
+    public class Resolution {
 
         public int Width { get; set; }
 

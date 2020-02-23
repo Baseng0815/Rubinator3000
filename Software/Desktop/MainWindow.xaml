@@ -8,6 +8,8 @@
     Title="Rubinator 3000"
     Background="{DynamicResource BackgroundColor}"
     Closing="Window_Closing"
+    MouseDown="Window_MouseDown"
+    MouseUp="Window_MouseUp"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
@@ -336,7 +338,6 @@
                         <Grid>
                             <Image
                                 x:Name="Image_CameraPreview0"
-                                MouseDown="Image_CameraPreview_MouseDown"
                                 SizeChanged="Image_CameraPreview_SizeChanged"
                                 Stretch="Fill" />
                             <TextBox
@@ -355,10 +356,7 @@
                     <!--  Camera Preview 1  -->
                     <Border Grid.Row="0" Grid.Column="1">
                         <Grid>
-                            <Image
-                                x:Name="Image_CameraPreview1"
-                                MouseDown="Image_CameraPreview_MouseDown"
-                                Stretch="Fill" />
+                            <Image x:Name="Image_CameraPreview1" Stretch="Fill" />
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"
@@ -373,10 +371,7 @@
                     <!--  Camera Preview 2  -->
                     <Border Grid.Row="1" Grid.Column="0">
                         <Grid>
-                            <Image
-                                x:Name="Image_CameraPreview2"
-                                MouseDown="Image_CameraPreview_MouseDown"
-                                Stretch="Fill" />
+                            <Image x:Name="Image_CameraPreview2" Stretch="Fill" />
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"
@@ -391,10 +386,7 @@
                     <!--  Camera Preview 3  -->
                     <Border Grid.Row="1" Grid.Column="1">
                         <Grid>
-                            <Image
-                                x:Name="Image_CameraPreview3"
-                                MouseDown="Image_CameraPreview_MouseDown"
-                                Stretch="Fill" />
+                            <Image x:Name="Image_CameraPreview3" Stretch="Fill" />
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"

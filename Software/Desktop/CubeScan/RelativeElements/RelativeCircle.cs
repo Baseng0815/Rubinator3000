@@ -39,7 +39,7 @@ namespace Rubinator3000.CubeScan.RelativeElements {
             return GenerateCircle(actualCanvasWidth, actualCanvasHeight);
         }
 
-        public object Clone() {
+        public override object Clone() {
 
             return new RelativeCircle((RelativePosition)RelativePosition.Clone(), Radius, FillColor);
         }

@@ -11,34 +11,30 @@ namespace Rubinator3000.CubeScan.RelativeElements {
 
         public Color StrokeColor { get; set; }
 
-        public RelativePolygon(List<RelativePosition> relativePoints, Color strokeColor) {
+        public int HighlightThickness { get; set; }
+
+        public RelativePolygon(List<RelativePosition> relativePoints, Color strokeColor, int highlightThickness) {
 
             RelativePoints = relativePoints;
             StrokeColor = strokeColor;
+            HighlightThickness = highlightThickness;
         }
 
         public Polygon GeneratePolygon(double actualCanvasWidth, double actualCanvasHeight) {
 
-            double minRelativeX = double.MaxValue, minRelativeY = double.MaxValue;
             PointCollection points = new PointCollection();
             for (int i = 0; i < RelativePoints.Count; i++) {
 
-                if (RelativePoints[i].RelativeX < minRelativeX) {
-                    minRelativeX = RelativePoints[i].RelativeX;
-                }
-                if (RelativePoints[i].RelativeY < minRelativeX) {
-                    minRelativeX = RelativePoints[i].RelativeY;
-                }
                 points.Add(new Point(RelativePoints[i].RelativeX * actualCanvasWidth, RelativePoints[i].RelativeY * actualCanvasHeight));
             }
 
             Polygon polygon = new Polygon {
                 Points = points,
-                Stroke = new SolidColorBrush(StrokeColor)
+                Stroke = new SolidColorBrush(StrokeColor),
+                StrokeThickness = HighlightThickness
             };
-
-            Canvas.SetLeft(polygon, minRelativeX * actualCanvasWidth);
-            Canvas.SetLeft(polygon, minRelativeY * actualCanvasHeight);
+            Canvas.SetLeft(polygon, 0);
+            Canvas.SetTop(polygon, 0);
 
             return polygon;
         }
@@ -46,6 +42,16 @@ namespace Rubinator3000.CubeScan.RelativeElements {
         public override UIElement GenerateUIElement(double actualCanvasWidth, double actualCanvasHeight) {
 
             return GeneratePolygon(actualCanvasWidth, actualCanvasHeight);
+        }
+
+        public override object Clone() {
+
+            List<RelativePosition> clonedRelativePoints = new List<RelativePosition>();
+            for (int i = 0; i < RelativePoints.Count; i++) {
+
+                clonedRelativePoints.Add((RelativePosition)RelativePoints[i].Clone());
+            }
+            return new RelativePolygon(clonedRelativePoints, StrokeColor, HighlightThickness);
         }
     }
 }

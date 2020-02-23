@@ -50,5 +50,6 @@ namespace Rubinator3000 {
 
             Log.LogMessage("Init Log");
         }
+
     }
 }

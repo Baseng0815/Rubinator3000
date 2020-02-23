@@ -17,7 +17,7 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
         private readonly int imageWidth = -1;
         private readonly int imageHeight = -1;
 
-        public Contour(VectorOfPoint vop, int imageWidth = 640, int imageHeight = 480) {
+        public Contour(VectorOfPoint vop, int imageWidth, int imageHeight) {
 
             Points = vop.ToArray();
 
@@ -35,14 +35,14 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
             return new VectorOfPoint(Points);
         }
 
-        public RelativePolygon ToRelativeHighlightPolygon(double actualCanvasWidth, double actualCanvasHeight) {
+        public RelativePolygon ToRelativeHighlightPolygon() {
 
             List<RelativePosition> relativePoints = new List<RelativePosition>();
             for (int i = 0; i < Points.Length; i++) {
 
-                relativePoints.Add(new RelativePosition(Points[i].X / actualCanvasWidth, Points[i].Y / actualCanvasHeight));
+                relativePoints.Add(new RelativePosition(Points[i].X / (double)imageWidth, Points[i].Y / (double)imageHeight));
             }
-            return new RelativePolygon(relativePoints, Settings.HightlightColor);
+            return new RelativePolygon(relativePoints, Settings.HightlightColor, Settings.HightlightThickness);
         }
 
         public object Clone() {

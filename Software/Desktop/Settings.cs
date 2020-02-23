@@ -24,7 +24,8 @@ namespace Rubinator3000 {
 
         // CameraPreview
         public static int CircleRadius = 3;
-        public static Color HightlightColor = Color.FromArgb(255, 255, 0, 128);
+        public static Color HightlightColor = Color.FromArgb(255, 0, 255, 255);
+        public static int HightlightThickness = 3;
 
         // ColorIdentification
         public static int CannyThresh = 255;

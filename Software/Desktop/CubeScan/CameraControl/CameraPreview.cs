@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace Rubinator3000.CubeScan.CameraControl {
-    class CameraPreview {
+    public class CameraPreview {
 
         public System.Windows.Controls.Image Image { get; private set; }
 
@@ -57,28 +57,32 @@ namespace Rubinator3000.CubeScan.CameraControl {
                 bitmapToDisplay.UnlockBits(tempData);
                 tempData = null;
 
-                // Specify the area of the bitmap, that changed (in this case, the wole bitmap)
-                WriteableBitmap.AddDirtyRect(new Int32Rect(0, 0, bitmapToDisplay.Width, bitmapToDisplay.Height));
+                // Specify the area of the bitmap, that changed (in this case, the whole writeableBitmap)
+                WriteableBitmap.AddDirtyRect(new Int32Rect(0, 0, Convert.ToInt32(WriteableBitmap.Width), Convert.ToInt32(WriteableBitmap.Height)));
                 bitmapToDisplay.Dispose();
 
                 // Release the backBuffer of previewBitmap and make it available for display
                 WriteableBitmap.Unlock();
-
-                Image.Dispatcher.Invoke(() => {
-                    Image.InvalidateVisual();
-                });
             });
+        }
+
+        public void SetRelativeCanvasChildren(Dictionary<string, RelativeCanvasElement> relativeCanvasChildren) {
+
+            Canvas.Children.Clear();
+            RelativeCanvasChildren.Clear();
+            foreach (string name in relativeCanvasChildren.Keys) {
+
+                AddRelativeCanvasElement(name, relativeCanvasChildren[name]);
+            }
         }
 
         public void AddRelativeCanvasElement(string name, RelativeCanvasElement relativeUIElement) {
 
+            if (RelativeCanvasChildren.ContainsKey(name)) {
+                RelativeCanvasChildren.Remove(name);
+            }
             Canvas.Children.Add(relativeUIElement.GenerateUIElement(Canvas.ActualWidth, Canvas.ActualHeight));
             RelativeCanvasChildren.Add(name, relativeUIElement);
-        }
-
-        public void RemoveRelativeElement(string name) {
-
-            Canvas.Children.Remove(RelativeCanvasChildren[name].GenerateUIElement(Canvas.ActualWidth, Canvas.ActualHeight));
         }
 
         public void UpdateAllCanvasElements() {
@@ -98,6 +102,11 @@ namespace Rubinator3000.CubeScan.CameraControl {
                 number = Convert.ToInt32(char.GetNumericValue(Image.Name.Last()));
             });
             return number;
+        }
+
+        public Dictionary<string, RelativeCanvasElement> GetClonedRelativeCanvasChildren() {
+
+            return RelativeCanvasChildren.ToDictionary(entry => entry.Key, entry => (RelativeCanvasElement)entry.Value.Clone());
         }
     }
 }

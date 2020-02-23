@@ -9,18 +9,20 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace Rubinator3000.CubeScan.CameraControl {
-    class WebCamControl {
+    public class WebCamControl {
 
         #region Member Variables
+
+        public CubeScanner ParentCubeScanner { get; set; }
 
         // Index of usb camera in os-settings
         public int CameraIndex { get; private set; }
 
+        public int CameraPreviewIndex { get; set; }
+
         public bool Initialized { get; private set; } = false;
 
         public bool Started { get; set; }
-
-        public CameraPreview CameraPreview { get; set; }
 
         // Capture-object to retrieve bitmaps from usb camera
         private VideoCapture VideoCapture { get; set; }
@@ -28,11 +30,15 @@ namespace Rubinator3000.CubeScan.CameraControl {
         // Holds CubeScanFrame for edge-detecting-color-identification
         public CubeScanFrame CubeScanFrame { get; private set; } = new CubeScanFrame();
 
+        public Resolution Resolution { get; set; }
+
         #endregion Member Variables
 
-        public WebCamControl(System.Windows.Controls.Image image, Canvas canvas, int cameraIndex) {
+        public WebCamControl(CubeScanner parentCubeScanner, System.Windows.Controls.Image image, Canvas canvas, int cameraIndex, int cameraPreviewIndex) {
 
-            CameraPreview = new CameraPreview(image, canvas, null);
+            ParentCubeScanner = parentCubeScanner;
+            CameraPreviewIndex = cameraPreviewIndex;
+            ParentCubeScanner.cameraPreviews[cameraPreviewIndex] = new CameraPreview(image, canvas, null);
             CameraIndex = cameraIndex;
         }
 
@@ -49,19 +55,21 @@ namespace Rubinator3000.CubeScan.CameraControl {
 
             if (readBitmap != null) {
 
-                CameraPreview.DisplayFrame(readBitmap);
+                GetCameraPreview().DisplayFrame(readBitmap);
                 CubeScanFrame.Reinitialize(mat.ToImage<Bgr, byte>());
             }
         }
 
         public bool TryInitialize(Resolution resolution, int cameraIndex = -1) {
 
+            Resolution = resolution;
+
             Application.Current.Dispatcher.Invoke(() => {
 
                 if (Initialized) {
 
                     TerminateCamera();
-                    TryInitialize(resolution);
+                    TryInitialize(Resolution);
                 }
                 else {
 
@@ -83,13 +91,19 @@ namespace Rubinator3000.CubeScan.CameraControl {
                     }
                     else {
 
-                        CameraPreview.SetSource(new WriteableBitmap(resolution.Width, resolution.Height, 96, 96, System.Windows.Media.PixelFormats.Bgr24, null));
+                        UpdatePreviewSource(Resolution);
                         Initialized = true;
-                        Log.LogMessage(string.Format("Initialization of Camera {0} successful - (Displaing at CameraPreview \"{0}\")", CameraPreview.GetNumber()));
+                        Log.LogMessage(string.Format("Initialization of Camera {0} successful - (Displaing at CameraPreview \"{0}\")", GetCameraPreview().GetNumber()));
                     }
                 }
             });
             return Initialized;
+        }
+
+        public void UpdatePreviewSource(Resolution resolution) {
+
+            GetCameraPreview().SetSource(new WriteableBitmap(resolution.Width, resolution.Height, 96, 96, System.Windows.Media.PixelFormats.Bgr24, null));
+            GetCameraPreview().UpdateAllCanvasElements();
         }
 
         public void StartCamera() {
@@ -99,6 +113,7 @@ namespace Rubinator3000.CubeScan.CameraControl {
                 if (!Started) {
 
                     VideoCapture.ImageGrabbed += ProcessCapturedFrame;
+
                     VideoCapture.Start();
                     Started = true;
                 }
@@ -158,6 +173,11 @@ namespace Rubinator3000.CubeScan.CameraControl {
             }
 
             return Color.Empty;
+        }
+
+        public CameraPreview GetCameraPreview() {
+
+            return ParentCubeScanner.cameraPreviews[CameraPreviewIndex];
         }
     }
 }

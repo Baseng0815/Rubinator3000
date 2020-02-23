@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Media.Imaging;
 
 namespace Rubinator3000.CubeScan {
     public static class ReadUtility {
@@ -98,7 +99,6 @@ namespace Rubinator3000.CubeScan {
 
             return pointsInside;
         }
-
         public static IList<T> Clone<T>(this IList<T> listToClone) where T : ICloneable {
             return listToClone.Select(item => (T)item.Clone()).ToList();
         }

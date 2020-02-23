@@ -1,6 +1,7 @@
 ﻿using DirectShowLib;
 using Rubinator3000.CubeScan.CameraControl;
 using Rubinator3000.CubeScan.ColorIdentification;
+using Rubinator3000.CubeScan.RelativeElements;
 using RubinatorCore;
 using RubinatorCore.CubeRepresentation;
 using System;
@@ -18,7 +19,9 @@ namespace Rubinator3000.CubeScan {
         public static event OnCubeScannedEventHandler OnCubeScanned;
 
         private List<CameraDevice> systemCameras = new List<CameraDevice>();
-        private readonly List<WebCamControl> webCamControls = new List<WebCamControl>();
+
+        public readonly List<WebCamControl> webCamControls = new List<WebCamControl>();
+        public readonly List<CameraPreview> cameraPreviews = new List<CameraPreview>();
 
         private readonly List<ReadPosition> readPositions = new List<ReadPosition>();
 
@@ -96,14 +99,17 @@ namespace Rubinator3000.CubeScan {
             int webCamControlIndex = -1;
             for (int i = 0; i < webCamControls.Count; i++) {
 
-                if (webCamControls[i].CameraPreview.Image == clickedImage) {
+                if (webCamControls[i].GetCameraPreview().Image == clickedImage) {
                     webCamControlIndex = i;
                     break;
                 }
             }
             WebCamControl targetWcc = webCamControls[webCamControlIndex];
             Contour closest = targetWcc.CubeScanFrame.FindClosestContour(relativeX, relativeY);
-            targetWcc.CameraPreview.AddRelativeCanvasElement("TileHighlight", closest.ToRelativeHighlightPolygon(targetWcc.CameraPreview.Canvas.ActualWidth, targetWcc.CameraPreview.Canvas.ActualHeight));
+            if (closest != null) {
+
+                targetWcc.GetCameraPreview().AddRelativeCanvasElement("TileHighlight", closest.ToRelativeHighlightPolygon());
+            }
         }
 
         public void ReadCube() {
@@ -182,11 +188,16 @@ namespace Rubinator3000.CubeScan {
 
             for (int i = 0; i < webCamControls.Count; i++) {
 
-                webCamControls[i].CameraPreview.UpdateAllCanvasElements();
+                webCamControls[i].GetCameraPreview().UpdateAllCanvasElements();
             }
         }
 
         private void Init(List<Image> previewImages, List<Canvas> previewCanvases) {
+
+            for (int i = 0; i < previewImages.Count; i++) {
+
+                cameraPreviews.Add(new CameraPreview(previewImages[i], previewCanvases[i], null));
+            }
 
             if (previewImages.Count != previewCanvases.Count) {
 
@@ -196,7 +207,7 @@ namespace Rubinator3000.CubeScan {
 
             for (int i = 0; i < previewImages.Count; i++) {
 
-                WebCamControl wcc = new WebCamControl(previewImages[i], previewCanvases[i], i);
+                WebCamControl wcc = new WebCamControl(this, previewImages[i], previewCanvases[i], i, i);
                 webCamControls.Insert(i, wcc);
             }
         }
@@ -239,6 +250,7 @@ namespace Rubinator3000.CubeScan {
 
         private Resolution GetHighestAvailableResolution(DsDevice vidDev) {
 
+            Resolution HighestResolution = new Resolution(1, 1);
             int hr;
 
             var m_FilterGraph2 = new FilterGraph() as IFilterGraph2;
@@ -247,10 +259,9 @@ namespace Rubinator3000.CubeScan {
             if (pRaw2 == null) {
 
                 //Log.LogMessage(string.Format("\"{0}\" is not a valid camera", vidDev.Name));
-                return null;
+                return HighestResolution;
             }
             int bitCount = 0;
-            Resolution HighestResolution = new Resolution(1, 1);
 
             VideoInfoHeader v = new VideoInfoHeader();
             IEnumMediaTypes mediaTypeEnum;
