@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using Rubinator3000.CubeScan.CameraControl;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,18 +21,21 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
 
         public bool Initialized { get; private set; } = false;
 
+        public WebCamControl ParentWebCamControl { get; set; }
+
         #endregion Properties
 
         private readonly FastAccessBitmap fastAccessBitmap;
 
-        public CubeScanFrame(Image<Bgr, byte> image = null) {
+        public CubeScanFrame(WebCamControl parentWebCamControl, Image<Bgr, byte> image = null) {
 
             fastAccessBitmap = new FastAccessBitmap();
-            Reinitialize(image);
+            Reinitialize(parentWebCamControl, image);
         }
 
-        public void Reinitialize(Image<Bgr, byte> image) {
+        public void Reinitialize(WebCamControl parentWebCamControl, Image<Bgr, byte> image) {
 
+            ParentWebCamControl = parentWebCamControl;
             if (image != null) {
 
                 if (Original != null) {
@@ -39,16 +43,17 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
                 }
                 Original = image;
                 TileContours = new List<Contour>();
-                TileContours = FindTiles();
+                FindTiles();
                 Initialized = true;
             }
         }
 
-        public List<Contour> FindTiles(double percentage = 0.04) {
+        public void FindTiles(double percentage = 0.04) {
 
-            // This method finds all tiles and stores their contours in "tileContours"
+            TileContours.Clear();
 
-            List<Contour> contours = new List<Contour>();
+            // This method finds all tiles and stores their contours in "TileContours"
+
             Image<Gray, byte> edged = Canny();
 
             // Apply GaussianBlur, gray-scale and binary on image
@@ -67,11 +72,12 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
                 CvInvoke.ApproxPolyDP(allContours[i], approx, percentage * perimeter, true);
 
                 if (CvInvoke.ContourArea(allContours[i]) > Settings.MinimalContourArea && ReadUtility.IsInBound(perimeter, Settings.MinimalContourLength, Settings.MaximalContourLength) && ReadUtility.IsInBound(approx.Size, 4, 8)) {
-                    contours.Add(new Contour(approx, Original.Width, Original.Height));
+                    Contour contour = new Contour(approx, Original.Width, Original.Height);
+                    TileContours.Add(contour);
+
+                    ParentWebCamControl.ParentCubeScanner.InvokeOnTileFound(this, new TileFoundEventArgs(contour, ParentWebCamControl.CameraIndex));
                 }
             }
-
-            return contours;
         }
 
         public Image<Gray, byte> Canny() {

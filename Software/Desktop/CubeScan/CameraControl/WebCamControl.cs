@@ -28,7 +28,7 @@ namespace Rubinator3000.CubeScan.CameraControl {
         private VideoCapture VideoCapture { get; set; }
 
         // Holds CubeScanFrame for edge-detecting-color-identification
-        public CubeScanFrame CubeScanFrame { get; private set; } = new CubeScanFrame();
+        public CubeScanFrame CubeScanFrame { get; private set; }
 
         public Resolution Resolution { get; set; }
 
@@ -40,6 +40,7 @@ namespace Rubinator3000.CubeScan.CameraControl {
             CameraPreviewIndex = cameraPreviewIndex;
             ParentCubeScanner.cameraPreviews[cameraPreviewIndex] = new CameraPreview(image, canvas, null);
             CameraIndex = cameraIndex;
+            CubeScanFrame = new CubeScanFrame(this);
         }
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace Rubinator3000.CubeScan.CameraControl {
             if (readBitmap != null) {
 
                 GetCameraPreview().DisplayFrame(readBitmap);
-                CubeScanFrame.Reinitialize(mat.ToImage<Bgr, byte>());
+                CubeScanFrame.Reinitialize(this, mat.ToImage<Bgr, byte>());
             }
         }
 
@@ -82,7 +83,7 @@ namespace Rubinator3000.CubeScan.CameraControl {
 
                     // Try to connect to camera at cameraIndex
                     VideoCapture = new VideoCapture(cameraIndex);
-
+                    /*
                     // if setup was unsuccessful (if no camera connected at "CameraIndex")
                     if (!VideoCapture.IsOpened) {
 
@@ -90,11 +91,11 @@ namespace Rubinator3000.CubeScan.CameraControl {
                         Log.LogMessage(string.Format("Initialization of Camera {0} failed - (No camera connected at index \"{0}\")", cameraIndex));
                     }
                     else {
-
-                        UpdatePreviewSource(Resolution);
-                        Initialized = true;
-                        Log.LogMessage(string.Format("Initialization of Camera {0} successful - (Displaing at CameraPreview \"{0}\")", GetCameraPreview().GetNumber()));
-                    }
+                        */
+                    UpdatePreviewSource(Resolution);
+                    Initialized = true;
+                    Log.LogMessage(string.Format("Initialization of Camera {0} successful - (Displaing at CameraPreview \"{0}\")", GetCameraPreview().GetNumber()));
+                    //}
                 }
             });
             return Initialized;
@@ -112,7 +113,16 @@ namespace Rubinator3000.CubeScan.CameraControl {
 
                 if (!Started) {
 
-                    VideoCapture.ImageGrabbed += ProcessCapturedFrame;
+                    // Testing
+
+                    Bitmap bmp = new Bitmap(string.Format("C:\\Users\\Tim\\Desktop\\RubinatorBilder\\0_{0}.png", CameraIndex));
+                    GetCameraPreview().DisplayFrame(bmp);
+                    bmp = new Bitmap(string.Format("C:\\Users\\Tim\\Desktop\\RubinatorBilder\\0_{0}.png", CameraIndex));
+                    CubeScanFrame.Reinitialize(this, new Image<Bgr, byte>(bmp));
+
+                    // Testing
+
+                    //VideoCapture.ImageGrabbed += ProcessCapturedFrame;//
 
                     VideoCapture.Start();
                     Started = true;

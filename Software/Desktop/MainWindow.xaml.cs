@@ -29,7 +29,8 @@ namespace Rubinator3000 {
             moveSynchronizer = new MoveSynchronizer(TextBox_MoveHistoryOutput);
 
             ComboBox_COMPort.ItemsSource = System.IO.Ports.SerialPort.GetPortNames();
-            CubeScanner.OnCubeScanned += WebCamControl_OnCubeScanned;
+            CubeScanner.OnCubeScanned += CubeScanner_OnCubeScanned;
+            CubeScanner.OnTileFound += CubeScanner_OnTileFound;
 
             KeyDown += MainWindow_KeyDown;
 
@@ -50,6 +51,5 @@ namespace Rubinator3000 {
 
             Log.LogMessage("Init Log");
         }
-
     }
 }

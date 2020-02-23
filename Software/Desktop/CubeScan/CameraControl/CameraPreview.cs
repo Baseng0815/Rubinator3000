@@ -81,8 +81,11 @@ namespace Rubinator3000.CubeScan.CameraControl {
             if (RelativeCanvasChildren.ContainsKey(name)) {
                 RelativeCanvasChildren.Remove(name);
             }
-            Canvas.Children.Add(relativeUIElement.GenerateUIElement(Canvas.ActualWidth, Canvas.ActualHeight));
-            RelativeCanvasChildren.Add(name, relativeUIElement);
+            Canvas.Dispatcher.Invoke(() => {
+
+                Canvas.Children.Add(relativeUIElement.GenerateUIElement(Canvas.ActualWidth, Canvas.ActualHeight));
+                RelativeCanvasChildren.Add(name, relativeUIElement);
+            });
         }
 
         public void UpdateAllCanvasElements() {

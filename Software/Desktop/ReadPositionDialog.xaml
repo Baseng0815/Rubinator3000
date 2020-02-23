@@ -3,14 +3,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:Rubinator3000"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Color Dialog"
     Width="250"
-    Height="150"
+    Height="180"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
-    WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <Window.Resources>
         <Style TargetType="Label">
@@ -33,10 +31,11 @@
             <ColumnDefinition Width=".5*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height=".25*" />
-            <RowDefinition Height=".25*" />
-            <RowDefinition Height=".25*" />
-            <RowDefinition Height=".25*" />
+            <RowDefinition Height=".20*" />
+            <RowDefinition Height=".20*" />
+            <RowDefinition Height=".20*" />
+            <RowDefinition Height=".20*" />
+            <RowDefinition Height=".20*" />
         </Grid.RowDefinitions>
         <Label
             Grid.Row="0"
@@ -51,28 +50,43 @@
             Grid.Column="0"
             Content="Column Index:" />
         <TextBox
-            x:Name="inputFaceIndex"
+            x:Name="TextBox_InputFaceIndex"
             Grid.Row="0"
             Grid.Column="1"
             KeyDown="TextBox_KeyDown" />
         <TextBox
-            x:Name="inputRowIndex"
+            x:Name="TextBox_InputRowIndex"
             Grid.Row="1"
             Grid.Column="1"
             KeyDown="TextBox_KeyDown" />
         <TextBox
-            x:Name="inputColIndex"
+            x:Name="TextBox_InputColIndex"
             Grid.Row="2"
             Grid.Column="1"
             KeyDown="TextBox_KeyDown" />
-
-        <Button
+        <TextBox
+            x:Name="TextBox_Status"
             Grid.Row="3"
             Grid.Column="0"
             Grid.ColumnSpan="2"
+            Foreground="Red"
+            IsEnabled="False"
+            IsReadOnly="True" />
+        <Button
+            x:Name="Button_Confirm"
+            Grid.Row="4"
+            Grid.Column="0"
             Margin="2,2,2,2"
             VerticalAlignment="Center"
-            Click="Button_Click"
+            Click="Button_Confirm_Click"
             Content="Confirm" />
+        <Button
+            x:Name="Button_Discard"
+            Grid.Row="4"
+            Grid.Column="1"
+            Margin="2,2,2,2"
+            VerticalAlignment="Center"
+            Click="Button_Discard_Click"
+            Content="Discard" />
     </Grid>
 </Window>

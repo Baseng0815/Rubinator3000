@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Shapes;
 
 namespace Rubinator3000.CubeScan {
     public class CubeScanner {
@@ -18,12 +19,15 @@ namespace Rubinator3000.CubeScan {
         public delegate void OnCubeScannedEventHandler(object sender, CubeScanEventArgs e);
         public static event OnCubeScannedEventHandler OnCubeScanned;
 
+        public delegate void OnTileFoundEventHandler(object sender, TileFoundEventArgs e);
+        public static event OnTileFoundEventHandler OnTileFound;
+
         private List<CameraDevice> systemCameras = new List<CameraDevice>();
 
         public readonly List<WebCamControl> webCamControls = new List<WebCamControl>();
         public readonly List<CameraPreview> cameraPreviews = new List<CameraPreview>();
 
-        private readonly List<ReadPosition> readPositions = new List<ReadPosition>();
+        public List<ReadPosition> ReadPositions { get; private set; } = new List<ReadPosition>();
 
         private readonly Thread thread;
         private bool threadShouldStop = true;
@@ -108,20 +112,57 @@ namespace Rubinator3000.CubeScan {
             Contour closest = targetWcc.CubeScanFrame.FindClosestContour(relativeX, relativeY);
             if (closest != null) {
 
-                targetWcc.GetCameraPreview().AddRelativeCanvasElement("TileHighlight", closest.ToRelativeHighlightPolygon());
+                targetWcc.GetCameraPreview().AddRelativeCanvasElement(Settings.HighlightName, closest.ToRelativeHighlightPolygon());
+            }
+        }
+
+        public void HighlightContour(Contour contour) {
+
+            int webCamControlIndex = -1;
+            for (int i = 0; i < webCamControls.Count; i++) {
+
+                if (webCamControls[i].CubeScanFrame.TileContours.Contains(contour)) {
+                    webCamControlIndex = i;
+                    break;
+                }
+            }
+            WebCamControl targetWcc = webCamControls[webCamControlIndex];
+            targetWcc.GetCameraPreview().AddRelativeCanvasElement(Settings.HighlightName, contour.ToRelativeHighlightPolygon());
+        }
+
+        public void HighlightAll(int cameraIndex) {
+
+            for (int i = 0; i < webCamControls[cameraIndex].CubeScanFrame.TileContours.Count; i++) {
+
+                HighlightContour(webCamControls[cameraIndex].CubeScanFrame.TileContours[i]);
+            }
+        }
+
+        public void ClearTileHighlight() {
+
+            for (int i = 0; i < webCamControls.Count; i++) {
+
+                for (int j = 0; j < webCamControls[i].GetCameraPreview().Canvas.Children.Count; j++) {
+
+                    if (webCamControls[i].GetCameraPreview().Canvas.Children[j] is Polygon) {
+
+                        webCamControls[i].GetCameraPreview().Canvas.Children.RemoveAt(j);
+                        webCamControls[i].GetCameraPreview().GetClonedRelativeCanvasChildren().Remove(Settings.HighlightName);
+                    }
+                }
             }
         }
 
         public void ReadCube() {
 
-            if (readPositions.Count != 48) {
+            if (ReadPositions.Count != Settings.RequiredReadPositionCount) {
 
                 return;
             }
 
-            for (int i = 0; i < readPositions.Count; i++) {
+            for (int i = 0; i < ReadPositions.Count; i++) {
 
-                readPositions[i].Color = webCamControls[readPositions[i].CameraIndex].ReadColorInsideContour(readPositions[i].Contour);
+                ReadPositions[i].Color = webCamControls[ReadPositions[i].CameraIndex].ReadColorInsideContour(ReadPositions[i].Contour);
             }
 
             SortAndValidateColors();
@@ -130,7 +171,7 @@ namespace Rubinator3000.CubeScan {
         private void SortAndValidateColors() {
 
             // Get a deep clone of "readPositions"
-            List<ReadPosition> allPositions = readPositions.Select(item => (ReadPosition)item.Clone()).ToList();
+            List<ReadPosition> allPositions = ReadPositions.Select(item => (ReadPosition)item.Clone()).ToList();
 
             // Positions left to assign
             List<ReadPosition> positionsLeftToAssign = new List<ReadPosition>(allPositions);
@@ -181,7 +222,7 @@ namespace Rubinator3000.CubeScan {
                 }
             }
 
-            OnCubeScanned.Invoke(null, new CubeScanEventArgs(scanData));
+            OnCubeScanned.Invoke(this, new CubeScanEventArgs(scanData));
         }
 
         public void RedrawAllCanvasElements() {
@@ -214,6 +255,12 @@ namespace Rubinator3000.CubeScan {
 
         public void Run() {
 
+            for (int i = 0; i < 4; i++) {
+
+                webCamControls[i].TryInitialize(new Resolution(640, 480), i);
+                webCamControls[i].StartCamera();
+            }
+
             threadShouldStop = false;
             while (!threadShouldStop) {
 
@@ -222,8 +269,9 @@ namespace Rubinator3000.CubeScan {
 
                 // Code in thread loop
 
+                /*
                 CameraDevicesUpdate cdu = UpdateSystemCameras();
-
+                
                 // Handle all arrived cameras
                 for (int i = 0; i < cdu.Arrived.Count; i++) {
 
@@ -232,13 +280,21 @@ namespace Rubinator3000.CubeScan {
                         webCamControls[cdu.Arrived[i]].StartCamera();
                     }
                 }
-
                 // Handle all disconnected cameras
                 for (int i = 0; i < cdu.Disconnected.Count; i++) {
 
                     webCamControls[cdu.Disconnected[i]].TerminateCamera();
                 }
+                // If Cube Scan should be asynchronous
+                if (Settings.ReadoutRequested > 0) {
 
+                    ReadCube();
+                    if (Settings.ReadoutRequested == ReadUtility.ReadoutRequested.SINGLE_READOUT) {
+
+                        Settings.ReadoutRequested = ReadUtility.ReadoutRequested.DISABLED;
+                    }
+                }
+                */
                 // Code in thread loop
 
                 while (ReadUtility.CurrentTimeMillis() < loopEnd) {
@@ -286,6 +342,35 @@ namespace Rubinator3000.CubeScan {
             }
             return HighestResolution;
         }
+
+        public void AddReadPosition(ReadPosition readPosition) {
+
+            ReadPosition existingPosition = PositionByIndices(readPosition.FaceIndex, readPosition.RowIndex, readPosition.ColIndex);
+            if (existingPosition != null) {
+                ReadPositions.Remove(existingPosition);
+            }
+            ReadPositions.Add(readPosition);
+            Log.LogMessage(string.Format("Position [{0}, {1}, {2}] added", readPosition.FaceIndex, readPosition.RowIndex, readPosition.ColIndex));
+
+        }
+
+        public ReadPosition PositionByIndices(int fi, int ri, int ci) {
+
+            for (int i = 0; i < ReadPositions.Count; i++) {
+
+                if (ReadPositions[i].FaceIndex == fi && ReadPositions[i].RowIndex == ri && ReadPositions[i].ColIndex == ci) {
+
+                    return ReadPositions[i];
+                }
+            }
+
+            return null;
+        }
+
+        public void InvokeOnTileFound(object sender, TileFoundEventArgs e) {
+
+            OnTileFound.Invoke(sender, e);
+        }
     }
 
     #region Custom Events
@@ -299,5 +384,16 @@ namespace Rubinator3000.CubeScan {
                 throw new ArgumentOutOfRangeException(nameof(scanData));
         }
     }
+    public class TileFoundEventArgs : EventArgs {
+        public Contour Contour { get; }
+
+        public int CameraIndex { get; }
+
+        public TileFoundEventArgs(Contour contour, int cameraIndex) {
+            Contour = contour;
+            CameraIndex = cameraIndex;
+        }
+    }
+
     #endregion
 }

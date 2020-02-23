@@ -18,17 +18,22 @@ namespace Rubinator3000 {
         public static bool UseMultiTurn = true;
         public static int StepDelay = 300;
 
+        // ReadPositionDialog
+        public static int OffsetToTile = 30;
+
         // CubeScanner
         public static ReadoutRequested ReadoutRequested = ReadoutRequested.DISABLED;
         public static int TicksPerSecond = 10;
+        public static int RequiredReadPositionCount = 48;
 
         // CameraPreview
         public static int CircleRadius = 3;
         public static Color HightlightColor = Color.FromArgb(255, 0, 255, 255);
         public static int HightlightThickness = 3;
+        public static string HighlightName = "TileHighlight";
 
         // ColorIdentification
-        public static int CannyThresh = 255;
+        public static int CannyThresh = 120;
         public static int CannyThreshLinking = 20;
         public static int MinimalContourArea = 1500;
         public static int MinimalContourLength = 200;

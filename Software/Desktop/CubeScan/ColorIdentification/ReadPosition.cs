@@ -4,7 +4,7 @@ using System;
 using System.Drawing;
 
 namespace Rubinator3000.CubeScan.ColorIdentification {
-    class ReadPosition : ICloneable {
+    public class ReadPosition : ICloneable {
 
         public Contour Contour { get; set; }
 
@@ -39,7 +39,16 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
 
         public object Clone() {
 
-            return new ReadPosition((Contour)Contour.Clone(), FaceIndex, RowIndex, ColIndex, CameraIndex, Color, RelativeCircle, (double[])Percentages.Clone(), AssumedCubeColor);
+            return new ReadPosition(
+                (Contour)Contour.Clone(),
+                FaceIndex,
+                RowIndex,
+                ColIndex,
+                CameraIndex,
+                Color,
+                RelativeCircle,
+                Percentages == null ? null : (double[])Percentages.Clone(),
+                AssumedCubeColor);
         }
     }
 }

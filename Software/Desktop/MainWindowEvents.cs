@@ -38,9 +38,13 @@ namespace Rubinator3000 {
 
         private void Button_ManualReadout_Click(object sender, RoutedEventArgs e) {
 
+            cubeScanner.ReadCube();
+            /*
+            // If Readout should be asynchronous
             if (Settings.ReadoutRequested != ReadUtility.ReadoutRequested.AUTO_READOUT) {
                 Settings.ReadoutRequested = ReadUtility.ReadoutRequested.SINGLE_READOUT;
             }
+            */
         }
 
         private void CheckBox_AutoReadout_Click(object sender, RoutedEventArgs e) {
@@ -83,15 +87,61 @@ namespace Rubinator3000 {
             }
         }
 
+        private void CubeScanner_OnTileFound(object sender, TileFoundEventArgs e) {
+
+            if (cubeScanner.ReadPositions.Count >= Settings.RequiredReadPositionCount) { // If all tiles are being scanned
+
+                return;
+            }
+
+            Application.Current.Dispatcher.Invoke(() => {
+
+                cubeScanner.HighlightContour(e.Contour);
+
+                Canvas canvas = cubeScanner.webCamControls[e.CameraIndex].GetCameraPreview().Canvas;
+                Point point = canvas.TransformToAncestor(this).Transform(new Point(0, 0));
+
+                Point dest = new Point(Left + point.X + (e.Contour.RelativeCenterX * canvas.ActualWidth), Top + point.Y + (e.Contour.RelativeCenterY * canvas.ActualHeight));
+
+                readPositionDialog = new ReadPositionDialog {
+                    Top = dest.Y - Settings.OffsetToTile - 180,
+                    Left = dest.X - Settings.OffsetToTile - 250
+                };
+
+                readPositionDialog.Owner = this;
+
+                if (readPositionDialog.ShowDialog() == true) { // If Position Adding was confirmed
+
+                    int[] r = readPositionDialog.Result;
+                    cubeScanner.AddReadPosition(new ReadPosition(e.Contour, r[0], r[1], r[2], e.CameraIndex));
+                }
+                else { // If Position Adding was Discarded
+
+                    // Do nothing
+                }
+
+                cubeScanner.ClearTileHighlight();
+
+            });
+        }
+
+        private void CubeScanner_OnCubeScanned(object sender, CubeScanEventArgs e) {
+
+            try {
+                cube = new Cube(e.ScanData);
+                DrawCube.AddState(cube);
+            }
+            catch {
+                Log.LogMessage("Cube not created");
+            }
+        }
+
         private void Image_CameraPreview_SizeChanged(object sender, SizeChangedEventArgs e) {
 
             cubeScanner.RedrawAllCanvasElements();
         }
 
         private void InitalizeCameraPreviews() {
-
-            const int width = 640;
-            const int height = 480;
 
             List<Image> previewImages = new List<Image>() {
                 Image_CameraPreview0,
@@ -146,11 +196,6 @@ namespace Rubinator3000 {
             }
         }
 
-        private void MenuItem_CameraPreview_Click(object sender, RoutedEventArgs e) {
-
-            // TODO Swap cameraPreviews per drag and drop
-        }
-
         public async void ShuffleCube() {
             Random rnd = new Random();
 
@@ -177,17 +222,6 @@ namespace Rubinator3000 {
             await moveSynchronizer.RunAsync(solvingMoves);
 
             //moveSynchronizer.SetSolvedState(true);
-        }
-
-        private void WebCamControl_OnCubeScanned(object sender, CubeScanEventArgs e) {
-
-            try {
-                cube = new Cube(e.ScanData);
-                DrawCube.AddState(cube);
-            }
-            catch {
-                Log.LogMessage("Cube not created");
-            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
