@@ -171,6 +171,7 @@
     <Compile Include="MainWindowEvents.cs" />
     <Compile Include="MainWindowMenu.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="XmlHandling\XmlHandler.cs" />
     <Page Include="CubeColorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
