@@ -12,7 +12,7 @@ namespace RubinatorCore {
 
         private static Queue<string> messages = new Queue<string>();
 
-        public static Action<string> LogCallback { get;  set; }
+        public static Action<string> LogCallback { get; set; }
 
         public static void StopLogging() {
             stopRequested = true;

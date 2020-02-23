@@ -1,8 +1,9 @@
+using RubinatorCore.CubeRepresentation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static RubinatorCore.CubeColor;
-using static RubinatorCore.CubeFace;
+using static RubinatorCore.CubeRepresentation.CubeColor;
+using static RubinatorCore.CubeRepresentation.CubeFace;
 
 namespace RubinatorCore.Solving {
     /// <summary>
@@ -126,7 +127,7 @@ namespace RubinatorCore.Solving {
         /// </summary>
         /// <param name="edgeRight">Gibt an, ob die beiden Steine farblich korrekt verbunden sind</param>
         /// <returns>Gibt zurück, ob sich beide Steine nebeneinander befinden</returns>
-        public bool IsPaired(out bool edgeRight, out bool cornerRight) {            
+        public bool IsPaired(out bool edgeRight, out bool cornerRight) {
             // die Positionen auf den gemeinsamen Seiten bestimmen
             IEnumerable<(Position corner, Position edge)> commonFaces = from ePos in Edge.GetPositions()
                                                                         join cPos in Corner.GetPositions() on ePos.Face equals cPos.Face
@@ -150,7 +151,7 @@ namespace RubinatorCore.Solving {
             }
 
             return false;
-        }        
+        }
 
         /// <summary>
         /// Überprüft F2L-Paare auf Gleichheit

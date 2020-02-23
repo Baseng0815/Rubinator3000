@@ -1,10 +1,8 @@
-﻿using InTheHand.Net.Sockets;
+﻿
+using InTheHand.Net.Sockets;
 using RubinatorCore;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,7 +27,8 @@ namespace Rubinator3000.Communication {
                     byte content = Convert.ToByte(read);
                     System.Diagnostics.Debug.WriteLine("SERVER RECEIVED " + BitConverter.ToString(new byte[] { content }));
                     DataReceived?.Invoke(null, content);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     Log.LogMessage(e.ToString());
                     return;
                 }
@@ -57,7 +56,8 @@ namespace Rubinator3000.Communication {
             try {
                 System.Diagnostics.Debug.WriteLine("SERVER SENT " + BitConverter.ToString(b));
                 stream.Write(b, 0, b.Length);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 Log.LogMessage(e.ToString());
             }
         }
@@ -72,7 +72,8 @@ namespace Rubinator3000.Communication {
                 listener.Start();
                 try {
                     client = listener.AcceptBluetoothClient();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     Log.LogMessage(e.ToString());
                     return;
                 }

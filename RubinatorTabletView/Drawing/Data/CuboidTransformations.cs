@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using OpenTK;
 using RubinatorCore;
+using RubinatorCore.CubeRepresentation;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

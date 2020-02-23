@@ -1,0 +1,56 @@
+﻿using OpenTK;
+using RubinatorCore.CubeRepresentation;
+using System;
+
+namespace Rubinator3000.CubeView {
+    class Utility {
+        /// <summary>
+        /// Convert degrees to radians
+        /// </summary>
+        public static float ToRad(float deg) {
+            return (float)(Math.PI * deg / 180f);
+        }
+        /// <summary>
+        /// Convert degrees to radians for a whole vector
+        /// </summary>
+        public static Vector3 ToRad(Vector3 vec) {
+            float x = vec.X * (float)Math.PI / 180f;
+            float y = vec.Y * (float)Math.PI / 180f;
+            float z = vec.Z * (float)Math.PI / 180f;
+
+            return new Vector3(x, y, z);
+        }
+
+        /// <summary>
+        /// Convert radians to degrees
+        /// </summary>
+        public static double ToDeg(double rad) {
+            return Math.PI / 180f * rad;
+        }
+
+        /// <summary>
+        /// Cosine of angle, given in degrees
+        /// </summary>
+        public static float Cos(float angle) {
+            return (float)Math.Cos(ToRad(angle));
+        }
+
+        /// <summary>
+        /// Sine of angle, given in degrees
+        /// </summary>
+        public static float Sin(float angle) {
+            return (float)Math.Sin(ToRad(angle));
+        }
+
+        /// <summary>
+        /// Return 0 on x-axis, 1 on y-axis and 2 on z-axis
+        /// </summary>
+        public static int Axis(CubeFace face) {
+            if (face == CubeFace.LEFT || face == CubeFace.RIGHT)
+                return 0;
+            else if (face == CubeFace.UP || face == CubeFace.DOWN)
+                return 1;
+            else return 2;
+        }
+    }
+}

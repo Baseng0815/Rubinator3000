@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RubinatorCore.CubeRepresentation;
 
 namespace RubinatorCore.Solving {
     public partial class CubeSolverFridrich : CubeSolver {
         public override bool Solved => GetCubeSolved();
 
         public CubeSolverFridrich(Cube cube) : base((Cube)cube.Clone()) {
-            
+
         }
 
         public override void SolveCube() {

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using RubinatorCore.CubeRepresentation;
+using System;
 using System.Linq;
-using System.Text;
 
 namespace RubinatorCore {
     public static class Utility {
@@ -19,7 +18,7 @@ namespace RubinatorCore {
 
             return Enumerable.Repeat(moveData, Math.Abs(move.Count)).ToArray();
         }
-        
+
         public static byte[] MultiTurnToByte(Move move1, Move move2) {
             if (!Cube.IsOpponentFace(move1.Face, move2.Face))
                 throw new InvalidOperationException();
@@ -41,7 +40,7 @@ namespace RubinatorCore {
             int minCount = Math.Min(Math.Abs(leftMove.Count), Math.Abs(rightMove.Count));
             int maxCount = Math.Max(Math.Abs(leftMove.Count), Math.Abs(rightMove.Count));
 
-             byte[] data = new byte[maxCount];
+            byte[] data = new byte[maxCount];
 
             // fill array with data
             for (int i = 0; i < maxCount; i++) {
@@ -49,7 +48,8 @@ namespace RubinatorCore {
                     data[i] = moveByte;
                 else if (i < Math.Abs(leftMove.Count)) {
                     data[i] = MoveToByte(leftMove)[0];
-                } else if (i < Math.Abs(rightMove.Count)) {
+                }
+                else if (i < Math.Abs(rightMove.Count)) {
                     data[i] = MoveToByte(rightMove)[0];
                 }
             }

@@ -1,11 +1,10 @@
-﻿using System;
+﻿using RubinatorCore.CubeRepresentation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static RubinatorCore.CubeFace;
-using static RubinatorCore.CubeColor;
-using System.Threading;
+using static RubinatorCore.CubeRepresentation.CubeColor;
+using static RubinatorCore.CubeRepresentation.CubeFace;
 
 namespace RubinatorCore.Solving {
     /// <summary>

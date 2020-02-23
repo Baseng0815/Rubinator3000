@@ -1,18 +1,16 @@
-﻿
+﻿using Rubinator3000.Communication;
 using Rubinator3000.CubeScan;
+using Rubinator3000.CubeScan.ColorIdentification;
+using Rubinator3000.CubeView;
 using RubinatorCore;
+using RubinatorCore.CubeRepresentation;
 using RubinatorCore.Solving;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace Rubinator3000 {
     public partial class MainWindow {
@@ -162,7 +160,7 @@ namespace Rubinator3000 {
 
         private void CheckBox_ClearForcedColors_Click(object sender, RoutedEventArgs e) {
 
-            ColorIdentification.ClearForcedColors();
+            ColorID.ClearForcedColors();
         }
 
         private void CheckBox_AutoReadout_Click(object sender, RoutedEventArgs e) {

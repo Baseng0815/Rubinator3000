@@ -142,30 +142,32 @@
     <Compile Include="CubeColorDialog.xaml.cs">
       <DependentUpon>CubeColorDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CubeScan\CameraPreview.cs" />
-    <Compile Include="CubeScan\Contour.cs" />
-    <Compile Include="CubeScan\CubeScanFrame.cs" />
+    <Compile Include="CubeScan\CameraControl\CameraDevice.cs" />
+    <Compile Include="CubeScan\CameraControl\CameraDevicesUpdate.cs" />
+    <Compile Include="CubeScan\CameraControl\CameraPreview.cs" />
+    <Compile Include="CubeScan\ColorIdentification\Contour.cs" />
+    <Compile Include="CubeScan\ColorIdentification\CubeScanFrame.cs" />
     <Compile Include="CubeScan\CubeScanner.cs" />
-    <None Include="CubeScan\ReadPosition.cs" />
-    <Compile Include="CubeScan\ReadPosition2.cs" />
-    <None Include="CubeScan\WebCamControl.cs" />
-    <Compile Include="CubeScan\RelativeCircle.cs" />
-    <Compile Include="CubeScan\RelativePolygon.cs" />
-    <Compile Include="CubeScan\RelativePosition.cs" />
-    <Compile Include="CubeScan\RelativeCanvasElement.cs" />
-    <Compile Include="CubeScan\WebCamControl2.cs" />
+    <Compile Include="CubeScan\ColorIdentification\ReadPosition.cs" />
+    <Compile Include="CubeScan\NativeMethods.cs" />
+    <Compile Include="CubeScan\RelativeElements\RelativeCircle.cs" />
+    <Compile Include="CubeScan\RelativeElements\RelativePolygon.cs" />
+    <Compile Include="CubeScan\RelativeElements\RelativePosition.cs" />
+    <Compile Include="CubeScan\RelativeElements\RelativeCanvasElement.cs" />
+    <Compile Include="CubeScan\CameraControl\Resolution.cs" />
+    <Compile Include="CubeScan\CameraControl\WebCamControl.cs" />
     <Compile Include="ReadPositionDialog.xaml.cs">
       <DependentUpon>ReadPositionDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Communication\Arduino.cs" />
     <Compile Include="Communication\ArduinoUSB.cs" />
     <Compile Include="Communication\MoveSynchronizer.cs" />
-    <Compile Include="CubeScan\ColorIdentification.cs" />
+    <Compile Include="CubeScan\ColorIdentification\ColorID.cs" />
     <Compile Include="CubeScan\PieChart.cs" />
     <Compile Include="CubeScan\PieSlice.cs" />
-    <Compile Include="CubeScan\FastAccessBitmap.cs" />
+    <Compile Include="CubeScan\ColorIdentification\FastAccessBitmap.cs" />
     <Compile Include="CubeScan\ReadUtility.cs" />
-    <Compile Include="CubeViewer\Data\FlatTransformations.cs" />
+    <Compile Include="CubeView\Data\FlatTransformations.cs" />
     <Compile Include="MainWindowEvents.cs" />
     <Compile Include="MainWindowMenu.cs" />
     <Compile Include="Settings.cs" />
@@ -185,19 +187,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CubeViewer\CubeViewer.cs" />
-    <Compile Include="CubeViewer\CubeViewerEvents.cs" />
-    <Compile Include="CubeViewer\Data\CuboidTransformations.cs" />
-    <Compile Include="CubeViewer\DrawCube.cs" />
-    <Compile Include="CubeViewer\Data\Model.cs" />
-    <Compile Include="CubeViewer\Data\CubeTransformations.cs" />
-    <Compile Include="CubeViewer\Data\ResourceManager.cs" />
-    <Compile Include="CubeViewer\Data\Shader.cs" />
-    <Compile Include="CubeViewer\Data\Texture.cs" />
-    <Compile Include="CubeViewer\Data\TRSTransformation.cs" />
-    <Compile Include="CubeViewer\Utility.cs" />
-    <Compile Include="CubeViewer\Data\Vertex.cs" />
-    <Compile Include="CubeViewer\View.cs" />
+    <Compile Include="CubeView\CubeViewer.cs" />
+    <Compile Include="CubeView\CubeViewerEvents.cs" />
+    <Compile Include="CubeView\Data\CuboidTransformations.cs" />
+    <Compile Include="CubeView\DrawCube.cs" />
+    <Compile Include="CubeView\Data\Model.cs" />
+    <Compile Include="CubeView\Data\CubeTransformations.cs" />
+    <Compile Include="CubeView\Data\ResourceManager.cs" />
+    <Compile Include="CubeView\Data\Shader.cs" />
+    <Compile Include="CubeView\Data\Texture.cs" />
+    <Compile Include="CubeView\Data\TRSTransformation.cs" />
+    <Compile Include="CubeView\Utility.cs" />
+    <Compile Include="CubeView\Data\Vertex.cs" />
+    <Compile Include="CubeView\View.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

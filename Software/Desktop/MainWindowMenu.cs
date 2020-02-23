@@ -1,12 +1,7 @@
-﻿using RubinatorCore.Solving;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Rubinator3000.CubeView;
+using RubinatorCore.CubeRepresentation;
 using System.Windows;
 using System.Windows.Controls;
-using Rubinator3000;
-using System.Linq;
-using RubinatorCore;
 
 namespace Rubinator3000 {
     partial class MainWindow {

@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Rubinator3000 {
     /// <summary>
@@ -26,7 +17,7 @@ namespace Rubinator3000 {
         public int[] Result {
             get => result;
             set {
-                if(value.Length != 3) {
+                if (value.Length != 3) {
                     throw new ArgumentOutOfRangeException(nameof(value));
                 }
 

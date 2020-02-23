@@ -1,17 +1,12 @@
 ﻿#undef SerialPrint
-using Rubinator3000;
+
 using RubinatorCore;
+using RubinatorCore.CubeRepresentation;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
 
-namespace Rubinator3000 {
+namespace Rubinator3000.Communication {
     class ArduinoUSB : Arduino {
 
         private SerialPort serial;
@@ -97,7 +92,7 @@ namespace Rubinator3000 {
                 return;
             }
 
-            byte[] moveData = RubinatorCore.Utility.MoveToByte(move);
+            byte[] moveData = Utility.MoveToByte(move);
 
             // send and receive arduino response
             SendCommand(moveData);
@@ -114,7 +109,7 @@ namespace Rubinator3000 {
                 return;
             }
 
-            byte[] moveData = RubinatorCore.Utility.MultiTurnToByte(move1, move2);
+            byte[] moveData = Utility.MultiTurnToByte(move1, move2);
 
             SendCommand(moveData);
         }

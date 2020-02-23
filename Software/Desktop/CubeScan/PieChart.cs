@@ -1,4 +1,5 @@
-﻿using RubinatorCore;
+﻿using Rubinator3000.CubeScan.ColorIdentification;
+using RubinatorCore.CubeRepresentation;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls.DataVisualization;
@@ -17,9 +18,9 @@ namespace Rubinator3000.CubeScan {
 
         public ResourceDictionaryCollection DataPointStyles { get; set; }
 
-        public ReadPosition2 ReadPosition { get; set; }
+        public ReadPosition ReadPosition { get; set; }
 
-        public PieChart(ReadPosition2 readPosition) {
+        public PieChart(ReadPosition readPosition) {
 
             ReadPosition = readPosition;
             Slices = new List<PieSlice>();

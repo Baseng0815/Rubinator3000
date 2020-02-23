@@ -1,29 +1,9 @@
-﻿//#define Camera
-
-using RubinatorCore;
-using OpenTK;
+﻿using Rubinator3000.Communication;
 using Rubinator3000.CubeScan;
-using RubinatorCore.Solving;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Forms.Integration;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MenuItem = System.Windows.Controls.MenuItem;
+using RubinatorCore;
+using RubinatorCore.CubeRepresentation;
 using System.Threading;
-using Rubinator3000.Communication;
-using Application = System.Windows.Application;
+using System.Windows;
 
 namespace Rubinator3000 {
 

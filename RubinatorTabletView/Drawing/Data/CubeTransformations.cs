@@ -7,19 +7,17 @@ using System.Threading.Tasks;
 
 using System.Configuration;
 using RubinatorCore;
+using RubinatorCore.CubeRepresentation;
 
-namespace RubinatorTabletView
-{
+namespace RubinatorTabletView {
     /// <summary>
     /// Transformations used for cubedrawing
     /// </summary>
-    public static class CubeTransformations
-    {
+    public static class CubeTransformations {
         // a transformation matrix for each face
         public static readonly TRSTransformation[] Transformations;
 
-        static CubeTransformations()
-        {
+        static CubeTransformations() {
             // rotations for faces
             Vector3[] faceRotations =
             {

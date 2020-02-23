@@ -1,14 +1,11 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Util;
-using RubinatorCore;
+using Rubinator3000.CubeScan.ColorIdentification;
+using RubinatorCore.CubeRepresentation;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Rubinator3000.CubeScan {
     public static class ReadUtility {

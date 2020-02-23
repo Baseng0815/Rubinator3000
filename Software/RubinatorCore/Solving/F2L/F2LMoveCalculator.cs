@@ -1,8 +1,8 @@
-﻿using System;
+﻿using RubinatorCore.CubeRepresentation;
 using System.Collections.Generic;
 using System.Linq;
-using static RubinatorCore.CubeColor;
-using static RubinatorCore.CubeFace;
+using static RubinatorCore.CubeRepresentation.CubeColor;
+using static RubinatorCore.CubeRepresentation.CubeFace;
 
 namespace RubinatorCore.Solving {
     /// <summary>

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using RubinatorCore.CubeRepresentation;
+using System;
 using System.Threading.Tasks;
-using RubinatorCore;
-using RubinatorCore.Solving;
 
-namespace Rubinator3000 {
+namespace Rubinator3000.Communication {
     public enum ArduinoLEDs : byte { DOWN = 0x01, UP = 0x02, STRIPES = 0x04, ALL = UP | DOWN | STRIPES }
     public abstract class Arduino : IDisposable {
         public abstract bool Connected { get; }
@@ -27,5 +22,5 @@ namespace Rubinator3000 {
 
         protected abstract byte[] SendCommand(params byte[] command);
         public abstract void SendLedCommand(ArduinoLEDs leds, byte brightness);
-    }    
+    }
 }

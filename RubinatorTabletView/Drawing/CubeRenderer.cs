@@ -14,6 +14,7 @@ using OpenTK;
 using RubinatorCore;
 
 using OpenTK.Graphics.ES31;
+using RubinatorCore.CubeRepresentation;
 
 namespace RubinatorTabletView {
     // State change between the internal cube representation and the draw cube
@@ -251,7 +252,7 @@ namespace RubinatorTabletView {
                         var model = CubeTransformations.Transformations[(int)face].GetMatrix() * cuboidMat * rotMat;
 
                         cubeShader.Upload(string.Format("modelMatrix[{0}]", ((int)face).ToString()), model);
-                        cubeShader.Upload("cubeModelMatrix", Transformation.GetMatrix());                
+                        cubeShader.Upload("cubeModelMatrix", Transformation.GetMatrix());
                     }
 
                     // access time for a dict is close to O(1), so no significant performance loss
@@ -259,7 +260,7 @@ namespace RubinatorTabletView {
                     ResourceManager.LoadedTextures["cubeBlendFrame"].Bind(0);
                     ResourceManager.LoadedTextures["cubeBumpMap"].Bind(1);
 
-                    GL.DrawArraysInstanced(All.Triangles, 0, 6, 6);                    
+                    GL.DrawArraysInstanced(All.Triangles, 0, 6, 6);
                 }
                 // draw flat
             }

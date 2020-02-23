@@ -1,9 +1,10 @@
-﻿using RubinatorCore;
+﻿
+
+using Rubinator3000.CubeView;
+using RubinatorCore;
+using RubinatorCore.CubeRepresentation;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -102,7 +103,7 @@ namespace Rubinator3000.Communication {
         }
 
         public void SetSolvedState(bool state) {
-            if(arduino != null && arduino.Connected) {
+            if (arduino != null && arduino.Connected) {
                 arduino.SetSolvedState(state);
             }
         }
@@ -157,7 +158,7 @@ namespace Rubinator3000.Communication {
 
         public Task RunAsync(MoveCollection moves, bool btSend = true) {
             return Task.Run(async delegate {
-                Stopwatch stopwatch = new Stopwatch();                
+                Stopwatch stopwatch = new Stopwatch();
 
                 stopwatch.Start();
                 for (int i = 0; i < moves.Count; i++) {

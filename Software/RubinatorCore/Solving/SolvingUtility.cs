@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using RubinatorCore.CubeRepresentation;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RubinatorCore.Solving {
     public static class SolvingUtility {
@@ -80,7 +78,7 @@ namespace RubinatorCore.Solving {
         /// <returns>Die Seite der Farbe</returns>
         public static CubeFace GetFace(this CubeColor color) {
             return Cube.GetFace(color);
-        }       
+        }
         #endregion
     }
 }

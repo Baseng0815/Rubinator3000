@@ -1,7 +1,8 @@
-﻿using System;
+﻿using RubinatorCore.CubeRepresentation;
+using System;
 using System.Linq;
-using static RubinatorCore.CubeFace;
-using static RubinatorCore.CubeColor;
+using static RubinatorCore.CubeRepresentation.CubeColor;
+using static RubinatorCore.CubeRepresentation.CubeFace;
 
 namespace RubinatorCore.Solving {
     partial class F2LMoveCalculator {
@@ -194,7 +195,7 @@ namespace RubinatorCore.Solving {
             // die Steine paaren
             CubeColor color = pair.Corner.GetColors().First(c => c != WHITE);
             CubeFace edgeFace = pair.Edge.GetColorPosition(color).Face;
-            
+
             while (pair.Corner.GetColorPosition(color).Face != edgeFace)
                 DoMove(DOWN);
 
@@ -314,7 +315,7 @@ namespace RubinatorCore.Solving {
         /// <summary>
         /// Bringt ein falsch gepaartes Paar auf der gelben Ebene mit der weißen Fläche des Ecksteins auf der gelben Seite in die richtige Position
         /// </summary>
-        private void CornerDown_YellowSide_Paired() {            
+        private void CornerDown_YellowSide_Paired() {
             Position edgeSidePos = pair.Edge.GetPosition(p => p.Face != DOWN);
             CubeColor edgeSideColor = pair.Edge.GetColor(edgeSidePos);
             CubeColor cornerSideColor = pair.Corner.GetColor(p => p.Face == edgeSidePos.Face);

@@ -1,6 +1,5 @@
 ﻿using System.Configuration;
 using System.Windows.Media;
-using Rubinator3000.CubeScan;
 using static Rubinator3000.CubeScan.ReadUtility;
 
 namespace Rubinator3000 {
