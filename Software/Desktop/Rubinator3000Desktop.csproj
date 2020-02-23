@@ -142,9 +142,17 @@
     <Compile Include="CubeColorDialog.xaml.cs">
       <DependentUpon>CubeColorDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CubeScan\CameraPreview.cs" />
     <Compile Include="CubeScan\Contour.cs" />
     <Compile Include="CubeScan\CubeScanFrame.cs" />
     <Compile Include="CubeScan\CubeScanner.cs" />
+    <None Include="CubeScan\ReadPosition.cs" />
+    <Compile Include="CubeScan\ReadPosition2.cs" />
+    <None Include="CubeScan\WebCamControl.cs" />
+    <Compile Include="CubeScan\RelativeCircle.cs" />
+    <Compile Include="CubeScan\RelativePolygon.cs" />
+    <Compile Include="CubeScan\RelativePosition.cs" />
+    <Compile Include="CubeScan\RelativeCanvasElement.cs" />
     <Compile Include="CubeScan\WebCamControl2.cs" />
     <Compile Include="ReadPositionDialog.xaml.cs">
       <DependentUpon>ReadPositionDialog.xaml</DependentUpon>
@@ -155,11 +163,8 @@
     <Compile Include="CubeScan\ColorIdentification.cs" />
     <Compile Include="CubeScan\PieChart.cs" />
     <Compile Include="CubeScan\PieSlice.cs" />
-    <Compile Include="CubeScan\ReadPosition.cs" />
     <Compile Include="CubeScan\FastAccessBitmap.cs" />
     <Compile Include="CubeScan\ReadUtility.cs" />
-    <Compile Include="CubeScan\WebCamControl.cs" />
-    <Compile Include="CubeScan\XmlElementDesignations.cs" />
     <Compile Include="CubeViewer\Data\FlatTransformations.cs" />
     <Compile Include="MainWindowEvents.cs" />
     <Compile Include="MainWindowMenu.cs" />

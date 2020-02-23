@@ -70,23 +70,5 @@ namespace Rubinator3000 {
         private void MenuItem_BluetoothUnsetup_Click(object sender, RoutedEventArgs e) {
             moveSynchronizer.UnsetupBluetooth();
         }
-
-        private void MenuItem_ReinitializeCameras_Click(object sender, RoutedEventArgs e) {
-            for (int i = 0; i < webCamControls.Length; i++) {
-                webCamControls[i].TryInitializeAndStart();
-            }
-        }
-
-        private void MenuItem_SaveCameraInput_Click(object sender, RoutedEventArgs e) {
-            DateTime dt = DateTime.Now;
-
-            if (!System.IO.Directory.Exists("Images"))
-                System.IO.Directory.CreateDirectory("Images");
-
-            for(int i = 0; i < webCamControls.Length; i++) {
-                string filename = $"Images/{dt.ToString("yyyyMMddHHmmss")}_Camera{i}.bmp";
-                webCamControls[i].SaveBitmap(filename);
-            }
-        }
     }
 }

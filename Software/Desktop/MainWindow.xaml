@@ -7,10 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Rubinator 3000"
     Background="{DynamicResource BackgroundColor}"
-    Closing="Window_Closing"    
+    Closing="Window_Closing"
+    ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
-    
-    mc:Ignorable="d" WindowStyle="None" ResizeMode="NoResize" WindowState="Maximized">
+    WindowState="Maximized"
+    WindowStyle="None"
+    mc:Ignorable="d">
     <Window.Resources>
 
         <!--  Border Preset  -->
@@ -60,7 +62,7 @@
             <Setter Property="TextWrapping" Value="WrapWithOverflow" />
         </Style>
 
-        <!-- Label Preset -->
+        <!--  Label Preset  -->
         <Style TargetType="Label">
             <Setter Property="Background" Value="{StaticResource BackgroundColor}" />
             <Setter Property="BorderThickness" Value="0" />
@@ -147,9 +149,6 @@
                 <MenuItem Click="MenuItem_Disconnect_Click" Header="Arduino trennen" />
                 <MenuItem Click="MenuItem_BluetoothSetup_Click" Header="Bluetooth starten" />
                 <MenuItem Click="MenuItem_BluetoothUnsetup_Click" Header="Bluetooth stoppen" />
-                <Separator/>
-                <MenuItem Click="MenuItem_ReinitializeCameras_Click" Header="Reinitialize Cameras" />
-                <MenuItem Click="MenuItem_SaveCameraInput_Click" Header="Camerainput speichern" />
             </MenuItem>
 
             <!--  Index Tab "Ansicht"  -->
@@ -168,7 +167,7 @@
                     x:Name="MenuItem_ClearHistory"
                     Click="MenuItem_ChangeView_Click"
                     Header="_History clearen"
-                    Tag="HistoryClear"/>
+                    Tag="HistoryClear" />
             </MenuItem>
         </Menu>
 
@@ -185,42 +184,70 @@
                 <WindowsFormsHost x:Name="WindowsFormsHost_CubePreview" Initialized="WinFormsHost_Initialized" />
             </Border>
 
-            <!-- Move Delay Slider -->
-            <Border Grid.Row="1" >
+            <!--  Move Delay Slider  -->
+            <Border Grid.Row="1">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="2*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="LED Control" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-                    <Slider x:Name="Slider_LEDBrightness" Grid.Column="1" 
-                            VerticalAlignment="Center"     
-                            ValueChanged="Slider_LEDBrightness_ValueChanged"
-                            Value="0.5" Maximum="1" Minimum="0" SmallChange="0.01" IsSnapToTickEnabled="True" TickFrequency="0.01" />
-                    <Button x:Name="Button_LEDControl" Grid.Column="3" Content="50%" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                            Click="Button_LEDControl_Clicked"/>
+                    <Label
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Content="LED Control" />
+                    <Slider
+                        x:Name="Slider_LEDBrightness"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        IsSnapToTickEnabled="True"
+                        Maximum="1"
+                        Minimum="0"
+                        SmallChange="0.01"
+                        TickFrequency="0.01"
+                        ValueChanged="Slider_LEDBrightness_ValueChanged"
+                        Value="0.5" />
+                    <Button
+                        x:Name="Button_LEDControl"
+                        Grid.Column="3"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Click="Button_LEDControl_Clicked"
+                        Content="50%" />
 
                     <CheckBox
-                        x:Name="CheckBox_MultiTurn"   
-                        Grid.Row="1" Grid.Column="0"
+                        x:Name="CheckBox_MultiTurn"
+                        Grid.Row="1"
+                        Grid.Column="0"
                         HorizontalAlignment="Center"
-                        IsChecked="True"
                         Click="CheckBox_MultiTurn_Click"
-                        Content="MultiTurn" />
+                        Content="MultiTurn"
+                        IsChecked="True" />
 
-                    <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                    <StackPanel
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
                         <TextBox VerticalAlignment="Center" Text="Arduino COM Port" />
-                        <ComboBox x:Name="ComboBox_COMPort" DropDownOpened="ComboBox_COMPort_DropDownOpened" Width="70" Height="20" Margin="10,0,0,0" />
+                        <ComboBox
+                            x:Name="ComboBox_COMPort"
+                            Width="70"
+                            Height="20"
+                            Margin="10,0,0,0"
+                            DropDownOpened="ComboBox_COMPort_DropDownOpened" />
                     </StackPanel>
 
-                    <Button x:Name="Button_Connect" Content="Connect" Grid.Row="1" Grid.Column="2"
-                            Click="Button_Connect_Clicked"/>
+                    <Button
+                        x:Name="Button_Connect"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Click="Button_Connect_Clicked"
+                        Content="Connect" />
                 </Grid>
             </Border>
 
@@ -268,30 +295,6 @@
                         <RowDefinition Height=".25*" />
                         <RowDefinition Height=".25*" />
                     </Grid.RowDefinitions>
-                    <Border
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2">
-                        <CheckBox
-                            x:Name="CheckBox_AllowPosEdit"
-                            Click="CheckBox_AllowPosEdit_Click"
-                            Content="Allow Position Editing" />
-                    </Border>
-                    <Border
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2">
-                        <CheckBox
-                            x:Name="CheckBox_CalRefColors"
-                            Click="CheckBox_CalRefColors_Click"
-                            Content="Calibrate Reference Colors" />
-                    </Border>
-                    <Border Grid.Row="2" Grid.Column="0">
-                        <CheckBox
-                            x:Name="CheckBox_UseRefColors"
-                            Click="CheckBox_UseRefColors_Click"
-                            Content="Use Reference Colors" />
-                    </Border>
                     <Border Grid.Row="2" Grid.Column="1">
                         <Button
                             x:Name="CheckBox_ClearForcedColors"
@@ -334,8 +337,8 @@
                             <Image
                                 x:Name="Image_CameraPreview0"
                                 MouseDown="Image_CameraPreview_MouseDown"
-                                Stretch="Fill"
-                                SizeChanged="Image_CameraPreview_SizeChanged"/>
+                                SizeChanged="Image_CameraPreview_SizeChanged"
+                                Stretch="Fill" />
                             <TextBox
                                 Grid.Row="0"
                                 Grid.Column="1"
@@ -352,7 +355,10 @@
                     <!--  Camera Preview 1  -->
                     <Border Grid.Row="0" Grid.Column="1">
                         <Grid>
-                            <Image x:Name="Image_CameraPreview1" MouseDown="Image_CameraPreview_MouseDown" Stretch="Fill"/>
+                            <Image
+                                x:Name="Image_CameraPreview1"
+                                MouseDown="Image_CameraPreview_MouseDown"
+                                Stretch="Fill" />
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"
@@ -367,7 +373,10 @@
                     <!--  Camera Preview 2  -->
                     <Border Grid.Row="1" Grid.Column="0">
                         <Grid>
-                            <Image x:Name="Image_CameraPreview2" MouseDown="Image_CameraPreview_MouseDown" Stretch="Fill"/>
+                            <Image
+                                x:Name="Image_CameraPreview2"
+                                MouseDown="Image_CameraPreview_MouseDown"
+                                Stretch="Fill" />
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"
@@ -382,7 +391,10 @@
                     <!--  Camera Preview 3  -->
                     <Border Grid.Row="1" Grid.Column="1">
                         <Grid>
-                            <Image x:Name="Image_CameraPreview3" MouseDown="Image_CameraPreview_MouseDown" Stretch="Fill" />
+                            <Image
+                                x:Name="Image_CameraPreview3"
+                                MouseDown="Image_CameraPreview_MouseDown"
+                                Stretch="Fill" />
                             <TextBox
                                 MaxWidth="80"
                                 MaxHeight="12"

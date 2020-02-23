@@ -17,9 +17,9 @@ namespace Rubinator3000.CubeScan {
 
         public ResourceDictionaryCollection DataPointStyles { get; set; }
 
-        public ReadPosition ReadPosition { get; set; }
+        public ReadPosition2 ReadPosition { get; set; }
 
-        public PieChart(ReadPosition readPosition) {
+        public PieChart(ReadPosition2 readPosition) {
 
             ReadPosition = readPosition;
             Slices = new List<PieSlice>();
@@ -67,7 +67,7 @@ namespace Rubinator3000.CubeScan {
 
             PieSeries.ItemsSource = PieSource;
         }
-    
+
         private void UpdateValues() {
 
             Slices.Clear();

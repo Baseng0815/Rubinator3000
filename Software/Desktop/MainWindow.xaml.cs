@@ -34,11 +34,7 @@ namespace Rubinator3000 {
         public Cube cube = new Cube();
         public MoveSynchronizer moveSynchronizer;
 
-        private const int cameraCount = 4;
-        private readonly Image[] cameraPreviews = new Image[cameraCount];
-        private readonly WriteableBitmap[] previewBitmaps = new WriteableBitmap[cameraCount];
-        private readonly WebCamControl[] webCamControls = new WebCamControl[cameraCount];
-        private readonly Canvas[] canvases = new Canvas[cameraCount];
+        public CubeScanner cubeScanner;
 
         private ReadPositionDialog readPositionDialog;
         public static CubeColorDialog cubeColorDialog;
@@ -53,7 +49,7 @@ namespace Rubinator3000 {
             moveSynchronizer = new MoveSynchronizer(TextBox_MoveHistoryOutput);
 
             ComboBox_COMPort.ItemsSource = System.IO.Ports.SerialPort.GetPortNames();
-            WebCamControl.OnCubeScanned += WebCamControl_OnCubeScanned;
+            CubeScanner.OnCubeScanned += WebCamControl_OnCubeScanned;
 
             KeyDown += MainWindow_KeyDown;
 

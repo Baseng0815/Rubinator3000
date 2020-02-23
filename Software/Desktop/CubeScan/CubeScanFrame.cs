@@ -83,13 +83,17 @@ namespace Rubinator3000.CubeScan {
             return null;
         }
 
-        public Color ReadColorAtClosestContour(double relativeX, double relativeY) {
+        public Color ReadColorAtClosestContour(Contour contour) {
 
-            Contour contour = FindClosestContour(relativeX, relativeY);
             return ColorInsideContourEmgu(contour);
         }
 
-        private Contour FindClosestContour(double relativeX, double relativeY) {
+        public Color ReadColorInsideContour(Contour contour) {
+
+            return ColorInsideContourEmgu(contour); // TODO Test if "ColorInsideContourSysDraw" works as well
+        }
+
+        public Contour FindClosestContour(double relativeX, double relativeY) {
 
             double smallestDistance = double.MaxValue;
             Contour closestContour = null;
@@ -191,7 +195,7 @@ namespace Rubinator3000.CubeScan {
             Point[][] points = vovop.ToArrayOfArray();
             for (int i = 0; i < TileContours.Count; i++) {
 
-                points[i] = TileContours[i].PointsModified;
+                points[i] = TileContours[i].Points;
             }
 
             return new VectorOfVectorOfPoint(points);

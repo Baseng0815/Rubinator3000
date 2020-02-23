@@ -29,6 +29,8 @@ namespace Rubinator3000.CubeScan {
 
         public bool CaptureStarted { get; private set; }
 
+        public CameraPreview CameraPreview { get; set; }
+
         public bool CameraPreviewEnabled { get; private set; }
 
         private Thread thread;
@@ -36,20 +38,17 @@ namespace Rubinator3000.CubeScan {
         private bool threadShouldStop = true;
 
         // Capture-object to retrieve bitmaps from usb camera
-        private VideoCapture videoCapture;
+        private VideoCapture VideoCapture { get; set; }
 
         // Holds CubeScanFrame for edge-detecting-color-identification
-        private readonly CubeScanFrame cubeScanFrame = new CubeScanFrame();
-
-        // This WriteablbeBitmap points to the bitmap, that will be shown in the wpf-image-control
-        private WriteableBitmap previewBitmap;
-
-        private Canvas drawingCanvas;
+        public CubeScanFrame CubeScanFrame { get; private set; } = new CubeScanFrame();
 
         #endregion Member Variables
 
-        public WebCamControl2(int cameraIndex) {
+        public WebCamControl2(CameraPreview cameraPreview, int cameraIndex) {
 
+            CameraPreview = cameraPreview;
+            CameraIndex = cameraIndex;
         }
 
         /// <summary>
@@ -61,16 +60,16 @@ namespace Rubinator3000.CubeScan {
             Log.LogMessage(string.Format("Initialization of Camera at index {0} started", cameraIndex));
 
             // Try to connect to usb camera at cameraIndex
-            videoCapture = new VideoCapture(cameraIndex);
+            VideoCapture = new VideoCapture(cameraIndex);
 
             // if setup was unsuccessful (if no camera connected at "CameraIndex")
-            if (!videoCapture.IsOpened) {
+            if (!VideoCapture.IsOpened) {
 
                 Log.LogMessage(string.Format("Initialization of Camera {0} failed - (No camera connected at index \"{0}\")", cameraIndex));
             }
             else {
 
-                videoCapture.ImageGrabbed += ProcessCapturedFrame;
+                VideoCapture.ImageGrabbed += ProcessCapturedFrame;
             }
 
             return false;
@@ -84,56 +83,26 @@ namespace Rubinator3000.CubeScan {
         private void ProcessCapturedFrame(object sender, EventArgs e) {
 
             Mat mat = new Mat();
-            videoCapture.Read(mat);
+            VideoCapture.Read(mat);
             Bitmap readBitmap = mat.Bitmap;
 
             if (readBitmap != null) {
 
-                PreviewInWpf(readBitmap);
-                cubeScanFrame.Reinitialize(mat.ToImage<Bgr, byte>());
+                CameraPreview.DisplayFrame(readBitmap);
+                CubeScanFrame.Reinitialize(mat.ToImage<Bgr, byte>());
             }
         }
 
-        /// <summary>
-        /// Display bitmap on previewBitmap
-        /// </summary>
-        /// <param name="bitmapToDisplay">Bitmap that should be displayed on previewBitmap</param>
-        private void PreviewInWpf(Bitmap bitmapToDisplay) {
+        public Color ReadColorInsideContour(Contour contour) {
 
-            if (bitmapToDisplay == null) {
-
-                return;
-            }
-
-            Application.Current.Dispatcher.Invoke(() => {
-
-                // Reserve the backBuffer of previewBitmap for updates
-                previewBitmap.Lock();
-
-                // Lock "bitmapToDisplay" to be able to fast-copy the bytes to previewBitmap
-                BitmapData tempData = bitmapToDisplay.LockBits(new Rectangle(0, 0, bitmapToDisplay.Width, bitmapToDisplay.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-
-                // CopyMemory(destPointer, sourcePointer, byteLength to copy);
-                CopyMemory(previewBitmap.BackBuffer, tempData.Scan0, previewBitmap.BackBufferStride * Convert.ToInt32(previewBitmap.Height));
-
-
-                bitmapToDisplay.UnlockBits(tempData);
-                tempData = null;
-
-                // Specify the area of the bitmap, that changed (in this case, the wole bitmap)
-                previewBitmap.AddDirtyRect(new Int32Rect(0, 0, bitmapToDisplay.Width, bitmapToDisplay.Height));
-
-                // Release the backBuffer of previewBitmap and make it available for display
-                previewBitmap.Unlock();
-            });
-
+            return CubeScanFrame.ReadColorInsideContour(contour);
         }
 
         public Color ReadColorAtRelativePosition(double relativeX, double relativeY) {
 
-            if (cubeScanFrame.Initialized) {
+            if (CubeScanFrame.Initialized) {
 
-                return cubeScanFrame.ReadColorAtClosestContour(relativeX, relativeY);
+                return CubeScanFrame.ReadColorAtClosestContour(CubeScanFrame.FindClosestContour(relativeX, relativeY));
             }
 
             return Color.Empty;

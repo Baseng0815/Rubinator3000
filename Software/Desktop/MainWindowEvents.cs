@@ -26,12 +26,6 @@ namespace Rubinator3000 {
             moveSynchronizer.DisconnectArduino();
             ctSource.Cancel();
 
-            for (int i = 0; i < webCamControls.Length; i++) {
-
-                webCamControls[i].StopThread();
-            }
-            WebCamControl.SaveAllPositionsToXml();
-
             // Without this line, the program would throw an exception on close
             Environment.Exit(0);
 
@@ -42,15 +36,7 @@ namespace Rubinator3000 {
 
         private void MenuItem_CameraPreview_Click(object sender, RoutedEventArgs e) {
 
-            Image cameraPreivew = (Image)((ContextMenu)((MenuItem)sender).Parent).PlacementTarget;
-
-            int cameraIndex = Array.IndexOf(cameraPreviews, cameraPreivew);
-            webCamControls[cameraIndex].TryInitializeAndStart();
-        }
-
-        private void CheckBox_AllowPosEdit_Click(object sender, RoutedEventArgs e) {
-
-            Settings.PositionEditingAllowed = CheckBox_AllowPosEdit.IsChecked.Value;
+            // TODO Swap cameraPreviews per drag and drop
         }
 
         public async void SolveCube() {
@@ -91,6 +77,7 @@ namespace Rubinator3000 {
         }
 
         private void WebCamControl_OnCubeScanned(object sender, CubeScanEventArgs e) {
+
             try {
                 cube = new Cube(e.ScanData);
                 DrawCube.AddState(cube);
@@ -145,36 +132,20 @@ namespace Rubinator3000 {
             const int width = 640;
             const int height = 480;
 
-            // Link the image-controls to cameraPreviews-array
-            cameraPreviews[0] = Image_CameraPreview0;
-            cameraPreviews[1] = Image_CameraPreview1;
-            cameraPreviews[2] = Image_CameraPreview2;
-            cameraPreviews[3] = Image_CameraPreview3;
+            List<Image> previewImages = new List<Image>() {
+                Image_CameraPreview0,
+                Image_CameraPreview1,
+                Image_CameraPreview2,
+                Image_CameraPreview3
+            };
+            List<Canvas> previewCanvases = new List<Canvas>() {
+                Canvas_CameraPreview0,
+                Canvas_CameraPreview1,
+                Canvas_CameraPreview2,
+                Canvas_CameraPreview3
+            };
 
-            // Initialize previewBitmaps
-            for (int i = 0; i < cameraCount; i++) {
-                previewBitmaps[i] = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr24, null);
-            }
-
-            // Link the previewBitmaps to the according image-controls
-            for (int i = 0; i < cameraCount; i++) {
-
-                cameraPreviews[i].Source = previewBitmaps[i];
-            }
-
-            // Link the canvas-controls to canvases array;
-            canvases[0] = Canvas_CameraPreview0;
-            canvases[1] = Canvas_CameraPreview1;
-            canvases[2] = Canvas_CameraPreview2;
-            canvases[3] = Canvas_CameraPreview3;
-
-            // Initialize all webcam-controls
-            for (int i = 0; i < cameraCount; i++) {
-                webCamControls[i] = new WebCamControl(i, canvases[i], ref previewBitmaps[i]);
-            }
-
-            // Load all positions, that were saved in "ReadPositions.xml"
-            WebCamControl.LoadAllPositionsFromXml();
+            cubeScanner = new CubeScanner(previewImages, previewCanvases);
         }
 
         private void Image_CameraPreview_MouseDown(object sender, MouseButtonEventArgs e) {
@@ -182,63 +153,11 @@ namespace Rubinator3000 {
             Image clickedImage = (Image)sender;
             Point clickPosition = e.GetPosition(clickedImage);
 
-            // Calculate relativeX and relativeY from clickPosition
-            double relativeX = clickPosition.X / clickedImage.ActualWidth;
-            double relativeY = clickPosition.Y / clickedImage.ActualHeight;
-
-            // Determine, which cameraPreview was clicked
-            int cameraIndex = Array.IndexOf(cameraPreviews, clickedImage);
-
-            int[] indices;
-            if (lastIndices[0] < 6 || lastIndices[1] < 3 || lastIndices[2] < 3) {
-                // get next index                
-                int lastRow = lastIndices[1];
-                int lastCol = lastIndices[2];
-
-                indices = new int[3];
-
-                // set face
-                if (lastRow == 2 && lastCol == 2) {
-                    indices[0] = lastIndices[0] + 1;
-                }
-                else {
-                    indices[0] = lastIndices[0];
-                }
-
-                // set row
-                if (lastCol == 2) {
-                    indices[1] = (lastIndices[1] + 1) % 3;
-                }
-                else {
-                    indices[1] = lastIndices[1];
-                }
-
-                // set column
-                if (lastCol == 0 && indices[1] == 1) {
-                    indices[2] = 2;
-                }
-                else {
-                    indices[2] = (lastIndices[2] + 1) % 3;
-                }
-            }
-            else {
-                indices = new int[3];
-            }
         }
 
         private void CheckBox_MultiTurn_Click(object sender, RoutedEventArgs e) {
 
             Settings.UseMultiTurn = CheckBox_MultiTurn.IsChecked.Value;
-        }
-
-        private void CheckBox_CalRefColors_Click(object sender, RoutedEventArgs e) {
-
-            Settings.CalibrateColors = CheckBox_CalRefColors.IsChecked.Value;
-        }
-
-        private void CheckBox_UseRefColors_Click(object sender, RoutedEventArgs e) {
-
-            Settings.UseReferenceColors = CheckBox_UseRefColors.IsChecked.Value;
         }
 
         private void CheckBox_ClearForcedColors_Click(object sender, RoutedEventArgs e) {
@@ -250,40 +169,24 @@ namespace Rubinator3000 {
 
             if (CheckBox_AutoReadout.IsChecked.Value) {
 
-                WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequested.AUTO_READOUT;
+                Settings.ReadoutRequested = ReadUtility.ReadoutRequested.AUTO_READOUT;
             }
             else {
 
-                WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequested.DISABLED;
+                Settings.ReadoutRequested = ReadUtility.ReadoutRequested.DISABLED;
             }
         }
 
         private void Button_ManualReadout_Click(object sender, RoutedEventArgs e) {
-            WebCamControl.CubeGenerationRequested = ReadUtility.ReadoutRequested.SINGLE_READOUT;
+
+            if (Settings.ReadoutRequested != ReadUtility.ReadoutRequested.AUTO_READOUT) {
+                Settings.ReadoutRequested = ReadUtility.ReadoutRequested.SINGLE_READOUT;
+            }
         }
 
         private void Image_CameraPreview_SizeChanged(object sender, SizeChangedEventArgs e) {
 
-            RedrawAllCircles();
-        }
-
-        public void RedrawAllCircles() {
-
-            for (int i = 0; i < canvases.Length; i++) {
-                canvases[i].Children.Clear();
-            }
-
-            List<ReadPosition> allPositions = WebCamControl.AllReadPositions();
-
-            foreach (ReadPosition readPosition in allPositions) {
-
-                WebCamControl.DrawCircleAtPosition(readPosition, canvases[readPosition.CameraIndex]);
-            }
-
-            for (int i = 0; i < canvases.Length; i++) {
-
-                canvases[i].InvalidateVisual();
-            }
+            cubeScanner.RedrawAllCanvasElements();
         }
 
         private void Button_LEDControl_Clicked(object sender, RoutedEventArgs e) {

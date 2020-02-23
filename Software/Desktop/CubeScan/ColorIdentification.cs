@@ -7,7 +7,7 @@ using System.Linq;
 namespace Rubinator3000.CubeScan {
     static class ColorIdentification {
 
-        public static Dictionary<ReadPosition, CubeColor> ForcedColors = new Dictionary<ReadPosition, CubeColor>();
+        public static Dictionary<ReadPosition2, CubeColor> ForcedColors = new Dictionary<ReadPosition2, CubeColor>();
 
         public static Color[] ReferenceColors = new Color[6];
 
@@ -16,7 +16,7 @@ namespace Rubinator3000.CubeScan {
         }
 
         // "color" is the rgb color, that should be identified
-        public static double[] CalculateColorPercentages(ReadPosition readPosition) {
+        public static double[] CalculateColorPercentages(ReadPosition2 readPosition) {
 
             double[] percentages = new double[6];
 
@@ -32,39 +32,15 @@ namespace Rubinator3000.CubeScan {
 
             Color color = readPosition.Color;
 
-            if (Settings.UseReferenceColors) {
-
-                for (int i = 0; i < 6; i++) {
-
-                    percentages[i] = ReferencePercentage(i, color);
-                }
-            }
-            else {
-
-                percentages[0] = OrangePercentage(color);
-                percentages[1] = WhitePercentage(color);
-                percentages[2] = GreenPercentage(color);
-                percentages[3] = YellowPercentage(color);
-                percentages[4] = RedPercentage(color);
-                percentages[5] = BluePercentage(color);
-            }
+            percentages[0] = OrangePercentage(color);
+            percentages[1] = WhitePercentage(color);
+            percentages[2] = GreenPercentage(color);
+            percentages[3] = YellowPercentage(color);
+            percentages[4] = RedPercentage(color);
+            percentages[5] = BluePercentage(color);
 
             return percentages;
         }
-
-        private static double ReferencePercentage(int colorIndex, Color color) {
-
-            double percentageSum = 0;
-
-            percentageSum += (double)ReferenceColors[colorIndex].R < color.R ? (double)ReferenceColors[colorIndex].R / color.R : (double)color.R / ReferenceColors[colorIndex].R;
-            percentageSum += (double)ReferenceColors[colorIndex].G < color.G ? (double)ReferenceColors[colorIndex].G / color.G : (double)color.G / ReferenceColors[colorIndex].G;
-            percentageSum += (double)ReferenceColors[colorIndex].B < color.B ? (double)ReferenceColors[colorIndex].B / color.B : (double)color.B / ReferenceColors[colorIndex].B;
-
-            double percentage = percentageSum / 3;
-            return percentage;
-        }
-
-        #region Hardcoded Color Percentages
 
         private static double OrangePercentage(Color color) {
 
@@ -151,9 +127,7 @@ namespace Rubinator3000.CubeScan {
             return percentage;
         }
 
-        #endregion
-
-        public static int[] Max8Indicies(CubeColor cubeColor, List<ReadPosition> ctc) {
+        public static int[] Max8Indicies(CubeColor cubeColor, List<ReadPosition2> ctc) {
 
             // cubeColor = max 8 indicies of this color
             // ctc = colors to compare

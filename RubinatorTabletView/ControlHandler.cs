@@ -41,14 +41,17 @@ namespace RubinatorTabletView {
                     if (tilesReceived == 54) {
                         ((MainActivity)MainActivity.context).cube_view.renderer.AddState(receivingState);
                     }
-                } catch (Exception e) {
+                }
+                catch (Exception) {
 
                 }
-            // single turn move
-            } else if (data > 0x01 && data < 0x0E) {
+                // single turn move
+            }
+            else if (data > 0x01 && data < 0x0E) {
                 ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(RubinatorCore.Utility.ByteToMove(data));
-            // multi turn move
-            } else if (data > 0x0F && data < 0x1C) {
+                // multi turn move
+            }
+            else if (data > 0x0F && data < 0x1C) {
                 var moves = RubinatorCore.Utility.MultiTurnByteToMove(data);
                 ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(moves[0]);
                 ((MainActivity)MainActivity.context).cube_view.renderer.AddMove(moves[1]);
@@ -63,7 +66,8 @@ namespace RubinatorTabletView {
                     byte content = Convert.ToByte(reader.Read());
                     System.Diagnostics.Debug.WriteLine("CLIENT RECEIVED " + BitConverter.ToString(new byte[] { content }));
                     HandleBluetoothData(content);
-                } catch (Exception e) {
+                }
+                catch (Exception) {
                     return;
                 }
             }
@@ -146,7 +150,8 @@ namespace RubinatorTabletView {
                 var device = adapter.GetRemoteDevice(address);
                 socket = device.CreateInsecureRfcommSocketToServiceRecord(SERVICE_UUID);
                 socket.Connect();
-            } catch (Exception e) {
+            }
+            catch (Exception) {
                 return false;
             }
 
@@ -171,7 +176,8 @@ namespace RubinatorTabletView {
             try {
                 outStream.Write(b, 0, b.Length);
                 System.Diagnostics.Debug.WriteLine("CLIENT SENT " + BitConverter.ToString(b));
-            } catch (Exception e) {
+            }
+            catch (Exception) {
                 return;
             }
         }

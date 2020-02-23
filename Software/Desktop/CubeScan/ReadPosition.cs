@@ -14,7 +14,7 @@ namespace Rubinator3000.CubeScan {
         public int RowIndex { get; private set; }
         public int ColIndex { get; private set; }
         public int CameraIndex { get; set; }
-        public Color Color { get; set; } // Stores the Rgb-values of that are read out at the this position
+        public Color Color { get; set; }
         public Ellipse Circle { get; set; }
         public double[] Percentages { get; set; }
         public CubeColor AssumedCubeColor { get; set; }

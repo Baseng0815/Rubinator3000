@@ -1,4 +1,6 @@
-﻿using RubinatorCore;
+﻿using Emgu.CV;
+using Emgu.CV.Util;
+using RubinatorCore;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -6,9 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
 namespace Rubinator3000.CubeScan {
-    public class ReadUtility {
+    public static class ReadUtility {
 
         public enum ReadoutRequested : int {
             DISABLED = 0,
@@ -70,18 +73,18 @@ namespace Rubinator3000.CubeScan {
 
             // Calculate min- and max-values for points ("bounds to check")
             int minX, minY, maxX, maxY;
-            minX = new List<Point>(contour.PointsModified).OrderBy(p => p.X).First().X;
-            maxX = new List<Point>(contour.PointsModified).OrderBy(p => p.X).Reverse().First().X;
-            minY = new List<Point>(contour.PointsModified).OrderBy(p => p.Y).First().Y;
-            maxY = new List<Point>(contour.PointsModified).OrderBy(p => p.Y).Reverse().First().Y;
+            minX = new List<Point>(contour.Points).OrderBy(p => p.X).First().X;
+            maxX = new List<Point>(contour.Points).OrderBy(p => p.X).Reverse().First().X;
+            minY = new List<Point>(contour.Points).OrderBy(p => p.Y).First().Y;
+            maxY = new List<Point>(contour.Points).OrderBy(p => p.Y).Reverse().First().Y;
 
             List<Point> pointsInside = new List<Point>();
 
             // Calculate for all points inside the "bounds to check", if they are inside the contour
-            for (int i = 0; i < contour.PointsModified.Length - 1; i++) {
+            for (int i = 0; i < contour.Points.Length - 1; i++) {
 
-                Point point1 = contour.PointsModified[i];
-                Point point2 = contour.PointsModified[i + 1];
+                Point point1 = contour.Points[i];
+                Point point2 = contour.Points[i + 1];
 
                 for (int x = minX; x <= maxX; x++) {
 
@@ -97,6 +100,10 @@ namespace Rubinator3000.CubeScan {
             }
 
             return pointsInside;
+        }
+
+        public static IList<T> Clone<T>(this IList<T> listToClone) where T : ICloneable {
+            return listToClone.Select(item => (T)item.Clone()).ToList();
         }
     }
 }
