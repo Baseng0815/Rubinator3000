@@ -1,4 +1,5 @@
 ﻿using OpenTK;
+using RubinatorCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,7 @@ namespace Rubinator3000
         {
             // rotation quaternion
             // better than multiplying each euler angle
-            Quaternion rotationQuat = new Quaternion(Utility.ToRad(Rotation));
+            Quaternion rotationQuat = new Quaternion(Utility.ToRad(Rotation.X), Utility.ToRad(Rotation.Y), Utility.ToRad(Rotation.Z));
 
             // only rotations around the origin are required
             // so the rotation will be multiplied last (left-to-right mm (!OpenTK reverse to GLSL!))

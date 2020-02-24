@@ -119,6 +119,10 @@ namespace RubinatorTabletView {
             SwapBuffers();
         }
 
+        protected override void OnClosed(EventArgs e) {
+            renderer.StopDrawing();
+        }
+
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
 

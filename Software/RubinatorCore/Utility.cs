@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -74,6 +75,11 @@ namespace RubinatorCore {
             rightDir = rightDir == 0 ? 1 : -1;
 
             return new Move[] { new Move((CubeFace)axis, leftDir), new Move((CubeFace)axisToFace[axis], rightDir) };
+        }
+
+        public static float ToRad(float deg)
+        {
+            return (float)(Math.PI * deg / 180f);
         }
     }
 }

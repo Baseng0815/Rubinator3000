@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using OpenTK;
+using RubinatorCore;
 
 namespace Rubinator3000
 {

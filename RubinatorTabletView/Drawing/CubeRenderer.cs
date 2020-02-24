@@ -175,7 +175,6 @@ namespace RubinatorTabletView {
         public void StopDrawing() {
             running = false;
             if (animateMovesThread != null) {
-
                 animateMovesThread.Join();
             }
         }

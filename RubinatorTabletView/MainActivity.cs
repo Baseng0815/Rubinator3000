@@ -20,7 +20,6 @@ namespace RubinatorTabletView {
         private PacketHandler packetHandler;
 
         public CubeView cube_view;
-        public CancellationTokenSource ctSource;
         public static Context context;
 
         public MainActivity() {
@@ -39,11 +38,11 @@ namespace RubinatorTabletView {
             packetHandler = new PacketHandler(FindViewById<LinearLayout>(Resource.Id.container), bluetoothPeer);
 
             FindViewById<Button>(Resource.Id.button_pairBluetooth).Click += (sender, e) => {
-                controlHandler.GetAddress(this);
+                OpenBluetoothActivity();
             };
 
             FindViewById<Button>(Resource.Id.button_unpairBluetooth).Click += (sender, e) => {
-                controlHandler.Disconnect();
+                bluetoothPeer.Disconnect();
                 FindViewById<TextView>(Resource.Id.textView1).SetText(Resource.String.bluetooth_disconnected);
             };
 
@@ -51,10 +50,6 @@ namespace RubinatorTabletView {
             cube_view = FindViewById<CubeView>(Resource.Id.cube_view);
 
             cube_view.Run(60.0f);
-        }
-
-        protected override void OnDestroy() {
-            ctSource.Cancel();
         }
 
         protected override void OnActivityResult(int requestCode, [GeneratedEnum] Result resultCode, Intent data) {
@@ -69,7 +64,7 @@ namespace RubinatorTabletView {
                 alert.SetMessage("Connect to device '" + name + "' ?");
                 alert.SetPositiveButton("OK", (c, ev) => {
                     Task.Run(() => RunOnUiThread(() => {
-                        if (!controlHandler.TryConnect(address)) {
+                        if (!bluetoothPeer.Connect(address)) {
                             Android.App.AlertDialog.Builder connectionFailedAlert = new Android.App.AlertDialog.Builder(this);
                             connectionFailedAlert.SetTitle("Error");
                             connectionFailedAlert.SetMessage("Failed to connect to device '" + name + "'");
@@ -94,6 +89,13 @@ namespace RubinatorTabletView {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        // opens the device selection activity and connects when a device is selected
+        // https://macaddresschanger.com/what-is-bluetooth-address-BD_ADDR
+        private void OpenBluetoothActivity() {
+            var intent = new Intent(this, typeof(DeviceListActivity));
+            StartActivityForResult(intent, 2);
         }
     }
 }
