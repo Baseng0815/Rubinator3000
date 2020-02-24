@@ -1,32 +1,56 @@
  byte   |	instruction			|	data
 		|						|
 -------------------------------------------------------------------------------
- 0x01	|   send single move	|	0x02		Move 'L'
-		|						|	0x03		Move 'Li'
-		|						|	0x04		Move 'U'
-		|						|	0x05		Move 'Ui'
-		|						|	0x06		Move 'F'
-		|						|	0x07		Move 'Fi'
-		|						|	0x08		Move 'D'
-		|						|	0x09		Move 'Di'
-		|						|	0x0A		Move 'R'
-		|						|	0x0B		Move 'Ri'
-		|						|	0x0C		Move 'B'
-		|						|	0x0D		Move 'Bi
+ 0x01	|   send single move	|	0x04		Move 'L'		0b0000_0100
+		|						|	0x05		Move 'Li'		0b0000_0101
+		|						|	0x06		Move 'L2'		0b0000_0110
+		|						|	0x08		Move 'U'		0b0000_1000
+		|						|	0x09		Move 'Ui'		0b0000_1001
+		|						|	0x0A		Move 'U2'		0b0000_1010
+		|						|	0x0C		Move 'F'		0b0000_1100
+		|						|	0x0D		Move 'Fi'		0b0000_1101
+		|						|	0x0E		Move 'F2'		0b0000_1110
+		|						|	0x10		Move 'D'		0b0001_0000
+		|						|	0x11		Move 'Di'		0b0001_0001
+		|						|	0x12		Move 'D2'		0b0001_0010
+		|						|	0x14		Move 'R'		0b0001_0100
+		|						|	0x15		Move 'Ri'		0b0001_0101
+		|						|	0x16		Move 'R2'		0b0001_0110
+		|						|	0x18		Move 'B'		0b0001_1000
+		|						|	0x19		Move 'Bi		0b0001_1001
+		|						|	0x1A		Move 'B2'		0b0001_1010
 -------------------------------------------------------------------------------
  0x02	|   send multi move		| 
 		|						|	0x10		Move 'LR'		0b0001_0000
-		|						|   0x11		Move 'LRi'		0b0001_0001
-		|						|   0x12		Move 'LiR'		0b0001_0010
-		|						|   0x13		Move 'LiRi'		0b0001_0011
-		|						|   0x14		Move 'UD'		0b0001_0100
-		|						|   0x15		Move 'UDi'		0b0001_0101
-		|						|   0x16		Move 'UiD'		0b0001_0110
-		|						|   0x17		Move 'UiDi'		0b0001_0111
-		|						|   0x18		Move 'FB'		0b0001_1000
-		|						|   0x19		Move 'FBi'		0b0001_1001
-		|						|   0x1A		Move 'FiB'		0b0001_1010
-		|						|   0x1B		Move 'FiBi'		0b0001_1011
+		|						|	0x11		Move 'LiR'		0b0001_0001
+		|						|	0x12		Move 'LRi'		0b0001_0010
+		|						|	0x13		Move 'LiRi'		0b0001_0011
+		|						|	0x14		Move 'L2R'		0b0001_0100
+		|						|	0x16		Move 'L2Ri'		0b0001_0110
+		|						|	0x18		Move 'LR2'		0b0001_1000
+		|						|	0x19		Move 'LiR2'		0b0001_1001
+		|						|	0x1A		Move 'L2R2'		0b0001_1100
+		|						|
+		|						|	0x20		Move 'UD'		0b0010_0000
+		|						|	0x21		Move 'UiD'		0b0010_0001
+		|						|	0x22		Move 'UDi'		0b0010_0010
+		|						|	0x23		Move 'UiDi'		0b0010_0011
+		|						|	0x24		Move 'U2D'		0b0010_0100
+		|						|	0x26		Move 'U2Di'		0b0010_0110
+		|						|	0x28		Move 'UD2'		0b0010_1000
+		|						|	0x29		Move 'UiD2'		0b0010_1001
+		|						|	0x2A		Move 'U2D2'		0b0010_1100
+		|						|
+		|						|	0x30		Move 'FB'		0b0011_0000
+		|						|	0x31		Move 'FiB'		0b0011_0001
+		|						|	0x32		Move 'FBi'		0b0011_0010
+		|						|	0x33		Move 'FiBi'		0b0011_0011
+		|						|	0x34		Move 'F2B'		0b0011_0100
+		|						|	0x36		Move 'F2Bi'		0b0011_0110
+		|						|	0x38		Move 'FB2'		0b0011_1000
+		|						|	0x39		Move 'FiB2'		0b0011_1001
+		|						|	0x3A		Move 'F2B2'		0b0011_1100
+		
 -------------------------------------------------------------------------------
   0x03  |	  send cube 		| 	48 bytes cube data
 -------------------------------------------------------------------------------
