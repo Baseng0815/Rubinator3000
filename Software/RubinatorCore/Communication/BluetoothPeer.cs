@@ -42,6 +42,14 @@ namespace RubinatorCore.Communication
         public override string ToString() {
             return BitConverter.ToString(new byte[] { Instruction }) + " / " + BitConverter.ToString(Data.ToArray());
         }
+
+        public byte[] GetData() {
+            List<byte> data = new List<byte>();
+            data.Add(Instruction);
+            data.AddRange(Data);
+
+            return data.ToArray();
+        }
     }
 
     // abstractly defines a bluetooth peer

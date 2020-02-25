@@ -1,5 +1,6 @@
 ﻿using Rubinator3000;
 using RubinatorCore;
+using RubinatorCore.Communication;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,16 +14,13 @@ using System.Windows;
 namespace Rubinator3000 {
     class ArduinoUSB : Arduino {
 
-        private SerialPort serial;
-
-        public override bool Connected => connected;
-        private bool connected = false;
+        private SerialPort serial;        
 
         public ArduinoUSB(string portName, int baudRate = 9600) {
             string[] portNames = SerialPort.GetPortNames();
 
             if (!portNames.Contains(portName)) {
-                Log.LogMessage($"Der Port\"{portName}\" wurde nicht gefunden!");
+                Log.LogMessage($"The port\"{portName}\" does not exist!");
                 return;
             }
 
@@ -33,49 +31,13 @@ namespace Rubinator3000 {
             try {
                 serial.Open();
 
-                Log.LogMessage("Arduino connected");
+                Log.LogMessage("Serial connection open");
             }
             catch (Exception e) {
-                Log.LogMessage("Der Port kann nicht geöffnet werden:\r\n" + e.ToString());
+                Log.LogMessage("The port cannot be opened:\r\n" + e.ToString());
                 return;
             }
-        }
-
-        public override void Connect() {
-            try {
-                byte response = SendCommand(0xA1)[0];
-                if (response != 0xF1) {
-                    Log.LogMessage("Arduinoprogramm ist nicht korrekt. Response: " + Convert.ToString(response, 16));
-                    return;
-                }
-                else
-                    connected = true;
-            }
-            catch (Exception e) {
-                Log.LogMessage(e.ToString());
-                return;
-            }
-        }
-
-        public override void Disconnect() {
-            if (serial?.IsOpen ?? false) {
-                try {
-                    byte response = SendCommand(0xA0)[0];
-                    if (response != 0xF0) {
-                        Log.LogMessage("Aduinoprogramm ist nicht korrekt");
-                    }
-
-                    connected = false;
-
-
-                    serial.Close();
-                }
-                catch (Exception e) {
-                    Log.LogMessage(e.ToString());
-                }
-
-            }
-        }
+        }        
 
         public override void Dispose() {
             Disconnect();
@@ -85,64 +47,35 @@ namespace Rubinator3000 {
             Dispose();
         }
 
-        public override void SendMove(Move move) {
-            if (serial == null || !serial.IsOpen) {
-                Log.LogMessage("Der Port ist nicht geöffnet!");
-                return;
+        protected override Packet SendPacket(Packet packet) {
+            if(Connected && serial.IsOpen) {
+                // ensure that input stream is empty
+                if (serial.BytesToRead > 0)
+                    serial.ReadExisting();
+
+                byte[] data = packet.GetData();
+
+                serial.Write(data, 0, data.Length);
+
+                try {
+                    int instruction = serial.ReadByte();
+                    if(instruction == -1) {
+                        throw new Exception("No response received");
+                    }
+
+                    int lenght = Packet.InstructionLengths[(byte)instruction];
+
+                    byte[] responseData = new byte[lenght];
+                    serial.Read(responseData, 0, lenght);
+
+                    return new Packet((byte)instruction, responseData);
+                }
+                catch (Exception e) {
+                    throw e;
+                }                
             }
-
-            if (!connected) {
-                Log.LogMessage("Der Arduino ist nicht verbunden!");
-                return;
-            }
-
-            byte[] moveData = RubinatorCore.Utility.MoveToByte(move);
-
-            // send and receive arduino response
-            SendCommand(moveData);
-        }
-
-        public override void SendMultiTurnMove(Move move1, Move move2) {
-            if (serial == null || !serial.IsOpen) {
-                Log.LogMessage("Der Port ist nicht geöffnet!");
-                return;
-            }
-
-            if (!connected) {
-                Log.LogMessage("Der Arduino ist nicht verbunden!");
-                return;
-            }
-
-            byte[] moveData = RubinatorCore.Utility.MultiTurnToByte(move1, move2);
-
-            SendCommand(moveData);
-        }
-
-        public override void SendLedCommand(ArduinoLEDs leds, byte brightness) {
-            if (!connected || !serial.IsOpen)
-                return;
-
-            byte command = (byte)(0x40 | (byte)leds);
-
-            SendCommand(command, brightness);
-        }
-
-        public override void SetSolvedState(bool state) {
-            if (state) {
-                SendCommand(0xA2);
-            }
-            else {
-                SendCommand(0xA1);
-            }
-        }
-
-        protected override byte[] SendCommand(params byte[] command) {
-            byte[] response = new byte[command.Length];
-
-            serial.Write(command, 0, command.Length);
-            serial.Read(response, 0, command.Length);
-
-            return response;
+            else
+                throw new InvalidOperationException("Arduino not connected or port closed");
         }
     }
 }

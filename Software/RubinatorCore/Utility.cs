@@ -110,7 +110,7 @@ namespace RubinatorCore {
             return new Packet(0x01, data);
         }
 
-        public static Packet GetMultiturnPacketData(this Move move1, Move move2) {
+        public static Packet GetMultiturnPacketData(Move move1, Move move2) {
             if (!Cube.IsOpponentFace(move1.Face, move2.Face))
                 throw new InvalidOperationException();
 

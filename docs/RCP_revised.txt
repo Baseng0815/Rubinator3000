@@ -56,19 +56,22 @@
 -------------------------------------------------------------------------------
   0x04	|	  request cube		|	-/-
 -------------------------------------------------------------------------------	
-  0x05	|     change LED status |	0x41		LED's down          0b0100_0001
-		|						|   0x43		LED's up            0b0100_0010
-        |                       |   0x44		LED stripes         0b0100_0100
+  0x05	|     change LED status |	0x01		LED's down  		
+		|						|	0x02		LED's up		
+        |						|	0x04		LED stripes		
+		|						|
+		|						|	+ 1 byte brightness
 -------------------------------------------------------------------------------
   0x06  |	  tablet control	|   0x30		solve cube
 		|						|	0x31		shuffle cube
 -------------------------------------------------------------------------------
-  0x07	|	  state				|	0xA1		disconnect
-		|						|   0xA2		connect
-        |                       |   0xA3		solve
-        |                       |   0xF1		disconnected
-        |                       |   0xF2		connected
-        |                       |	0xF3		solved
+  0x07	|	  state				|	0x00		disconnect
+		|						|   0x01		connect
+        |                       |   0x02		solve
+		|						|
+        |                       |   0x10		disconnected
+        |                       |   0x11		connected
+        |                       |	0x12		solved
 -------------------------------------------------------------------------------
   0x08	|	  errors 			|   0xB0		error
         |                       |	0xB1		error not connected
