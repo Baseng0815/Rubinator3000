@@ -8,7 +8,6 @@
     Title="Rubinator 3000"
     Background="{DynamicResource BackgroundColor}"
     Closing="Window_Closing"
-    MouseDown="Window_MouseDown"
     MouseUp="Window_MouseUp"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
@@ -30,6 +29,9 @@
         <Style TargetType="Canvas">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="Transparent" />
+            <EventSetter Event="MouseDown" Handler="Canvas_CameraPreview_MouseDown" />
+            <EventSetter Event="MouseUp" Handler="Canvas_CameraPreview_MouseUp" />
         </Style>
 
         <!--  CheckBox Preset  -->
@@ -40,16 +42,10 @@
 
         </Style>
 
-        <!--  Camera Preview Context Menu Template  -->
-        <ContextMenu x:Key="cameraPreviewContextMenu">
-            <MenuItem Click="MenuItem_CameraPreview_Click" Header="Reinitialize" />
-        </ContextMenu>
-
         <!--  Image Preset  -->
         <Style TargetType="Image">
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
-            <Setter Property="ContextMenu" Value="{StaticResource cameraPreviewContextMenu}" />
         </Style>
 
         <!--  TextBox Preset  -->

@@ -4,6 +4,7 @@ using Rubinator3000.CubeScan.CameraControl;
 using Rubinator3000.CubeScan.ColorIdentification;
 using Rubinator3000.CubeScan.RelativeElements;
 using Rubinator3000.CubeView;
+using Rubinator3000.XmlHandling;
 using RubinatorCore;
 using RubinatorCore.CubeRepresentation;
 using RubinatorCore.Solving;
@@ -18,7 +19,7 @@ using System.Windows.Media.Imaging;
 namespace Rubinator3000 {
     public partial class MainWindow {
 
-        private WebCamControl MouseDownWcc;
+        private CameraPreview MouseDownCp;
 
         private void Button_Connect_Clicked(object sender, RoutedEventArgs e) {
             if (!moveSynchronizer.ArduinoConnected) {
@@ -89,16 +90,16 @@ namespace Rubinator3000 {
 
         private void CubeScanner_OnTileFound(object sender, TileFoundEventArgs e) {
 
-            if (cubeScanner.ReadPositions.Count >= Settings.RequiredReadPositionCount) { // If all tiles are being scanned
+            if (cubeScanner.AllPositionsAssigned()) { // If all tiles are being scanned
 
                 return;
             }
 
             Application.Current.Dispatcher.Invoke(() => {
 
-                cubeScanner.HighlightContour(e.Contour);
+                cubeScanner.PreviewHandler.HighlightContour(e.Contour);
 
-                Canvas canvas = cubeScanner.webCamControls[e.CameraIndex].GetCameraPreview().Canvas;
+                Canvas canvas = cubeScanner.PreviewHandler.CameraPreviews[e.CameraIndex].Canvas;
                 Point point = canvas.TransformToAncestor(this).Transform(new Point(0, 0));
 
                 Point dest = new Point(Left + point.X + (e.Contour.RelativeCenterX * canvas.ActualWidth), Top + point.Y + (e.Contour.RelativeCenterY * canvas.ActualHeight));
@@ -113,15 +114,28 @@ namespace Rubinator3000 {
                 if (readPositionDialog.ShowDialog() == true) { // If Position Adding was confirmed
 
                     int[] r = readPositionDialog.Result;
-                    cubeScanner.AddReadPosition(new ReadPosition(e.Contour, r[0], r[1], r[2], e.CameraIndex));
+                    cubeScanner.AddReadPosition(new ReadPosition(
+                        faceIndex: r[0],
+                        rowIndex: r[1],
+                        colIndex: r[2],
+                        cameraIndex: e.CameraIndex,
+                        contour: e.Contour,
+                        circle: new RelativeCircle(
+                            new RelativePosition(
+                                relativeX: e.Contour.RelativeCenterX,
+                                relativeY: e.Contour.RelativeCenterY),
+                                radius: Settings.PositionRadius,
+                                color: System.Windows.Media.Colors.Black
+                             )
+                        )
+                    );
                 }
                 else { // If Position Adding was Discarded
 
                     // Do nothing
                 }
 
-                cubeScanner.ClearTileHighlight();
-
+                cubeScanner.PreviewHandler.ClearHighlightedTiles();
             });
         }
 
@@ -138,25 +152,20 @@ namespace Rubinator3000 {
 
         private void Image_CameraPreview_SizeChanged(object sender, SizeChangedEventArgs e) {
 
-            cubeScanner.RedrawAllCanvasElements();
+            cubeScanner.PreviewHandler.RedrawAllCanvasElements();
         }
 
-        private void InitalizeCameraPreviews() {
+        private void InitializeCubeScanner() {
 
-            List<Image> previewImages = new List<Image>() {
-                Image_CameraPreview0,
-                Image_CameraPreview1,
-                Image_CameraPreview2,
-                Image_CameraPreview3
-            };
-            List<Canvas> previewCanvases = new List<Canvas>() {
-                Canvas_CameraPreview0,
-                Canvas_CameraPreview1,
-                Canvas_CameraPreview2,
-                Canvas_CameraPreview3
+            List<(Image Image, Canvas Canvas)> outputs = new List<(Image Image, Canvas Canvas)> {
+
+                (Image_CameraPreview0, Canvas_CameraPreview0),
+                (Image_CameraPreview1, Canvas_CameraPreview1),
+                (Image_CameraPreview2, Canvas_CameraPreview2),
+                (Image_CameraPreview3, Canvas_CameraPreview3),
             };
 
-            cubeScanner = new CubeScanner(previewImages, previewCanvases);
+            cubeScanner = new CubeScanner(outputs);
         }
 
         private void MainWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
@@ -230,6 +239,8 @@ namespace Rubinator3000 {
             moveSynchronizer.DisconnectArduino();
             ctSource.Cancel();
 
+            XmlHandler.SaveReadPositions(cubeScanner.ReadPositions);
+
             // Without this line, the program would throw an exception on close
             Environment.Exit(0);
 
@@ -238,55 +249,25 @@ namespace Rubinator3000 {
             Application.Current.Shutdown();
         }
 
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e) {
+        private void Canvas_CameraPreview_MouseDown(object sender, MouseButtonEventArgs e) {
 
-            Point click = e.GetPosition(this);
+            Canvas clickedCanvas = (Canvas)sender;
+            MouseDownCp = cubeScanner.PreviewHandler.CameraPreviews.Where(o => o.Canvas == clickedCanvas).FirstOrDefault();
+        }
 
-            for (int i = 0; i < cubeScanner.webCamControls.Count; i++) {
+        private void Canvas_CameraPreview_MouseUp(object sender, MouseButtonEventArgs e) {
 
-                Canvas tempCanvas = cubeScanner.webCamControls[i].GetCameraPreview().Canvas;
-                Point point = tempCanvas.TransformToAncestor(this).Transform(new Point(0, 0));
-                Rect rect = new Rect(point.X, point.Y, tempCanvas.ActualWidth, tempCanvas.ActualHeight);
-                if (click.X > rect.Left && click.X < rect.Right && click.Y > rect.Top && click.Y < rect.Bottom) {
+            if (MouseDownCp != null) {
 
-                    MouseDownWcc = cubeScanner.webCamControls[i];
-                }
+                Canvas clickedCanvas = (Canvas)sender;
+                CameraPreview MouseUpCp = cubeScanner.PreviewHandler.CameraPreviews.Where(o => o.Canvas == clickedCanvas).FirstOrDefault();
+                cubeScanner.PreviewHandler.SwitchPreviews(MouseDownCp, MouseUpCp);
             }
         }
 
         private void Window_MouseUp(object sender, MouseButtonEventArgs e) {
 
-            Point click = e.GetPosition(this);
-
-            for (int i = 0; i < cubeScanner.webCamControls.Count; i++) {
-
-                Canvas tempCanvas = cubeScanner.webCamControls[i].GetCameraPreview().Canvas;
-                Point point = tempCanvas.TransformToAncestor(this).Transform(new Point(0, 0));
-                Rect rect = new Rect(point.X, point.Y, tempCanvas.ActualWidth, tempCanvas.ActualHeight);
-                if (click.X > rect.Left && click.X < rect.Right && click.Y > rect.Top && click.Y < rect.Bottom) {
-
-                    if (MouseDownWcc != null) {
-
-                        WebCamControl MouseUpWcc = cubeScanner.webCamControls[i];
-
-                        if (MouseDownWcc != MouseUpWcc) {
-
-                            int mouseDownIndex = MouseDownWcc.CameraPreviewIndex;
-                            Dictionary<string, RelativeCanvasElement> mouseDownRelativeCanvasElements = MouseDownWcc.GetCameraPreview().GetClonedRelativeCanvasChildren();
-
-                            MouseDownWcc.GetCameraPreview().SetRelativeCanvasChildren(MouseUpWcc.GetCameraPreview().GetClonedRelativeCanvasChildren());
-                            MouseDownWcc.UpdatePreviewSource(MouseUpWcc.Resolution);
-                            MouseDownWcc.CameraPreviewIndex = MouseUpWcc.CameraPreviewIndex;
-
-                            MouseUpWcc.GetCameraPreview().SetRelativeCanvasChildren(mouseDownRelativeCanvasElements);
-                            MouseUpWcc.UpdatePreviewSource(MouseDownWcc.Resolution);
-                            MouseUpWcc.CameraPreviewIndex = mouseDownIndex;
-                        }
-                    }
-                }
-            }
-
-            MouseDownWcc = null;
+            MouseDownCp = null;
         }
 
         private void WinFormsHost_Initialized(object sender, EventArgs e) {

@@ -24,13 +24,14 @@ namespace Rubinator3000 {
         // CubeScanner
         public static ReadoutRequested ReadoutRequested = ReadoutRequested.DISABLED;
         public static int TicksPerSecond = 10;
-        public static int RequiredReadPositionCount = 48;
+        public static int MaxWebCamControlCount = 4;
 
         // CameraPreview
         public static int CircleRadius = 3;
         public static Color HightlightColor = Color.FromArgb(255, 0, 255, 255);
         public static int HightlightThickness = 3;
         public static string HighlightName = "TileHighlight";
+        public static int PositionRadius = 5;
 
         // ColorIdentification
         public static int CannyThresh = 120;

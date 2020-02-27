@@ -22,9 +22,10 @@ namespace Rubinator3000 {
         public static CancellationTokenSource ctSource = new CancellationTokenSource();
 
         public MainWindow() {
+
             InitializeComponent();
 
-            InitalizeCameraPreviews();
+            InitializeCubeScanner();
 
             moveSynchronizer = new MoveSynchronizer(TextBox_MoveHistoryOutput);
 

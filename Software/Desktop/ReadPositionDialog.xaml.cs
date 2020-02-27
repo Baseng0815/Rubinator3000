@@ -70,7 +70,7 @@ namespace Rubinator3000 {
             Result[1] = Convert.ToInt32(TextBox_InputRowIndex.Text);
             Result[2] = Convert.ToInt32(TextBox_InputColIndex.Text);
 
-            if (((MainWindow)Application.Current.MainWindow).cubeScanner.PositionByIndices(Result[0], Result[1], Result[2]) != null) {
+            if (((MainWindow)Application.Current.MainWindow).cubeScanner.ReadPositionByIndices(Result[0], Result[1], Result[2]) != null) {
 
                 if (MessageBox.Show("Do you want to replace the current position", "Position exists already", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No) { // If yes, replace position
 

@@ -145,6 +145,7 @@
     <Compile Include="CubeScan\CameraControl\CameraDevice.cs" />
     <Compile Include="CubeScan\CameraControl\CameraDevicesUpdate.cs" />
     <Compile Include="CubeScan\CameraControl\CameraPreview.cs" />
+    <Compile Include="CubeScan\CameraPreviewHandler.cs" />
     <Compile Include="CubeScan\ColorIdentification\Contour.cs" />
     <Compile Include="CubeScan\ColorIdentification\CubeScanFrame.cs" />
     <Compile Include="CubeScan\CubeScanner.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="CubeScan\RelativeElements\RelativeCanvasElement.cs" />
     <Compile Include="CubeScan\CameraControl\Resolution.cs" />
     <Compile Include="CubeScan\CameraControl\WebCamControl.cs" />
+    <Compile Include="CubeScan\Tunnel.cs" />
     <Compile Include="ReadPositionDialog.xaml.cs">
       <DependentUpon>ReadPositionDialog.xaml</DependentUpon>
     </Compile>
@@ -171,6 +173,7 @@
     <Compile Include="MainWindowEvents.cs" />
     <Compile Include="MainWindowMenu.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="XmlHandling\XmlDesignations.cs" />
     <Compile Include="XmlHandling\XmlHandler.cs" />
     <Page Include="CubeColorDialog.xaml">
       <SubType>Designer</SubType>

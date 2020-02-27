@@ -17,32 +17,33 @@ namespace Rubinator3000.CubeScan.CameraControl {
 
         public Canvas Canvas { get; set; }
 
-        private Dictionary<string, RelativeCanvasElement> RelativeCanvasChildren { get; set; }
+        public WebCamControl Occupant { get; set; }
 
-        public CameraPreview(System.Windows.Controls.Image image, Canvas canvas, WriteableBitmap writeableBitmap) {
+        private List<RelativeCanvasElement> RelativeCanvasChildren { get; set; }
+
+        public CameraPreview(System.Windows.Controls.Image image, Canvas canvas) {
 
             Image = image;
+            WriteableBitmap = new WriteableBitmap(1, 1, 96, 96, System.Windows.Media.PixelFormats.Bgr24, null);
+            Image.Source = WriteableBitmap;
             Canvas = canvas;
-            WriteableBitmap = writeableBitmap;
-            RelativeCanvasChildren = new Dictionary<string, RelativeCanvasElement>();
-        }
-
-        public void SetSource(WriteableBitmap writeableBitmap) {
-
-            Application.Current.Dispatcher.Invoke(() => {
-
-                WriteableBitmap = writeableBitmap;
-                Image.Source = WriteableBitmap;
-            });
+            RelativeCanvasChildren = new List<RelativeCanvasElement>();
         }
 
         public void DisplayFrame(Bitmap bitmapToDisplay) {
 
-            if (bitmapToDisplay == null || WriteableBitmap == null) {
+            if (bitmapToDisplay == null) {
                 return;
             }
 
             WriteableBitmap.Dispatcher.Invoke(() => {
+
+                // Make sure, that "Image"-Source is compatible with "bitmapToDisplay"
+                if (WriteableBitmap == null || WriteableBitmap.PixelWidth != bitmapToDisplay.Width || WriteableBitmap.PixelHeight != bitmapToDisplay.Height) {
+
+                    WriteableBitmap = new WriteableBitmap(bitmapToDisplay.Width, bitmapToDisplay.Height, 96, 96, System.Windows.Media.PixelFormats.Bgr24, null);
+                    Image.Source = WriteableBitmap;
+                }
 
                 // Reserve the backBuffer of previewBitmap for updates
                 WriteableBitmap.Lock();
@@ -66,50 +67,50 @@ namespace Rubinator3000.CubeScan.CameraControl {
             });
         }
 
-        public void SetRelativeCanvasChildren(Dictionary<string, RelativeCanvasElement> relativeCanvasChildren) {
+        public void SetRelativeCanvasChildren(List<RelativeCanvasElement> newRelativeCanvasChildren) {
 
-            Canvas.Children.Clear();
             RelativeCanvasChildren.Clear();
-            foreach (string name in relativeCanvasChildren.Keys) {
+            for (int i = 0; i < newRelativeCanvasChildren.Count; i++) {
 
-                AddRelativeCanvasElement(name, relativeCanvasChildren[name]);
+                AddRelativeCanvasElement(newRelativeCanvasChildren[i]);
             }
         }
 
-        public void AddRelativeCanvasElement(string name, RelativeCanvasElement relativeUIElement) {
+        public void AddRelativeCanvasElement(RelativeCanvasElement relativeUIElement) {
 
-            if (RelativeCanvasChildren.ContainsKey(name)) {
-                RelativeCanvasChildren.Remove(name);
+            if (RelativeCanvasChildren.Where(o => o.CanvasElement == relativeUIElement.CanvasElement).Count() > 0) {
+
+                return;
             }
+
             Canvas.Dispatcher.Invoke(() => {
 
-                Canvas.Children.Add(relativeUIElement.GenerateUIElement(Canvas.ActualWidth, Canvas.ActualHeight));
-                RelativeCanvasChildren.Add(name, relativeUIElement);
+                UIElement uiElement = relativeUIElement.GenerateUIElement(Canvas.ActualWidth, Canvas.ActualHeight);
+                Canvas.Children.Add(uiElement);
+                relativeUIElement.CanvasElement = uiElement;
+                RelativeCanvasChildren.Add(relativeUIElement);
             });
         }
 
         public void UpdateAllCanvasElements() {
 
             Canvas.Children.Clear();
-            foreach (RelativeCanvasElement rce in RelativeCanvasChildren.Values) {
+            foreach (RelativeCanvasElement rce in RelativeCanvasChildren) {
 
                 Canvas.Children.Add(rce.GenerateUIElement(Canvas.ActualWidth, Canvas.ActualHeight));
             }
         }
 
-        public int GetNumber() {
+        public List<RelativeCanvasElement> GetRelativeCanvasChildren(bool clone = false) {
 
-            int number = -1;
-            Application.Current.Dispatcher.Invoke(() => {
+            if (clone) {
 
-                number = Convert.ToInt32(char.GetNumericValue(Image.Name.Last()));
-            });
-            return number;
-        }
+                return RelativeCanvasChildren.Select(o => (RelativeCanvasElement)o.Clone()).ToList();
+            }
+            else {
 
-        public Dictionary<string, RelativeCanvasElement> GetClonedRelativeCanvasChildren() {
-
-            return RelativeCanvasChildren.ToDictionary(entry => entry.Key, entry => (RelativeCanvasElement)entry.Value.Clone());
+                return RelativeCanvasChildren;
+            }
         }
     }
 }

@@ -6,8 +6,6 @@ using System.Drawing;
 namespace Rubinator3000.CubeScan.ColorIdentification {
     public class ReadPosition : ICloneable {
 
-        public Contour Contour { get; set; }
-
         public int FaceIndex { get; set; }
 
         public int RowIndex { get; set; }
@@ -15,6 +13,8 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
         public int ColIndex { get; set; }
 
         public int CameraIndex { get; set; }
+
+        public Contour Contour { get; set; }
 
         public Color Color { get; set; } // Stores the Rgb-values of that are read out at the this position
 
@@ -24,7 +24,7 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
 
         public CubeColor AssumedCubeColor { get; set; }
 
-        public ReadPosition(Contour contour, int faceIndex, int rowIndex, int colIndex, int cameraIndex, Color? color = null, RelativeCircle circle = null, double[] percentages = null, CubeColor assumedCubeColor = CubeColor.NONE) {
+        public ReadPosition(int faceIndex, int rowIndex, int colIndex, int cameraIndex, Contour contour, RelativeCircle circle = null, Color? color = null, double[] percentages = null, CubeColor assumedCubeColor = CubeColor.NONE) {
 
             Contour = contour;
             FaceIndex = faceIndex;
@@ -40,13 +40,13 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
         public object Clone() {
 
             return new ReadPosition(
-                (Contour)Contour.Clone(),
                 FaceIndex,
                 RowIndex,
                 ColIndex,
                 CameraIndex,
-                Color,
+                (Contour)Contour.Clone(),
                 RelativeCircle,
+                Color,
                 Percentages == null ? null : (double[])Percentages.Clone(),
                 AssumedCubeColor);
         }

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
@@ -22,19 +23,21 @@ namespace Rubinator3000.CubeScan {
         public delegate void OnTileFoundEventHandler(object sender, TileFoundEventArgs e);
         public static event OnTileFoundEventHandler OnTileFound;
 
+        public CameraPreviewHandler PreviewHandler { get; private set; }
+
         private List<CameraDevice> systemCameras = new List<CameraDevice>();
 
-        public readonly List<WebCamControl> webCamControls = new List<WebCamControl>();
-        public readonly List<CameraPreview> cameraPreviews = new List<CameraPreview>();
+        public List<WebCamControl> WebCamControls { get; } = new List<WebCamControl>();
 
-        public List<ReadPosition> ReadPositions { get; private set; } = new List<ReadPosition>();
+        public ReadPosition[,] ReadPositions { get; set; } = new ReadPosition[6, 9];
 
         private readonly Thread thread;
         private bool threadShouldStop = true;
 
-        public CubeScanner(List<Image> previewImages, List<Canvas> previewCanvases) {
+        public CubeScanner(List<(Image Image, Canvas Canvas)> outputs) {
 
-            Init(previewImages, previewCanvases);
+            _ = Task.Run(Init);
+            PreviewHandler = new CameraPreviewHandler(this, outputs);
             thread = new Thread(Run);
             thread.Start();
         }
@@ -46,7 +49,7 @@ namespace Rubinator3000.CubeScan {
 
             for (int i = 0; i < fetchedSysCams.Length; i++) {
 
-                Resolution res = GetHighestAvailableResolution(fetchedSysCams[i]);
+                Resolution res = ReadUtility.GetHighestAvailableResolution(fetchedSysCams[i]);
 
                 if (res == null) { // If Camera is not a usb Camera
 
@@ -98,71 +101,18 @@ namespace Rubinator3000.CubeScan {
             return new CameraDevicesUpdate(arrivedCamerasIndices, disconnectedCamerasIndices);
         }
 
-        public void HighlightClosestTile(Image clickedImage, double relativeX, double relativeY) {
-
-            int webCamControlIndex = -1;
-            for (int i = 0; i < webCamControls.Count; i++) {
-
-                if (webCamControls[i].GetCameraPreview().Image == clickedImage) {
-                    webCamControlIndex = i;
-                    break;
-                }
-            }
-            WebCamControl targetWcc = webCamControls[webCamControlIndex];
-            Contour closest = targetWcc.CubeScanFrame.FindClosestContour(relativeX, relativeY);
-            if (closest != null) {
-
-                targetWcc.GetCameraPreview().AddRelativeCanvasElement(Settings.HighlightName, closest.ToRelativeHighlightPolygon());
-            }
-        }
-
-        public void HighlightContour(Contour contour) {
-
-            int webCamControlIndex = -1;
-            for (int i = 0; i < webCamControls.Count; i++) {
-
-                if (webCamControls[i].CubeScanFrame.TileContours.Contains(contour)) {
-                    webCamControlIndex = i;
-                    break;
-                }
-            }
-            WebCamControl targetWcc = webCamControls[webCamControlIndex];
-            targetWcc.GetCameraPreview().AddRelativeCanvasElement(Settings.HighlightName, contour.ToRelativeHighlightPolygon());
-        }
-
-        public void HighlightAll(int cameraIndex) {
-
-            for (int i = 0; i < webCamControls[cameraIndex].CubeScanFrame.TileContours.Count; i++) {
-
-                HighlightContour(webCamControls[cameraIndex].CubeScanFrame.TileContours[i]);
-            }
-        }
-
-        public void ClearTileHighlight() {
-
-            for (int i = 0; i < webCamControls.Count; i++) {
-
-                for (int j = 0; j < webCamControls[i].GetCameraPreview().Canvas.Children.Count; j++) {
-
-                    if (webCamControls[i].GetCameraPreview().Canvas.Children[j] is Polygon) {
-
-                        webCamControls[i].GetCameraPreview().Canvas.Children.RemoveAt(j);
-                        webCamControls[i].GetCameraPreview().GetClonedRelativeCanvasChildren().Remove(Settings.HighlightName);
-                    }
-                }
-            }
-        }
-
         public void ReadCube() {
 
-            if (ReadPositions.Count != Settings.RequiredReadPositionCount) {
-
+            // Check if any position is not read-out
+            if (!AllPositionsAssigned()) {
                 return;
             }
 
-            for (int i = 0; i < ReadPositions.Count; i++) {
+            for (int i = 0; i < ReadPositions.GetLength(0); i++) {
+                for (int j = 0; j < ReadPositions.GetLength(1); j++) {
 
-                ReadPositions[i].Color = webCamControls[ReadPositions[i].CameraIndex].ReadColorInsideContour(ReadPositions[i].Contour);
+                    ReadPositions[i, j].Color = WebCamControls[ReadPositions[i, j].CameraIndex].ReadColorInsideContour(ReadPositions[i, j].Contour);
+                }
             }
 
             SortAndValidateColors();
@@ -170,8 +120,9 @@ namespace Rubinator3000.CubeScan {
 
         private void SortAndValidateColors() {
 
-            // Get a deep clone of "readPositions"
-            List<ReadPosition> allPositions = ReadPositions.Select(item => (ReadPosition)item.Clone()).ToList();
+            // Get list of all positions
+            List<ReadPosition> allPositions = new List<ReadPosition>();
+            for (int i = 0; i < ReadPositions.GetLength(0); i++) for (int j = 0; j < ReadPositions.GetLength(1); j++) allPositions.Add(ReadPositions[i, j]);
 
             // Positions left to assign
             List<ReadPosition> positionsLeftToAssign = new List<ReadPosition>(allPositions);
@@ -200,7 +151,6 @@ namespace Rubinator3000.CubeScan {
                     ReadPosition currentPosition = positionsLeftToAssign[maxIndicies[j]];
 
                     // Assign tiles to the cube
-                    //MainWindow.cube.SetTile((CubeFace)(currentPosition.FaceIndex), currentPosition.RowIndex * 3 + currentPosition.ColIndex, currentCubeColor);
                     scanData[currentPosition.FaceIndex][currentPosition.RowIndex * 3 + currentPosition.ColIndex] = currentCubeColor;
                     currentPosition.AssumedCubeColor = currentCubeColor;
 
@@ -225,41 +175,20 @@ namespace Rubinator3000.CubeScan {
             OnCubeScanned.Invoke(this, new CubeScanEventArgs(scanData));
         }
 
-        public void RedrawAllCanvasElements() {
+        private void Init() {
 
-            for (int i = 0; i < webCamControls.Count; i++) {
+            int i = 0;
+            while (WebCamControls.Count < Settings.MaxWebCamControlCount) {
 
-                webCamControls[i].GetCameraPreview().UpdateAllCanvasElements();
-            }
-        }
-
-        private void Init(List<Image> previewImages, List<Canvas> previewCanvases) {
-
-            for (int i = 0; i < previewImages.Count; i++) {
-
-                cameraPreviews.Add(new CameraPreview(previewImages[i], previewCanvases[i], null));
-            }
-
-            if (previewImages.Count != previewCanvases.Count) {
-
-                Log.LogMessage("Could not initialize CubeScanner: \"previewImages.Count != previewCanvases.Count\"");
-                return;
-            }
-
-            for (int i = 0; i < previewImages.Count; i++) {
-
-                WebCamControl wcc = new WebCamControl(this, previewImages[i], previewCanvases[i], i, i);
-                webCamControls.Insert(i, wcc);
+                WebCamControl wcc = new WebCamControl(this, i);
+                WebCamControls.Insert(i, wcc);
+                i++;
             }
         }
 
         public void Run() {
 
-            for (int i = 0; i < 4; i++) {
-
-                webCamControls[i].TryInitialize(new Resolution(640, 480), i);
-                webCamControls[i].StartCamera();
-            }
+            bool done = false;
 
             threadShouldStop = false;
             while (!threadShouldStop) {
@@ -269,32 +198,35 @@ namespace Rubinator3000.CubeScan {
 
                 // Code in thread loop
 
-                /*
-                CameraDevicesUpdate cdu = UpdateSystemCameras();
-                
-                // Handle all arrived cameras
-                for (int i = 0; i < cdu.Arrived.Count; i++) {
+                if (!done) {
 
-                    if (webCamControls[cdu.Arrived[i]].TryInitialize(systemCameras[cdu.Arrived[i]].Resolution, cdu.Arrived[i])) {
+                    CameraDevicesUpdate cdu = UpdateSystemCameras();
 
-                        webCamControls[cdu.Arrived[i]].StartCamera();
+                    // Handle all arrived cameras
+                    for (int i = 0; i < cdu.Arrived.Count; i++) {
+
+                        if (WebCamControls[cdu.Arrived[i]].TryInitialize(cdu.Arrived[i])) {
+
+                            WebCamControls[cdu.Arrived[i]].StartCamera();
+                            done = true;
+                        }
                     }
-                }
-                // Handle all disconnected cameras
-                for (int i = 0; i < cdu.Disconnected.Count; i++) {
+                    // Handle all disconnected cameras
+                    for (int i = 0; i < cdu.Disconnected.Count; i++) {
 
-                    webCamControls[cdu.Disconnected[i]].TerminateCamera();
-                }
-                // If Cube Scan should be asynchronous
-                if (Settings.ReadoutRequested > 0) {
-
-                    ReadCube();
-                    if (Settings.ReadoutRequested == ReadUtility.ReadoutRequested.SINGLE_READOUT) {
-
-                        Settings.ReadoutRequested = ReadUtility.ReadoutRequested.DISABLED;
+                        WebCamControls[cdu.Disconnected[i]].TerminateCamera();
                     }
+                    /*// If Cube Scan should be asynchronous
+                    if (Settings.ReadoutRequested > 0) {
+
+                        ReadCube();
+                        if (Settings.ReadoutRequested == ReadUtility.ReadoutRequested.SINGLE_READOUT) {
+
+                            Settings.ReadoutRequested = ReadUtility.ReadoutRequested.DISABLED;
+                        }
+                    }*/
                 }
-                */
+
                 // Code in thread loop
 
                 while (ReadUtility.CurrentTimeMillis() < loopEnd) {
@@ -304,73 +236,42 @@ namespace Rubinator3000.CubeScan {
             }
         }
 
-        private Resolution GetHighestAvailableResolution(DsDevice vidDev) {
-
-            Resolution HighestResolution = new Resolution(1, 1);
-            int hr;
-
-            var m_FilterGraph2 = new FilterGraph() as IFilterGraph2;
-            hr = m_FilterGraph2.AddSourceFilterForMoniker(vidDev.Mon, null, vidDev.Name, out IBaseFilter sourceFilter);
-            IPin pRaw2 = DsFindPin.ByCategory(sourceFilter, PinCategory.Capture, 0);
-            if (pRaw2 == null) {
-
-                //Log.LogMessage(string.Format("\"{0}\" is not a valid camera", vidDev.Name));
-                return HighestResolution;
-            }
-            int bitCount = 0;
-
-            VideoInfoHeader v = new VideoInfoHeader();
-            IEnumMediaTypes mediaTypeEnum;
-            hr = pRaw2.EnumMediaTypes(out mediaTypeEnum);
-
-            AMMediaType[] mediaTypes = new AMMediaType[1];
-            IntPtr fetched = IntPtr.Zero;
-            hr = mediaTypeEnum.Next(1, mediaTypes, fetched);
-
-            while (fetched != null && mediaTypes[0] != null) {
-                Marshal.PtrToStructure(mediaTypes[0].formatPtr, v);
-                if (v.BmiHeader.Size != 0 && v.BmiHeader.BitCount != 0) {
-                    if (v.BmiHeader.BitCount > bitCount) {
-                        bitCount = v.BmiHeader.BitCount;
-                    }
-                    Resolution res = new Resolution(v.BmiHeader.Width, v.BmiHeader.Height);
-                    if (HighestResolution.PixelCount() < res.PixelCount()) {
-                        HighestResolution = res;
-                    }
-                }
-                hr = mediaTypeEnum.Next(1, mediaTypes, fetched);
-            }
-            return HighestResolution;
-        }
-
         public void AddReadPosition(ReadPosition readPosition) {
 
-            ReadPosition existingPosition = PositionByIndices(readPosition.FaceIndex, readPosition.RowIndex, readPosition.ColIndex);
-            if (existingPosition != null) {
-                ReadPositions.Remove(existingPosition);
-            }
-            ReadPositions.Add(readPosition);
+            ReadPositions[readPosition.FaceIndex, readPosition.RowIndex * 3 + readPosition.ColIndex] = readPosition;
             Log.LogMessage(string.Format("Position [{0}, {1}, {2}] added", readPosition.FaceIndex, readPosition.RowIndex, readPosition.ColIndex));
 
         }
 
-        public ReadPosition PositionByIndices(int fi, int ri, int ci) {
+        public void RemoveReadPosition(ReadPosition readPosition) {
 
-            for (int i = 0; i < ReadPositions.Count; i++) {
+            ReadPositions[readPosition.FaceIndex, readPosition.RowIndex * 3 + readPosition.ColIndex] = null;
+        }
 
-                if (ReadPositions[i].FaceIndex == fi && ReadPositions[i].RowIndex == ri && ReadPositions[i].ColIndex == ci) {
+        public ReadPosition ReadPositionByIndices(int fi, int ri, int ci) {
 
-                    return ReadPositions[i];
+            return ReadPositions[fi, ri * 3 + ci];
+        }
+
+        public bool AllPositionsAssigned() {
+
+            for (int i = 0; i < ReadPositions.GetLength(0); i++) {
+                for (int j = 0; j < ReadPositions.GetLength(1); j++) {
+
+                    if (ReadPositions[i, j] == null) {
+
+                        return false;
+                    }
                 }
             }
-
-            return null;
+            return true;
         }
 
         public void InvokeOnTileFound(object sender, TileFoundEventArgs e) {
 
-            OnTileFound.Invoke(sender, e);
+            //OnTileFound.Invoke(sender, e);
         }
+
     }
 
     #region Custom Events
