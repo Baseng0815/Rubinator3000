@@ -19,6 +19,9 @@
 		|						|	0x18		Move 'B'		0b0001_1000
 		|						|	0x19		Move 'Bi		0b0001_1001
 		|						|	0x1A		Move 'B2'		0b0001_1010
+		|						|	
+		|						|	0x20 | MoveByte
+		|						|				Move done
 -------------------------------------------------------------------------------
  0x02	|   send multi move		| 
 		|						|	0x10		Move 'LR'		0b0001_0000
@@ -50,7 +53,9 @@
 		|						|	0x38		Move 'FB2'		0b0011_1000
 		|						|	0x39		Move 'FiB2'		0b0011_1001
 		|						|	0x3A		Move 'F2B2'		0b0011_1100
-		
+		|						|	
+		|						|	0x40 | Move	
+		|						|				Multiturn move done
 -------------------------------------------------------------------------------
   0x03  |	  send cube 		| 	48 bytes cube data
 -------------------------------------------------------------------------------
@@ -73,6 +78,7 @@
         |                       |   0x11		connected
         |                       |	0x12		solved
 -------------------------------------------------------------------------------
-  0x08	|	  errors 			|   0xB0		error
-        |                       |	0xB1		error not connected
-        |                       |   0xB2		error not valid
+  0x08	|	  errors 			|   0x00		error
+		|						|	0x01		error unknown instruction
+        |                       |	0x02		error not connected
+        |                       |   0x03		error move not valid

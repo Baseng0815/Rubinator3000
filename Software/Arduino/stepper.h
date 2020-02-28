@@ -1,14 +1,14 @@
 #ifndef __STEPPER_H
 #define __STEPPER_H
 
-class Stepper {
+class stepper {
 private:
     int pins[4];
     int count;
 
 public:
-    Stepper(int *pins);
-    Stepper();
+    stepper(const int *pins);
+    stepper();
 
     void doMove(int steps, const int timeout);
     void doStep(const int direction, const int timeout);
