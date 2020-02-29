@@ -198,34 +198,31 @@ namespace Rubinator3000.CubeScan {
 
                 // Code in thread loop
 
-                if (!done) {
+                CameraDevicesUpdate cdu = UpdateSystemCameras();
 
-                    CameraDevicesUpdate cdu = UpdateSystemCameras();
+                // Handle all arrived cameras
+                for (int i = 0; i < cdu.Arrived.Count; i++) {
 
-                    // Handle all arrived cameras
-                    for (int i = 0; i < cdu.Arrived.Count; i++) {
+                    if (WebCamControls[cdu.Arrived[i]].TryInitialize(cdu.Arrived[i])) {
 
-                        if (WebCamControls[cdu.Arrived[i]].TryInitialize(cdu.Arrived[i])) {
-
-                            WebCamControls[cdu.Arrived[i]].StartCamera();
-                            done = true;
-                        }
+                        WebCamControls[cdu.Arrived[i]].StartCamera();
+                        done = true;
                     }
-                    // Handle all disconnected cameras
-                    for (int i = 0; i < cdu.Disconnected.Count; i++) {
-
-                        WebCamControls[cdu.Disconnected[i]].TerminateCamera();
-                    }
-                    /*// If Cube Scan should be asynchronous
-                    if (Settings.ReadoutRequested > 0) {
-
-                        ReadCube();
-                        if (Settings.ReadoutRequested == ReadUtility.ReadoutRequested.SINGLE_READOUT) {
-
-                            Settings.ReadoutRequested = ReadUtility.ReadoutRequested.DISABLED;
-                        }
-                    }*/
                 }
+                // Handle all disconnected cameras
+                for (int i = 0; i < cdu.Disconnected.Count; i++) {
+
+                    WebCamControls[cdu.Disconnected[i]].TerminateCamera();
+                }
+                /*// If Cube Scan should be asynchronous
+                if (Settings.ReadoutRequested > 0) {
+
+                    ReadCube();
+                    if (Settings.ReadoutRequested == ReadUtility.ReadoutRequested.SINGLE_READOUT) {
+
+                        Settings.ReadoutRequested = ReadUtility.ReadoutRequested.DISABLED;
+                    }
+                }*/
 
                 // Code in thread loop
 

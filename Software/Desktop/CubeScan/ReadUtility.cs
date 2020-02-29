@@ -43,10 +43,10 @@ namespace Rubinator3000.CubeScan {
         public static Resolution GetHighestAvailableResolution(DsDevice vidDev) {
 
             Resolution HighestResolution = new Resolution(1, 1);
-            int hr;
 
             var m_FilterGraph2 = new FilterGraph() as IFilterGraph2;
-            hr = m_FilterGraph2.AddSourceFilterForMoniker(vidDev.Mon, null, vidDev.Name, out IBaseFilter sourceFilter);
+            int hr = m_FilterGraph2.AddSourceFilterForMoniker(vidDev.Mon, null, vidDev.Name, out IBaseFilter sourceFilter);
+
             IPin pRaw2 = DsFindPin.ByCategory(sourceFilter, PinCategory.Capture, 0);
             if (pRaw2 == null) {
 

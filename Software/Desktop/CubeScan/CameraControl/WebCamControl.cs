@@ -51,7 +51,7 @@ namespace Rubinator3000.CubeScan.CameraControl {
             if (readBitmap != null) {
 
                 ParentCubeScanner.PreviewHandler.Display(this, readBitmap);
-                CubeScanFrame.Reinitialize(this, mat.ToImage<Bgr, byte>());
+                //CubeScanFrame.Reinitialize(this, mat.ToImage<Bgr, byte>());
             }
         }
 

@@ -43,7 +43,7 @@ namespace Rubinator3000.CubeScan.ColorIdentification {
                 }
                 Original = image;
                 TileContours = new List<Contour>();
-                FindTiles();
+                FindTiles(); // This line costs quite much cpu
                 Initialized = true;
             }
         }
