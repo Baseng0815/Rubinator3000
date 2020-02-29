@@ -14,7 +14,7 @@ using System.Windows;
 namespace Rubinator3000 {
     class ArduinoUSB : Arduino {
 
-        private SerialPort serial;        
+        private SerialPort serial;
 
         public ArduinoUSB(string portName, int baudRate = 9600) {
             string[] portNames = SerialPort.GetPortNames();
@@ -32,12 +32,11 @@ namespace Rubinator3000 {
                 serial.Open();
 
                 Log.LogMessage("Serial connection open");
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.LogMessage("The port cannot be opened:\r\n" + e.ToString());
                 return;
             }
-        }        
+        }
 
         public override void Dispose() {
             Disconnect();
@@ -47,35 +46,40 @@ namespace Rubinator3000 {
             Dispose();
         }
 
-        protected override Packet SendPacket(Packet packet) {
-            if(Connected && serial.IsOpen) {
+        protected override Packet SendPacket(Packet packet, bool requireConnection = true) {
+            if (!(!Connected && requireConnection) && serial.IsOpen) {
                 // ensure that input stream is empty
                 if (serial.BytesToRead > 0)
                     serial.ReadExisting();
 
-                byte[] data = packet.GetData();
+                byte[] data = /*packet.GetData();*/ (new Packet(0x05, new byte[2] { 0x03, 0xFF }).GetData());
 
                 serial.Write(data, 0, data.Length);
+                serial.Write(new byte[1] { 0xFF }, 0, 1);
 
                 try {
-                    int instruction = serial.ReadByte();
-                    if(instruction == -1) {
-                        throw new Exception("No response received");
-                    }
+                    Packet response = ReadPacket();
 
-                    int lenght = Packet.InstructionLengths[(byte)instruction];
-
-                    byte[] responseData = new byte[lenght];
-                    serial.Read(responseData, 0, lenght);
-
-                    return new Packet((byte)instruction, responseData);
-                }
-                catch (Exception e) {
+                    return response;
+                } catch (Exception e) {
                     throw e;
-                }                
-            }
-            else
+                }
+            } else
                 throw new InvalidOperationException("Arduino not connected or port closed");
+        }
+
+        private Packet ReadPacket() {
+            byte[] buffer = new byte[64];
+
+            int bytesRead = 0;
+            byte readByte = 0x00;
+
+            while ((readByte = (byte)serial.ReadByte()) != 0xFF) {
+                buffer[bytesRead] = readByte;
+                bytesRead++;
+            }
+
+            return new Packet(buffer[0], buffer.Skip(1).TakeWhile(b => b != 0x00).ToArray());
         }
     }
 }

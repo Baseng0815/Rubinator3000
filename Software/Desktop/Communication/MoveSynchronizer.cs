@@ -75,7 +75,7 @@ namespace Rubinator3000.Communication {
         }
 
         private void SendBluetoothMove(Move move1, Move move2) {
-            bluetoothPeer.SendPacket(move1.GetMultiturnPacketData(move2));
+            bluetoothPeer.SendPacket(Utility.GetMultiturnPacketData(move1, move2));
         }
 
         public MoveSynchronizer(TextBox moveHistory) {
@@ -99,7 +99,7 @@ namespace Rubinator3000.Communication {
 
         public void SetSolvedState(bool state) {
             if (arduino != null && arduino.Connected) {
-                arduino.SetSolvedState(state);
+                
             }
         }
 

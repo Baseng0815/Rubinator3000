@@ -16,17 +16,19 @@ namespace Rubinator3000 {
         private bool connected = false;
 
         public void Connect() {
-            SendPacket(new Packet(0x07, 0x01));
+            Packet response = SendPacket(new Packet(0x07, 0x02), false);
 
-            Packet response = ReceivePacket();
-            connected = response.Instruction == 0x07 && response.Data[0] == 0x11;
+            connected = response.Instruction == 0x07 && response.Data[0] == 0xF2;
         }
 
         public void Disconnect() {
-            SendPacket(new Packet(0x07, 0x00));
+            Packet response = SendPacket(new Packet(0x07, 0x01));
 
-            Packet response = ReceivePacket();
-            connected = response.Instruction == 0x07 && response.Data[0] == 0x10;
+            connected = response.Instruction == 0x07 && response.Data[0] == 0xF1;
+        }
+
+        public void SetSolved() {
+            SendPacket(new Packet(0x07, 0x03));
         }
 
         public void SendMove(Move move) {
@@ -61,7 +63,7 @@ namespace Rubinator3000 {
                 throw new InvalidOperationException("Arduino not connected or port closed");
         }
 
-        protected abstract Packet SendPacket(Packet packet);
+        protected abstract Packet SendPacket(Packet packet, bool requireConnection = true);
 
         public abstract void Dispose();
     }
