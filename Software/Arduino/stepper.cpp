@@ -1,11 +1,11 @@
-#include "stepper.h"
+#include "Stepper.h"
 #include "Arduino.h"
 
-stepper::stepper() {
+Stepper::Stepper() {
     
 }
 
-stepper::stepper(const int *pins) {
+Stepper::Stepper(const int *pins) {
     count = 500;
 
     for(int i = 0; i < 4; i++) {
@@ -16,14 +16,14 @@ stepper::stepper(const int *pins) {
     }
 }
 
-void stepper::writeState(int p0, int p1, int p2, int p3) const {
+void Stepper::writeState(int p0, int p1, int p2, int p3) const {
     digitalWrite(pins[0], p0);
     digitalWrite(pins[1], p1);
     digitalWrite(pins[2], p2);
     digitalWrite(pins[3], p3);
 }
 
-void stepper::doMove(int steps, const int stepDelay) {
+void Stepper::doMove(int steps, const int stepDelay) {
     int dir = steps < 0 ? -1 : 1;
     steps = abs(steps);
 
@@ -47,7 +47,7 @@ void stepper::doMove(int steps, const int stepDelay) {
     writeState(0, 0, 0, 0);
 }
 
-void stepper::doStep(int direction, int timeout = 0) {
+void Stepper::doStep(int direction, int timeout = 0) {
     count += direction; 
 
     switch(count % 4) {

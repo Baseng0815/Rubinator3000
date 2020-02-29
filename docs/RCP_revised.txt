@@ -67,18 +67,18 @@
 		|						|
 		|						|	+ 1 byte brightness
 -------------------------------------------------------------------------------
-  0x06  |	  tablet control	|   0x30		solve cube
-		|						|	0x31		shuffle cube
+  0x06  |	  tablet control	|   0x31		solve cube
+		|						|	0x32		shuffle cube
 -------------------------------------------------------------------------------
-  0x07	|	  state				|	0x00		disconnect
-		|						|   0x01		connect
-        |                       |   0x02		solve
+  0x07	|	  state				|	0x01		disconnect
+		|						|   0x02		connect
+        |                       |   0x03		solve
 		|						|
         |                       |   0x10		disconnected
         |                       |   0x11		connected
         |                       |	0x12		solved
 -------------------------------------------------------------------------------
-  0x08	|	  errors 			|   0x00		error
-		|						|	0x01		error unknown instruction
-        |                       |	0x02		error not connected
-        |                       |   0x03		error move not valid
+  0x08	|	  errors 			|   0x01		error
+		|						|	0x02		error unknown instruction
+        |                       |	0x03		error not connected
+        |                       |   0x04		error move not valid
