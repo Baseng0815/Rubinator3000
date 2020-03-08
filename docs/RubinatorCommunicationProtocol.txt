@@ -1,57 +1,135 @@
-A0xbyte		meaning
+moves 
 
-state:
-0xA1		disconnect
-0xA2		connect
-0xA3		solve
-0xF1		disconnected
-0xF2		connected
-0xF3		solved
+bit     meaning
+0       inverted
+1       double move
+2       |
+3       |   face
+4       |
+5       -
+6       -
+7       -
 
-bluetooth:
-0x00		transmit cube to client
-0x01		transmit cube to server
-0x30		solve cube
-0x31		shuffle cube
+multi moves (offset 0x1B)
 
-LED control:
-0x41		LED's down          0b0100_0001
-0x43		LED's up            0b0100_0010
-0x44		LED stripes         0b0100_0100
+bit     meaning
+0       left inverted
+1       right inverted
+2       left double
+3       right double
+4       |   
+5       |   axis
+6       -
+7       -
 
-errors:
-0xB0		error
-0xB1		error not connected
-0xB2		error not valid
 
-moves:
-0x02		Move 'L'
-0x03		Move 'Li'
-0x04		Move 'U'
-0x05		Move 'Ui'
-0x06		Move 'F'
-0x07		Move 'Fi'
-0x08		Move 'D'
-0x09		Move 'Di'
-0x0A		Move 'R'
-0x0B		Move 'Ri'
-0x0C		Move 'B'
-0x0D		Move 'Bi'
+0xbyte		meaning         comment
 
-parallel moves:
-0x10		Move 'LR'		0b0001_0000
-0x11		Move 'LRi'		0b0001_0001 
-0x12		Move 'LiR'		0b0001_0010
-0x13		Move 'LiRi'		0b0001_0011
-0x14		Move 'UD'		0b0001_0100
-0x15		Move 'UDi'		0b0001_0101
-0x16		Move 'UiD'		0b0001_0110
-0x17		Move 'UiDi'		0b0001_0111
-0x18		Move 'FB'		0b0001_1000
-0x19		Move 'FBi'		0b0001_1001
-0x1A		Move 'FiB'		0b0001_1010
-0x1B		Move 'FiBi'		0b0001_1011
+0x01        Moves count     +1 byte count
 
-0x20 + "Move"	Move "Move" done
+moves   (0x04 - 0x1B):
+0x04        Move 'L'
+0x05        Move 'Li'
+0x06        Move 'L2'
+0x07        Move 'L2i'
 
-states:
+0x08        Move 'U'
+0x09        Move 'Ui'
+0x0A        Move 'U2'
+0x0B        Move 'U2i'
+
+0x0C        Move 'F'
+0x0D        Move 'Fi'
+0x0E        Move 'F2'
+0x0F        Move 'F2i'
+
+0x10        Move 'D'
+0x11        Move 'Di'
+0x12        Move 'D2'
+0x13        Move 'D2i'
+
+0x14        Move 'R'
+0x15        Move 'Ri'
+0x16        Move 'R2'
+0x17        Move 'R2i'
+
+0x18        Move 'B'
+0x19        Move 'Bi'
+0x1A        Move 'B2'
+0x1B        Move 'B2i'
+
+
+multi Moves (0x2B - 0x5A):
+
+0x2B        Move 'LR'
+0x2C        Move 'LiR'
+0x2D        Move 'LRi'
+0x2E        Move 'LiRi'
+
+0x2F        Move 'L2R'      
+0x30        Move 'L2iR'
+0x31        Move 'L2Ri'     
+0x32        Move 'L2iRi'
+
+0x33        Move 'LR2'      
+0x34        Move 'LiR2'
+0x35        Move 'LR2i'
+0x36        Move 'LiR2i'
+
+0x37        Move 'L2R2'
+0x38        Move 'L2iR2'
+0x39        Move 'L2R2i'
+0x3A        Move 'L2iR2i'
+
+0x3B        Move 'UD'
+0x3C        Move 'UiD'
+0x3D        Move 'UDi'
+0x3E        Move 'UiDi'
+
+0x3F        Move 'U2D'
+0x40        Move 'U2iD'
+0x41        Move 'U2Di'
+0x42        Move 'U2iDi'
+
+0x43        Move 'UD2'
+0x44        Move 'UiD2'
+0x45        Move 'UD2i'
+0x46        Move 'UiD2i'
+
+0x47        Move 'U2D2'
+0x48        Move 'U2iD2'
+0x49        Move 'U2D2i'
+0x4A        Move 'U2iD2i'
+
+0x4B        Move 'FB'
+0x4C        Move 'FiB'
+0x4D        Move 'FBi'
+0x4E        Move 'FiBi'
+
+0x4F        Move 'F2B'
+0x50        Move 'F2iB'
+0x51        Move 'F2Bi'
+0x52        Move 'F2iBi'
+
+0x53        Move 'FB2'
+0x54        Move 'FiB2'
+0x55        Move 'FB2i'
+0x56        Move 'FiB2i'
+
+0x57        Move 'F2B2'
+0x58        Move 'F2iB2'
+0x59        Move 'F2B2i'
+0x5A        Move 'F2iB2i'
+
+status (0x5B - 0x5F):
+
+0x5B        Disconnect
+0x5C        Connect
+0x5E        Shuffled
+0x5F        Solved
+
+LED (0x60 - 0x63):
+
+0x60        LED down
+0x61        LED up
+0x62        LED stripes

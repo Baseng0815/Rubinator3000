@@ -1,13 +1,13 @@
 #pragma once
 
-class Stepper {
+class stepper {
 private:
     int pins[4];
     int count;
 
 public:
-    Stepper(const int *pins);
-    Stepper();
+    stepper(const int *pins);
+    stepper();
 
     void doMove(int steps, const int timeout);
     void doStep(const int direction, const int timeout);

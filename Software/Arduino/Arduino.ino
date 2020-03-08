@@ -1,14 +1,14 @@
-#include "Rubinator.h"
+#include "rubinator.h"
 
-Rubinator hardware;
+rubinator hardware;
 
 void setup() {
-	hardware = Rubinator();
+	hardware = rubinator();  
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 	if(Serial.available() > 0) {
     hardware.handlePacket();    
-  }
+  }  
 }
