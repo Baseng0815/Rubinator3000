@@ -1,6 +1,7 @@
-#include <LiquidCrystal.h>
 #include "stepper.h"
+#include "display.h"
 #include "rubinatorPins.h"
+#include "Arduino.h"
 
 class rubinator {
 private:        
@@ -10,12 +11,10 @@ private:
     void handleMoveRequest(byte moveByte);
     void handleMultiMoveRequest(byte moveByte);
     void handleLedRequest(byte ledFlag, byte brightness);
-    void handleStatusRequest(byte state);        
-
-    void sendResponse(byte* data, int length);    
+    void handleStatusRequest(byte state);          
 
     stepper steppers[6];
-    LiquidCrystal lcd = LiquidCrystal(lcdRS, lcdEN, lcdPins[0], lcdPins[1], lcdPins[2], lcdPins[3]);
+    display lcdDisplay = display(lcdRS, lcdEN, lcdPins[0], lcdPins[1], lcdPins[2], lcdPins[3]);
 
     bool connected;
     bool solved;

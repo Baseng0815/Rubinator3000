@@ -26,4 +26,4 @@ const int ledStripes = 7;
 
 const int lcdEN = 12;
 const int lcdRS = 13;
-const int lcdPins[4] = { 14, 15, 16, 17}
+const int lcdPins[4] = { 14, 15, 16, 17 };

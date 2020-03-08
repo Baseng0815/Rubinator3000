@@ -1,14 +1,11 @@
 #include "rubinator.h"
-#include "rubinatorPins.h"
 
 rubinator::rubinator() {
     for(int s = 0; s < 6; s++) {
         steppers[s] = stepper(stepperPins[s]);
     }
 
-    connected = false;
-
-    lcd.begin(16, 2);
+    connected = false;    
 }
 
 void rubinator::handleRequest() {
@@ -29,8 +26,12 @@ void rubinator::handleRequest() {
 }
 
 void rubinator::handleMoveRequest(byte moveByte) {
-    if(connected)
-        doMove(moveByte);        
+    if(connected){
+        lcdDisplay.displayMove(moveByte);
+        doMove(moveByte);
+        movesDone++;        
+        lcdDisplay.displayProgress((float)movesDone / (float)movesCount);
+    }
     else {
         // TODO: add error response
     }
@@ -50,7 +51,10 @@ void rubinator::doMove(byte moveByte) {
 
 void rubinator::handleMultiMoveRequest(byte moveByte) {
     if(connected) {
+        lcdDisplay.displayMultiMove(moveByte);
         doMultiMove(moveByte);
+        movesDone++;
+        lcdDisplay.displayProgress((float)movesDone / (float)movesCount);
     }
     else {
 
@@ -58,14 +62,14 @@ void rubinator::handleMultiMoveRequest(byte moveByte) {
 }
 
 void rubinator::doMultiMove(byte moveByte) {
-    int left = (moveByte & 0x30) >> 4 - 1;
+    int left = ((moveByte & 0x30) >> 4) - 1;
     int right = axisMapping[left];
 
     int leftCount = (moveByte & 0x04 ? 2 : 1) * 50; 
     int rightCount = (moveByte & 0x08 ? 2 : 1) * 50;
 
     int leftDir = moveByte & 0x01 ? -1 : 1;        
-    int rightDir = moveByte & 0x02? -1 : 1;        
+    int rightDir = moveByte & 0x02 ? -1 : 1;        
 
     for(int i = 0; i < max(leftCount, rightCount); i++) {
         steppers[left].doStep(leftDir, 0);
