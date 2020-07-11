@@ -35,6 +35,10 @@ dessen Kommunikation mit dem dem Rechner, auf welchem die Steuerungssoftware
 mit grafischer Benutzeroberfläche läuft.
 Jugend Forscht - Rubinator3000 2
 
+Erfolge:
+1. Preis Regionalwettbewert 2020
+SMA Innovationspreis
+Qualifikation Landeswettbewerb, der allerdings aufgrud von Corona abgesagt wurde
 
 
 ## 1. Einleitung
