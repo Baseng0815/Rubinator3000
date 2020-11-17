@@ -33,12 +33,11 @@ Würfels
 ...und natürlich das Vereinen aller Hardware-Komponenten in einer Maschine sowie
 dessen Kommunikation mit dem dem Rechner, auf welchem die Steuerungssoftware
 mit grafischer Benutzeroberfläche läuft.
-Jugend Forscht - Rubinator3000 2
 
 ## Erfolge:
 1. Preis Regionalwettbewerb 2020  
 SMA Innovationspreis  
-Qualifikation Landeswettbewerb, der allerdings aufgrud von Corona abgesagt wurde  
+Qualifikation Landeswettbewerb, der allerdings aufgrund von Corona abgesagt wurde  
 
 
 ## 1. Einleitung
@@ -78,7 +77,6 @@ welche jedoch eine kurze Lösezeit garantieren, weshalb sie auch von Speedcubern
 verwendet wird.
 Die Layer-by-Layer-Methode ist einfacher zu erlernen, erfordert aber mehr Züge, was
 die Lösezeit natürlich verlängert.
-Jugend Forscht - Rubinator3000 4
 
 
 - Kurzfassung
@@ -104,8 +102,6 @@ Jugend Forscht - Rubinator3000 4
 - 5. Zusammenfassung
 - 6. Danksagung
 - 7. Quellen- und Literaturverzeichnis
-   - Jugend Forscht - Rubinator3000
-- Jugend Forscht - Rubinator3000
 
 
 Layer-by-Layer-Methode (Q3)
@@ -147,7 +143,6 @@ Unser Ziel ist es, den Zauberwürfel innerhalb von 30 Sekunden lösen zu können
 konkret, eine dafür nötige Farberkennung zu entwickeln, eine entsprechende
 Lösesoftware zu schreiben und eine Ansteuerung zu bauen, welche diese
 Anforderung erfüllen kann.
-Jugend Forscht - Rubinator3000 6
 
 
 ## 2. Vorgehensweise, Materialien und Methode
@@ -184,7 +179,6 @@ Vierteldrehungen (90°) im Uhrzeigersinn festgelegt.
 Jeder Move beschreibt eine bestimmte Permutation des Würfels, da zum einen die
 Farben auf der jeweiligen Seite, aber auch teilweise die Farben auf den
 angrenzenden Seiten vertauscht werden.
-Jugend Forscht - Rubinator3000 7
 
 
 Diese beiden Permutationen können jeweils durch Funktionen beschrieben werden:
@@ -221,7 +215,6 @@ vier verschiedenen Fällen:
     (orange, grün, rot, blau) und mit der anderen Fläche auf der oberen oder
     unteren Seite.
 Die einzelnen Fälle werden dann durch vorgegebene Algorithmen gelöst.
-Jugend Forscht - Rubinator3000 8
 
 
 #### 2.3.2 Das F2L
@@ -264,7 +257,6 @@ So kann ein Programmierer am GUI arbeiten, während ein anderer die Logik dazu
 schreibt. Die 2D-und 3D-Ansicht des Würfels erstellten wir mit OpenGL, einer
 Graphics-Library, die auch in vielen Computerspielen verwendet wird und sehr
 weitreichende Funktionen besitzt.
-Jugend Forscht - Rubinator3000 9
 
 
 Da wir zu dritt waren und viele Änderungen parallel zusammenkamen, benötigten wir
@@ -289,8 +281,6 @@ werden. Das lag zum einen daran, dass die Schrittmotoren eine Spannung von 12V
 benötigen, während der Arduino nur 5V liefert. Zum anderen wird ein sehr großer
 Strom benötigt, um die Magnetfelder innerhalb der Schrittmotoren mit Hilfe von
 Spulen zu erzeugen.
-Jugend Forscht - Rubinator
-10
 
 
 #### 2.6 Der Bau der Hardware
@@ -314,8 +304,6 @@ Zudem haben wir uns Platinen zur Ansteuerung der Schrittmotoren anfertigen
 lassen, da die anfangs selbst gelöteten Platinen teilweise unzuverlässig waren und
 sehr viel Platz im Gehäuse in Anspruch nahmen. Hinzu kam noch, dass die selbst
 gelöteten Platinen viel Wärme entwickelten, da jede einzelne von ihnen einen
-Jugend Forscht - Rubinator
-11
 
 
 separaten Spannungsregler besaß, der für den Anschluss eines Mikrocontrollers
@@ -345,8 +333,6 @@ können passend positioniert werden.
 Unsere erste Methode zur Digitalisierung des Würfels sah folgendermaßen aus:
 
 (^1) Die Freilaufdiode wurde zur Vereinfachung der Schaltung weggelassen
-Jugend Forscht - Rubinator
-12
 
 
 Wir lasen jede einzelne Seite mit der Kamera eines Smartphones ein, um daraus den
@@ -390,8 +376,6 @@ Die 8 Flächen an den Positionen mit den höchsten Orange-Wahrscheinlichkeiten
 bestimmen wir als orange Flächen. So gehen wir die restlichen 5 Farben ebenfalls
 durch und haben zum Schluss 8 Flächen von jeder Farbe, mit welchen wir wiederum
 den Würfel digital darstellen.
-Jugend Forscht - Rubinator
-13
 
 
 Durch dieses Verfahren wird die Farberkennung viel präziser, da wir davon
@@ -417,8 +401,6 @@ Farben ausliest. Hierbei könnten wir zu helle Pixel aussortieren, wodurch das
 “Spiegelungs-Problem” gelöst würde. Erste Tests in separat von uns programmierten
 Anwendungen liefern vielversprechende Ergebnisse. Jetzt gilt es noch, die neue
 Farberkennung in das Hauptprogramm zu implementieren.
-Jugend Forscht - Rubinator
-14
 
 
 ## 3. Ergebnisse
@@ -458,8 +440,6 @@ Programms enthält alle nötigen
 Kontrollelemente, so zum Beispiel
 das Verdrehen oder Lösen des Würfels oder Debug-Fenster zum Beheben von
 fehlerhaften Algorithmen und Mustern. Dadurch können wir leicht und ohne
-Jugend Forscht - Rubinator
-15
 
 
 ständiges Überlegen Einstellungen ändern und Tests durchführen. Das ist zum
@@ -488,8 +468,6 @@ nicht abgeschaltet und
 so entstand das
 Problem, dass alle
 inaktiven Motoren zu
-Jugend Forscht - Rubinator
-16
 
 
 viel Strom verbrauchten und somit nicht genug Drehmoment bereitstand, um den
@@ -531,8 +509,6 @@ Aufgrund der Verkantungen des Würfels kam uns die Idee, die Teile der Hardware,
 welche eine hohe Genauigkeit erforderten, mit dem 3D-Drucker zu fertigen, da dieser
 viel genauere Ergebnisse liefert als das Aussägen aus Holz. Zudem haben wir neue
 Kupplungen eingebaut, die zur Erhöhung der Genauigkeit beitrugen.
-Jugend Forscht - Rubinator
-17
 
 
 Das Projekt erschien uns auf den ersten Blick leicht, aber es gab viele Faktoren, die
@@ -573,8 +549,6 @@ gemacht, dass Dinge und Ideen oft einfacher erscheinen, als sie es eigentlich si
 Es lohnt sich also, zuerst darüber nachzudenken, wie man sie angeht und realisiert.
 Zuletzt durften wir die Erfahrung machen, was man mit Teamwork alles erreichen
 kann. Während des Entwicklungsprozesses haben sich alle Team-Mitglieder nur auf
-Jugend Forscht - Rubinator
-18
 
 
 jeweils ein Teilgebiet spezialisiert. Trotzdem können wir durch unsere gelungene
@@ -594,8 +568,6 @@ Darüber hinaus geht ein riesiges Dankeschön an die Viessmann Group, welche uns
 finanziell bei der Anfertigung der Hardware unterstützte. Zusätzlich ermöglichte sie
 uns die Teilnahme an der Young Engineer Academy, durch welche wir essentielle
 Grundkenntnisse und letztendlich auch die Idee für dieses Projekt bekommen haben.
-Jugend Forscht - Rubinator
-19
 
 
 ## 7. Quellen- und Literaturverzeichnis
