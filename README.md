@@ -31,7 +31,7 @@ Würfels
 ● Lösealgorithmus entwickeln und Lösezüge berechnen
 ● Lösezüge am Würfel ausführen
 ...und natürlich das Vereinen aller Hardware-Komponenten in einer Maschine sowie
-dessen Kommunikation mit dem dem Rechner, auf welchem die Steuerungssoftware
+dessen Kommunikation mit dem Rechner, auf welchem die Steuerungssoftware
 mit grafischer Benutzeroberfläche läuft.
 
 ## Erfolge:
