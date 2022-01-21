@@ -35,9 +35,9 @@ dessen Kommunikation mit dem Rechner, auf welchem die Steuerungssoftware
 mit grafischer Benutzeroberfläche läuft.
 
 ## Erfolge:
-1. Preis Regionalwettbewerb 2020  
-SMA Innovationspreis  
-Qualifikation Landeswettbewerb, der allerdings aufgrund von Corona abgesagt wurde  
+1. Preis Regionalwettbewerb 2020
+SMA Innovationspreis
+Qualifikation Landeswettbewerb, der allerdings aufgrund von Corona abgesagt wurde
 
 
 ## 1. Einleitung
@@ -572,16 +572,9 @@ Grundkenntnisse und letztendlich auch die Idee für dieses Projekt bekommen habe
 
 ## 7. Quellen- und Literaturverzeichnis
 
-##### Q1: 04.01.2020, 16:
-
-h​ttps://www.youtube.com/watch?v=KfpJZHP6DLA
-Q2: 04.01.2020 17:
-https://speedcube.de/
-Q3: 04.01.2020 17:
-https://ruwix.com/the-rubiks-cube/how-to-solve-the-rubiks-cube-beginners-method/
-Q4: 04.01.2020 17:
-https://ruwix.com/the-rubiks-cube/advanced-cfop-fridrich/
-Q5: 04.01.2020 17:
-https://www.youtube.com/watch?v=nt00QzKuNVY
-Q6: 14.01.2020 19:
-https://www.arduino.cc/en/Tutorial/DigitalPins
+##### Q1: 04.01.2020 16: https://www.youtube.com/watch?v=KfpJZHP6DLA
+##### Q2: 04.01.2020 17: https://speedcube.de/
+##### Q3: 04.01.2020 17: https://ruwix.com/the-rubiks-cube/how-to-solve-the-rubiks-cube-beginners-method/
+##### Q4: 04.01.2020 17: https://ruwix.com/the-rubiks-cube/advanced-cfop-fridrich/
+##### Q5: 04.01.2020 17: https://www.youtube.com/watch?v=nt00QzKuNVY
+##### Q6: 14.01.2020 19: https://www.arduino.cc/en/Tutorial/DigitalPins
